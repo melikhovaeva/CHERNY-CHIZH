@@ -1,10 +1,12 @@
+import { Header } from '@/widgets'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 
 export const Route = createRootRoute({
   component: () => (
     <>
+      <Header />
       <Outlet />
       <TanStackDevtools
         config={{
