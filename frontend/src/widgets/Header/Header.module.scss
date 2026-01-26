@@ -20,7 +20,7 @@
   margin: 12px;
   padding: 12px;
   border-radius: 12px;
-  background-color: var(--c-bg-tertiary);
+  @include bg-color($background-tertiary-color);
 }
 
 .logo {
