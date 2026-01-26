@@ -1,0 +1,13 @@
+@use './base/reset';
+@use './base/typography';
+
+body {
+  margin: 0;
+  letter-spacing: 0;
+  text-transform: unset;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: all 0.3s ease;
+  @include text-color($text-color);
+  @include bg-color($background-primary-color);
+}
