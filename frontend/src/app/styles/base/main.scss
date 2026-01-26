@@ -1,17 +1,3 @@
-:root {
-  // static-colors
-  --c-text: #272727;
-  --c-accent-primary: #396448;
-  --c-accent-secondary: #AB8264;
-  --c-bg-primary: #F9F4F0;
-  --c-bg-secondary: #EFE9E3;
-  --c-bg-tertiary: #FFFFFF;
-
-  // actions colors
-  --c-accent-hover: #56986E;
-
-}
-
 body {
   margin: 0;
   font-family: 'Raleway', sans-serif;
@@ -22,9 +8,9 @@ body {
   text-transform: unset;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--c-bg-primary);
-  color: var(--c-text);
   transition: all 0.3s ease;
+  @include text-color($text-color);
+  @include bg-color($background-primary-color);
 }
 
 h1 {
