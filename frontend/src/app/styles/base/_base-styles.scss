@@ -1,0 +1,22 @@
+@use '@styles/abstracts/variables' as *;
+
+section {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &.filled {
+    margin: 0 auto;
+    border-radius: $filled-section-border-radius;
+    max-width: $filled-section-max-width;
+    padding: $filled-section-padding;
+
+    &.primary {
+      background-color: $accent-primary-color;
+      color: $text-inverted-color;
+    }
+    &.secondary {
+      background-color: $accent-secondary-color;
+      color: $text-inverted-color;
+    }
+  }
+}
