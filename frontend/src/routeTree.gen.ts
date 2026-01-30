@@ -8,114 +8,114 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './app/routes/__root';
-import { Route as AboutRouteImport } from './app/routes/about';
-import { Route as ContactsRouteImport } from './app/routes/contacts';
-import { Route as IndexRouteImport } from './app/routes/index';
-import { Route as LibraryRouteImport } from './app/routes/library';
-import { Route as PuppiesRouteImport } from './app/routes/puppies';
+import { Route as rootRouteImport } from './app/routes/__root'
+import { Route as PuppiesRouteImport } from './app/routes/puppies'
+import { Route as LibraryRouteImport } from './app/routes/library'
+import { Route as ContactsRouteImport } from './app/routes/contacts'
+import { Route as AboutRouteImport } from './app/routes/about'
+import { Route as IndexRouteImport } from './app/routes/index'
 
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
   path: '/puppies',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ContactsRoute = ContactsRouteImport.update({
   id: '/contacts',
   path: '/contacts',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/contacts': typeof ContactsRoute;
-  '/library': typeof LibraryRoute;
-  '/puppies': typeof PuppiesRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contacts': typeof ContactsRoute
+  '/library': typeof LibraryRoute
+  '/puppies': typeof PuppiesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/contacts': typeof ContactsRoute;
-  '/library': typeof LibraryRoute;
-  '/puppies': typeof PuppiesRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contacts': typeof ContactsRoute
+  '/library': typeof LibraryRoute
+  '/puppies': typeof PuppiesRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  '/': typeof IndexRoute;
-  '/about': typeof AboutRoute;
-  '/contacts': typeof ContactsRoute;
-  '/library': typeof LibraryRoute;
-  '/puppies': typeof PuppiesRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contacts': typeof ContactsRoute
+  '/library': typeof LibraryRoute
+  '/puppies': typeof PuppiesRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/about' | '/contacts' | '/library' | '/puppies';
-  fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about' | '/contacts' | '/library' | '/puppies';
-  id: '__root__' | '/' | '/about' | '/contacts' | '/library' | '/puppies';
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/about' | '/contacts' | '/library' | '/puppies'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/about' | '/contacts' | '/library' | '/puppies'
+  id: '__root__' | '/' | '/about' | '/contacts' | '/library' | '/puppies'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AboutRoute: typeof AboutRoute;
-  ContactsRoute: typeof ContactsRoute;
-  LibraryRoute: typeof LibraryRoute;
-  PuppiesRoute: typeof PuppiesRoute;
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactsRoute: typeof ContactsRoute
+  LibraryRoute: typeof LibraryRoute
+  PuppiesRoute: typeof PuppiesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/puppies': {
-      id: '/puppies';
-      path: '/puppies';
-      fullPath: '/puppies';
-      preLoaderRoute: typeof PuppiesRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/puppies'
+      path: '/puppies'
+      fullPath: '/puppies'
+      preLoaderRoute: typeof PuppiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/library': {
-      id: '/library';
-      path: '/library';
-      fullPath: '/library';
-      preLoaderRoute: typeof LibraryRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contacts': {
-      id: '/contacts';
-      path: '/contacts';
-      fullPath: '/contacts';
-      preLoaderRoute: typeof ContactsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof ContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
-      id: '/about';
-      path: '/about';
-      fullPath: '/about';
-      preLoaderRoute: typeof AboutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,7 +125,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactsRoute: ContactsRoute,
   LibraryRoute: LibraryRoute,
   PuppiesRoute: PuppiesRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
