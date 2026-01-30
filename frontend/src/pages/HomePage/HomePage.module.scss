@@ -1,10 +1,13 @@
+@use '@styles/base/base-styles';
+
 .main {
   margin-top: 156px;
+  display: flex;
+  flex-direction: column;
+  gap: 148px;
 }
 
 .hero {
-  margin-bottom: 148px;
-
   &__textContainer {
     max-width: 610px;
     margin-bottom: 40px;
