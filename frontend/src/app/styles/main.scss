@@ -7,9 +7,9 @@ body {
   text-transform: unset;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
   @include text-color($text-color);
   @include bg-color($background-primary-color);
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
