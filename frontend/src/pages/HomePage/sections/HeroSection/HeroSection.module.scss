@@ -1,0 +1,30 @@
+@use '@styles/base/base-styles';
+
+.root {
+  .textContainer {
+    max-width: 610px;
+    margin-bottom: 40px;
+  }
+
+  .title {
+    margin-bottom: 14px;
+  }
+
+  .description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 140%;
+  }
+
+  .list {
+    display: flex;
+    gap: 20px;
+  }
+
+  .listItem {
+    width: 285px;
+    height: 374px;
+    border-radius: 20px;
+    background-color: $background-secondary-color;
+  }
+}

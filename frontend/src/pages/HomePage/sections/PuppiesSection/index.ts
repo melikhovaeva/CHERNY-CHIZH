@@ -1,0 +1,1 @@
+export { PuppiesSection } from './PuppiesSection'

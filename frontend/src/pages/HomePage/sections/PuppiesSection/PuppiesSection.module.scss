@@ -1,0 +1,25 @@
+@use '@styles/base/base-styles';
+
+.root {
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  .gallery {
+    margin-bottom: 40px;
+  }
+
+  .title {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .link {
+    align-self: center;
+    text-decoration: none;
+  }
+}
