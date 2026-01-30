@@ -5,7 +5,7 @@ section {
   margin: 0 auto;
 
   &.filled {
-    margin: 0 auto;
+    width: 100%;
     border-radius: $filled-section-border-radius;
     max-width: $filled-section-max-width;
     padding: $filled-section-padding;

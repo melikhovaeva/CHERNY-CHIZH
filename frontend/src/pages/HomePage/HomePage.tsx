@@ -1,4 +1,5 @@
 import type { Tab } from '@/features/tabs-filter'
+import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
 import { FilterableGallery } from '@/widgets'
 import styles from './HomePage.module.scss'
@@ -36,7 +37,7 @@ export function HomePage() {
           ))}
         </ul>
       </section>
-      <section className={`${styles.puppies} filled primary`}>
+      <section className={cn([styles.puppies, 'filled primary'])}>
         <div className={styles.puppies__container}>
           <h2 className={styles.puppies__title}>Наши Щенки</h2>
           <FilterableGallery
