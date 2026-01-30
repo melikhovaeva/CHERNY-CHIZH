@@ -1,0 +1,16 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.paw {
+  width: 22px;
+  height: 20px;
+  display: block;
+  opacity: 0.35;
+
+  &_filled {
+    opacity: 1;
+  }
+}

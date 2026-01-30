@@ -1,5 +1,5 @@
-import { AdvantagesSection, HeroSection, PuppiesSection } from './sections'
 import styles from './HomePage.module.scss'
+import { AdvantagesSection, BreedAboutSection, HeroSection, PuppiesSection } from './sections'
 
 export function HomePage() {
   return (
@@ -7,6 +7,7 @@ export function HomePage() {
       <HeroSection />
       <PuppiesSection />
       <AdvantagesSection />
+      <BreedAboutSection />
     </main>
   )
 }
