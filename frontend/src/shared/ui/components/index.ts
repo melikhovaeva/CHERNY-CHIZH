@@ -1,2 +1,3 @@
-export { Button } from './Button';
-export { Card } from './Card';
+export { Accordion, type AccordionItem } from './Accordion'
+export { Button } from './Button'
+export { Card } from './Card'

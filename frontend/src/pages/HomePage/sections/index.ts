@@ -1,4 +1,5 @@
 export { AdvantagesSection } from './AdvantagesSection'
 export { BreedAboutSection } from './BreedAboutSection'
+export { FAQSection } from './FAQSection'
 export { HeroSection } from './HeroSection'
 export { PuppiesSection } from './PuppiesSection'
