@@ -1,0 +1,35 @@
+.button {
+  padding: 16px 32px;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 11px;
+  transition: all 0.3s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  &:active:not(:disabled) {
+    opacity: 0.7;
+    transform: scale(0.99);
+  }
+}
+
+.variant {
+  &-primary {
+    background-color: $button-primary-background-color;
+    color: $button-primary-text-color;
+    border: $button-primary-border;
+  }
+
+  &-secondary {
+    background-color: $button-secondary-background-color;
+    color: $button-secondary-text-color;
+    border: $button-secondary-border;
+  }
+}

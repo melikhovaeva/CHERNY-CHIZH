@@ -5,3 +5,14 @@ $background-primary-color: #f9f4f0;
 $background-secondary-color: #efe9e3;
 $background-tertiary-color: #ffffff;
 $accent-hover-color: #56986e;
+
+// Button
+$button-border: 1px solid;
+
+$button-primary-background-color: #000;
+$button-primary-text-color: #fff;
+$button-primary-border: $button-border transparent;
+
+$button-secondary-background-color: transparent;
+$button-secondary-text-color: #000;
+$button-secondary-border: $button-border #000;
