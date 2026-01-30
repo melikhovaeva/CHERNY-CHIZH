@@ -1,4 +1,6 @@
 $text-color: #272727;
+$text-inverted-color: #fff;
+
 $accent-primary-color: #396448;
 $accent-secondary-color: #ab8264;
 $background-primary-color: #f9f4f0;
@@ -10,7 +12,7 @@ $accent-hover-color: #56986e;
 $button-border: 1px solid;
 
 $button-primary-background-color: #000;
-$button-primary-text-color: #fff;
+$button-primary-text-color: $text-inverted-color;
 $button-primary-border: $button-border transparent;
 
 $button-secondary-background-color: transparent;
