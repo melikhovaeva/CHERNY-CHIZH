@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  gap: 9px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  flex-shrink: 0;
+}
+
+.button {
+  padding: $tabs-padding;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: $tabs-text-color;
+  background-color: $tabs-inactive-background-color;
+  border-radius: $tabs-border-radius;
+  transition: 0.3s ease;
+
+  &:hover {
+    background-color: $tabs-hover-background-color;
+  }
+
+  &_active {
+    background-color: $tabs-active-background-color;
+  }
+}

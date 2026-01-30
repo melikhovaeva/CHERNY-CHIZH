@@ -1,0 +1,58 @@
+.main {
+  margin-top: 156px;
+}
+
+.hero {
+  margin-bottom: 148px;
+
+  &__textContainer {
+    max-width: 610px;
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    margin-bottom: 14px;
+  }
+
+  &__description {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 140%;
+  }
+
+  &__list {
+    display: flex;
+    gap: 20px;
+  }
+
+  &__list__item {
+    width: 285px;
+    height: 374px;
+    border-radius: 20px;
+    background-color: $background-secondary-color;
+  }
+}
+
+.puppies {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  &__gallery {
+    margin-bottom: 40px;
+  }
+
+  &__title {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  &__link {
+    align-self: center;
+    text-decoration: none;
+  }
+}

@@ -1,12 +1,13 @@
 $text-color: #272727;
 $text-inverted-color: #fff;
 
-$accent-primary-color: #396448;
-$accent-secondary-color: #ab8264;
+$accent-primary-color: #41634a;
+$accent-primary-hover-color: #557c5e;
+$accent-primary-active-color: #334e3a;
+$accent-secondary-color: #755345;
 $background-primary-color: #f9f4f0;
 $background-secondary-color: #efe9e3;
 $background-tertiary-color: #ffffff;
-$accent-hover-color: #56986e;
 
 // Button
 $button-border: 1px solid;
@@ -18,3 +19,24 @@ $button-primary-border: $button-border transparent;
 $button-secondary-background-color: transparent;
 $button-secondary-text-color: #000;
 $button-secondary-border: $button-border #000;
+
+// Filled sections
+$filled-section-padding: 64px 0;
+$filled-section-max-width: 1400px;
+$filled-section-border-radius: 36px;
+
+$filled-section-text-color: $text-inverted-color;
+
+$filled-section-primary-bg-color: $accent-primary-color;
+
+$filled-section-secondary-bg-color: $accent-secondary-color;
+
+// Tabs
+$tabs-padding: 8px 20px;
+$tabs-border-radius: 100px;
+
+$tabs-hover-background-color: $accent-primary-hover-color;
+$tabs-active-background-color: $accent-primary-active-color;
+$tabs-inactive-background-color: transparent;
+
+$tabs-text-color: $text-inverted-color;
