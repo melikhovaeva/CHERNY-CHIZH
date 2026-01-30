@@ -1,3 +1,4 @@
+import { Form } from '@/shared/ui/components'
 import styles from './FormSection.module.scss'
 
 const SECTION_TITLE = 'Мы всегда рады помочь'
@@ -9,6 +10,8 @@ export function FormSection() {
     <section className={styles.root}>
       <h2 className={styles.title}>{SECTION_TITLE}</h2>
       <p className={styles.subtitle}>{SECTION_SUBTITLE}</p>
+      <Form />
+
     </section >
   )
 }
