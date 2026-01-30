@@ -22,7 +22,7 @@ const headerLinks = [
 
 export function Header() {
   return (
-    <div className={styles.container}>
+    <header className={styles.container}>
       <div className={styles.content}>
         <Link to="/" className={styles.logo}>
           CHERNIY CHIZH
@@ -38,6 +38,6 @@ export function Header() {
         </ul>
         <button className={styles.button}><i></i><span>Войти</span></button>
       </div>
-    </div>
+    </header>
   )
 }
