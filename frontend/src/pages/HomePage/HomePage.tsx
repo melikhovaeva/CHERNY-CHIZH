@@ -11,7 +11,7 @@ import {
 
 export function HomePage() {
   return (
-    <main className={styles.main}>
+    <div className={styles.container}>
       <HeroSection />
       <PuppiesSection />
       <AdvantagesSection />
@@ -19,6 +19,6 @@ export function HomePage() {
       <FAQSection />
       <LibrarySection />
       <FormSection />
-    </main>
+    </div>
   )
 }
