@@ -94,6 +94,11 @@ input[type='submit'] {
   cursor: pointer;
 }
 
+button:focus {
+  outline: unset;
+  border: unset;
+}
+
 button::-moz-focus-inner {
   padding: 0;
   border: 0;
