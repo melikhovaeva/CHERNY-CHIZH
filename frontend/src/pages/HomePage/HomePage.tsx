@@ -4,6 +4,7 @@ import {
   BreedAboutSection,
   FAQSection,
   HeroSection,
+  LibrarySection,
   PuppiesSection,
 } from './sections'
 
@@ -15,6 +16,7 @@ export function HomePage() {
       <AdvantagesSection />
       <BreedAboutSection />
       <FAQSection />
+      <LibrarySection />
     </main>
   )
 }
