@@ -1,5 +1,10 @@
 @use '@styles/abstracts/variables' as *;
 
+main {
+  margin-top: 148px;
+  min-height: calc(55vh - 148px);
+}
+
 section {
   max-width: 1200px;
   margin: 0 auto;
