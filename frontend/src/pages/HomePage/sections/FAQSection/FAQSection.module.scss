@@ -1,0 +1,17 @@
+.root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  margin: 0 0 12px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 0 0 48px;
+  text-align: center;
+}
