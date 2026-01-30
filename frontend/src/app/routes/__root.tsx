@@ -1,4 +1,4 @@
-import { Header } from '@/widgets'
+import { Footer, Header } from '@/widgets'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -8,6 +8,7 @@ export const Route = createRootRoute({
     <>
       <Header />
       <Outlet />
+      <Footer />
       <TanStackDevtools
         config={{
           position: 'bottom-right',

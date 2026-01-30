@@ -1,0 +1,56 @@
+.root {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: 36px 36px 0 0;
+  @include bg-color($footer-background-color);
+  @include text-color($footer-text-color);
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  max-width: $footer-content-max-width;
+  padding: 64px 0 36px;
+}
+
+.title {
+  font-size: 16px;
+  font-family: 'Manrope';
+  @include text-color($footer-title-text-color);
+}
+
+.socials {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &List {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.social {
+  background-color: $footer-socials-background-color;
+  padding: 9px;
+  border-radius: 4px;
+}
+
+.warning {
+  font-size: 12px;
+  font-family: 'Manrope';
+  @include text-color($footer-text-color);
+  max-width: 240px;
+}
