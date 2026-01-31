@@ -1,4 +1,5 @@
 .root {
+  width: 100%;
   .textContainer {
     max-width: 610px;
     margin-bottom: 40px;
@@ -14,12 +15,30 @@
     line-height: 140%;
   }
 
+  .scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   .list {
     display: flex;
+    flex-wrap: nowrap;
     gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: min-content;
   }
 
   .listItem {
+    flex-shrink: 0;
     width: 285px;
     height: 374px;
     border-radius: 20px;
