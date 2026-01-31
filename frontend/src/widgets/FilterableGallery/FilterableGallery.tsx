@@ -38,16 +38,18 @@ export function FilterableGallery<T extends Record<string, unknown>>({
         onTabChange={setActiveTab}
         className={styles.gallery__tabs}
       />
-      <ul className={styles.gallery__list}>
-        {filteredItems.map((item, index) => (
-          <li
-            key={(item.uid as string | number) ?? index}
-            className={styles.gallery__list__item}
-          >
-            {renderItem(item)}
-          </li>
-        ))}
-      </ul>
+      <div className={styles.gallery__scroll}>
+        <ul className={styles.gallery__list}>
+          {filteredItems.map((item, index) => (
+            <li
+              key={(item.uid as string | number) ?? index}
+              className={styles.gallery__list__item}
+            >
+              {renderItem(item)}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
