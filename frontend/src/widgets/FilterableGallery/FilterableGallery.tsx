@@ -1,6 +1,6 @@
 import { Tabs, type Tab } from '@/features/tabs-filter'
-import { useState, useMemo } from 'react'
 import { cn } from '@/shared/lib/utils'
+import { useMemo, useState } from 'react'
 import styles from './FilterableGallery.module.scss'
 
 interface FilterableGalleryProps<T extends Record<string, unknown>> {

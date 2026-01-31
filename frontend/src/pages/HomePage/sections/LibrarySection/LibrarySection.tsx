@@ -30,7 +30,9 @@ export function LibrarySection() {
           )}
           className={styles.gallery}
         />
-        <Button>Смотреть все</Button>
+        <div className={styles.buttonContainer}>
+          <Button>Смотреть все</Button>
+        </div>
       </div>
     </section>
   )

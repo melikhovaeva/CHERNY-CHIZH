@@ -1,9 +1,26 @@
+.scroll {
+  padding: 0 32px;
+  width: fit-content;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    padding: 0 20px;
+    width: 100%;
+  }
+}
+
 .list {
   display: flex;
   gap: 9px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  @media (max-width: 768px) {
+  }
 }
 
 .item {
