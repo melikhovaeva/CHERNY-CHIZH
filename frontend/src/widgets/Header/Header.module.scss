@@ -3,24 +3,31 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 201;
   width: 100%;
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 .content {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   max-width: 1200px;
-  margin: 12px;
+  margin: 12px 12px 0;
   padding: 12px;
   border-radius: 12px;
   @include bg-color($background-tertiary-color);
+
+  &_menuOpen {
+    margin-bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
 }
 
 .logo {
@@ -37,6 +44,24 @@
   font-weight: 400;
   line-height: 1.4;
   font-family: 'Manrope';
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.burgerWrap {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.desktopActions {
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .button {
@@ -45,4 +70,25 @@
   font-weight: 500;
   line-height: 1.4;
   padding: 17px 39px;
+}
+
+.menuPanel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 12px;
+  max-height: 0;
+  overflow: hidden;
+  border-radius: 0 0 12px 12px;
+  @include bg-color($background-tertiary-color);
+  transition: max-height $menu-transition-duration ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+
+  &_open {
+    max-height: $menu-panel-max-height;
+  }
 }

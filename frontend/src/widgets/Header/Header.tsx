@@ -1,4 +1,8 @@
+import { BurgerMenu, BurgerMenuList } from '@/features'
+import { Backdrop } from '@/shared/ui/components'
+import { cn } from '@/shared/lib/utils'
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import styles from './Header.module.scss'
 
 const headerLinks = [
@@ -20,10 +24,32 @@ const headerLinks = [
   },
 ]
 
+const mobileMenuLinks = [
+  { to: '/', label: 'Главная' },
+  ...headerLinks,
+]
+
 export function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const loginButton = (
+    <button type="button" className={styles.button}>
+      <i />
+      <span>Войти</span>
+    </button>
+  )
+
   return (
     <header className={styles.container}>
-      <div className={styles.content}>
+      {isMenuOpen && (
+        <Backdrop
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden
+        />
+      )}
+      <div
+        className={cn([styles.content, isMenuOpen ? styles.content_menuOpen : ''])}
+      >
         <Link to="/" className={styles.logo}>
           CHERNIY CHIZH
         </Link>
@@ -36,7 +62,24 @@ export function Header() {
             </li>
           ))}
         </ul>
-        <button className={styles.button}><i></i><span>Войти</span></button>
+        <div className={styles.burgerWrap}>
+          <BurgerMenu
+            isOpen={isMenuOpen}
+            onClose={() => setIsMenuOpen(false)}
+            onOpen={() => setIsMenuOpen(true)}
+          />
+        </div>
+        <div className={styles.desktopActions}>{loginButton}</div>
+      </div>
+      <div
+        className={cn([styles.menuPanel, isMenuOpen ? styles.menuPanel_open : ''])}
+        aria-hidden={!isMenuOpen}
+      >
+        <BurgerMenuList
+          links={mobileMenuLinks}
+          loginButton={loginButton}
+          onLinkClick={() => setIsMenuOpen(false)}
+        />
       </div>
     </header>
   )

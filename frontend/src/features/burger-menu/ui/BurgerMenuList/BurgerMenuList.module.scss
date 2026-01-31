@@ -1,0 +1,40 @@
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+
+  &__item {
+    margin: 0;
+  }
+
+  &__link {
+    display: block;
+    padding: 12px 0;
+    @include text-color($text-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      @include text-color($accent-primary-color);
+    }
+  }
+}
+
+.login {
+  padding-top: 16px;
+  border-top: 1px solid $background-secondary-color;
+}
