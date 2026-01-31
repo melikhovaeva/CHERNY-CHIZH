@@ -1,0 +1,17 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: $backdrop-overlay-color;
+  cursor: pointer;
+  animation: backdropFadeIn $backdrop-fade-duration ease forwards;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
