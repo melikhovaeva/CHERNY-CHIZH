@@ -6,7 +6,7 @@ export enum BreedAboutBlockKey {
   ACTIVITY = 'activity',
 }
 
-export const BLOCK_LABELS: Record<BreedAboutBlockKey, string> = {
+export const CARD_LABELS: Record<BreedAboutBlockKey, string> = {
   [BreedAboutBlockKey.APPEARANCE]: 'Внешность',
   [BreedAboutBlockKey.CHARACTER]: 'Характер',
   [BreedAboutBlockKey.ADAPTABILITY]: 'Адаптивность',
