@@ -3,10 +3,9 @@ import {
   AdvantagesSection,
   BreedAboutSection,
   FAQSection,
-  FormSection,
   HeroSection,
   LibrarySection,
-  PuppiesSection,
+  PuppiesSection
 } from './sections'
 
 export function HomePage() {
@@ -18,7 +17,7 @@ export function HomePage() {
       <BreedAboutSection />
       <FAQSection />
       <LibrarySection />
-      <FormSection />
+      {/* <FormSection /> */}
     </div>
   )
 }
