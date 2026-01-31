@@ -3,6 +3,7 @@ import {
   AdvantagesSection,
   BreedAboutSection,
   FAQSection,
+  FormSection,
   HeroSection,
   LibrarySection,
   PuppiesSection
@@ -17,7 +18,7 @@ export function HomePage() {
       <BreedAboutSection />
       <FAQSection />
       <LibrarySection />
-      {/* <FormSection /> */}
+      <FormSection />
     </div>
   )
 }
