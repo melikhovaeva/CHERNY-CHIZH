@@ -10,11 +10,13 @@ export function HeroSection() {
           компаньонами дома
         </p>
       </div>
-      <ul className={styles.list}>
-        {Array.from({ length: 4 }).map((_, index) => (
-          <li className={styles.listItem} key={index} />
-        ))}
-      </ul>
+      <div className={styles.scroll}>
+        <ul className={styles.list}>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <li className={styles.listItem} key={index} />
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }
