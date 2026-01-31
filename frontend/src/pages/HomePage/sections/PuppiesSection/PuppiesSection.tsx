@@ -30,7 +30,9 @@ export function PuppiesSection() {
           )}
           className={styles.gallery}
         />
-        <Button>Смотреть всех</Button>
+        <div className={styles.buttonContainer}>
+          <Button>Смотреть всех</Button>
+        </div>
       </div>
     </section>
   )
