@@ -2,6 +2,10 @@
   display: flex;
   align-items: center;
   gap: 40px;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
 }
 
 .form {
@@ -30,6 +34,10 @@
   border-radius: 16px;
   background-color: $background-tertiary-color;
   border: 1px solid $background-secondary-color;
+
+  @media (max-width: 576px) {
+    grid-column: span 2;
+  }
 }
 
 .checkboxes {
