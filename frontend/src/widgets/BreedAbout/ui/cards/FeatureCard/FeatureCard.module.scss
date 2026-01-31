@@ -1,0 +1,18 @@
+.root {
+  padding: 16px 20px;
+  background-color: #f8f6f3;
+  border-radius: 16px;
+  color: $text-color;
+  height: 200px;
+  min-height: 120px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  justify-content: space-between;
+}
+
+.text {
+  font-family: 'Manrope';
+  font-size: 16px;
+}

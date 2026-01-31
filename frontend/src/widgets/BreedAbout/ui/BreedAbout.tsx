@@ -1,10 +1,11 @@
 import type { BreedDescription } from '@/entities/breed'
-import { PawRating } from '@/features/paw-rating'
 import { Tabs, type Tab } from '@/features/tabs-filter'
 import { cn } from '@/shared/lib/utils'
 import { useState } from 'react'
-import { BLOCK_LABELS, BreedAboutBlockKey } from '../model/enums'
+import { BreedAboutBlockKey, CARD_LABELS } from '../model/enums'
 import styles from './BreedAbout.module.scss'
+import { AppearanceCard } from './cards'
+import { FeatureCard } from './cards/FeatureCard/FeatureCard'
 
 interface BreedAboutProps {
   tabs: Tab[]
@@ -21,14 +22,13 @@ export function BreedAbout({
   className,
 }: BreedAboutProps) {
   const [activeTab, setActiveTab] = useState<string>(tabs[0]?.value ?? '')
+
   const description = descriptions[activeTab]
 
-  const blocksToDisplay = Object.values(BreedAboutBlockKey).filter((blockKey) => blockKey !== BreedAboutBlockKey.APPEARANCE) as Exclude<
-    BreedAboutBlockKey,
-    BreedAboutBlockKey.APPEARANCE
-  >[]
-
   if (!description) return null
+  console.log(description)
+
+  const featureCards = Object.entries(description).filter(([key]) => key !== BreedAboutBlockKey.APPEARANCE)
 
   return (
     <div className={cn([styles.root, className ?? ''])}>
@@ -42,33 +42,19 @@ export function BreedAbout({
         <img
           className={styles.image}
           src={getImageUrl(activeTab)}
-          alt=""
+          alt={`${activeTab} image`}
         />
-        <div className={styles.blocks}>
-          <div
-            className={cn([styles.block, styles.block_appearance])}
-            key={BreedAboutBlockKey.APPEARANCE}
-          >
-            <h4 className={styles.blockTitle}>{BLOCK_LABELS[BreedAboutBlockKey.APPEARANCE]}</h4>
-            <p className={styles.blockText}>{description.appearance}</p>
-          </div>
-          <div className={styles.blocksGrid}>
-            {blocksToDisplay.map((blockKey) => (
-              <div key={blockKey} className={styles.block}>
-                <div className={styles.blockContent}>
-                  <h4 className={styles.blockTitle}>{BLOCK_LABELS[blockKey]}</h4>
-                  {description[blockKey].rating != null && (
-                    <PawRating
-                      value={description[blockKey].rating!}
-                      className={styles.rating}
-                    />
-                  )}
-                </div>
-                <p className={styles.blockText}>{description[blockKey].text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <AppearanceCard
+          title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]} text={description.appearance}
+        />
+        {featureCards.map(([key, value]) => (
+          <FeatureCard
+            key={key}
+            title={CARD_LABELS[key as BreedAboutBlockKey]}
+            text={value.text}
+            rating={value.rating}
+          />
+        ))}
       </div>
     </div >
   )

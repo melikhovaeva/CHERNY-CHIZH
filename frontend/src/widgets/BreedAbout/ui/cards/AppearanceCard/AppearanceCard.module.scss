@@ -1,0 +1,22 @@
+.root {
+  padding: 16px 20px;
+  background-color: #f8f6f3;
+  border-radius: 16px;
+  color: $text-color;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+
+  justify-content: start;
+  height: 280px;
+  min-height: 280px;
+  max-height: 280px;
+
+  grid-column: 3 / 5;
+  grid-row: 1 / 2;
+}
+
+.text {
+  font-family: 'Manrope';
+  font-size: 16px;
+}
