@@ -1,0 +1,36 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  &__tabs {
+    margin-bottom: 40px;
+  }
+
+  &__scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: min-content;
+  }
+
+  &__list__item {
+    flex-shrink: 0;
+  }
+}
