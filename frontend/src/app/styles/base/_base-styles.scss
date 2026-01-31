@@ -6,6 +6,7 @@ main {
 }
 
 section {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
 
@@ -13,7 +14,6 @@ section {
     width: 100%;
     border-radius: $filled-section-border-radius;
     max-width: $filled-section-max-width;
-    padding: $filled-section-padding;
 
     &.primary {
       background-color: $accent-primary-color;
