@@ -26,7 +26,6 @@ export function BreedAbout({
   const description = descriptions[activeTab]
 
   if (!description) return null
-  console.log(description)
 
   const featureCards = Object.entries(description).filter(([key]) => key !== BreedAboutBlockKey.APPEARANCE)
 
@@ -45,7 +44,8 @@ export function BreedAbout({
           alt={`${activeTab} image`}
         />
         <AppearanceCard
-          title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]} text={description.appearance}
+          title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
+          text={description.appearance}
         />
         {featureCards.map(([key, value]) => (
           <FeatureCard

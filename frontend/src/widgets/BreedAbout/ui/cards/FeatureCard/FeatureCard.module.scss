@@ -10,6 +10,15 @@
   flex-direction: column;
   gap: 0;
   justify-content: space-between;
+
+  @media (max-width: 1200px) {
+    grid-column: span 2;
+  }
+
+  @media (max-width: 768px) {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
 }
 
 .text {
