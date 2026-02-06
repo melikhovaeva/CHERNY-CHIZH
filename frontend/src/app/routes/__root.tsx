@@ -1,3 +1,4 @@
+import { Breadcrumb } from '@/shared/ui/components'
 import { Footer, Header } from '@/widgets'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
@@ -8,6 +9,7 @@ export const Route = createRootRoute({
     <>
       <Header />
       <main>
+        <Breadcrumb />
         <Outlet />
       </main>
       <Footer />
