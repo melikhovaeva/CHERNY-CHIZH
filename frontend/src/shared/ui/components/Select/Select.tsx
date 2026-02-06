@@ -91,7 +91,10 @@ export const Select = ({
     : label
 
   return (
-    <div className={cn([styles.root, className || ''])} ref={containerRef}>
+    <div
+        className={cn([styles.root, (isOpen || isClosing) ? styles.root_open : '', className || ''])}
+        ref={containerRef}
+      >
       <span className={styles.sizer} aria-hidden>
         {longestLabel}
       </span>

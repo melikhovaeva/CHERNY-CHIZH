@@ -1,6 +1,10 @@
 .root {
   position: relative;
   display: inline-block;
+
+  &_open {
+    z-index: 100;
+  }
 }
 
 .sizer {

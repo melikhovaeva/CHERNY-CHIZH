@@ -1,7 +1,7 @@
 .card {
   display: flex;
 
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     flex-direction: column;
   }
 
@@ -87,5 +87,9 @@
   &__buttonContainer {
     display: flex;
     gap: 8px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
   }
 }
