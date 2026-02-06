@@ -1,0 +1,106 @@
+.card {
+  display: flex;
+  background-color: $background-tertiary-color;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  &__imageSection {
+    flex: 0 0 55%;
+    min-height: 400px;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+      flex: 0 0 auto;
+      min-height: 300px;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px 0 0 16px;
+
+    @media (max-width: 768px) {
+      border-radius: 16px 16px 0 0;
+    }
+  }
+
+  &__contentSection {
+    flex: 1;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    @media (max-width: 768px) {
+      padding: 24px;
+      gap: 20px;
+    }
+  }
+
+  &__title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: $text-color;
+    margin: 0;
+    line-height: 120%;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
+  }
+
+  &__characteristics {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    flex: 1;
+  }
+
+  &__characteristic {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  &__characteristicLabel {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: $text-color;
+    margin: 0;
+    flex-shrink: 0;
+    min-width: 140px;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+      min-width: 120px;
+    }
+  }
+
+  &__characteristicValue {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: $text-color;
+    margin: 0;
+    flex: 1;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+
+  &__buttonContainer {
+    margin-top: auto;
+  }
+}
