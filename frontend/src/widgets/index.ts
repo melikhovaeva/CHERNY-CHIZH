@@ -11,6 +11,7 @@ export {
   LibrarySection,
   PuppiesSection,
 } from './home-sections';
+export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters, type PuppiesFiltersValue } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';
 export { PuppyTabsSection } from './PuppyTabsSection';

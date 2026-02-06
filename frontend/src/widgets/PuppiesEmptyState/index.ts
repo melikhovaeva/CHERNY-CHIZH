@@ -1,0 +1,1 @@
+export { PuppiesEmptyState } from './PuppiesEmptyState'
