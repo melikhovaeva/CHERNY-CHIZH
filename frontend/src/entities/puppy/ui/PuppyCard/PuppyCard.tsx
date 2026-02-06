@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/components'
 import type { Puppy } from '../../model/types'
@@ -17,6 +18,14 @@ interface PuppyCardProps {
 
 export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps) => {
   const mainPhotoUrl = getPuppyMainPhotoUrl(puppy)
+  const navigate = useNavigate()
+
+  const goToDetails = () => {
+    navigate({
+      to: '/puppies/$breedId/$puppyId',
+      params: { breedId: puppy.breed, puppyId: String(puppy.uid) },
+    })
+  }
 
   return (
     <div className={cn([styles.card, className || ''])}>
@@ -83,7 +92,11 @@ export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps
         </dl>
         <div className={styles.card__buttonContainer}>
           <Button>Забронировать</Button>
-          {!detailed && <Button variant="secondary">Подробнее</Button>}
+          {!detailed && (
+            <Button variant="secondary" onClick={goToDetails}>
+              Подробнее
+            </Button>
+          )}
         </div>
       </div>
     </div>

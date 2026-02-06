@@ -18,7 +18,7 @@ function buildBreadcrumbItems(pathname: string): BreadcrumbItem[] {
     const path = '/' + segments.slice(0, i + 1).join('/')
     return {
       path,
-      label: getSegmentLabel(segment),
+      label: getSegmentLabel(segment, pathname),
       isLast: i === segments.length - 1,
     }
   })

@@ -1,0 +1,1 @@
+export { PuppyCharacteristics } from './PuppyCharacteristics';

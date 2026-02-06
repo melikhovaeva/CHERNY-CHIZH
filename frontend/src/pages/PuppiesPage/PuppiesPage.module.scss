@@ -24,7 +24,7 @@
   border-radius: 24px;
 
   @media (max-width: 768px) {
-    padding: 40px 12px;
+    padding: 40px 20px;
   }
 }
 
@@ -57,6 +57,7 @@
   align-items: center;
   margin-bottom: 60px;
   gap: 14px;
+  padding: 0 20px;
 }
 
 .breedName {
@@ -74,6 +75,7 @@
 .deliverySection {
   width: 100%;
   min-height: 470px;
+  padding: 0 20px;
 }
 
 .deliveryTitle {

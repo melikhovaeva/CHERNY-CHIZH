@@ -1,0 +1,1 @@
+export { PuppyParents } from './PuppyParents';

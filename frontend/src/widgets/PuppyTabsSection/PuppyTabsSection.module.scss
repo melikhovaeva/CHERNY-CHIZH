@@ -1,0 +1,38 @@
+.root {
+  width: 100%;
+  max-width: $filled-section-max-width;
+  margin: 0 auto;
+  padding: 48px 32px;
+  background-color: $filled-section-primary-bg-color;
+  border-radius: $filled-section-border-radius;
+  color: $filled-section-text-color;
+
+  @media (max-width: 768px) {
+    padding: 32px 20px;
+  }
+}
+
+.tabsWrapper {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.tabs {
+  width: fit-content;
+}
+
+.content {
+  min-height: 120px;
+}
+
+.panel {
+  width: 100%;
+}
+
+.description {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 720px;
+}
