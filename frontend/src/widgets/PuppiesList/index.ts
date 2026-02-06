@@ -1,0 +1,1 @@
+export { PuppiesList } from './PuppiesList'

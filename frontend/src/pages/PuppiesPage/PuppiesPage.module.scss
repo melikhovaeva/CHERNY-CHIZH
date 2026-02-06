@@ -1,0 +1,19 @@
+.main {
+  padding: 40px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 24px 16px;
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+
+  @media (min-width: 1024px) {
+    gap: 40px;
+  }
+}

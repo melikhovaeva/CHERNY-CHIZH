@@ -1,26 +1,27 @@
-import type { Puppy } from '@/entities/puppy'
 import { Tabs, type Tab } from '@/features/tabs-filter'
 import { cn } from '@/shared/lib/utils'
 import { useMemo, useState } from 'react'
 import styles from './FilterableGallery.module.scss'
 
-interface FilterableGalleryProps {
+interface FilterableGalleryProps<T extends { uid: number | string }> {
   tabs: Tab[]
-  items: Puppy[]
-  filterBy: keyof Puppy
-  renderItem: (item: Puppy) => React.ReactNode
+  items: T[]
+  filterBy: keyof T
+  renderItem: (item: T) => React.ReactNode
   className?: string
   onActiveTabChange?: (value: string) => void
+  getItemKey?: (item: T) => string | number
 }
 
-export function FilterableGallery({
+export function FilterableGallery<T extends { uid: number | string }>({
   tabs,
   items,
   filterBy,
   renderItem,
   className,
   onActiveTabChange,
-}: FilterableGalleryProps) {
+  getItemKey,
+}: FilterableGalleryProps<T>) {
   const [activeTab, setActiveTab] = useState<string>(
     tabs[0]?.value ?? '',
   )
@@ -46,7 +47,7 @@ export function FilterableGallery({
         <ul className={styles.gallery__list}>
           {filteredItems.map((item) => (
             <li
-              key={item.uid}
+              key={getItemKey ? getItemKey(item) : item.uid}
               className={styles.gallery__list__item}
             >
               {renderItem(item)}
