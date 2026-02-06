@@ -29,7 +29,9 @@ export const Form = () => {
           Отправляя заявку, вы соглашаетесь на <a href="#">обработку персональных данных</a>
         </p>
       </form>
-      <img className={styles.formImage} src={formImageUrl} alt="Form" />
+      <div className={styles.formImageWrapper}>
+          <img className={styles.formImage} src={formImageUrl} alt="Form" />
+        </div>
     </div>
   )
 }
