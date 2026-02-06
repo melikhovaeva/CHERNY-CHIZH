@@ -27,6 +27,10 @@ export const Select = ({
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const selectedOption = options.find((o) => o.value === value)
+  const isInitialOrAll = !value || options[0]?.value === value
+  const displayText = isInitialOrAll ? label : (selectedOption?.label ?? label)
+
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev)
   }, [])
@@ -66,9 +70,9 @@ export const Select = ({
         aria-haspopup="listbox"
         aria-label={label}
       >
-        <span className={styles.triggerText}>{label}</span>
+        <span className={styles.triggerText}>{displayText}</span>
         <span className={styles.chevron}>
-          <img src={CHEVRON_DOWN_SRC} width={16} height={16} />
+          <img src={CHEVRON_DOWN_SRC} alt="" width={16} height={16} />
         </span>
       </button>
       {isOpen && (
