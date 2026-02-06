@@ -71,8 +71,8 @@
   color: inherit;
   transition: transform 0.25s ease;
 
-  img {
-    filter: brightness(0) invert(1);
+  svg {
+    display: block;
   }
 }
 

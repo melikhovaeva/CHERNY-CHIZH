@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/components'
+import PuppyNotFoundIcon from './assets/puppy-not-found.svg?react'
 import styles from './PuppiesEmptyState.module.scss'
 
 interface PuppiesEmptyStateProps {
@@ -24,11 +25,7 @@ export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
         <Button className={styles.button}>Забронировать</Button>
       </div>
       <div className={styles.illustration}>
-        <img
-          src="/puppy-not-found.svg"
-          alt=""
-          className={styles.image}
-        />
+        <PuppyNotFoundIcon className={styles.image} aria-hidden />
       </div>
     </div>
   )
