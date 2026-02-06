@@ -12,6 +12,10 @@ export {
   PUPPY_STATUS_OPTIONS,
 } from './config/filter-options'
 export {
+  matchPuppyByFilters,
+  type PuppyFilters,
+} from './config/filter-mapping'
+export {
   getPuppyMainPhotoUrl,
   formatPuppySex,
   formatPuppyDate,

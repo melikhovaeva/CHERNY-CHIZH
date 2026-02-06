@@ -1,1 +1,1 @@
-export { PuppiesFilters } from './PuppiesFilters'
+export { PuppiesFilters, type PuppiesFiltersValue } from './PuppiesFilters'
