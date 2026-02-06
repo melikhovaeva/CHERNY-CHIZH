@@ -9,6 +9,7 @@ interface FilterableGalleryProps<T extends Record<string, unknown>> {
   filterBy: string
   renderItem: (item: T) => React.ReactNode
   className?: string
+  onActiveTabChange?: (value: string) => void
 }
 
 export function FilterableGallery<T extends Record<string, unknown>>({
@@ -17,6 +18,7 @@ export function FilterableGallery<T extends Record<string, unknown>>({
   filterBy,
   renderItem,
   className,
+  onActiveTabChange,
 }: FilterableGalleryProps<T>) {
   const [activeTab, setActiveTab] = useState<string>(
     tabs[0]?.value ?? '',
@@ -35,7 +37,10 @@ export function FilterableGallery<T extends Record<string, unknown>>({
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(value) => {
+          setActiveTab(value)
+          onActiveTabChange?.(value)
+        }}
         className={styles.gallery__tabs}
       />
       <div className={styles.gallery__scroll}>
