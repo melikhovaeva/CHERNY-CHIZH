@@ -1,0 +1,1 @@
+export { PuppyTabsSection } from './PuppyTabsSection';

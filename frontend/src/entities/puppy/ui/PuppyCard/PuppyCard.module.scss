@@ -7,13 +7,9 @@
 
   &__imageSection {
     flex: 0 0 55%;
-    min-height: 400px;
     overflow: hidden;
-
-    @media (max-width: 768px) {
-      flex: 0 0 auto;
-      min-height: 300px;
-    }
+    display: flex;
+    justify-content: end;
   }
 
   &__image {

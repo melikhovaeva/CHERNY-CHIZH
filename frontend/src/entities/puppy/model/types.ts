@@ -44,4 +44,5 @@ export interface Puppy {
   parents: PuppyParent[];
   photos: PuppyPhoto[];
   potential?: string;
+  description?: string;
 }

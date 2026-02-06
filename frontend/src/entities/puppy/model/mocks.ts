@@ -41,9 +41,9 @@ const getColorForBreed = (breed: string, index: number): string => {
   return colors[index % colors.length];
 };
 
-const POTENTIAL_LABELS = PUPPY_POTENTIAL_OPTIONS.filter((o) => o.value !== 'all').map(
-  (o) => o.label,
-);
+const POTENTIAL_LABELS = PUPPY_POTENTIAL_OPTIONS.filter(
+  (o) => o.value !== 'all',
+).map((o) => o.label);
 
 const getPotentialByIndex = (index: number): string => {
   return POTENTIAL_LABELS[index % POTENTIAL_LABELS.length];
@@ -94,7 +94,7 @@ export const getPuppiesMock = (): Puppy[] =>
         name: `${breed.label} ${idx + 1}`,
         internationalName: `${breed.value.charAt(0).toUpperCase() + breed.value.slice(1)} ${idx + 1}`,
         breed: breed.value,
-        status: getStatusByIndex(flatIndex),
+        status: getStatusByIndex(0),
         birthDate: createBirthDate(flatIndex),
         sex: getSexByIndex(flatIndex),
         color: getColorForBreed(breed.value, idx),
@@ -107,9 +107,14 @@ export const getPuppiesMock = (): Puppy[] =>
           },
         ],
         potential: getPotentialByIndex(flatIndex),
+        description:
+          'Щенок от титулованных родителей, привит по возрасту, с клеймом и ветеринарным паспортом. Документы РКФ FCI. Возможна установка микрочипа.',
       };
     }),
   );
+
+export const getPuppyById = (uid: number): Puppy | undefined =>
+  getPuppiesMock().find((p) => p.uid === uid);
 
 export const PUPPIES_FAQ_ITEMS = [
   {

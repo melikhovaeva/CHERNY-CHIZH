@@ -1,0 +1,36 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    gap: 12px;
+  }
+}
+
+.item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.label {
+  flex-shrink: 0;
+  min-width: 140px;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    min-width: 120px;
+  }
+}
+
+.value {
+  flex: 1;
+  margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+}

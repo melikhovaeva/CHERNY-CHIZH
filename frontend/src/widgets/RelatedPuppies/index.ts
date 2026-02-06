@@ -1,0 +1,1 @@
+export { RelatedPuppies } from './RelatedPuppies';

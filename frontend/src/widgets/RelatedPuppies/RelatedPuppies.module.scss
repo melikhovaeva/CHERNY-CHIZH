@@ -1,0 +1,29 @@
+.root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.title {
+  margin: 0 0 48px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-items: center;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 12px;
+  }
+}
+
+.cardLink {
+  color: inherit;
+  width: fit-content;
+  height: fit-content;
+}

@@ -1,0 +1,1 @@
+export { PuppyDetails } from './PuppyDetails';
