@@ -26,10 +26,14 @@ export interface PuppyParent {
   url: string;
 }
 
+export interface PuppyPhoto {
+  uid: string;
+  url: string;
+}
+
 export interface Puppy {
   uid: number;
   name: string;
-  image: string;
   breed: BreedValue;
   status: PuppyStatus;
   birthDate: Date;
@@ -37,4 +41,5 @@ export interface Puppy {
   color: string;
   documents: PuppyDocument[];
   parents: PuppyParent[];
+  photos: PuppyPhoto[];
 }

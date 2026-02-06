@@ -1,5 +1,5 @@
 import { BREED_OPTIONS } from '@/entities/breed'
-import { getPuppiesMock } from '@/entities/puppy'
+import { getPuppiesMock, getPuppyMainPhotoUrl } from '@/entities/puppy'
 import type { Tab } from '@/features/tabs-filter'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
@@ -32,7 +32,7 @@ export function PuppiesSection() {
           onActiveTabChange={setActiveBreed}
           renderItem={(puppy) => (
             <Card
-              imgUrl={puppy.image}
+              imgUrl={getPuppyMainPhotoUrl(puppy)}
               subtitle={puppy.name}
             />
           )}
