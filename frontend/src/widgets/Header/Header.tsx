@@ -1,6 +1,6 @@
 import { BurgerMenu, BurgerMenuList } from '@/features'
-import { Backdrop } from '@/shared/ui/components'
 import { cn } from '@/shared/lib/utils'
+import { Backdrop } from '@/shared/ui/components'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import styles from './Header.module.scss'

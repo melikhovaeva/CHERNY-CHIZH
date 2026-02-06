@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { getSegmentLabel } from './breadcrumb-config'
+import { getSegmentLabelStatic } from './breadcrumb-config'
 import styles from './Breadcrumb.module.scss'
 
 export interface BreadcrumbItem {
@@ -8,7 +8,14 @@ export interface BreadcrumbItem {
   isLast: boolean
 }
 
-function buildBreadcrumbItems(pathname: string): BreadcrumbItem[] {
+export interface BreadcrumbProps {
+  getSegmentLabel?: (segment: string, pathname?: string) => string
+}
+
+function buildBreadcrumbItems(
+  pathname: string,
+  getSegmentLabel: (segment: string, pathname?: string) => string,
+): BreadcrumbItem[] {
   const segments = pathname.split('/').filter(Boolean)
   if (segments.length === 0) {
     return [{ path: '/', label: 'Главная', isLast: true }]
@@ -26,12 +33,14 @@ function buildBreadcrumbItems(pathname: string): BreadcrumbItem[] {
   return [{ path: '/', label: 'Главная', isLast: false }, ...items]
 }
 
-export const Breadcrumb = () => {
+export const Breadcrumb = ({ getSegmentLabel }: BreadcrumbProps) => {
   const { pathname } = useLocation()
   const segments = pathname.split('/').filter(Boolean)
   if (segments.length === 0) return null
 
-  const items = buildBreadcrumbItems(pathname)
+  const resolveLabel =
+    getSegmentLabel ?? ((segment: string) => getSegmentLabelStatic(segment))
+  const items = buildBreadcrumbItems(pathname, resolveLabel)
 
   return (
     <nav className={styles.breadcrumb} aria-label="Хлебные крошки">

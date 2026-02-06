@@ -1,23 +1,19 @@
 import type { PuppySexName, PuppyStatusName } from '../model/types'
-import {
-  PUPPY_GENDER_OPTIONS,
-  PUPPY_POTENTIAL_OPTIONS,
-  PUPPY_STATUS_OPTIONS,
-} from './filter-options'
+import { PUPPY_POTENTIAL_OPTIONS } from './filter-options'
 
 const GENDER_FILTER_TO_SEX: Record<string, PuppySexName> = {
   male: 'dog',
   female: 'bitch',
 }
 
-/** Соответствие значения фильтра статуса и имени в модели (существующие названия из types) */
 const STATUS_FILTER_TO_NAME: Record<string, PuppyStatusName> = {
   available: 'В продаже',
   reserved: 'Забронирован',
 }
 
 export function getSexNameForFilterValue(value: string): PuppySexName | null {
-  return (value && GENDER_FILTER_TO_SEX[value]) ?? null
+  if (!value) return null
+  return GENDER_FILTER_TO_SEX[value] ?? null
 }
 
 export function getPotentialLabelForFilterValue(value: string): string | null {
@@ -26,7 +22,8 @@ export function getPotentialLabelForFilterValue(value: string): string | null {
 }
 
 export function getStatusNameForFilterValue(value: string): PuppyStatusName | null {
-  return (value && STATUS_FILTER_TO_NAME[value]) ?? null
+  if (!value) return null
+  return STATUS_FILTER_TO_NAME[value] ?? null
 }
 
 export interface PuppyFilters {

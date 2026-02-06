@@ -1,3 +1,4 @@
+import { getSegmentLabel } from '@/app/lib/breadcrumb-labels'
 import { Breadcrumb } from '@/shared/ui/components'
 import { Footer, Header } from '@/widgets'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -9,7 +10,7 @@ export const Route = createRootRoute({
     <>
       <Header />
       <main>
-        <Breadcrumb />
+        <Breadcrumb getSegmentLabel={getSegmentLabel} />
         <Outlet />
       </main>
       <Footer />

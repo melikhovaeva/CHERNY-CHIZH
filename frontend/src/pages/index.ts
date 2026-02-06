@@ -1,2 +1,6 @@
-export { HomePage } from './HomePage';
-export { PuppyDetailsPage } from './PuppyDetailsPage';
+export { AboutPage } from './AboutPage/AboutPage'
+export { ContactsPage } from './ContactsPage/ContactsPage'
+export { HomePage } from './HomePage'
+export { LibraryPage } from './LibraryPage/LibraryPage'
+export { PuppiesPage } from './PuppiesPage/PuppiesPage'
+export { PuppyDetailsPage } from './PuppyDetailsPage'
