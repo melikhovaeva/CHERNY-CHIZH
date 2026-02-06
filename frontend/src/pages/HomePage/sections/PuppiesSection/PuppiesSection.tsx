@@ -1,5 +1,7 @@
 import { BREED_OPTIONS, getPuppiesMock } from '@/entities/breed'
 import type { Tab } from '@/features/tabs-filter'
+import { useRouter } from '@tanstack/react-router'
+import { useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
 import { FilterableGallery } from '@/widgets'
@@ -14,6 +16,10 @@ const breedTabs: Tab[] = BREED_OPTIONS.map((option, index) => ({
 const puppies = getPuppiesMock()
 
 export function PuppiesSection() {
+  const router = useRouter()
+  const [activeBreed, setActiveBreed] = useState<string>(
+    breedTabs[0]?.value ?? '',
+  )
   return (
     <section className={cn([styles.root, 'filled primary'])}>
       <div className={styles.container}>
@@ -22,6 +28,7 @@ export function PuppiesSection() {
           tabs={breedTabs}
           items={puppies}
           filterBy="breed"
+          onActiveTabChange={setActiveBreed}
           renderItem={(puppy) => (
             <Card
               imgUrl={puppy.image}
@@ -31,7 +38,15 @@ export function PuppiesSection() {
           className={styles.gallery}
         />
         <div className={styles.buttonContainer}>
-          <Button>Смотреть всех</Button>
+          <Button
+            onClick={() => {
+              const breedId = activeBreed || breedTabs[0]?.value
+              if (!breedId) return
+              router.navigate({ to: '/puppies/$breedId', params: { breedId } })
+            }}
+          >
+            Смотреть всех
+          </Button>
         </div>
       </div>
     </section>
