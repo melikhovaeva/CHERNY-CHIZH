@@ -5,7 +5,12 @@ export type {
   PuppySex,
   PuppyStatus,
 } from './model/types'
-export { getPuppiesMock } from './model/mocks'
+export { getPuppiesMock, PUPPIES_FAQ_ITEMS } from './model/mocks'
+export {
+  PUPPY_GENDER_OPTIONS,
+  PUPPY_POTENTIAL_OPTIONS,
+  PUPPY_STATUS_OPTIONS,
+} from './config/filter-options'
 export {
   getPuppyMainPhotoUrl,
   formatPuppySex,

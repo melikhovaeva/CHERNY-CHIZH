@@ -1,7 +1,7 @@
 import { getBreedFullName, type BreedValue } from '@/entities/breed'
-import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy/model/mocks'
+import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy'
 import { Accordion } from '@/shared/ui/components'
-import { PuppiesList } from '@/widgets'
+import { PuppiesFilters, PuppiesList } from '@/widgets'
 import { useParams } from '@tanstack/react-router'
 import styles from './PuppiesPage.module.scss'
 
@@ -20,6 +20,7 @@ export const PuppiesPage = () => {
           <p className={styles.breedDescription}>Привиты по возрасту, с клеймом, ветеринарным паспортом и документами РКФ. Возможна установка микрочипа</p>
         </div>
         <div className={styles.catalogContainer}>
+          <PuppiesFilters className={styles.filters} />
           <div className={styles.content}>
             <PuppiesList breedId={breedId} />
           </div>
