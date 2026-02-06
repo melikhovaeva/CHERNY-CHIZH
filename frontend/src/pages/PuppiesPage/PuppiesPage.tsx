@@ -1,6 +1,5 @@
-import { getPuppiesMock } from '@/entities/breed'
 import type { BreedValue } from '@/entities/breed'
-import { Card } from '@/shared/ui/components'
+import { getPuppiesMock } from '@/entities/puppy'
 import { useParams } from '@tanstack/react-router'
 import styles from './PuppiesPage.module.scss'
 
@@ -17,11 +16,17 @@ export const PuppiesPage = () => {
     <div className={styles.main}>
       <div className={styles.list}>
         {puppies.map((puppy) => (
-          <Card
-            key={puppy.uid}
-            imgUrl={puppy.image}
-            subtitle={puppy.name}
-          />
+          <div key={puppy.uid}>
+            {puppy.name}
+            {puppy.image}
+            {puppy.breed}
+            {puppy.status.name}
+            {puppy.birthDate.toLocaleDateString()}
+            {puppy.sex.name}
+            {puppy.color}
+            {puppy.documents.map((document) => document.name)}
+            {puppy.parents.map((parent) => parent.name)}
+          </div>
         ))}
       </div>
     </div>

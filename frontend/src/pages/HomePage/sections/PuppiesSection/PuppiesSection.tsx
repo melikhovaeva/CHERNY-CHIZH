@@ -1,10 +1,11 @@
-import { BREED_OPTIONS, getPuppiesMock } from '@/entities/breed'
+import { BREED_OPTIONS } from '@/entities/breed'
+import { getPuppiesMock } from '@/entities/puppy'
 import type { Tab } from '@/features/tabs-filter'
-import { useRouter } from '@tanstack/react-router'
-import { useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
 import { FilterableGallery } from '@/widgets'
+import { useRouter } from '@tanstack/react-router'
+import { useState } from 'react'
 import styles from './PuppiesSection.module.scss'
 
 const breedTabs: Tab[] = BREED_OPTIONS.map((option, index) => ({
