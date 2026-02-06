@@ -1,4 +1,5 @@
 import { BREED_OPTIONS, getBreedImageUrl } from '@/entities/breed';
+import { PUPPY_POTENTIAL_OPTIONS } from '../config/filter-options';
 import type {
   Puppy,
   PuppyDocument,
@@ -40,10 +41,12 @@ const getColorForBreed = (breed: string, index: number): string => {
   return colors[index % colors.length];
 };
 
-const POTENTIAL_OPTIONS = ['Шоу', 'Пет', 'Брид'];
+const POTENTIAL_LABELS = PUPPY_POTENTIAL_OPTIONS.filter((o) => o.value !== 'all').map(
+  (o) => o.label,
+);
 
 const getPotentialByIndex = (index: number): string => {
-  return POTENTIAL_OPTIONS[index % POTENTIAL_OPTIONS.length];
+  return POTENTIAL_LABELS[index % POTENTIAL_LABELS.length];
 };
 
 const createDocuments = (uid: number): PuppyDocument[] => [
