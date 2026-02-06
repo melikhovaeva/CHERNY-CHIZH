@@ -34,6 +34,7 @@ export interface PuppyPhoto {
 export interface Puppy {
   uid: number;
   name: string;
+  internationalName: string;
   breed: BreedValue;
   status: PuppyStatus;
   birthDate: Date;
