@@ -54,6 +54,8 @@
 }
 
 .checkboxes {
+  grid-column: span 2;
+
   &Title {
     font-family: 'Manrope';
     font-size: 16px;
@@ -62,12 +64,6 @@
 
   &Items {
     display: flex;
-    gap: 10px;
-  }
-
-  &Item {
-    display: flex;
-    align-items: center;
     gap: 10px;
   }
 }
