@@ -15,12 +15,14 @@ export function FAQSection() {
 
   return (
     <section className={styles.root}>
-      <h2 className={styles.title}>{SECTION_TITLE}</h2>
-      <p className={styles.subtitle}>{SECTION_SUBTITLE}</p>
-      <Accordion
-        items={accordionItems}
-        defaultOpenId={FAQ_ITEMS[0]?.id}
-      />
+      <div className={styles.container}>
+        <h2 className={styles.title}>{SECTION_TITLE}</h2>
+        <p className={styles.subtitle}>{SECTION_SUBTITLE}</p>
+        <Accordion
+          items={accordionItems}
+          defaultOpenId={FAQ_ITEMS[0]?.id}
+        />
+      </div>
     </section >
   )
 }
