@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './Select.module.scss'
 
 export interface SelectOption {
@@ -25,33 +25,66 @@ export const Select = ({
   className,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const [isListVisible, setIsListVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
 
   const selectedOption = options.find((o) => o.value === value)
   const isInitialOrAll = !value || options[0]?.value === value
   const displayText = isInitialOrAll ? label : (selectedOption?.label ?? label)
 
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev)
+  const handleClose = useCallback(() => {
+    setIsClosing(true)
   }, [])
+
+  const handleToggle = useCallback(() => {
+    if (isOpen) {
+      handleClose()
+    } else {
+      setIsOpen(true)
+    }
+  }, [isOpen, handleClose])
 
   const handleSelect = useCallback(
     (option: SelectOption) => {
       onChange?.(option.value)
-      setIsOpen(false)
+      handleClose()
     },
-    [onChange],
+    [onChange, handleClose],
   )
+
+  const handleListTransitionEnd = useCallback(
+    (e: React.TransitionEvent<HTMLUListElement>) => {
+      if (e.target !== listRef.current || e.propertyName !== 'transform') return
+      if (isClosing) {
+        setIsOpen(false)
+        setIsClosing(false)
+      }
+    },
+    [isClosing],
+  )
+
+  useLayoutEffect(() => {
+    if (isOpen && !isClosing) {
+      const id = requestAnimationFrame(() => setIsListVisible(true))
+      return () => cancelAnimationFrame(id)
+    }
+  }, [isOpen, isClosing])
+
+  useEffect(() => {
+    if (!isOpen) setIsListVisible(false)
+  }, [isOpen])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setIsOpen(false)
+      if (containerRef.current && !containerRef.current.contains(e.target as Node) && isOpen) {
+        handleClose()
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [isOpen, handleClose])
 
   const longestLabel = options.length
     ? options.reduce((max, o) => (o.label.length > max.length ? o.label : max), options[0].label)
@@ -71,17 +104,24 @@ export const Select = ({
         aria-label={label}
       >
         <span className={styles.triggerText}>{displayText}</span>
-        <span className={styles.chevron}>
+        <span className={cn([styles.chevron, isOpen ? styles.chevron_open : ''])}>
           <img src={CHEVRON_DOWN_SRC} alt="" width={16} height={16} />
         </span>
       </button>
-      {isOpen && (
-        <ul
-          className={styles.list}
-          role="listbox"
-          aria-label={label}
-        >
-          {options.map((option) => (
+      {(isOpen || isClosing) && (
+        <div className={styles.listWrapper}>
+          <ul
+            ref={listRef}
+            className={cn([
+              styles.list,
+              isListVisible && !isClosing ? styles.list_visible : '',
+              isClosing ? styles.list_closing : '',
+            ])}
+            role="listbox"
+            aria-label={label}
+            onTransitionEnd={handleListTransitionEnd}
+          >
+            {options.map((option) => (
             <li key={option.value} role="option" aria-selected={value === option.value}>
               <button
                 type="button"
@@ -94,8 +134,9 @@ export const Select = ({
                 {option.label}
               </button>
             </li>
-          ))}
-        </ul>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   )
