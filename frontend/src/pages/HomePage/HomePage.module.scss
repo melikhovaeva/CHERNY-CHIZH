@@ -3,4 +3,8 @@
   display: flex;
   flex-direction: column;
   gap: 148px;
+
+  @media (max-width: 768px) {
+    margin: 127px 0 178px;
+  }
 }
