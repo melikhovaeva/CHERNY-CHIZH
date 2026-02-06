@@ -1,8 +1,8 @@
 import { Button } from '../Button'
+import formImageUrl from './assets/form-image.webp'
 import styles from './Form.module.scss'
 
 export const Form = () => {
-  const FORM_IMAGE = '/form-image.webp'
   return (
     <div className={styles.root}>
       <form className={styles.form}>
@@ -29,7 +29,7 @@ export const Form = () => {
           Отправляя заявку, вы соглашаетесь на <a href="#">обработку персональных данных</a>
         </p>
       </form>
-      <img className={styles.formImage} src={FORM_IMAGE} alt="Form" />
+      <img className={styles.formImage} src={formImageUrl} alt="Form" />
     </div>
   )
 }

@@ -1,0 +1,14 @@
+import type { FunctionComponent, SVGProps } from 'react'
+import InstagramIcon from './socials/instagram.svg?react'
+import TelegramIcon from './socials/telegram.svg?react'
+import VkIcon from './socials/vk.svg?react'
+import WhatsappIcon from './socials/whatsapp.svg?react'
+
+export { default as LogoIcon } from './logo.svg?react'
+
+export const SocialIcons: Record<string, FunctionComponent<SVGProps<SVGSVGElement>>> = {
+  instagram: InstagramIcon,
+  telegram: TelegramIcon,
+  vk: VkIcon,
+  whatsapp: WhatsappIcon,
+}

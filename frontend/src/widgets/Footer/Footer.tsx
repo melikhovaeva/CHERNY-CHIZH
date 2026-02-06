@@ -1,11 +1,10 @@
 import { CONTACT_DATA, ContactEnum, DOCUMENT_DATA } from '@/entities/contacts'
+import { LogoIcon, SocialIcons } from '@/shared/ui/assets'
 import styles from './Footer.module.scss'
 
 const contacts = CONTACT_DATA.filter((contact) => contact.type === ContactEnum.CONTACT)
 const socials = CONTACT_DATA.filter((contact) => contact.type === ContactEnum.SOCIALS)
 const documents = DOCUMENT_DATA
-
-const LOGO_IMAGE = '/logo.svg'
 
 const WARNING_TEXT = '*Instagram, Whatsapp — продукты компании Meta Platforms Inc. признанной экстремистской организацией в РФ'
 
@@ -44,18 +43,21 @@ export function Footer() {
           <div className={styles.socials}>
             <span className={styles.title}>Социальные сети</span>
             <ul className={styles.socialsList}>
-              {socials.map((social) => (
-                <li key={social.id} className={styles.social}>
-                  <a href={social.href}>
-                    <img src={`/socials/${social.name}.svg`} alt={social.name} />
-                  </a>
-                </li>
-              ))}
+              {socials.map((social) => {
+                const SocialIcon = SocialIcons[social.name]
+                return (
+                  <li key={social.id} className={styles.social}>
+                    <a className={styles.socialLink} href={social.href} aria-label={social.name}>
+                      {SocialIcon ? <SocialIcon aria-hidden /> : null}
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
             <p className={styles.warning}>{WARNING_TEXT}</p>
           </div>
         </div>
-        <img className={styles.logo} src={LOGO_IMAGE} alt="Logo" />
+        <LogoIcon className={styles.logo} aria-label="Logo" />
       </div>
     </footer >
   )

@@ -1,9 +1,9 @@
 import { cn } from '@/shared/lib/utils'
+import PawFilledIcon from './assets/paw-filled.svg?react'
+import PawOutlineIcon from './assets/paw.svg?react'
 import styles from './PawRating.module.scss'
 
 const MAX = 5
-const PAW_OUTLINE = '/paw.svg'
-const PAW_FILLED = '/paw-filled.svg'
 
 interface PawRatingProps {
   value: number
@@ -19,15 +19,16 @@ export function PawRating({ value, max = MAX, className }: PawRatingProps) {
       role="img"
       aria-label={`${value} из ${max}`}
     >
-      {Array.from({ length: max }, (_, i) => (
-        <img
-          key={i}
-          src={i < filled ? PAW_FILLED : PAW_OUTLINE}
-          alt=""
-          className={cn([styles.paw, i < filled ? styles.paw_filled : ''])}
-          aria-hidden
-        />
-      ))}
+      {Array.from({ length: max }, (_, i) => {
+        const Icon = i < filled ? PawFilledIcon : PawOutlineIcon
+        return (
+          <Icon
+            key={i}
+            className={cn([styles.paw, i < filled ? styles.paw_filled : ''])}
+            aria-hidden
+          />
+        )
+      })}
     </span>
   )
 }

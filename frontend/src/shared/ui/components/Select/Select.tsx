@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/utils'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import ChevronDownIcon from './assets/chevron-down.svg?react'
 import styles from './Select.module.scss'
 
 export interface SelectOption {
@@ -14,8 +15,6 @@ interface SelectProps {
   onChange?: (value: string) => void
   className?: string
 }
-
-const CHEVRON_DOWN_SRC = '/chevron-down.svg'
 
 export const Select = ({
   label,
@@ -108,7 +107,7 @@ export const Select = ({
       >
         <span className={styles.triggerText}>{displayText}</span>
         <span className={cn([styles.chevron, isOpen ? styles.chevron_open : ''])}>
-          <img src={CHEVRON_DOWN_SRC} alt="" width={16} height={16} />
+          <ChevronDownIcon width={16} height={16} aria-hidden />
         </span>
       </button>
       {(isOpen || isClosing) && (

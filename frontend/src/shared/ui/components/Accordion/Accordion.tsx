@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils'
 import { useCallback, useState } from 'react'
 import styles from './Accordion.module.scss'
+import PlusIcon from './assets/plus.svg?react'
 
 export interface AccordionItem {
   id: string
@@ -14,8 +15,6 @@ interface AccordionProps {
   allowMultiple?: boolean
   className?: string
 }
-
-const CROSS_ICON_SRC = '/cross.svg'
 
 export function Accordion({
   items,
@@ -75,7 +74,7 @@ export function Accordion({
                   ])}
                   aria-hidden
                 >
-                  <img src={CROSS_ICON_SRC} alt="" width={32} height={32} />
+                  <PlusIcon width={32} height={32} aria-hidden />
                 </span>
               </button>
             </div>
