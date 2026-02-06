@@ -40,24 +40,35 @@ const getColorForBreed = (breed: string, index: number): string => {
   return colors[index % colors.length];
 };
 
+const POTENTIAL_OPTIONS = ['Шоу', 'Пет', 'Брид'];
+
+const getPotentialByIndex = (index: number): string => {
+  return POTENTIAL_OPTIONS[index % POTENTIAL_OPTIONS.length];
+};
+
 const createDocuments = (uid: number): PuppyDocument[] => [
   {
-    uid: `${uid}-pedigree`,
-    name: 'Родословная РКФ',
-    url: `/docs/${uid}/pedigree.pdf`,
+    uid: `${uid}-rkc`,
+    name: 'РКФ',
+    url: `/docs/${uid}/rkc.pdf`,
   },
   {
-    uid: `${uid}-vet-passport`,
-    name: 'Ветеринарный паспорт',
-    url: `/docs/${uid}/vet-passport.pdf`,
+    uid: `${uid}-fci`,
+    name: 'FCI',
+    url: `/docs/${uid}/fci.pdf`,
   },
 ];
 
-const createParents = (uid: number, breedLabel: string): PuppyParent[] => [
+const createParents = (uid: number): PuppyParent[] => [
   {
-    uid: `${uid}-parents`,
-    name: `Родители (${breedLabel})`,
-    url: `/parents/${uid}`,
+    uid: `${uid}-parent-1`,
+    name: `Laif Spring Chevrolet Camarro`,
+    url: `/parents/${uid}/father`,
+  },
+  {
+    uid: `${uid}-parent-2`,
+    name: `Свежий Ветер Искра Счастья`,
+    url: `/parents/${uid}/mother`,
   },
 ];
 
@@ -84,13 +95,14 @@ export const getPuppiesMock = (): Puppy[] =>
         sex: getSexByIndex(flatIndex),
         color: getColorForBreed(breed.value, idx),
         documents: createDocuments(uid),
-        parents: createParents(uid, breed.label),
+        parents: createParents(uid),
         photos: [
           {
             uid: `${uid}-photo-1`,
             url: getBreedImageUrl(breed.value),
           },
         ],
+        potential: getPotentialByIndex(flatIndex),
       };
     }),
   );
