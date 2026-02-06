@@ -1,8 +1,13 @@
+import { useState } from 'react'
 import { Button } from '../Button'
+import { Checkbox } from '../Checkbox'
 import formImageUrl from './assets/form-image.webp'
 import styles from './Form.module.scss'
 
 export const Form = () => {
+  const [whatsapp, setWhatsapp] = useState(false)
+  const [telegram, setTelegram] = useState(false)
+
   return (
     <div className={styles.root}>
       <form className={styles.form}>
@@ -10,16 +15,20 @@ export const Form = () => {
           <input className={styles.input} type="text" placeholder="Имя" />
           <input className={styles.input} type="tel" placeholder="Телефон" />
           <div className={styles.checkboxes}>
-            <span className={styles.checkboxesTitle}>Куда написать?</span>
+            <span className={styles.checkboxesTitle}>Куда написать?*</span>
             <div className={styles.checkboxesItems}>
-              <label className={styles.checkboxesItem}>
-                <input className={styles.checkboxesItemInput} type="checkbox" />
-                <span className={styles.checkboxesItemText}>Whatsapp</span>
-              </label>
-              <label className={styles.checkboxesItem}>
-                <input className={styles.checkboxesItemInput} type="checkbox" />
-                <span className={styles.checkboxesItemText}>Telegram</span>
-              </label>
+              <Checkbox
+                name="whatsapp"
+                label="Whatsapp"
+                checked={whatsapp}
+                onChange={setWhatsapp}
+              />
+              <Checkbox
+                name="telegram"
+                label="Telegram"
+                checked={telegram}
+                onChange={setTelegram}
+              />
             </div>
           </div>
           <textarea className={styles.textarea} placeholder="Введите ваш вопрос" />
