@@ -78,7 +78,6 @@ export const getPuppiesMock = (): Puppy[] =>
       return {
         uid,
         name: `${breed.label} ${idx + 1}`,
-        image: getBreedImageUrl(breed.value),
         breed: breed.value,
         status: getStatusByIndex(flatIndex),
         birthDate: createBirthDate(flatIndex),
@@ -86,6 +85,12 @@ export const getPuppiesMock = (): Puppy[] =>
         color: getColorForBreed(breed.value, idx),
         documents: createDocuments(uid),
         parents: createParents(uid, breed.label),
+        photos: [
+          {
+            uid: `${uid}-photo-1`,
+            url: getBreedImageUrl(breed.value),
+          },
+        ],
       };
     }),
   );

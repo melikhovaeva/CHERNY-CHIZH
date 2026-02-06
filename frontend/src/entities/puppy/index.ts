@@ -6,4 +6,5 @@ export type {
   PuppyStatus,
 } from './model/types'
 export { getPuppiesMock } from './model/mocks'
+export { getPuppyMainPhotoUrl } from './model/utils'
 

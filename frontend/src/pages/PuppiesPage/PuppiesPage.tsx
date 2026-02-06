@@ -1,5 +1,5 @@
 import type { BreedValue } from '@/entities/breed'
-import { getPuppiesMock } from '@/entities/puppy'
+import { getPuppiesMock, getPuppyMainPhotoUrl } from '@/entities/puppy'
 import { useParams } from '@tanstack/react-router'
 import styles from './PuppiesPage.module.scss'
 
@@ -18,7 +18,7 @@ export const PuppiesPage = () => {
         {puppies.map((puppy) => (
           <div key={puppy.uid}>
             {puppy.name}
-            {puppy.image}
+            {getPuppyMainPhotoUrl(puppy)}
             {puppy.breed}
             {puppy.status.name}
             {puppy.birthDate.toLocaleDateString()}
