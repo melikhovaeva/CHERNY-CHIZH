@@ -1,11 +1,19 @@
-import { getBreedFullName, type BreedValue } from '@/entities/breed'
+import { BREED_OPTIONS, getBreedFullName, type BreedValue } from '@/entities/breed'
 import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy'
+import type { Tab } from '@/features/tabs-filter'
+import { Tabs } from '@/features/tabs-filter'
 import { Accordion } from '@/shared/ui/components'
 import { PuppiesFilters, PuppiesList } from '@/widgets'
 import type { PuppiesFiltersValue } from '@/widgets/PuppiesFilters'
-import { useParams } from '@tanstack/react-router'
+import { useParams, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import styles from './PuppiesPage.module.scss'
+
+const breedTabs: Tab[] = BREED_OPTIONS.map((option, index) => ({
+  uid: index + 1,
+  label: option.label,
+  value: option.value,
+}))
 
 const DEFAULT_FILTERS: PuppiesFiltersValue = {
   gender: 'all',
@@ -14,10 +22,15 @@ const DEFAULT_FILTERS: PuppiesFiltersValue = {
 }
 
 export const PuppiesPage = () => {
+  const router = useRouter()
   const { breedId } = useParams({
     from: '/puppies/$breedId',
   }) as { breedId: BreedValue }
   const [filters, setFilters] = useState<PuppiesFiltersValue>(DEFAULT_FILTERS)
+
+  const handleBreedTabChange = (value: string) => {
+    router.navigate({ to: '/puppies/$breedId', params: { breedId: value as BreedValue } })
+  }
 
   return (
     <div className={styles.main}>
@@ -29,6 +42,12 @@ export const PuppiesPage = () => {
           <p className={styles.breedDescription}>Привиты по возрасту, с клеймом, ветеринарным паспортом и документами РКФ. Возможна установка микрочипа</p>
         </div>
         <div className={styles.catalogContainer}>
+          <Tabs
+            tabs={breedTabs}
+            activeTab={breedId}
+            onTabChange={handleBreedTabChange}
+            className={styles.breedTabs}
+          />
           <PuppiesFilters
             className={styles.filters}
             value={filters}
