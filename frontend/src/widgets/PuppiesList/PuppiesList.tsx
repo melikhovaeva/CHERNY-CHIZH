@@ -5,6 +5,7 @@ import {
 } from '@/entities/puppy'
 import type { BreedValue } from '@/entities/breed'
 import type { PuppiesFiltersValue } from '@/widgets/PuppiesFilters'
+import { PuppiesEmptyState } from '@/widgets/PuppiesEmptyState'
 import styles from './PuppiesList.module.scss'
 
 interface PuppiesListProps {
@@ -18,6 +19,14 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
     if (breedId && puppy.breed !== breedId) return false
     return matchPuppyByFilters(puppy, filters ?? {})
   })
+
+  if (puppies.length === 0) {
+    return (
+      <div className={className}>
+        <PuppiesEmptyState />
+      </div>
+    )
+  }
 
   return (
     <div className={className}>
