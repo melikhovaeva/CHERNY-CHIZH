@@ -89,6 +89,7 @@ export const getPuppiesMock = (): Puppy[] =>
       return {
         uid,
         name: `${breed.label} ${idx + 1}`,
+        internationalName: `${breed.value.charAt(0).toUpperCase() + breed.value.slice(1)} ${idx + 1}`,
         breed: breed.value,
         status: getStatusByIndex(flatIndex),
         birthDate: createBirthDate(flatIndex),

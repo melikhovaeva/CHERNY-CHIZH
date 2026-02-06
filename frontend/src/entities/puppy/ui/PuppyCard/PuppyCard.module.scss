@@ -44,6 +44,14 @@
     }
   }
 
+  &__subtitle {
+    color: $accent-secondary-color;
+    font-family: 'Manrope';
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 140%;
+  }
+
   &__characteristics {
     display: flex;
     flex-direction: column;
@@ -77,6 +85,7 @@
   }
 
   &__buttonContainer {
-    margin-top: auto;
+    display: flex;
+    gap: 8px;
   }
 }

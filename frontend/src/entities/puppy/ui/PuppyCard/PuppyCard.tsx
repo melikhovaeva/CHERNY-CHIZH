@@ -12,9 +12,10 @@ import styles from './PuppyCard.module.scss'
 interface PuppyCardProps {
   puppy: Puppy
   className?: string
+  detailed?: boolean
 }
 
-export const PuppyCard = ({ puppy, className }: PuppyCardProps) => {
+export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps) => {
   const mainPhotoUrl = getPuppyMainPhotoUrl(puppy)
 
   return (
@@ -27,7 +28,12 @@ export const PuppyCard = ({ puppy, className }: PuppyCardProps) => {
         />
       </div>
       <div className={styles.card__contentSection}>
-        <h4 className={styles.card__title}>Характеристики</h4>
+        {!detailed ? (
+          <div>
+            <h4 className={styles.card__title}>{puppy.name}</h4>
+            <p className={styles.card__subtitle}>{puppy.internationalName}</p>
+          </div>) :
+          (<h4 className={styles.card__title}>Характеристики</h4>)}
         <dl className={styles.card__characteristics}>
           <div className={styles.card__characteristic}>
             <dt className={styles.card__characteristicLabel}>Статус:</dt>
@@ -77,6 +83,7 @@ export const PuppyCard = ({ puppy, className }: PuppyCardProps) => {
         </dl>
         <div className={styles.card__buttonContainer}>
           <Button>Забронировать</Button>
+          {!detailed && <Button variant="secondary">Подробнее</Button>}
         </div>
       </div>
     </div>
