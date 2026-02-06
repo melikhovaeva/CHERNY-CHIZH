@@ -1,5 +1,4 @@
-import { CONTACT_DATA, DOCUMENT_DATA } from '@/entities/contacts'
-import { ContactEnum } from '@/entities/contacts/enums'
+import { CONTACT_DATA, ContactEnum, DOCUMENT_DATA } from '@/entities/contacts'
 import styles from './Footer.module.scss'
 
 const contacts = CONTACT_DATA.filter((contact) => contact.type === ContactEnum.CONTACT)

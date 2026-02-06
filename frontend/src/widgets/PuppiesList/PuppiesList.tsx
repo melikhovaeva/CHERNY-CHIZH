@@ -4,8 +4,7 @@ import {
   PuppyCard,
 } from '@/entities/puppy'
 import type { BreedValue } from '@/entities/breed'
-import type { PuppiesFiltersValue } from '@/widgets/PuppiesFilters'
-import { PuppiesEmptyState } from '@/widgets/PuppiesEmptyState'
+import { PuppiesEmptyState, type PuppiesFiltersValue } from '@/widgets'
 import styles from './PuppiesList.module.scss'
 
 interface PuppiesListProps {
