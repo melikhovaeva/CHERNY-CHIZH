@@ -1,3 +1,5 @@
+import { cn } from '@/shared/lib/utils'
+import { Button } from '@/shared/ui/components'
 import type { Puppy } from '../../model/types'
 import {
   formatPuppyDate,
@@ -5,8 +7,6 @@ import {
   formatPuppySex,
   getPuppyMainPhotoUrl,
 } from '../../model/utils'
-import { Button } from '@/shared/ui/components'
-import { cn } from '@/shared/lib/utils'
 import styles from './PuppyCard.module.scss'
 
 interface PuppyCardProps {
@@ -27,7 +27,7 @@ export const PuppyCard = ({ puppy, className }: PuppyCardProps) => {
         />
       </div>
       <div className={styles.card__contentSection}>
-        <h3 className={styles.card__title}>Характеристики</h3>
+        <h4 className={styles.card__title}>Характеристики</h4>
         <dl className={styles.card__characteristics}>
           <div className={styles.card__characteristic}>
             <dt className={styles.card__characteristicLabel}>Статус:</dt>
@@ -76,7 +76,7 @@ export const PuppyCard = ({ puppy, className }: PuppyCardProps) => {
           </div>
         </dl>
         <div className={styles.card__buttonContainer}>
-          <Button variant="primary">Забронировать</Button>
+          <Button>Забронировать</Button>
         </div>
       </div>
     </div>
