@@ -1,5 +1,5 @@
 import type { BreedValue } from '@/entities/breed'
-import { getPuppiesMock, getPuppyMainPhotoUrl } from '@/entities/puppy'
+import { PuppiesList } from '@/widgets'
 import { useParams } from '@tanstack/react-router'
 import styles from './PuppiesPage.module.scss'
 
@@ -8,27 +8,9 @@ export const PuppiesPage = () => {
     from: '/puppies/$breedId',
   }) as { breedId: BreedValue }
 
-  const puppies = getPuppiesMock().filter(
-    (puppy) => puppy.breed === breedId,
-  )
-
   return (
     <div className={styles.main}>
-      <div className={styles.list}>
-        {puppies.map((puppy) => (
-          <div key={puppy.uid}>
-            {puppy.name}
-            {getPuppyMainPhotoUrl(puppy)}
-            {puppy.breed}
-            {puppy.status.name}
-            {puppy.birthDate.toLocaleDateString()}
-            {puppy.sex.name}
-            {puppy.color}
-            {puppy.documents.map((document) => document.name)}
-            {puppy.parents.map((parent) => parent.name)}
-          </div>
-        ))}
-      </div>
+      <PuppiesList breedId={breedId} />
     </div>
   )
 }

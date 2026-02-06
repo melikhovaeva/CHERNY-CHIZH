@@ -1,4 +1,3 @@
-import styles from './HomePage.module.scss'
 import {
   AdvantagesSection,
   BreedAboutSection,
@@ -6,8 +5,9 @@ import {
   FormSection,
   HeroSection,
   LibrarySection,
-  PuppiesSection
-} from './sections'
+  PuppiesSection,
+} from '@/widgets'
+import styles from './HomePage.module.scss'
 
 export function HomePage() {
   return (
