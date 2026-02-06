@@ -1,5 +1,4 @@
 export type { BreedDescription, BreedDescriptionBlock, BreedValue } from './types'
 export { BREED_OPTIONS, getBreedImageUrl } from './config'
 export type { BreedOption } from './config'
-export { breedDescriptionsMock, getPuppiesMock } from './mock'
-export type { PuppyMock } from './mock'
+export { breedDescriptionsMock } from './mock'

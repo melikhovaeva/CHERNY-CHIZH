@@ -1,34 +1,33 @@
+import type { Puppy } from '@/entities/puppy'
 import { Tabs, type Tab } from '@/features/tabs-filter'
 import { cn } from '@/shared/lib/utils'
 import { useMemo, useState } from 'react'
 import styles from './FilterableGallery.module.scss'
 
-interface FilterableGalleryProps<T extends Record<string, unknown>> {
+interface FilterableGalleryProps {
   tabs: Tab[]
-  items: T[]
-  filterBy: string
-  renderItem: (item: T) => React.ReactNode
+  items: Puppy[]
+  filterBy: keyof Puppy
+  renderItem: (item: Puppy) => React.ReactNode
   className?: string
   onActiveTabChange?: (value: string) => void
 }
 
-export function FilterableGallery<T extends Record<string, unknown>>({
+export function FilterableGallery({
   tabs,
   items,
   filterBy,
   renderItem,
   className,
   onActiveTabChange,
-}: FilterableGalleryProps<T>) {
+}: FilterableGalleryProps) {
   const [activeTab, setActiveTab] = useState<string>(
     tabs[0]?.value ?? '',
   )
 
   const filteredItems = useMemo(
     () =>
-      items.filter(
-        (item) => (item[filterBy] as string) === activeTab,
-      ),
+      items.filter((item) => String(item[filterBy]) === activeTab),
     [items, filterBy, activeTab],
   )
 
@@ -45,9 +44,9 @@ export function FilterableGallery<T extends Record<string, unknown>>({
       />
       <div className={styles.gallery__scroll}>
         <ul className={styles.gallery__list}>
-          {filteredItems.map((item, index) => (
+          {filteredItems.map((item) => (
             <li
-              key={(item.uid as string | number) ?? index}
+              key={item.uid}
               className={styles.gallery__list__item}
             >
               {renderItem(item)}

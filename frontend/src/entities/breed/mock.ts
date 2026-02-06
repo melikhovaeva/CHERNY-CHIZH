@@ -1,5 +1,4 @@
-import { BREED_OPTIONS, getBreedImageUrl } from './config'
-import type { BreedDescription, BreedValue } from './types'
+import type { BreedDescription, BreedValue } from './types';
 
 export const breedDescriptionsMock: Record<BreedValue, BreedDescription> = {
   sharpey: {
@@ -82,21 +81,4 @@ export const breedDescriptionsMock: Record<BreedValue, BreedDescription> = {
       text: 'Умеренно активная порода, любит прогулки и игры.',
     },
   },
-}
-
-export interface PuppyMock extends Record<string, unknown> {
-  uid: number
-  name: string
-  image: string
-  breed: BreedValue
-}
-
-export const getPuppiesMock = (): PuppyMock[] =>
-  BREED_OPTIONS.flatMap((breed, bIdx) =>
-    Array.from({ length: 3 }, (_, idx) => ({
-      uid: bIdx * 3 + idx + 1,
-      name: `Щенок ${idx + 1}`,
-      image: getBreedImageUrl(breed.value),
-      breed: breed.value,
-    })),
-  )
+};

@@ -14,6 +14,7 @@ import { Route as LibraryRouteImport } from './app/routes/library'
 import { Route as ContactsRouteImport } from './app/routes/contacts'
 import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
+import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
 
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
@@ -40,20 +41,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PuppiesBreedIdRoute = PuppiesBreedIdRouteImport.update({
+  id: '/$breedId',
+  path: '/$breedId',
+  getParentRoute: () => PuppiesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/library': typeof LibraryRoute
-  '/puppies': typeof PuppiesRoute
+  '/puppies': typeof PuppiesRouteWithChildren
+  '/puppies/$breedId': typeof PuppiesBreedIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/library': typeof LibraryRoute
-  '/puppies': typeof PuppiesRoute
+  '/puppies': typeof PuppiesRouteWithChildren
+  '/puppies/$breedId': typeof PuppiesBreedIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +69,34 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
   '/library': typeof LibraryRoute
-  '/puppies': typeof PuppiesRoute
+  '/puppies': typeof PuppiesRouteWithChildren
+  '/puppies/$breedId': typeof PuppiesBreedIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contacts' | '/library' | '/puppies'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contacts'
+    | '/library'
+    | '/puppies'
+    | '/puppies/$breedId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contacts' | '/library' | '/puppies'
-  id: '__root__' | '/' | '/about' | '/contacts' | '/library' | '/puppies'
+  to:
+    | '/'
+    | '/about'
+    | '/contacts'
+    | '/library'
+    | '/puppies'
+    | '/puppies/$breedId'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contacts'
+    | '/library'
+    | '/puppies'
+    | '/puppies/$breedId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,7 +104,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactsRoute: typeof ContactsRoute
   LibraryRoute: typeof LibraryRoute
-  PuppiesRoute: typeof PuppiesRoute
+  PuppiesRoute: typeof PuppiesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -116,15 +144,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/puppies/$breedId': {
+      id: '/puppies/$breedId'
+      path: '/$breedId'
+      fullPath: '/puppies/$breedId'
+      preLoaderRoute: typeof PuppiesBreedIdRouteImport
+      parentRoute: typeof PuppiesRoute
+    }
   }
 }
+
+interface PuppiesRouteChildren {
+  PuppiesBreedIdRoute: typeof PuppiesBreedIdRoute
+}
+
+const PuppiesRouteChildren: PuppiesRouteChildren = {
+  PuppiesBreedIdRoute: PuppiesBreedIdRoute,
+}
+
+const PuppiesRouteWithChildren =
+  PuppiesRoute._addFileChildren(PuppiesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactsRoute: ContactsRoute,
   LibraryRoute: LibraryRoute,
-  PuppiesRoute: PuppiesRoute,
+  PuppiesRoute: PuppiesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
