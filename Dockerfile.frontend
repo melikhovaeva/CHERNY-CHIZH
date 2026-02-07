@@ -1,0 +1,13 @@
+FROM node:24-alpine
+
+WORKDIR /frontend-app
+
+COPY frontend/package.json ./package.json
+
+RUN npm install -g --force yarn
+
+RUN yarn install
+
+COPY frontend/ .
+
+RUN yarn build
