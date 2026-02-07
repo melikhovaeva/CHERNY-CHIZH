@@ -39,22 +39,25 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const content = (
     <div className={styles.root} role="dialog" aria-modal="true">
       <Backdrop
+        className={styles.backdrop}
         onClick={onClose}
         aria-hidden={true}
       />
       <div className={styles.panel} ref={panelRef}>
-        <div className={styles.header}>
-          {title != null && title}
-          <button
-            type="button"
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="Закрыть"
-          >
-            <ArrowLeftIcon width={24} height={24} aria-hidden />
-          </button>
+        <div className={styles.content}>
+          <div className={styles.header}>
+            {title != null && title}
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={onClose}
+              aria-label="Закрыть"
+            >
+              <ArrowLeftIcon width={24} height={24} aria-hidden />
+            </button>
+          </div>
+          <div className={styles.body}>{children}</div>
         </div>
-        <div className={styles.body}>{children}</div>
       </div>
     </div>
   )

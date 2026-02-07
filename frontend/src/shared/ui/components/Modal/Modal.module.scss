@@ -7,6 +7,10 @@
   justify-content: center;
   padding: 20px;
   box-sizing: border-box;
+
+  @media (max-width: 576px) {
+    padding: 0;
+  }
 }
 
 .panel {
@@ -21,6 +25,15 @@
   border: 1px solid $background-secondary-color;
   box-sizing: border-box;
   padding: 36px 100px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    padding: 56px 20px 20px;
+    border-radius: 0;
+  }
 }
 
 .header {

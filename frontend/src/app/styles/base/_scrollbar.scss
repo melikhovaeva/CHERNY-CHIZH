@@ -1,0 +1,28 @@
+@use '../abstracts/variables' as *;
+
+// WebKit (Chrome, Safari, Edge)
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: $accent-primary-color;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: $accent-primary-hover-color;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: $accent-primary-active-color;
+}
+
+*::-webkit-scrollbar-corner {
+  background: $background-secondary-color;
+}
