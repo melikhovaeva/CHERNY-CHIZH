@@ -1,3 +1,4 @@
+import { useBookingModal } from '@/app/contexts/BookingModalContext'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/components'
 import PuppyNotFoundIcon from './assets/puppy-not-found.svg?react'
@@ -8,6 +9,7 @@ interface PuppiesEmptyStateProps {
 }
 
 export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
+  const { openBookingModal } = useBookingModal()
   return (
     <div className={cn([styles.root, className || ''])}>
       <div className={styles.content}>
@@ -22,7 +24,9 @@ export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
           малыша, который покорит ваше сердце. Свяжитесь с нами прямо сейчас, чтобы
           узнать больше о процессе бронирования и ожидаемых помётах.
         </p>
-        <Button className={styles.button}>Забронировать</Button>
+        <Button className={styles.button} onClick={openBookingModal}>
+          Забронировать
+        </Button>
       </div>
       <div className={styles.illustration}>
         <PuppyNotFoundIcon className={styles.image} aria-hidden />
