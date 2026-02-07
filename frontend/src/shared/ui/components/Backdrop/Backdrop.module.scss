@@ -5,6 +5,7 @@
   background-color: $backdrop-overlay-color;
   cursor: pointer;
   animation: backdropFadeIn $backdrop-fade-duration ease forwards;
+  backdrop-filter: blur(50px);
 }
 
 @keyframes backdropFadeIn {

@@ -1,6 +1,7 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useBookingModal } from '@/app/contexts/BookingModalContext'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/components'
+import { useNavigate } from '@tanstack/react-router'
 import type { Puppy } from '../../model/types'
 import {
   formatPuppyDate,
@@ -19,6 +20,7 @@ interface PuppyCardProps {
 export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps) => {
   const mainPhotoUrl = getPuppyMainPhotoUrl(puppy)
   const navigate = useNavigate()
+  const { openBookingModal } = useBookingModal()
 
   const goToDetails = () => {
     navigate({
@@ -91,7 +93,7 @@ export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps
           </div>
         </dl>
         <div className={styles.card__buttonContainer}>
-          <Button>Забронировать</Button>
+          <Button onClick={openBookingModal}>Забронировать</Button>
           {!detailed && (
             <Button variant="secondary" onClick={goToDetails}>
               Подробнее

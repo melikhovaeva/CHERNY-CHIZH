@@ -7,11 +7,12 @@ interface ButtonProps {
   className?: string
   variant?: 'primary' | 'secondary'
   disabled?: boolean
+  type?: 'button' | 'submit'
 }
 
-export const Button = ({ children, onClick, disabled, className, variant = 'primary' }: ButtonProps) => {
+export const Button = ({ children, onClick, disabled, className, variant = 'primary', type = 'button' }: ButtonProps) => {
   return (
-    <button type="button" className={cn([styles.button, styles[`variant-${variant}`], className || ''])} onClick={onClick} disabled={disabled} aria-disabled={disabled}>
+    <button type={type} className={cn([styles.button, styles[`variant-${variant}`], className || ''])} onClick={onClick} disabled={disabled} aria-disabled={disabled}>
       {children}
     </button>
   )
