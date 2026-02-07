@@ -6,7 +6,8 @@
     "dev": "vite --port 3000",
     "build": "vite build && tsc",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "docker:dev": "vite --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
