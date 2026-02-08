@@ -24,4 +24,3 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
     </Modal>
   )
 }
-0
