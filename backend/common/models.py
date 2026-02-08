@@ -27,11 +27,16 @@ class BreedDescription(models.Model):
 
 
 class Breed(models.Model):
+    """Порода щенка."""
     name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Порода"
+        verbose_name_plural = "Породы"
 
     @property
     def slug(self) -> str:
@@ -41,35 +46,76 @@ class Breed(models.Model):
             base = self.name.lower()
         return slugify(base)
 
-class PuppyStatus(models.TextChoices):
-    FOR_SALE = 'for_sale', 'В продаже'
-    RESERVED = 'reserved', 'Забронирован'
-    SOLD = 'sold', 'Куплен'
+class PuppyStatus(models.Model):
+    """Справочник статусов щенка."""
+    code = models.CharField(max_length=64, unique=True)
+    label = models.CharField(max_length=255)
 
-class PuppySex(models.TextChoices):
-    MALE = 'male', 'Мальчик'
-    FEMALE = 'female', 'Девочка'
+    class Meta:
+        verbose_name = "Статус щенка"
+        verbose_name_plural = "Статусы щенков"
 
-class PuppyPotential(models.TextChoices):
-    HIGH = 'pet', 'Домашний питомец'
-    MEDIUM = 'breed', 'Разведение'
-    LOW = 'show', 'Шоу'
+    def __str__(self):
+        return self.label
+
+
+class PuppySex(models.Model):
+    """Справочник пола щенка."""
+    code = models.CharField(max_length=64, unique=True)
+    label = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Пол щенка"
+        verbose_name_plural = "Пол щенков"
+
+    def __str__(self):
+        return self.label
+
+
+class PuppyPotential(models.Model):
+    """Справочник потенциала щенка."""
+    code = models.CharField(max_length=64, unique=True)
+    label = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Потенциал щенка"
+        verbose_name_plural = "Потенциалы щенков"
+
+    def __str__(self):
+        return self.label
 
 
 class Puppy(models.Model):
+    """Щенок."""
     name = models.CharField(max_length=255)
     breed = models.ForeignKey(Breed, on_delete=models.CASCADE)
-    status = models.CharField(max_length=255, choices=PuppyStatus.choices)
+    status = models.ForeignKey(
+        PuppyStatus,
+        on_delete=models.PROTECT,
+        related_name="puppies",
+    )
     birth_date = models.DateField()
-    sex = models.CharField(max_length=255, choices=PuppySex.choices)
+    sex = models.ForeignKey(
+        PuppySex,
+        on_delete=models.PROTECT,
+        related_name="puppies",
+    )
     color = models.CharField(max_length=255)
-    potential = models.CharField(max_length=255, choices=PuppyPotential.choices)
+    potential = models.ForeignKey(
+        PuppyPotential,
+        on_delete=models.PROTECT,
+        related_name="puppies",
+    )
     description = models.TextField(blank=True, null=True)
 
 
     
     def __str__(self):
         return self.name + " " + self.international_name
+
+    class Meta:
+        verbose_name = "Щенок"
+        verbose_name_plural = "Щенки"
 
     @property
     def international_name(self):
