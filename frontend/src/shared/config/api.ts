@@ -4,7 +4,7 @@ export const API_CONFIG = {
     import.meta.env.VITE_API_BASE_URL_LOCAL,
   API_REDUCER_PATH: 'api',
   ENDPOINTS: {
-    PUPPIES: '/puppies',
+    PUPPIES: 'api/puppies/',
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',
