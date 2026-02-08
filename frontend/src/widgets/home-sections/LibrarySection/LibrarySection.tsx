@@ -6,7 +6,7 @@ import { FilterableGallery } from '@/widgets'
 import styles from './LibrarySection.module.scss'
 
 const libraryTabs: Tab[] = LIBRARY_OPTIONS.map((option, index) => ({
-  uid: index + 1,
+  id: index + 1,
   label: option.label,
   value: option.value,
 }))

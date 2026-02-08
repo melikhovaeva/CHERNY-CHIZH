@@ -1,5 +1,5 @@
 export interface Tab {
-  uid: string | number;
+  id: string | number;
   label: string;
   value: string;
 }

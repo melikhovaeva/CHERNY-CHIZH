@@ -1,4 +1,4 @@
-import { getPuppyById, PuppyCard } from '@/entities/puppy'
+import { PuppyCard, useGetPuppyQuery } from '@/entities/puppy'
 import { PuppyTabsSection, RelatedPuppies } from '@/widgets'
 import { useParams } from '@tanstack/react-router'
 import styles from './PuppyDetailsPage.module.scss'
@@ -7,9 +7,20 @@ export function PuppyDetailsPage() {
   const { breedId, puppyId } = useParams({
     from: '/puppies/$breedId/$puppyId',
   })
-  const puppy = getPuppyById(Number(puppyId))
+  const id = Number(puppyId)
+  const { data: puppy, isLoading, isError } = useGetPuppyQuery(id, {
+    skip: !puppyId || Number.isNaN(id),
+  })
 
-  if (!puppy || puppy.breed !== breedId) {
+  if (isLoading) {
+    return (
+      <div className={styles.root}>
+        <p>Загрузка...</p>
+      </div>
+    )
+  }
+
+  if (isError || !puppy || puppy.breed.slug !== breedId) {
     return (
       <div className={styles.notFound}>
         <p>Щенок не найден.</p>

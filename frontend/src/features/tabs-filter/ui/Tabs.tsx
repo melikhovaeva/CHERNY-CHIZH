@@ -14,7 +14,7 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
     <div className={cn([styles.scroll, className || ''])}>
       <ul className={styles.list} role="tablist">
         {tabs.map((tab) => (
-          <li key={tab.uid} className={styles.item} role="presentation">
+          <li key={tab.id} className={styles.item} role="presentation">
             <button
               type="button"
               role="tab"

@@ -33,14 +33,14 @@ export interface PuppyFilters {
 }
 
 export function matchPuppyByFilters(
-  puppy: { sex: { name: PuppySexName }; potential?: string; status: { name: PuppyStatusName } },
+  puppy: { sex: { code: string }; potential?: string; status: { label: string } },
   filters: PuppyFilters,
 ): boolean {
   if (!filters) return true
 
   if (filters.gender && filters.gender !== 'all') {
-    const sexName = getSexNameForFilterValue(filters.gender)
-    if (sexName != null && puppy.sex.name !== sexName) return false
+    const sexCode = getSexNameForFilterValue(filters.gender)
+    if (sexCode != null && puppy.sex.code !== sexCode) return false
   }
 
   if (filters.potential && filters.potential !== 'all') {
@@ -49,8 +49,8 @@ export function matchPuppyByFilters(
   }
 
   if (filters.status && filters.status !== 'all') {
-    const statusName = getStatusNameForFilterValue(filters.status)
-    if (statusName != null && puppy.status.name !== statusName) return false
+    const statusLabel = getStatusNameForFilterValue(filters.status)
+    if (statusLabel != null && puppy.status.label !== statusLabel) return false
   }
 
   return true

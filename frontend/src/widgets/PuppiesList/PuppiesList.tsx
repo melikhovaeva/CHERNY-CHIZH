@@ -1,23 +1,29 @@
 import {
-  getPuppiesMock,
   matchPuppyByFilters,
   PuppyCard,
+  useGetPuppiesQuery,
 } from '@/entities/puppy'
-import type { BreedValue } from '@/entities/breed'
 import { PuppiesEmptyState, type PuppiesFiltersValue } from '@/widgets'
 import styles from './PuppiesList.module.scss'
 
 interface PuppiesListProps {
-  breedId?: BreedValue
+  breedId?: string
   filters?: PuppiesFiltersValue
   className?: string
 }
 
 export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
-  const puppies = getPuppiesMock().filter((puppy) => {
-    if (breedId && puppy.breed !== breedId) return false
-    return matchPuppyByFilters(puppy, filters ?? {})
+  const { data: allPuppies, isLoading } = useGetPuppiesQuery()
+  const puppies = (allPuppies ?? []).filter((puppy) => {
+    if (breedId && puppy.breed.slug !== breedId) return false
+    return matchPuppyByFilters({
+      sex: puppy.sex,
+      potential: puppy.potential?.label,
+      status: puppy.status,
+    }, filters ?? {})
   })
+
+  if (isLoading) return null
 
   if (puppies.length === 0) {
     return (
@@ -31,7 +37,7 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
     <div className={className}>
       <div className={styles.list}>
         {puppies.map((puppy) => (
-          <PuppyCard key={puppy.uid} puppy={puppy} />
+          <PuppyCard key={puppy.id} puppy={puppy} />
         ))}
       </div>
     </div>

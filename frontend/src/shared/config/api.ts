@@ -5,8 +5,10 @@ export const API_CONFIG = {
   API_REDUCER_PATH: 'api',
   ENDPOINTS: {
     PUPPIES: 'api/puppies/',
+    BREEDS: 'api/breeds/',
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',
+    BREEDS: 'Breeds',
   } as const,
 } as const;

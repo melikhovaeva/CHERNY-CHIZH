@@ -9,8 +9,8 @@ interface PuppyParentsProps {
 
 export const PuppyParents = ({ puppy, className }: PuppyParentsProps) => (
   <ul className={[styles.list, className].filter(Boolean).join(' ')}>
-    {puppy.parents.map((parent) => (
-      <li key={parent.uid} className={styles.item}>
+    {(puppy.parents ?? []).map((parent) => (
+      <li key={parent.id} className={styles.item}>
         <Link to={parent.url} className={styles.link}>
           {parent.name}
         </Link>
