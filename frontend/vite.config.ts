@@ -15,6 +15,7 @@ export default defineConfig({
       },
     },
   },
+  envPrefix: 'VITE_',
   plugins: [
     devtools(),
     tanstackRouter({
