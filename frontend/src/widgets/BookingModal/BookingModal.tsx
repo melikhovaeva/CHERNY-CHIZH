@@ -4,14 +4,17 @@ import styles from './BookingModal.module.scss'
 interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
+  onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void | Promise<void>
 }
 
-export function BookingModal({ isOpen, onClose }: BookingModalProps) {
-
+export function BookingModal({ isOpen, onClose, onSubmit }: BookingModalProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // TODO: submit booking request
-    onClose()
+    if (onSubmit) {
+      void Promise.resolve(onSubmit(event))
+    } else {
+      onClose()
+    }
   }
 
   return (

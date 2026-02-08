@@ -1,4 +1,4 @@
-export { BookingModal } from './BookingModal';
+export { BookingModal, BookingModalView } from './BookingModal';
 export { BreedAbout } from './BreedAbout';
 export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';

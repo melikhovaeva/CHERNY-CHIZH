@@ -1,4 +1,4 @@
-import { useBookingModal } from '@/app/contexts/BookingModalContext'
+import { openBookingModal, useAppDispatch } from '@/app/redux'
 import type { Puppy } from '@/entities/puppy'
 import {
   getPuppyMainPhotoUrl,
@@ -15,7 +15,7 @@ interface PuppyDetailsProps {
 
 export function PuppyDetails({ puppy, className }: PuppyDetailsProps) {
   const mainPhotoUrl = getPuppyMainPhotoUrl(puppy)
-  const { openBookingModal } = useBookingModal()
+  const dispatch = useAppDispatch()
 
   return (
     <div className={cn([styles.root, className || ''])}>
@@ -28,7 +28,7 @@ export function PuppyDetails({ puppy, className }: PuppyDetailsProps) {
       </div>
       <div className={styles.contentSection}>
         <PuppyCharacteristics puppy={puppy} className={styles.characteristics} />
-        <Button className={styles.button} onClick={openBookingModal}>
+        <Button className={styles.button} onClick={() => dispatch(openBookingModal())}>
           Забронировать
         </Button>
       </div>
