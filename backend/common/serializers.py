@@ -49,3 +49,10 @@ class PuppyListSerializer(serializers.ModelSerializer):
             "potential",
             "description",
         )
+
+class BreedListSerializer(serializers.ModelSerializer):
+    """Сериализатор для списка пород."""
+
+    class Meta:
+        model = Breed
+        fields = ("id", "slug", "name", "full_name")
