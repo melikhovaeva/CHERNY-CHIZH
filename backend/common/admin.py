@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from common.models import Breed, BreedDescription, Puppy, PuppyParents
+from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyStatus, PuppySex, PuppyPotential
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -22,9 +22,24 @@ class PuppyParentsInline(admin.StackedInline):
     extra = 0
     max_num = 1
 
+@admin.register(PuppyStatus)
+class PuppyStatusAdmin(admin.ModelAdmin):
+    list_display = ("code", "label")
+
+
+@admin.register(PuppySex)
+class PuppySexAdmin(admin.ModelAdmin):
+    list_display = ("code", "label")
+
+
+@admin.register(PuppyPotential)
+class PuppyPotentialAdmin(admin.ModelAdmin):
+    list_display = ("code", "label")
+
+
 @admin.register(Breed)
 class BreedAdmin(admin.ModelAdmin):
-    list_display = ("name", "full_name")
+    list_display = ("name", "slug", "full_name")
     inlines = [BreedDescriptionInline]
 
 @admin.register(Puppy)
