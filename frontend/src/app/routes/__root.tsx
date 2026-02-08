@@ -1,14 +1,14 @@
-import { BookingModalProvider } from '@/app/contexts/BookingModalContext'
 import { getSegmentLabel } from '@/app/lib/breadcrumb-labels'
 import { Breadcrumb } from '@/shared/ui/components'
 import { Footer, Header } from '@/widgets'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import { Providers } from '../providers/Providers'
 
 export const Route = createRootRoute({
   component: () => (
-    <BookingModalProvider>
+    <Providers>
       <Header />
       <main>
         <Breadcrumb getSegmentLabel={getSegmentLabel} />
@@ -26,6 +26,6 @@ export const Route = createRootRoute({
           },
         ]}
       />
-    </BookingModalProvider>
+    </Providers>
   ),
 })
