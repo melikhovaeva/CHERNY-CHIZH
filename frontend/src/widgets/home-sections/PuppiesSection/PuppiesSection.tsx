@@ -1,5 +1,6 @@
 import { BREED_OPTIONS } from '@/entities/breed'
-import { getPuppiesMock, getPuppyMainPhotoUrl } from '@/entities/puppy'
+import { getPuppyMainPhotoUrl } from '@/entities/puppy'
+import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api'
 import type { Tab } from '@/features/tabs-filter'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
@@ -14,13 +15,15 @@ const breedTabs: Tab[] = BREED_OPTIONS.map((option, index) => ({
   value: option.value,
 }))
 
-const puppies = getPuppiesMock()
 
 export function PuppiesSection() {
   const router = useRouter()
   const [activeBreed, setActiveBreed] = useState<string>(
     breedTabs[0]?.value ?? '',
   )
+  const { data: puppies } = useGetPuppiesQuery()
+
+  if (!puppies) return null
   return (
     <section className={cn([styles.root, 'filled primary'])}>
       <div className={styles.container}>
