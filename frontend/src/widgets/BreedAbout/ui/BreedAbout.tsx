@@ -10,7 +10,6 @@ import { FeatureCard } from './cards/FeatureCard/FeatureCard'
 interface BreedAboutProps {
   tabs: Tab[]
   descriptions: Record<string, BreedDescription>
-  getImageUrl: (value: string) => string
   className?: string
   action?: React.ReactNode
 }
@@ -18,7 +17,6 @@ interface BreedAboutProps {
 export function BreedAbout({
   tabs,
   descriptions,
-  getImageUrl,
   className,
 }: BreedAboutProps) {
   const [activeTab, setActiveTab] = useState<string>(tabs[0]?.value ?? '')
@@ -38,11 +36,6 @@ export function BreedAbout({
         className={styles.tabs}
       />
       <div className={styles.content}>
-        <img
-          className={styles.image}
-          src={getImageUrl(activeTab)}
-          alt={`${activeTab} image`}
-        />
         <AppearanceCard
           title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
           text={description.appearance}

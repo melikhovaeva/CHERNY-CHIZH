@@ -1,8 +1,6 @@
 import type { Puppy } from '../../model/types'
 import {
-  formatPuppyDate,
-  formatPuppyDocuments,
-  formatPuppySex,
+  formatPuppyDocuments
 } from '../../model/utils'
 import styles from './PuppyCharacteristics.module.scss'
 
@@ -15,15 +13,15 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
   <dl className={[styles.list, className].filter(Boolean).join(' ')}>
     <div className={styles.item}>
       <dt className={styles.label}>Статус:</dt>
-      <dd className={styles.value}>{puppy.status.name}</dd>
+      <dd className={styles.value}>{puppy.status.label}</dd>
     </div>
     <div className={styles.item}>
       <dt className={styles.label}>Дата рождения:</dt>
-      <dd className={styles.value}>{formatPuppyDate(puppy.birthDate)}</dd>
+      <dd className={styles.value}>{puppy.birthDate}</dd>
     </div>
     <div className={styles.item}>
       <dt className={styles.label}>Пол:</dt>
-      <dd className={styles.value}>{formatPuppySex(puppy.sex)}</dd>
+      <dd className={styles.value}>{puppy.sex.label}</dd>
     </div>
     <div className={styles.item}>
       <dt className={styles.label}>Окрас:</dt>
@@ -35,13 +33,13 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
     </div>
     <div className={styles.item}>
       <dt className={styles.label}>Потенциал:</dt>
-      <dd className={styles.value}>{puppy.potential ?? 'Не указан'}</dd>
+      <dd className={styles.value}>{puppy.potential?.label ?? 'Не указан'}</dd>
     </div>
     <div className={styles.item}>
       <dt className={styles.label}>Родители:</dt>
       <dd className={styles.value}>
-        {puppy.parents.map((parent, index) => (
-          <span key={parent.uid}>
+        {puppy.parents?.map((parent, index) => (
+          <span key={parent.id}>
             {index > 0 && <br />}
             {parent.name}
           </span>

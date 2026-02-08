@@ -1,3 +1,4 @@
+export { useGetPuppiesQuery, useGetPuppyQuery } from './api/puppy.api';
 export {
   matchPuppyByFilters,
   type PuppyFilters,
@@ -7,20 +8,9 @@ export {
   PUPPY_POTENTIAL_OPTIONS,
   PUPPY_STATUS_OPTIONS,
 } from './config/filter-options';
-export { getPuppiesMock, getPuppyById, PUPPIES_FAQ_ITEMS } from './model/mocks';
-export type {
-  Puppy,
-  PuppyDocument,
-  PuppyParent,
-  PuppySex,
-  PuppyStatus,
-} from './model/types';
-export {
-  formatPuppyDate,
-  formatPuppyDocuments,
-  formatPuppySex,
-  getPuppyMainPhotoUrl,
-} from './model/utils';
+export { PUPPIES_FAQ_ITEMS } from './model/mocks';
+export type { Puppy, PuppyDocument, PuppyParent } from './model/types';
+export { formatPuppyDate, formatPuppyDocuments } from './model/utils';
 export { PuppyCard } from './ui/PuppyCard';
 export { PuppyCharacteristics } from './ui/PuppyCharacteristics';
 export { PuppyGallery } from './ui/PuppyGallery';

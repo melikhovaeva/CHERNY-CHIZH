@@ -1,34 +1,51 @@
-import { BREED_OPTIONS, getBreedFullName, type BreedValue } from '@/entities/breed'
+import { setSelectedBreed, useAppDispatch } from '@/app/redux'
+import { useGetBreedsQuery } from '@/entities/breed'
 import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy'
 import type { Tab } from '@/features/tabs-filter'
 import { Tabs } from '@/features/tabs-filter'
 import { Accordion } from '@/shared/ui/components'
 import { PuppiesFilters, PuppiesList, type PuppiesFiltersValue } from '@/widgets'
 import { useParams, useRouter } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styles from './PuppiesPage.module.scss'
 
-const breedTabs: Tab[] = BREED_OPTIONS.map((option, index) => ({
-  uid: index + 1,
-  label: option.label,
-  value: option.value,
-}))
-
 const DEFAULT_FILTERS: PuppiesFiltersValue = {
-  gender: 'all',
+  sex: 'all',
   potential: 'all',
   status: 'all',
 }
 
 export const PuppiesPage = () => {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   const { breedId } = useParams({
     from: '/puppies/$breedId',
-  }) as { breedId: BreedValue }
+  }) as { breedId: string }
+  const { data: breeds } = useGetBreedsQuery()
   const [filters, setFilters] = useState<PuppiesFiltersValue>(DEFAULT_FILTERS)
 
+  useEffect(() => {
+    if (breedId) dispatch(setSelectedBreed(breedId))
+  }, [breedId, dispatch])
+
+  const breedTabs: Tab[] = useMemo(
+    () =>
+      breeds?.map((breed) => ({
+        id: breed.id,
+        label: breed.name,
+        value: breed.slug,
+      })) ?? [],
+    [breeds],
+  )
+
+  const breedTitle = useMemo(
+    () => breeds?.find((b) => b.slug === breedId)?.fullName ?? breedId,
+    [breeds, breedId],
+  )
+
   const handleBreedTabChange = (value: string) => {
-    router.navigate({ to: '/puppies/$breedId', params: { breedId: value as BreedValue } })
+    dispatch(setSelectedBreed(value))
+    router.navigate({ to: '/puppies/$breedId', params: { breedId: value } })
   }
 
   return (
@@ -36,7 +53,7 @@ export const PuppiesPage = () => {
       <section className={styles.catalogSection}>
         <div className={styles.titleContainer}>
           <h2>Щенки
-            <span className={styles.breedName}> {getBreedFullName(breedId)}</span>
+            <span className={styles.breedName}> {breedTitle}</span>
           </h2>
           <p className={styles.breedDescription}>Привиты по возрасту, с клеймом, ветеринарным паспортом и документами РКФ. Возможна установка микрочипа</p>
         </div>

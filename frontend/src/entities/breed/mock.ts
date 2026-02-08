@@ -1,4 +1,4 @@
-import type { BreedDescription, BreedValue } from './types';
+import type { BreedDescription, BreedValue } from './model/types';
 
 export const breedDescriptionsMock: Record<BreedValue, BreedDescription> = {
   sharpey: {

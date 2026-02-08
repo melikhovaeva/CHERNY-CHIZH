@@ -1,48 +1,42 @@
-import type { BreedValue } from '@/entities/breed';
+import type { Breed } from '@/entities/breed/model/types';
 
 export type PuppyStatusName = 'В продаже' | 'Забронирован' | 'Куплен';
 
-export interface PuppyStatus {
-  uid: string;
-  name: PuppyStatusName;
-}
-
-export type PuppySexName = 'dog' | 'bitch';
-
-export interface PuppySex {
-  uid: string;
-  name: PuppySexName;
+export interface PuppyCharacteristic {
+  id: number;
+  code: string;
+  label: string;
 }
 
 export interface PuppyDocument {
-  uid: string;
+  id: string;
   name: string;
   url: string;
 }
 
 export interface PuppyParent {
-  uid: string;
+  id: string;
   name: string;
   url: string;
 }
 
 export interface PuppyPhoto {
-  uid: string;
+  id: string;
   url: string;
 }
 
 export interface Puppy {
-  uid: number;
+  id: number;
   name: string;
-  internationalName: string;
-  breed: BreedValue;
-  status: PuppyStatus;
-  birthDate: Date;
-  sex: PuppySex;
+  internationalName?: string;
+  breed: Breed;
+  status: PuppyCharacteristic;
+  birthDate: string;
+  sex: PuppyCharacteristic;
   color: string;
-  documents: PuppyDocument[];
-  parents: PuppyParent[];
-  photos: PuppyPhoto[];
-  potential?: string;
+  documents?: PuppyDocument[];
+  parents?: PuppyParent[];
+  photos?: PuppyPhoto[];
+  potential?: PuppyCharacteristic;
   description?: string;
 }

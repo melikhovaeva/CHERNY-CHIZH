@@ -1,7 +1,7 @@
-import { getPuppiesMock, getPuppyMainPhotoUrl } from '@/entities/puppy'
 import type { Puppy } from '@/entities/puppy'
-import { Card } from '@/shared/ui/components'
+import { useGetPuppiesQuery } from '@/entities/puppy'
 import { cn } from '@/shared/lib/utils'
+import { Card } from '@/shared/ui/components'
 import { Link } from '@tanstack/react-router'
 import styles from './RelatedPuppies.module.scss'
 
@@ -15,11 +15,12 @@ interface RelatedPuppiesProps {
 const STATUS_AVAILABLE = 'В продаже'
 
 export function RelatedPuppies({ currentPuppy, className }: RelatedPuppiesProps) {
-  const related = getPuppiesMock().filter(
+  const { data: allPuppies } = useGetPuppiesQuery()
+  const related = (allPuppies ?? []).filter(
     (p) =>
-      p.breed === currentPuppy.breed &&
-      p.uid !== currentPuppy.uid &&
-      p.status.name === STATUS_AVAILABLE
+      p.breed.slug === currentPuppy.breed.slug &&
+      p.id !== currentPuppy.id &&
+      p.status.label === STATUS_AVAILABLE
   )
 
   if (related.length === 0) return null
@@ -30,15 +31,15 @@ export function RelatedPuppies({ currentPuppy, className }: RelatedPuppiesProps)
       <div className={styles.list}>
         {related.map((puppy) => (
           <Link
-            key={puppy.uid}
+            key={puppy.id}
             to={detailPath}
-            params={{ breedId: puppy.breed, puppyId: String(puppy.uid) }}
+            params={{ breedId: puppy.breed.slug, puppyId: String(puppy.id) }}
             className={styles.cardLink}
           >
             <Card
               title={puppy.name}
-              subtitle={puppy.internationalName}
-              imgUrl={getPuppyMainPhotoUrl(puppy)}
+              subtitle={puppy.internationalName ?? undefined}
+              imgUrl={'p'}
             />
           </Link>
         ))}

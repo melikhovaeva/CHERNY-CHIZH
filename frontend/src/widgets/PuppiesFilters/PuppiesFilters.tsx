@@ -3,18 +3,18 @@ import {
   PUPPY_POTENTIAL_OPTIONS,
   PUPPY_STATUS_OPTIONS,
 } from '@/entities/puppy'
-import { Select } from '@/shared/ui/components'
 import { cn } from '@/shared/lib/utils'
+import { Select } from '@/shared/ui/components'
 import styles from './PuppiesFilters.module.scss'
 
 export interface PuppiesFiltersValue {
-  gender: string
+  sex: string
   potential: string
   status: string
 }
 
 const DEFAULT_FILTERS: PuppiesFiltersValue = {
-  gender: 'all',
+  sex: 'all',
   potential: 'all',
   status: 'all',
 }
@@ -36,35 +36,30 @@ export function PuppiesFilters({
 }: PuppiesFiltersProps) {
   const filters = value ?? DEFAULT_FILTERS
 
-  const handleGenderChange = (gender: string) => {
-    onChange?.({ ...filters, gender })
+  const handleSexChange = (sex: string) => {
+    onChange?.({ ...filters, sex })
   }
-  const handlePotentialChange = (potential: string) => {
-    onChange?.({ ...filters, potential })
-  }
-  const handleStatusChange = (status: string) => {
-    onChange?.({ ...filters, status })
-  }
+
 
   return (
     <div className={cn([styles.root, className || ''])}>
       <Select
         label="Пол"
         options={genderOptions}
-        value={filters.gender}
-        onChange={handleGenderChange}
+        value={filters.sex}
+        onChange={handleSexChange}
       />
       <Select
         label="Потенциал"
         options={potentialOptions}
         value={filters.potential}
-        onChange={handlePotentialChange}
+        onChange={(potential) => onChange?.({ ...filters, potential })}
       />
       <Select
         label="Статус"
         options={statusOptions}
         value={filters.status}
-        onChange={handleStatusChange}
+        onChange={(status) => onChange?.({ ...filters, status })}
       />
     </div>
   )

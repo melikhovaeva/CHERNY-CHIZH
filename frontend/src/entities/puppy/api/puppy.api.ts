@@ -6,9 +6,24 @@ export const puppyApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getPuppies: build.query<Puppy[], void>({
       query: () => API_CONFIG.ENDPOINTS.PUPPIES,
-      providesTags: [API_CONFIG.TAG_TYPES.PUPPIES],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: API_CONFIG.TAG_TYPES.PUPPIES,
+                id,
+              })),
+              { type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' },
+            ]
+          : [{ type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' }],
+    }),
+    getPuppy: build.query<Puppy, number>({
+      query: (id) => `${API_CONFIG.ENDPOINTS.PUPPIES}${id}/`,
+      providesTags: (_result, _err, id) => [
+        { type: API_CONFIG.TAG_TYPES.PUPPIES, id },
+      ],
     }),
   }),
 });
 
-export const { useGetPuppiesQuery } = puppyApi;
+export const { useGetPuppiesQuery, useGetPuppyQuery } = puppyApi;

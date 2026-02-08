@@ -1,8 +1,8 @@
-import { PuppyGallery, PuppyParents } from '@/entities/puppy'
 import type { Puppy } from '@/entities/puppy'
+import { PuppyGallery, PuppyParents } from '@/entities/puppy'
 import { Tabs } from '@/features/tabs-filter'
-import { useState } from 'react'
 import { cn } from '@/shared/lib/utils'
+import { useState } from 'react'
 import styles from './PuppyTabsSection.module.scss'
 
 const TAB_DESCRIPTION = 'description'
@@ -10,9 +10,9 @@ const TAB_PHOTOS = 'photos'
 const TAB_PARENTS = 'parents'
 
 const TABS = [
-  { uid: 'desc', label: 'Описание', value: TAB_DESCRIPTION },
-  { uid: 'photos', label: 'Фотографии', value: TAB_PHOTOS },
-  { uid: 'parents', label: 'Родители', value: TAB_PARENTS },
+  { id: 'desc', label: 'Описание', value: TAB_DESCRIPTION },
+  { id: 'photos', label: 'Фотографии', value: TAB_PHOTOS },
+  { id: 'parents', label: 'Родители', value: TAB_PARENTS },
 ]
 
 interface PuppyTabsSectionProps {

@@ -1,4 +1,7 @@
-export type { BreedDescription, BreedDescriptionBlock, BreedValue } from './types'
-export { BREED_OPTIONS, getBreedFullName, getBreedImageUrl } from './config'
-export type { BreedOption } from './config'
-export { breedDescriptionsMock } from './mock'
+export { useGetBreedsQuery } from './api/breed.api';
+export type { Breed } from './model/types';
+export type {
+  BreedDescription,
+  BreedDescriptionBlock,
+  BreedValue,
+} from './model/types';

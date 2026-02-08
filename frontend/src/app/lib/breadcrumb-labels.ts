@@ -1,5 +1,6 @@
-import { BREED_OPTIONS } from '@/entities/breed'
-import { getPuppyById } from '@/entities/puppy'
+import { useGetBreedsQuery } from '@/entities/breed'
+import { useGetPuppiesQuery } from '@/entities/puppy'
+import { useCallback } from 'react'
 
 const SEGMENT_LABELS: Record<string, string> = {
   puppies: 'Щенки',
@@ -8,17 +9,27 @@ const SEGMENT_LABELS: Record<string, string> = {
   library: 'База знаний',
 }
 
-const BREED_LABELS = Object.fromEntries(
-  BREED_OPTIONS.map((opt) => [opt.value, opt.label]),
-)
+export function getSegmentLabelStatic(segment: string): string {
+  return SEGMENT_LABELS[segment] ?? segment
+}
 
-export function getSegmentLabel(segment: string, pathname?: string): string {
-  if (pathname) {
-    const segments = pathname.split('/').filter(Boolean)
-    if (segments[0] === 'puppies' && segments[2] && segment === segments[2]) {
-      const puppy = getPuppyById(Number(segment))
-      return puppy?.name ?? segment
-    }
-  }
-  return SEGMENT_LABELS[segment] ?? BREED_LABELS[segment] ?? segment
+export function useSegmentLabel(): (segment: string, pathname?: string) => string {
+  const { data: breeds } = useGetBreedsQuery()
+  const { data: puppies } = useGetPuppiesQuery()
+  return useCallback(
+    (segment: string, pathname?: string) => {
+      const breedLabel = breeds?.find((b) => b.slug === segment)?.name
+      if (breedLabel) return breedLabel
+      if (pathname) {
+        const segments = pathname.split('/').filter(Boolean)
+        if (segments[0] === 'puppies' && segments[2] && segment === segments[2]) {
+          const id = Number(segment)
+          const puppy = puppies?.find((p) => p.id === id)
+          return puppy?.name ?? segment
+        }
+      }
+      return SEGMENT_LABELS[segment] ?? segment
+    },
+    [breeds, puppies],
+  )
 }
