@@ -21,7 +21,7 @@ services:
       - ./backend:/backend-app
     env_file:
       - .env
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && pip install -r requirements.txt && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -45,3 +45,14 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
+  minio:
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - ./docker/minio/data:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9090"
+    restart: unless-stopped
