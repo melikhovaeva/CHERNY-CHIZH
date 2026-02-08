@@ -4,3 +4,6 @@ psycopg2-binary==2.9.11
 sqlparse==0.5.5
 dotenv==0.9.9
 python-dotenv==1.2.1
+six==1.17.0
+transliterate==1.10.2
+typing_extensions==4.15.0
