@@ -1,57 +1,47 @@
-import type { PuppySexName, PuppyStatusName } from '../model/types'
-import { PUPPY_POTENTIAL_OPTIONS } from './filter-options'
-
-const GENDER_FILTER_TO_SEX: Record<string, PuppySexName> = {
-  male: 'dog',
-  female: 'bitch',
-}
+import type { PuppyStatusName } from '../model/types';
+import { PUPPY_POTENTIAL_OPTIONS } from './filter-options';
 
 const STATUS_FILTER_TO_NAME: Record<string, PuppyStatusName> = {
   available: 'В продаже',
   reserved: 'Забронирован',
-}
-
-export function getSexNameForFilterValue(value: string): PuppySexName | null {
-  if (!value) return null
-  return GENDER_FILTER_TO_SEX[value] ?? null
-}
+};
 
 export function getPotentialLabelForFilterValue(value: string): string | null {
-  const option = PUPPY_POTENTIAL_OPTIONS.find((o) => o.value === value)
-  return option?.label ?? null
+  const option = PUPPY_POTENTIAL_OPTIONS.find((o) => o.value === value);
+  return option?.label ?? null;
 }
 
-export function getStatusNameForFilterValue(value: string): PuppyStatusName | null {
-  if (!value) return null
-  return STATUS_FILTER_TO_NAME[value] ?? null
+export function getStatusNameForFilterValue(
+  value: string,
+): PuppyStatusName | null {
+  if (!value) return null;
+  return STATUS_FILTER_TO_NAME[value] ?? null;
 }
 
 export interface PuppyFilters {
-  gender?: string
-  potential?: string
-  status?: string
+  sex?: string;
+  potential?: string;
+  status?: string;
 }
 
 export function matchPuppyByFilters(
-  puppy: { sex: { code: string }; potential?: string; status: { label: string } },
+  puppy: {
+    sex: { code: string };
+    potential?: string;
+    status: { label: string };
+  },
   filters: PuppyFilters,
 ): boolean {
-  if (!filters) return true
+  if (!filters) return true;
 
-  if (filters.gender && filters.gender !== 'all') {
-    const sexCode = getSexNameForFilterValue(filters.gender)
-    if (sexCode != null && puppy.sex.code !== sexCode) return false
-  }
-
-  if (filters.potential && filters.potential !== 'all') {
-    const label = getPotentialLabelForFilterValue(filters.potential)
-    if (label != null && puppy.potential !== label) return false
+  if (filters.sex && filters.sex !== 'all') {
+    if (filters.sex !== puppy.sex.code) return false;
   }
 
   if (filters.status && filters.status !== 'all') {
-    const statusLabel = getStatusNameForFilterValue(filters.status)
-    if (statusLabel != null && puppy.status.label !== statusLabel) return false
+    const statusLabel = getStatusNameForFilterValue(filters.status);
+    if (statusLabel != null && puppy.status.label !== statusLabel) return false;
   }
 
-  return true
+  return true;
 }
