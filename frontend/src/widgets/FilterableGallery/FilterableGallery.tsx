@@ -8,6 +8,7 @@ interface FilterableGalleryProps<T extends { id: number | string }> {
   items: T[]
   filterBy: keyof T
   renderItem: (item: T) => React.ReactNode
+  fallback?: React.ReactNode
   className?: string
   activeTab?: string
   onActiveTabChange?: (value: string) => void
@@ -20,6 +21,7 @@ export function FilterableGallery<T extends { id: number | string }>({
   items,
   filterBy,
   renderItem,
+  fallback,
   className,
   activeTab: controlledActiveTab,
   onActiveTabChange,
@@ -53,14 +55,19 @@ export function FilterableGallery<T extends { id: number | string }>({
       />
       <div className={styles.gallery__scroll}>
         <ul className={styles.gallery__list}>
-          {filteredItems.map((item) => (
+          {filteredItems.length > 0 ? filteredItems.map((item) => (
             <li
               key={getItemKey ? getItemKey(item) : item.id}
               className={styles.gallery__list__item}
             >
               {renderItem(item)}
             </li>
-          ))}
+          )
+          ) : fallback ? (
+            <li className={styles.gallery__list__item}>
+              {fallback}
+            </li>
+          ) : null}
         </ul>
       </div>
     </div>
