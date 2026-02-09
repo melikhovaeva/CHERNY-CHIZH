@@ -1,6 +1,7 @@
 import { openBookingModal, useAppDispatch } from '@/app/redux'
 import type { Puppy } from '@/entities/puppy'
 import {
+  getFirstPhotoUrl,
   PuppyCharacteristics,
 } from '@/entities/puppy'
 import { cn } from '@/shared/lib/utils'
@@ -20,7 +21,7 @@ export function PuppyDetails({ puppy, className }: PuppyDetailsProps) {
       <div className={styles.imageSection}>
         <img
           className={styles.image}
-          src={'placeholder.webp'}
+          src={getFirstPhotoUrl(puppy)}
           alt={puppy.name}
         />
       </div>
