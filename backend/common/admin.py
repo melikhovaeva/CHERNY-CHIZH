@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyStatus, PuppySex, PuppyPotential
+from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -22,6 +22,21 @@ class PuppyParentsInline(admin.StackedInline):
     fk_name = "puppy"
     extra = 0
     max_num = 1
+
+
+class PuppyPhotoInline(admin.TabularInline):
+    model = PuppyPhoto
+    extra = 1
+    min_num = 1
+    fields = ("order", "photo", "photo_preview")
+    readonly_fields = ("photo_preview",)
+
+    def photo_preview(self, obj):
+        if obj and obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 80px;" />')
+        return "—"
+
+    photo_preview.short_description = "Превью"
 
 @admin.register(PuppyStatus)
 class PuppyStatusAdmin(admin.ModelAdmin):
@@ -45,17 +60,15 @@ class BreedAdmin(admin.ModelAdmin):
 
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
-    list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photo")
-    inlines = [PuppyParentsInline]
-    readonly_fields = ("photo_preview",)
+    list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photos_count")
+    inlines = [PuppyPhotoInline, PuppyParentsInline]
     fieldsets = (
         (None, {"fields": ("name", "breed", "status", "birth_date", "sex", "color", "potential", "description")}),
-        ("Фото (загружается в Minio)", {"fields": ("photo", "photo_preview")}),
     )
 
-    def photo_preview(self, obj):
-        if obj and obj.photo:
-            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 200px;" />')
-        return "—"
+    def photos_count(self, obj):
+        if obj and obj.pk:
+            return obj.photos.count()
+        return 0
 
-    photo_preview.short_description = "Превью"
+    photos_count.short_description = "Фото"
