@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import type { Puppy } from '../../model/types'
 import { formatPuppyDate } from '../../model/utils'
 import styles from './PuppyCharacteristics.module.scss'
@@ -8,8 +9,11 @@ interface PuppyCharacteristicsProps {
 }
 
 export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsProps) => {
-
+  const parentsExists = puppy.parents && Object.keys(puppy.parents).length > 0
   const documentsExists = puppy.documents && puppy.documents?.length > 0
+
+  const puppyMother = puppy.parents?.mother
+  const puppyFather = puppy.parents?.father
 
   return (
     <dl className={[styles.list, className].filter(Boolean).join(' ')}>
@@ -56,17 +60,33 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
         <dt className={styles.label}>Потенциал:</dt>
         <dd className={styles.value}>{puppy.potential.label}</dd>
       </div>
-      <div className={styles.item}>
-        <dt className={styles.label}>Родители:</dt>
-        <dd className={styles.value}>
-          {puppy.parents?.map((parent, index) => (
-            <span key={parent.id}>
-              {index > 0 && <br />}
-              {parent.name}
-            </span>
-          ))}
-        </dd>
-      </div>
+      {parentsExists && (
+        <div className={styles.item}>
+          <dt className={styles.label}>Родители:</dt>
+          <dd className={styles.value}>
+            {puppyMother && (
+              <p>
+                <Link
+                  to="/puppies/$breedId/$puppyId"
+                  params={{ breedId: puppy.breed.slug, puppyId: String(puppyMother.id) }}
+                >
+                  {puppyMother.name}
+                </Link>
+              </p>
+            )}
+            {puppyFather && (
+              <p>
+                <Link
+                  to="/puppies/$breedId/$puppyId"
+                  params={{ breedId: puppy.breed.slug, puppyId: String(puppyFather.id) }}
+                >
+                  {puppyFather.name}
+                </Link>
+              </p>
+            )}
+          </dd>
+        </div>
+      )}
     </dl >
   )
 }

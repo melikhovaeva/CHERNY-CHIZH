@@ -17,7 +17,11 @@ export interface PuppyDocument {
 export interface PuppyParent {
   id: string;
   name: string;
-  url: string;
+}
+
+export interface PuppyParents {
+  mother: PuppyParent;
+  father: PuppyParent;
 }
 
 export interface PuppyPhoto {
@@ -36,7 +40,7 @@ export interface Puppy {
   birthDate: string;
   color: string;
   documents?: PuppyDocument[];
-  parents?: PuppyParent[];
+  parents?: PuppyParents;
   photos?: PuppyPhoto[];
   description?: string;
 }
