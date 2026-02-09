@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from common.models import BreedDescription, Puppy, Breed, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential
+from common.models import BreedDescription, Puppy, Breed, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument
 
 
 def _to_camel_case(snake_str: str) -> str:
@@ -62,6 +62,17 @@ class PuppyPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerialize
     class Meta:
         model = PuppyPhoto
         fields = ("id", "url")
+
+
+class PuppyDocumentsSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PuppyDocument
+        fields = ("id", "name", "url")
+
+    def get_url(self, obj):
+        return obj.file.url if obj.file else None
     
 
 
@@ -73,6 +84,7 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
     sex = PuppySexSerializer(read_only=True)
     potential = PuppyPotentialSerializer(read_only=True)
     photos = PuppyPhotosSerializer(many=True, read_only=True)
+    documents = PuppyDocumentsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Puppy
@@ -86,7 +98,8 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
             "status",  
             "sex", 
             "potential", 
-            "photos"
+            "photos",
+            "documents"
         )
 
 class PuppyByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -97,6 +110,7 @@ class PuppyByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSeri
     sex = PuppySexSerializer(read_only=True)
     potential = PuppyPotentialSerializer(read_only=True)
     photos = PuppyPhotosSerializer(many=True, read_only=True)
+    documents = PuppyDocumentsSerializer(many=True, read_only=True)
     class Meta:
         model = Puppy
         fields = (
