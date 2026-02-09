@@ -18,5 +18,6 @@ export interface Breed {
   slug: string;
   name: string;
   fullName: string;
+  photo: string | null;
   description: BreedDescription;
 }

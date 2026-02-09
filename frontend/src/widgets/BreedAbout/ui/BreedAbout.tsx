@@ -10,6 +10,7 @@ import { FeatureCard } from './cards/FeatureCard/FeatureCard'
 interface BreedAboutProps {
   tabs: Tab[]
   descriptions: Record<string, BreedDescription>
+  photos?: Record<string, string | null>
   className?: string
   action?: React.ReactNode
 }
@@ -17,11 +18,14 @@ interface BreedAboutProps {
 export function BreedAbout({
   tabs,
   descriptions,
+  photos = {},
   className,
 }: BreedAboutProps) {
   const [activeTab, setActiveTab] = useState<string>(tabs[0]?.value ?? '')
 
   const description = descriptions[activeTab]
+  const photoUrl = photos[activeTab]
+  const activeBreedLabel = tabs.find((t) => t.value === activeTab)?.label ?? ''
 
   if (!description) return null
 
@@ -36,6 +40,13 @@ export function BreedAbout({
         className={styles.tabs}
       />
       <div className={styles.content}>
+        {photoUrl && (
+          <img
+            src={photoUrl}
+            alt={activeBreedLabel}
+            className={styles.image}
+          />
+        )}
         <AppearanceCard
           title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
           text={description.appearance}

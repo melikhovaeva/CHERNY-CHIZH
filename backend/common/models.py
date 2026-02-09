@@ -29,6 +29,7 @@ class Breed(models.Model):
     """Порода щенка."""
     name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255)
+    photo = models.ImageField(upload_to="breeds/", blank=False, null=True)
 
     def __str__(self):
         return self.name
