@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from common.models import BreedDescription, Puppy, Breed, PuppyStatus, PuppySex, PuppyPotential
+from common.models import BreedDescription, Puppy, Breed, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential
 
 
 def _to_camel_case(snake_str: str) -> str:
-    """Преобразует snake_case в camelCase."""
+    """Преобразует snake_case в camelCase"""
     parts = snake_str.split("_")
     return parts[0].lower() + "".join(p.capitalize() for p in parts[1:])
 
 
 def _keys_to_camel_case(data):
-    """Рекурсивно преобразует все ключи словарей в camelCase."""
+    """Рекурсивно преобразует все ключи словарей в camelCase"""
     if isinstance(data, dict):
         return {_to_camel_case(k): _keys_to_camel_case(v) for k, v in data.items()}
     if isinstance(data, list):
@@ -18,7 +18,7 @@ def _keys_to_camel_case(data):
 
 
 class CamelCaseSerializerMixin:
-    """Миксин: результат to_representation отдаётся с ключами в camelCase."""
+    """Миксин: результат to_representation отдаётся с ключами в camelCase"""
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -26,13 +26,13 @@ class CamelCaseSerializerMixin:
 
 
 class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
-    """Краткое представление породы для списка щенков."""
+    """Краткое представление породы для списка щенков"""
 
     photo = serializers.SerializerMethodField()
 
     class Meta:
         model = Breed
-        fields = ("id", "slug", "name", "full_name", "photo")
+        fields = ("slug", "name", "full_name", "photo")
 
     def get_photo(self, obj):
         return obj.photo.url if obj.photo else None
@@ -41,50 +41,63 @@ class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer
 class PuppyStatusSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = PuppyStatus
-        fields = ("id", "code", "label")
+        fields = ("code", "label")
 
 
 class PuppySexSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = PuppySex
-        fields = ("id", "code", "label")
+        fields = ("code", "label")
 
 
 class PuppyPotentialSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = PuppyPotential
-        fields = ("id", "code", "label")
+        fields = ("code", "label")
+
+
+class PuppyPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    url = serializers.CharField(source="photo.url")
+    
+    class Meta:
+        model = PuppyPhoto
+        fields = ("id", "url")
+    
 
 
 class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
-    """Сериализатор для списка щенков."""
+    """Сериализатор для списка щенков"""
 
     breed = BreedBriefSerializer(read_only=True)
     status = PuppyStatusSerializer(read_only=True)
     sex = PuppySexSerializer(read_only=True)
     potential = PuppyPotentialSerializer(read_only=True)
-    photos = serializers.SerializerMethodField()
+    photos = PuppyPhotosSerializer(many=True, read_only=True)
 
     class Meta:
         model = Puppy
         fields = (
-            "id",
-            "name",
-            "breed",
-            "status",
-            "birth_date",
-            "sex",
-            "color",
-            "potential",
-            "description",
-            "photos",
+            "id", 
+            "name", 
+            "international_name", 
+            "birth_date", "color", 
+            "description", 
+            "breed", 
+            "status",  
+            "sex", 
+            "potential", 
+            "photos"
         )
 
-    def get_photos(self, obj):
-        return [
-            {"id": str(p.id), "url": p.photo.url}
-            for p in obj.photos.all()
-        ]
+class PuppyByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор для списка щенков по породе."""
+
+    breed = BreedBriefSerializer(read_only=True)
+    class Meta:
+        model = Puppy
+        fields = (
+            "__all__"
+        )
 
 class BreedDescriptionSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Описание породы с полями, сгруппированными как на фронте (блоки rating + text)."""
