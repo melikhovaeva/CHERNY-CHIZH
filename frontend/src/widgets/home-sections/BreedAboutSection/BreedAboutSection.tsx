@@ -27,6 +27,14 @@ export function BreedAboutSection() {
     [breeds],
   )
 
+  const breedPhotos = useMemo<Record<string, string | null>>(
+    () =>
+      Object.fromEntries(
+        (breeds ?? []).map((b) => [b.slug, b.photo ?? null]),
+      ),
+    [breeds],
+  )
+
   if (!breedTabs.length) return null
 
   return (
@@ -36,6 +44,7 @@ export function BreedAboutSection() {
         <BreedAbout
           tabs={breedTabs}
           descriptions={descriptions}
+          photos={breedPhotos}
         />
         <Button>Подробнее</Button>
       </div>

@@ -55,8 +55,26 @@ class PuppyPotentialAdmin(admin.ModelAdmin):
 
 @admin.register(Breed)
 class BreedAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug", "full_name")
+    list_display = ("name", "slug", "full_name", "photo_preview_list")
     inlines = [BreedDescriptionInline]
+    readonly_fields = ("photo_preview",)
+    fieldsets = (
+        (None, {"fields": ("name", "full_name", "photo", "photo_preview")}),
+    )
+
+    def photo_preview(self, obj):
+        if obj and obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 200px;" />')
+        return "—"
+
+    photo_preview.short_description = "Превью"
+
+    def photo_preview_list(self, obj):
+        if obj and obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 40px;" />')
+        return "—"
+
+    photo_preview_list.short_description = "Фото"
 
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):

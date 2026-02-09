@@ -28,9 +28,14 @@ class CamelCaseSerializerMixin:
 class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Краткое представление породы для списка щенков."""
 
+    photo = serializers.SerializerMethodField()
+
     class Meta:
         model = Breed
-        fields = ("id", "slug", "name", "full_name")
+        fields = ("id", "slug", "name", "full_name", "photo")
+
+    def get_photo(self, obj):
+        return obj.photo.url if obj.photo else None
 
 
 class PuppyStatusSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -103,7 +108,11 @@ class BreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
     """Сериализатор для списка пород."""
 
     description = BreedDescriptionSerializer(read_only=True)
+    photo = serializers.SerializerMethodField()
 
     class Meta:
         model = Breed
-        fields = ("id", "slug", "name", "full_name", "description")
+        fields = ("id", "slug", "name", "full_name", "photo", "description")
+
+    def get_photo(self, obj):
+        return obj.photo.url if obj.photo else None
