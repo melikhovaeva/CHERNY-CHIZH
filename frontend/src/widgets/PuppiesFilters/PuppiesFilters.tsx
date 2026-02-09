@@ -1,66 +1,96 @@
-import {
-  PUPPY_GENDER_OPTIONS,
-  PUPPY_POTENTIAL_OPTIONS,
-  PUPPY_STATUS_OPTIONS,
-} from '@/entities/puppy'
+
+import { usePuppyFilterOptions, type PuppyFilters } from '@/features'
+import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults'
+import { usePuppyFilterLabels } from '@/features/puppy-filters/config/use-puppy-filter-options'
 import { cn } from '@/shared/lib/utils'
 import { Select } from '@/shared/ui/components'
+import { useMemo } from 'react'
 import styles from './PuppiesFilters.module.scss'
 
-export interface PuppiesFiltersValue {
-  sex: string
-  potential: string
-  status: string
-}
-
-const DEFAULT_FILTERS: PuppiesFiltersValue = {
-  sex: 'all',
-  potential: 'all',
-  status: 'all',
-}
 
 interface PuppiesFiltersProps {
-  value?: PuppiesFiltersValue
-  onChange?: (value: PuppiesFiltersValue) => void
+  value: PuppyFilters
+  onChange: (value: PuppyFilters) => void
   className?: string
 }
 
-const genderOptions = [...PUPPY_GENDER_OPTIONS]
-const potentialOptions = [...PUPPY_POTENTIAL_OPTIONS]
-const statusOptions = [...PUPPY_STATUS_OPTIONS]
-
 export function PuppiesFilters({
-  value = DEFAULT_FILTERS,
+  value,
   onChange,
   className,
 }: PuppiesFiltersProps) {
-  const filters = value ?? DEFAULT_FILTERS
 
-  const handleSexChange = (sex: string) => {
-    onChange?.({ ...filters, sex })
+  const { sexOptions, potentialOptions, statusOptions } = usePuppyFilterOptions()
+  const { sex, potential, status } = usePuppyFilterLabels()
+
+
+  const filters = useMemo(() => {
+    const createOptions = (
+      currentValue: typeof value.sex,
+      defaultOption: typeof PUPPY_FILTERS_DEFAULTS.sex,
+      options: typeof sexOptions
+    ) => {
+      const filteredOptions = options.filter(
+        opt => opt.value !== defaultOption.value && opt.value !== currentValue.value
+      )
+
+      const result = [defaultOption]
+
+      if (currentValue.value !== defaultOption.value) {
+        result.push(currentValue)
+      }
+
+      result.push(...filteredOptions)
+
+      return result
+    }
+
+    return {
+      sex: {
+        value: value?.sex.value,
+        label: sex,
+        options: createOptions(value.sex, PUPPY_FILTERS_DEFAULTS.sex, sexOptions),
+      },
+      potential: {
+        value: value?.potential.value,
+        label: potential,
+        options: createOptions(value.potential, PUPPY_FILTERS_DEFAULTS.potential, potentialOptions),
+      },
+      status: {
+        value: value?.status.value,
+        label: status,
+        options: createOptions(value.status, PUPPY_FILTERS_DEFAULTS.status, statusOptions),
+      },
+    }
+  }, [value, sex, potential, status, sexOptions, potentialOptions, statusOptions])
+
+  const filtersEntries = Object.entries(filters)
+
+  const handleFilterChange = (key: keyof PuppyFilters) => (selectedValue: string) => {
+    const filterConfig = filters[key]
+    const selectedOption = filterConfig.options.find(opt => opt.value === selectedValue)
+
+    if (!selectedOption) {
+      return
+    }
+
+    const newFilters: PuppyFilters = {
+      ...value,
+      [key]: { value: selectedOption.value, label: selectedOption.label },
+    }
+    onChange?.(newFilters)
   }
-
-
   return (
     <div className={cn([styles.root, className || ''])}>
-      <Select
-        label="Пол"
-        options={genderOptions}
-        value={filters.sex}
-        onChange={handleSexChange}
-      />
-      <Select
-        label="Потенциал"
-        options={potentialOptions}
-        value={filters.potential}
-        onChange={(potential) => onChange?.({ ...filters, potential })}
-      />
-      <Select
-        label="Статус"
-        options={statusOptions}
-        value={filters.status}
-        onChange={(status) => onChange?.({ ...filters, status })}
-      />
+      {filtersEntries.map(([key, filterValue]) => (
+        <Select
+          key={key}
+          value={filterValue.value}
+          label={filterValue.label}
+          options={filterValue.options}
+          onChange={handleFilterChange(key as keyof PuppyFilters)}
+        />
+      ))}
     </div>
   )
 }

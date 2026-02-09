@@ -1,6 +1,7 @@
 import { setSelectedBreed, useAppDispatch } from '@/app/redux'
 import { useGetBreedsQuery } from '@/entities/breed'
 import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy'
+import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults'
 import type { Tab } from '@/features/tabs-filter'
 import { Tabs } from '@/features/tabs-filter'
 import { Accordion } from '@/shared/ui/components'
@@ -9,12 +10,6 @@ import { useParams, useRouter } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import styles from './PuppiesPage.module.scss'
 
-const DEFAULT_FILTERS: PuppiesFiltersValue = {
-  sex: 'all',
-  potential: 'all',
-  status: 'all',
-}
-
 export const PuppiesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
@@ -22,7 +17,7 @@ export const PuppiesPage = () => {
     from: '/puppies/$breedId',
   }) as { breedId: string }
   const { data: breeds } = useGetBreedsQuery()
-  const [filters, setFilters] = useState<PuppiesFiltersValue>(DEFAULT_FILTERS)
+  const [filters, setFilters] = useState<PuppiesFiltersValue>(PUPPY_FILTERS_DEFAULTS)
 
   useEffect(() => {
     if (breedId) dispatch(setSelectedBreed(breedId))

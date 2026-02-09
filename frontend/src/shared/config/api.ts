@@ -7,9 +7,11 @@ export const API_CONFIG = {
     PUPPIES: 'api/puppies/',
     PUPPIES_BY_BREED: (breedSlug: string) => `api/breeds/${breedSlug}/puppies/`,
     BREEDS: 'api/breeds/',
+    DICTIONARIES: 'api/dictionaries/',
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',
     BREEDS: 'Breeds',
+    DICTIONARIES: 'Dictionaries',
   } as const,
 } as const;
