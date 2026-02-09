@@ -58,6 +58,7 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
     status = PuppyStatusSerializer(read_only=True)
     sex = PuppySexSerializer(read_only=True)
     potential = PuppyPotentialSerializer(read_only=True)
+    photos = serializers.SerializerMethodField()
 
     class Meta:
         model = Puppy
@@ -71,7 +72,14 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
             "color",
             "potential",
             "description",
+            "photos",
         )
+
+    def get_photos(self, obj):
+        return [
+            {"id": str(p.id), "url": p.photo.url}
+            for p in obj.photos.all()
+        ]
 
 class BreedDescriptionSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Описание породы с полями, сгруппированными как на фронте (блоки rating + text)."""
