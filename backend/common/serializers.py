@@ -93,6 +93,10 @@ class PuppyByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSeri
     """Сериализатор для списка щенков по породе."""
 
     breed = BreedBriefSerializer(read_only=True)
+    status = PuppyStatusSerializer(read_only=True)
+    sex = PuppySexSerializer(read_only=True)
+    potential = PuppyPotentialSerializer(read_only=True)
+    photos = PuppyPhotosSerializer(many=True, read_only=True)
     class Meta:
         model = Puppy
         fields = (
