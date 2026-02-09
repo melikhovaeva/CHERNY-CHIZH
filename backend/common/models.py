@@ -3,40 +3,64 @@ from django.utils.text import slugify
 from transliterate import translit
 
 
-class BreedDescription(models.Model):
-    """Единая сущность описания породы: обязательна для породы, все поля обязательные."""
+class PuppyStatus(models.Model):
+    """Справочник статусов щенка."""
 
-    breed = models.OneToOneField(
-        "Breed",
-        on_delete=models.CASCADE,
-        related_name="description",
-        null=False,
-        blank=False,
-    )
-    appearance = models.TextField()
+    code = models.CharField(max_length=64, unique=True, null=False, blank=False)
+    label = models.CharField(max_length=255, null=False, blank=False)
 
-    character_rating = models.IntegerField()
-    character_text = models.TextField()
-    adaptability_rating = models.IntegerField()
-    adaptability_text = models.TextField()
-    care_rating = models.IntegerField()
-    care_text = models.TextField()
-    activity_rating = models.IntegerField()
-    activity_text = models.TextField()
+    class Meta:
+        verbose_name = "Статус щенка"
+        verbose_name_plural = "Статусы щенков"
+        ordering = ["code"]
+
+    def __str__(self):
+        return self.label
+
+
+class PuppySex(models.Model):
+    """Справочник пола щенка"""
+
+    code = models.CharField(max_length=64, unique=True, null=False, blank=False)
+    label = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        verbose_name = "Пол щенка"
+        verbose_name_plural = "Пол щенков"
+        ordering = ["code"]
+
+    def __str__(self):
+        return self.label
+
+
+class PuppyPotential(models.Model):
+    """Справочник потенциала щенка."""
+
+    code = models.CharField(max_length=64, unique=True, null=False, blank=False)
+    label = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        verbose_name = "Потенциал щенка"
+        verbose_name_plural = "Потенциалы щенков"
+        ordering = ["code"]
+
+    def __str__(self):
+        return self.label
 
 
 class Breed(models.Model):
-    """Порода щенка."""
-    name = models.CharField(max_length=255)
-    full_name = models.CharField(max_length=255)
-    photo = models.ImageField(upload_to="breeds/", blank=False, null=True)
+    """Порода щенка"""
 
-    def __str__(self):
-        return self.name
+    name = models.CharField(max_length=255, null=False, blank=False)
+    full_name = models.CharField(max_length=255, null=False, blank=False)
+    photo = models.ImageField(upload_to="breeds/", null=True, blank=True)
 
     class Meta:
         verbose_name = "Порода"
         verbose_name_plural = "Породы"
+
+    def __str__(self):
+        return self.name
 
     @property
     def slug(self) -> str:
@@ -46,74 +70,77 @@ class Breed(models.Model):
             base = self.name.lower()
         return slugify(base)
 
-class PuppyStatus(models.Model):
-    """Справочник статусов щенка."""
-    code = models.CharField(max_length=64, unique=True)
-    label = models.CharField(max_length=255)
+
+class BreedDescription(models.Model):
+    """Единая сущность описания породы"""
+
+    breed = models.OneToOneField(
+        "Breed",
+        on_delete=models.CASCADE,
+        related_name="description",
+        null=False,
+        blank=False,
+    )
+    appearance = models.TextField(null=False, blank=False)
+    character_rating = models.IntegerField(null=False, blank=False)
+    character_text = models.TextField(null=False, blank=False)
+    adaptability_rating = models.IntegerField(null=False, blank=False)
+    adaptability_text = models.TextField(null=False, blank=False)
+    care_rating = models.IntegerField(null=False, blank=False)
+    care_text = models.TextField(null=False, blank=False)
+    activity_rating = models.IntegerField(null=False, blank=False)
+    activity_text = models.TextField(null=False, blank=False)
 
     class Meta:
-        verbose_name = "Статус щенка"
-        verbose_name_plural = "Статусы щенков"
+        verbose_name = "Описание породы"
+        verbose_name_plural = "Описания пород"
 
     def __str__(self):
-        return self.label
-
-
-class PuppySex(models.Model):
-    """Справочник пола щенка."""
-    code = models.CharField(max_length=64, unique=True)
-    label = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name = "Пол щенка"
-        verbose_name_plural = "Пол щенков"
-
-    def __str__(self):
-        return self.label
-
-
-class PuppyPotential(models.Model):
-    """Справочник потенциала щенка."""
-    code = models.CharField(max_length=64, unique=True)
-    label = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name = "Потенциал щенка"
-        verbose_name_plural = "Потенциалы щенков"
-
-    def __str__(self):
-        return self.label
+        return f"Описание: {self.breed.name}"
 
 
 class Puppy(models.Model):
     """Щенок."""
-    name = models.CharField(max_length=255)
-    breed = models.ForeignKey(Breed, on_delete=models.CASCADE)
+
+    name = models.CharField(max_length=255, null=False, blank=False)
+    breed = models.ForeignKey(
+        Breed,
+        on_delete=models.CASCADE,
+        related_name="puppies",
+        null=False,
+        blank=False,
+    )
     status = models.ForeignKey(
         PuppyStatus,
         on_delete=models.PROTECT,
         related_name="puppies",
+        null=False,
+        blank=False,
     )
-    birth_date = models.DateField()
+    birth_date = models.DateField(null=False, blank=False)
     sex = models.ForeignKey(
         PuppySex,
         on_delete=models.PROTECT,
         related_name="puppies",
+        null=False,
+        blank=False,
     )
-    color = models.CharField(max_length=255)
+    color = models.CharField(max_length=255, null=False, blank=False)
     potential = models.ForeignKey(
         PuppyPotential,
         on_delete=models.PROTECT,
         related_name="puppies",
+        null=False,
+        blank=False,
     )
-    description = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name + " " + self.international_name
+    description = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Щенок"
         verbose_name_plural = "Щенки"
+
+    def __str__(self):
+        return self.name + " " + self.international_name
 
     @property
     def international_name(self):
@@ -124,14 +151,17 @@ class Puppy(models.Model):
 
 
 class PuppyPhoto(models.Model):
-    """Фото щенка (несколько на одного щенка)."""
+    """Фото щенка (many to one)"""
+
     puppy = models.ForeignKey(
         Puppy,
         on_delete=models.CASCADE,
         related_name="photos",
+        null=False,
+        blank=False,
     )
-    photo = models.ImageField(upload_to="puppies/")
-    order = models.PositiveSmallIntegerField(default=0)
+    photo = models.ImageField(upload_to="puppies/", null=False, blank=False)
+    order = models.PositiveSmallIntegerField(default=0, null=False, blank=False)
 
     class Meta:
         ordering = ["order", "id"]
@@ -140,19 +170,30 @@ class PuppyPhoto(models.Model):
 
 
 class PuppyParents(models.Model):
+    """Родители щенка (one to one)"""
+
     puppy = models.OneToOneField(
         "Puppy",
         on_delete=models.CASCADE,
         related_name="parents",
+        null=False,
+        blank=False,
     )
     mother = models.ForeignKey(
         "Puppy",
         on_delete=models.CASCADE,
         related_name="children_as_mother",
+        null=False,
+        blank=False,
     )
     father = models.ForeignKey(
         "Puppy",
         on_delete=models.CASCADE,
         related_name="children_as_father",
+        null=False,
+        blank=False,
     )
 
+    class Meta:
+        verbose_name = "Родители щенка"
+        verbose_name_plural = "Родители щенков"
