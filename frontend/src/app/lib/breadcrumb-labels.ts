@@ -1,35 +1,68 @@
-import { useGetBreedsQuery } from '@/entities/breed'
-import { useGetPuppiesQuery } from '@/entities/puppy'
-import { useCallback } from 'react'
+import { useGetBreedsQuery } from '@/entities/breed';
+import { useGetPuppyQuery } from '@/entities/puppy';
+import { useLocation } from '@tanstack/react-router';
+import { useCallback } from 'react';
 
 const SEGMENT_LABELS: Record<string, string> = {
   puppies: 'Щенки',
   about: 'О нас',
   contacts: 'Контакты',
   library: 'База знаний',
-}
+};
 
 export function getSegmentLabelStatic(segment: string): string {
-  return SEGMENT_LABELS[segment] ?? segment
+  return SEGMENT_LABELS[segment] ?? segment;
 }
 
-export function useSegmentLabel(): (segment: string, pathname?: string) => string {
-  const { data: breeds } = useGetBreedsQuery()
-  const { data: puppies } = useGetPuppiesQuery()
+export function useSegmentLabel(): (
+  segment: string,
+  pathname?: string,
+) => string {
+  const { pathname: currentPathname } = useLocation();
+  const segments = currentPathname.split('/').filter(Boolean);
+
+  const isPuppiesRoute = segments[0] === 'puppies';
+  const breedSlug = isPuppiesRoute ? segments[1] : undefined;
+  const puppyId =
+    isPuppiesRoute && segments[2] ? Number(segments[2]) : undefined;
+
+  const shouldLoadBreed = Boolean(breedSlug);
+  const shouldLoadPuppy = Boolean(puppyId) && !Number.isNaN(puppyId);
+
+  const { data: breeds } = useGetBreedsQuery(undefined, {
+    skip: !shouldLoadBreed,
+  });
+
+  const { data: puppy } = useGetPuppyQuery(puppyId as number, {
+    skip: !shouldLoadPuppy,
+  });
+
   return useCallback(
     (segment: string, pathname?: string) => {
-      const breedLabel = breeds?.find((b) => b.slug === segment)?.name
-      if (breedLabel) return breedLabel
+      const staticLabel = SEGMENT_LABELS[segment];
+      if (staticLabel) return staticLabel;
+
+      const breedLabel = breeds?.find((b) => b.slug === segment)?.name;
+      if (breedLabel) return breedLabel;
+
       if (pathname) {
-        const segments = pathname.split('/').filter(Boolean)
-        if (segments[0] === 'puppies' && segments[2] && segment === segments[2]) {
-          const id = Number(segment)
-          const puppy = puppies?.find((p) => p.id === id)
-          return puppy?.name ?? segment
+        const pathSegments = pathname.split('/').filter(Boolean);
+        if (
+          pathSegments[0] === 'puppies' &&
+          pathSegments[2] &&
+          segment === pathSegments[2] &&
+          puppy
+        ) {
+          return puppy.name;
         }
       }
-      return SEGMENT_LABELS[segment] ?? segment
+
+      if (pathname) {
+        return segment;
+      }
+
+      return segment;
     },
-    [breeds, puppies],
-  )
+    [breeds, puppy],
+  );
 }
