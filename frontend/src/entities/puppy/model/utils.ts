@@ -1,4 +1,4 @@
-import type { Puppy, PuppyDocument } from './types';
+import type { Puppy } from './types';
 
 export const formatPuppyDate = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -14,9 +14,3 @@ export function getFirstPhotoUrl(
 ): string {
   return puppy.photos?.[0]?.url ?? placeholder;
 }
-
-export const formatPuppyDocuments = (
-  documents: PuppyDocument[] | undefined,
-): string => {
-  return documents?.map((doc) => doc.name).join(', ') ?? '';
-};
