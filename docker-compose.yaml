@@ -21,10 +21,12 @@ services:
       - ./backend:/backend-app
     env_file:
       - .env
-    command: sh -c "python manage.py migrate && pip install -r requirements.txt && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "pip install -r requirements.txt && python manage.py ensure_minio_bucket && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       postgres:
         condition: service_healthy
+      minio:
+        condition: service_started
   postgres:
     image: postgres:17.4-alpine3.21
     environment:
