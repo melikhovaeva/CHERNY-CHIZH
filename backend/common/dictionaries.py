@@ -37,26 +37,26 @@ def _make_puppy_group() -> DictionaryConfig:
     return {
         1: {
             "key": "puppy",
-            "name": "puppy-dictionary",
+            "name": "puppy",
             "verbose_name": "Справочники, относящиеся к щенкам",
             "dictionaries": {
                 "status": _entry(
                     pk=1,
-                    name="puppy-status-dictionary",
+                    name="status",
                     verbose_name="Статусы щенков",
                     model=PuppyStatus,
                     serializer=PuppyStatusSerializer,
                 ),
                 "sex": _entry(
                     pk=2,
-                    name="puppy-sex-dictionary",
+                    name="sex",
                     verbose_name="Пол щенков",
                     model=PuppySex,
                     serializer=PuppySexSerializer,
                 ),
                 "potential": _entry(
                     pk=3,
-                    name="puppy-potential-dictionary",
+                    name="potential",
                     verbose_name="Потенциал щенков",
                     model=PuppyPotential,
                     serializer=PuppyPotentialSerializer,
