@@ -48,38 +48,6 @@
     line-height: 140%;
   }
 
-  &__characteristics {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin: 0;
-    flex: 1;
-  }
-
-  &__characteristic {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  &__characteristicLabel {
-    flex-shrink: 0;
-    min-width: 140px;
-
-    @media (max-width: 768px) {
-      font-size: 14px;
-      min-width: 120px;
-    }
-  }
-
-  &__characteristicValue {
-    flex: 1;
-
-    @media (max-width: 768px) {
-      font-size: 14px;
-    }
-  }
-
   &__buttonContainer {
     display: flex;
     gap: 8px;
