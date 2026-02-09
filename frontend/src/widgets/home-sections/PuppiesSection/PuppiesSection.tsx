@@ -5,8 +5,8 @@ import {
   useAppSelector,
 } from '@/app/redux'
 import { useGetBreedsQuery } from '@/entities/breed/api/breed.api'
-import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api'
-import { getFirstPhotoUrl } from '@/entities/puppy/model/utils'
+import { getFirstPhotoUrl } from '@/entities/puppy'
+import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
 import { FilterableGallery } from '@/widgets'
@@ -17,9 +17,17 @@ import styles from './PuppiesSection.module.scss'
 export function PuppiesSection() {
   const router = useRouter()
   const dispatch = useAppDispatch()
+
   const selectedBreedSlug = useAppSelector(selectSelectedBreedSlug)
+
   const { data: breeds } = useGetBreedsQuery()
-  const { data: puppies } = useGetPuppiesQuery()
+
+  const shouldSkipPuppiesQuery = !breeds?.length || !selectedBreedSlug
+
+  const { data: puppies } = useGetPuppiesByBreedQuery(
+    selectedBreedSlug || '',
+    { skip: shouldSkipPuppiesQuery },
+  )
 
   const breedTabs = useMemo(
     () =>

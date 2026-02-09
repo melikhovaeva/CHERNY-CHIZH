@@ -23,7 +23,25 @@ export const puppyApi = baseApi.injectEndpoints({
         { type: API_CONFIG.TAG_TYPES.PUPPIES, id },
       ],
     }),
+    getPuppiesByBreed: build.query<Puppy[], string>({
+      query: (breedSlug: string) =>
+        `${API_CONFIG.ENDPOINTS.PUPPIES_BY_BREED(breedSlug)}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: API_CONFIG.TAG_TYPES.PUPPIES,
+                id,
+              })),
+              { type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' },
+            ]
+          : [{ type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' }],
+    }),
   }),
 });
 
-export const { useGetPuppiesQuery, useGetPuppyQuery } = puppyApi;
+export const {
+  useGetPuppiesQuery,
+  useGetPuppyQuery,
+  useGetPuppiesByBreedQuery,
+} = puppyApi;
