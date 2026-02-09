@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyStatus, PuppySex, PuppyPotential
 
@@ -44,5 +45,17 @@ class BreedAdmin(admin.ModelAdmin):
 
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
-    list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential")
+    list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photo")
     inlines = [PuppyParentsInline]
+    readonly_fields = ("photo_preview",)
+    fieldsets = (
+        (None, {"fields": ("name", "breed", "status", "birth_date", "sex", "color", "potential", "description")}),
+        ("Фото (загружается в Minio)", {"fields": ("photo", "photo_preview")}),
+    )
+
+    def photo_preview(self, obj):
+        if obj and obj.photo:
+            return mark_safe(f'<img src="{obj.photo.url}" style="max-height: 200px;" />')
+        return "—"
+
+    photo_preview.short_description = "Превью"

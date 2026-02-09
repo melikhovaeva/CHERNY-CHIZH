@@ -106,6 +106,7 @@ class Puppy(models.Model):
         on_delete=models.PROTECT,
         related_name="puppies",
     )
+    photo = models.ImageField(upload_to='puppies/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
 
