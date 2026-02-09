@@ -169,6 +169,24 @@ class PuppyPhoto(models.Model):
         verbose_name_plural = "Фото щенков"
 
 
+class PuppyDocument(models.Model):
+    """Документ щенка"""
+
+    puppy = models.ForeignKey(
+        Puppy,
+        on_delete=models.CASCADE,
+        related_name="documents",
+        null=False,
+        blank=False,
+    )
+    file = models.FileField(upload_to="puppies/documents/", null=True, blank=True)
+    name = models.CharField(max_length=255, null=False, blank=False)
+
+    class Meta:
+        verbose_name = "Документ щенка"
+        verbose_name_plural = "Документы щенков"
+
+
 class PuppyParents(models.Model):
     """Родители щенка (one to one)"""
 

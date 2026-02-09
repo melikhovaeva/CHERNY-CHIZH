@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential
+from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -37,6 +37,12 @@ class PuppyPhotoInline(admin.TabularInline):
         return "—"
 
     photo_preview.short_description = "Превью"
+
+
+class PuppyDocumentInline(admin.TabularInline):
+    model = PuppyDocument
+    extra = 1
+    fields = ("name", "file")
 
 @admin.register(PuppyStatus)
 class PuppyStatusAdmin(admin.ModelAdmin):
@@ -79,7 +85,7 @@ class BreedAdmin(admin.ModelAdmin):
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
     list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photos_count")
-    inlines = [PuppyPhotoInline, PuppyParentsInline]
+    inlines = [PuppyPhotoInline, PuppyDocumentInline, PuppyParentsInline]
     fieldsets = (
         (None, {"fields": ("name", "breed", "status", "birth_date", "sex", "color", "potential", "description")}),
     )

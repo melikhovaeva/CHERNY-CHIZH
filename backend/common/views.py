@@ -53,7 +53,7 @@ def _find_dictionary_in_group(group_conf, dict_identifier: str):
 class PuppyViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка щенков"""
 
-    queryset = Puppy.objects.select_related("breed").prefetch_related("photos").all()
+    queryset = Puppy.objects.select_related("breed").prefetch_related("photos", "documents").all()
     serializer_class = PuppyListSerializer
 
 class PuppyByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
@@ -73,7 +73,7 @@ class PuppyByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
         return (
             Puppy.objects.filter(breed=matching_breed)
             .select_related("breed")
-            .prefetch_related("photos")
+            .prefetch_related("photos", "documents")
         )
 
 class BreedViewSet(viewsets.ReadOnlyModelViewSet):
