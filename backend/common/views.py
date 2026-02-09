@@ -9,6 +9,7 @@ from common.serializers import (
     BreedListSerializer,
     PuppyByBreedListSerializer,
     PuppyListSerializer,
+    _keys_to_camel_case,
 )
 
 
@@ -105,7 +106,7 @@ class DictionaryViewSet(viewsets.ViewSet):
                 "name": group_conf["name"],
             }
 
-        return Response(result)
+        return Response(_keys_to_camel_case(result))
 
     def retrieve(self, request: Request, pk=None) -> Response:
         """
@@ -142,7 +143,7 @@ class DictionaryViewSet(viewsets.ViewSet):
             "dictionaries": dictionaries_payload,
         }
 
-        return Response(payload)
+        return Response(_keys_to_camel_case(payload))
 
     @action(
         detail=True,
@@ -181,4 +182,4 @@ class DictionaryViewSet(viewsets.ViewSet):
             "items": serializer.data,
         }
 
-        return Response(payload)
+        return Response(_keys_to_camel_case(payload))
