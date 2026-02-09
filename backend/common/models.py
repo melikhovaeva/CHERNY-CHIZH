@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 from transliterate import translit
@@ -215,3 +216,32 @@ class PuppyParents(models.Model):
     class Meta:
         verbose_name = "Родители щенка"
         verbose_name_plural = "Родители щенков"
+
+    def clean(self):
+        super().clean()
+        if not self.puppy or not self.mother or not self.father:
+            return
+        if self.puppy and self.mother and (self.puppy is self.mother or (self.puppy.pk and self.mother.pk and self.puppy.pk == self.mother.pk)):
+            raise ValidationError(
+                {"mother": "Собака не может быть родителем сама себе"}
+            )
+        if self.puppy and self.father and (self.puppy is self.father or (self.puppy.pk and self.father.pk and self.puppy.pk == self.father.pk)):
+            raise ValidationError(
+                {"father": "Собака не может быть родителем сама себе"}
+            )
+        if self.mother.breed_id != self.puppy.breed_id:
+            raise ValidationError(
+                {"mother": "Мать должна быть той же породы, что и щенок"}
+            )
+        if self.father.breed_id != self.puppy.breed_id:
+            raise ValidationError(
+                {"father": "Отец должен быть той же породы, что и щенок"}
+            )
+        if PuppyParents.objects.filter(mother=self.mother).exclude(puppy=self.puppy).exists():
+            raise ValidationError(
+                {"mother": "Эта собака уже является родителем другого щенка"}
+            )
+        if PuppyParents.objects.filter(father=self.father).exclude(puppy=self.puppy).exists():
+            raise ValidationError(
+                {"father": "Эта собака уже является родителем другого щенка"}
+            )
