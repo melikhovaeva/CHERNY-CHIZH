@@ -5,7 +5,7 @@ import { useNavigate } from '@tanstack/react-router'
 import type { Puppy } from '../../model/types'
 import {
   formatPuppyDate,
-  formatPuppyDocuments,
+  formatPuppyDocuments, getFirstPhotoUrl
 } from '../../model/utils'
 import styles from './PuppyCard.module.scss'
 
@@ -31,7 +31,7 @@ export const PuppyCard = ({ puppy, className, detailed = false }: PuppyCardProps
       <div className={styles.card__imageSection}>
         <img
           className={styles.card__image}
-          src={'placeholder.webp'}
+          src={getFirstPhotoUrl(puppy)}
           alt={puppy.name}
         />
       </div>

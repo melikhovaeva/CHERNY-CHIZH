@@ -6,6 +6,7 @@ import {
 } from '@/app/redux'
 import { useGetBreedsQuery } from '@/entities/breed/api/breed.api'
 import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api'
+import { getFirstPhotoUrl } from '@/entities/puppy/model/utils'
 import { cn } from '@/shared/lib/utils'
 import { Button, Card } from '@/shared/ui/components'
 import { FilterableGallery } from '@/widgets'
@@ -54,7 +55,7 @@ export function PuppiesSection() {
           getFilterValue={(puppy) => puppy.breed.slug}
           renderItem={(puppy) => (
             <Card
-              imgUrl='/placeholder.webp'
+              imgUrl={getFirstPhotoUrl(puppy)}
               subtitle={puppy.name}
             />
           )}
