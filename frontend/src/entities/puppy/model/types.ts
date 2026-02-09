@@ -31,12 +31,12 @@ export interface Puppy {
   internationalName?: string;
   breed: Breed;
   status: PuppyCharacteristic;
-  birthDate: string;
+  potential: PuppyCharacteristic;
   sex: PuppyCharacteristic;
+  birthDate: string;
   color: string;
   documents?: PuppyDocument[];
   parents?: PuppyParent[];
   photos?: PuppyPhoto[];
-  potential?: PuppyCharacteristic;
   description?: string;
 }

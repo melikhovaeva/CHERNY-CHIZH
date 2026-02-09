@@ -1,8 +1,8 @@
 import {
-  matchPuppyByFilters,
   PuppyCard,
   useGetPuppiesQuery,
 } from '@/entities/puppy'
+import { matchPuppyByFilters } from '@/features'
 import { PuppiesEmptyState, type PuppiesFiltersValue } from '@/widgets'
 import styles from './PuppiesList.module.scss'
 
@@ -16,11 +16,7 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   const { data: allPuppies, isLoading } = useGetPuppiesQuery()
   const puppies = (allPuppies ?? []).filter((puppy) => {
     if (breedId && puppy.breed.slug !== breedId) return false
-    return matchPuppyByFilters({
-      sex: puppy.sex,
-      potential: puppy.potential?.label,
-      status: puppy.status,
-    }, filters ?? {})
+    return matchPuppyByFilters(puppy, filters ?? {})
   })
 
   if (isLoading) return null

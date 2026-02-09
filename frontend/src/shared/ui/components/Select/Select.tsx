@@ -89,11 +89,12 @@ export const Select = ({
     ? options.reduce((max, o) => (o.label.length > max.length ? o.label : max), options[0].label)
     : label
 
+
   return (
     <div
-        className={cn([styles.root, (isOpen || isClosing) ? styles.root_open : '', className || ''])}
-        ref={containerRef}
-      >
+      className={cn([styles.root, (isOpen || isClosing) ? styles.root_open : '', className || ''])}
+      ref={containerRef}
+    >
       <span className={styles.sizer} aria-hidden>
         {longestLabel}
       </span>
@@ -124,18 +125,18 @@ export const Select = ({
             onTransitionEnd={handleListTransitionEnd}
           >
             {options.map((option) => (
-            <li key={option.value} role="option" aria-selected={value === option.value}>
-              <button
-                type="button"
-                className={cn([
-                  styles.option,
-                  value === option.value ? styles.option_selected : '',
-                ])}
-                onClick={() => handleSelect(option)}
-              >
-                {option.label}
-              </button>
-            </li>
+              <li key={option.value} role="option" aria-selected={value === option.value}>
+                <button
+                  type="button"
+                  className={cn([
+                    styles.option,
+                    value === option.value ? styles.option_selected : '',
+                  ])}
+                  onClick={() => handleSelect(option)}
+                >
+                  {option.label}
+                </button>
+              </li>
             ))}
           </ul>
         </div>
