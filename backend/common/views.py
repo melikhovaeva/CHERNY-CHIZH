@@ -12,6 +12,43 @@ from common.serializers import (
 )
 
 
+def _find_group_by_identifier(identifier: str):
+    """
+    Находит группу словарей по числовому id или строковому ключу
+    """
+    try:
+        group_id = int(identifier)
+        group_conf = DICTIONARY_GROUPS.get(group_id)
+        if group_conf:
+            return group_id, group_conf
+    except (TypeError, ValueError):
+        pass
+    for group_id, group_conf in DICTIONARY_GROUPS.items():
+        if group_conf.get("key") == identifier:
+            return group_id, group_conf
+
+    return None, None
+
+
+def _find_dictionary_in_group(group_conf, dict_identifier: str):
+    """
+    Находит словарь внутри группы
+    """
+    try:
+        dict_pk = int(dict_identifier)
+        for dict_key, dict_conf in group_conf["dictionaries"].items():
+            if dict_conf["id"] == dict_pk:
+                return dict_key, dict_conf
+    except (TypeError, ValueError):
+        pass
+
+    if dict_identifier in group_conf["dictionaries"]:
+        dict_key = dict_identifier
+        return dict_key, group_conf["dictionaries"][dict_key]
+
+    return None, None
+
+
 class PuppyViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка щенков"""
 
@@ -49,9 +86,11 @@ class DictionaryViewSet(viewsets.ViewSet):
     """
     Эндпоинт для получения групп словарей и их содержимого.
 
-    - GET /api/dictionaries/              - список групп (минимизированный).
-    - GET /api/dictionaries/{id}/         - конкретная группа со всеми словарями и их элементами.
-    - GET /api/dictionaries/{id}/{dict}/  - конкретный словарь внутри группы.
+    - GET /api/dictionaries/ - список групп словарей (минимизированный)
+    - GET /api/dictionaries/{id}/ - конкретная группа по id со всеми словарями
+    - GET /api/dictionaries/{name}/ - конкретная группа по имени со всеми словарями
+    - GET /api/dictionaries/{id}/{dict_id}/ - конкретный словарь группы по id группы и id словаря.
+    - GET /api/dictionaries/{name}/{dict_name}/ - конкретный словарь группы по имени группы и имени словаря.
     """
 
     def list(self, request: Request) -> Response:
@@ -70,17 +109,9 @@ class DictionaryViewSet(viewsets.ViewSet):
 
     def retrieve(self, request: Request, pk=None) -> Response:
         """
-        Возвращает подробную структуру одной группы словарей по id
+        Возвращает подробную структуру одной группы словарей
         """
-        try:
-            group_id = int(pk)
-        except (TypeError, ValueError):
-            return Response(
-                {"detail": "Invalid dictionary group id."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        group_conf = DICTIONARY_GROUPS.get(group_id)
+        group_id, group_conf = _find_group_by_identifier(pk)
         if not group_conf:
             return Response(
                 {"detail": "Dictionary group not found."},
@@ -116,36 +147,20 @@ class DictionaryViewSet(viewsets.ViewSet):
     @action(
         detail=True,
         methods=["get"],
-        url_path=r"(?P<dict_id>\d+)",
+        url_path=r"(?P<dict_identifier>[-\w]+)",
     )
-    def dictionary(self, request: Request, pk=None, dict_id: str = None) -> Response:
+    def dictionary(self, request: Request, pk=None, dict_identifier: str = None) -> Response:
         """
-        Возвращает один конкретный словарь внутри группы по его числовому id
+        Возвращает один конкретный словарь внутри группы
         """
-        try:
-            group_id = int(pk)
-            dict_pk = int(dict_id)
-        except (TypeError, ValueError):
-            return Response(
-                {"detail": "Invalid dictionary group or dictionary id."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        group_conf = DICTIONARY_GROUPS.get(group_id)
+        group_id, group_conf = _find_group_by_identifier(pk)
         if not group_conf:
             return Response(
                 {"detail": "Dictionary group not found."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        target_conf = None
-        target_key = None
-        for dict_key, dict_conf in group_conf["dictionaries"].items():
-            if dict_conf["id"] == dict_pk:
-                target_conf = dict_conf
-                target_key = dict_key
-                break
-
+        dict_key, target_conf = _find_dictionary_in_group(group_conf, dict_identifier)
         if not target_conf:
             return Response(
                 {"detail": "Dictionary not found in group."},
@@ -161,7 +176,7 @@ class DictionaryViewSet(viewsets.ViewSet):
         payload = {
             "id": target_conf["id"],
             "name": target_conf["name"],
-            "key": target_key,
+            "key": dict_key,
             "verbose_name": target_conf["verbose_name"],
             "items": serializer.data,
         }
