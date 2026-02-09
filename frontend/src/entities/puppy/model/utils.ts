@@ -1,4 +1,4 @@
-import type { PuppyDocument } from './types';
+import type { Puppy, PuppyDocument } from './types';
 
 export const formatPuppyDate = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
@@ -7,6 +7,13 @@ export const formatPuppyDate = (date: Date | string): string => {
   const year = d.getFullYear();
   return `${day}.${month}.${year}`;
 };
+
+export function getFirstPhotoUrl(
+  puppy: Puppy,
+  placeholder = '/placeholder.webp',
+): string {
+  return puppy.photos?.[0]?.url ?? placeholder;
+}
 
 export const formatPuppyDocuments = (
   documents: PuppyDocument[] | undefined,
