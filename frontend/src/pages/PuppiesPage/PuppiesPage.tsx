@@ -53,12 +53,14 @@ export const PuppiesPage = () => {
           <p className={styles.breedDescription}>Привиты по возрасту, с клеймом, ветеринарным паспортом и документами РКФ. Возможна установка микрочипа</p>
         </div>
         <div className={styles.catalogContainer}>
-          <Tabs
-            tabs={breedTabs}
-            activeTab={breedId}
-            onTabChange={handleBreedTabChange}
-            className={styles.breedTabs}
-          />
+          <div>
+            <Tabs
+              tabs={breedTabs}
+              activeTab={breedId}
+              onTabChange={handleBreedTabChange}
+              className={styles.breedTabs}
+            />
+          </div>
           <PuppiesFilters
             className={styles.filters}
             value={filters}
