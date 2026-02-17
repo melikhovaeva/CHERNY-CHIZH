@@ -1,12 +1,10 @@
 import { setSelectedBreed, useAppDispatch } from '@/app/redux';
 import { useGetBreedsQuery } from '@/entities/breed';
-import { PUPPIES_FAQ_ITEMS } from '@/entities/puppy';
 import type { PuppyFilters } from '@/features';
 import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults';
 import type { Tab } from '@/features/tabs-filter';
 import { Tabs } from '@/features/tabs-filter';
-import { Accordion } from '@/shared/ui/components';
-import { PuppiesFilters, PuppiesList } from '@/widgets';
+import { DeliverySection, PuppiesFilters, PuppiesList } from '@/widgets';
 import { useParams, useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import styles from './PuppiesPage.module.scss';
@@ -76,12 +74,7 @@ export const PuppiesPage = () => {
           </div>
         </div>
       </section>
-      <section className={styles.deliverySection}>
-        <div className={styles.deliveryContainer}>
-          <h2 className={styles.deliveryTitle}>Доставка в любую точку</h2>
-          <Accordion items={PUPPIES_FAQ_ITEMS} />
-        </div>
-      </section>
+      <DeliverySection />
     </div>
   );
 };

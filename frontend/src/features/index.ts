@@ -1,4 +1,5 @@
 export { BurgerMenu, BurgerMenuList } from './burger-menu';
+export { FaqAccordion, type FAQCategory } from './faq-accordion';
 export { PawRating } from './paw-rating';
 export {
   matchPuppyByFilters,

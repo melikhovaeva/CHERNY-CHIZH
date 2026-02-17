@@ -12,6 +12,7 @@ export {
   LibrarySection,
   PuppiesSection,
 } from './home-sections';
+export { DeliverySection } from './DeliverySection';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';
