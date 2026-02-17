@@ -1,19 +1,19 @@
-import { cn } from '@/shared/lib/utils'
-import { useCallback, useState } from 'react'
-import styles from './Accordion.module.scss'
-import PlusIcon from './assets/plus.svg?react'
+import { cn } from '@/shared/lib/utils';
+import { useCallback, useState } from 'react';
+import styles from './Accordion.module.scss';
+import PlusIcon from './assets/plus.svg?react';
 
 export interface AccordionItem {
-  id: string
-  title: string
-  content: React.ReactNode
+  id: string | number;
+  title: string;
+  content: React.ReactNode;
 }
 
 interface AccordionProps {
-  items: AccordionItem[]
-  defaultOpenId?: string
-  allowMultiple?: boolean
-  className?: string
+  items: AccordionItem[];
+  defaultOpenId?: string | number;
+  allowMultiple?: boolean;
+  className?: string;
 }
 
 export function Accordion({
@@ -22,40 +22,38 @@ export function Accordion({
   allowMultiple = false,
   className,
 }: AccordionProps) {
-  const initialOpen = defaultOpenId ?? items[0]?.id ?? null
-  const [openIds, setOpenIds] = useState<Set<string>>(
-    () => new Set(initialOpen ? [initialOpen] : [])
-  )
+  const initialOpen = defaultOpenId ?? items[0]?.id ?? null;
+  const [openIds, setOpenIds] = useState<Set<string | number>>(
+    () => new Set(initialOpen != null ? [initialOpen] : []),
+  );
 
   const toggle = useCallback(
-    (id: string) => {
+    (id: string | number) => {
       setOpenIds((prev) => {
-        const next = new Set(prev)
+        const next = new Set(prev);
         if (next.has(id)) {
-          next.delete(id)
+          next.delete(id);
         } else {
-          if (!allowMultiple) next.clear()
-          next.add(id)
+          if (!allowMultiple) next.clear();
+          next.add(id);
         }
-        return next
-      })
+        return next;
+      });
     },
-    [allowMultiple]
-  )
+    [allowMultiple],
+  );
 
   return (
     <div className={cn([styles.root, className ?? ''])}>
       {items.map((item) => {
-        const isOpen = openIds.has(item.id)
-        const contentId = `accordion-content-${item.id}`
+        const isOpen = openIds.has(item.id);
+        const contentId = `accordion-content-${item.id}`;
         return (
           <div
             key={item.id}
-            className={cn(
-              [styles.item,
-              className || ''],
-              { [styles.item__open]: isOpen },
-            )}
+            className={cn([styles.item, className || ''], {
+              [styles.item__open]: isOpen,
+            })}
           >
             <div className={styles.itemHeader}>
               <button
@@ -70,7 +68,9 @@ export function Accordion({
                 <span
                   className={cn([
                     styles.triggerIcon,
-                    isOpen ? styles.triggerIcon_open : styles.triggerIcon_closed,
+                    isOpen
+                      ? styles.triggerIcon_open
+                      : styles.triggerIcon_closed,
                   ])}
                   aria-hidden
                 >
@@ -83,13 +83,16 @@ export function Accordion({
               role="region"
               aria-labelledby={`accordion-trigger-${item.id}`}
               aria-hidden={!isOpen}
-              className={cn([styles.content, isOpen ? styles.content__open : ''])}
+              className={cn([
+                styles.content,
+                isOpen ? styles.content__open : '',
+              ])}
             >
               <div className={styles.contentInner}>{item.content}</div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
