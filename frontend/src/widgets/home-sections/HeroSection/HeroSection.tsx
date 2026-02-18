@@ -1,4 +1,5 @@
-import styles from './HeroSection.module.scss'
+import { Placeholder } from '@/shared/ui/components';
+import styles from './HeroSection.module.scss';
 
 export function HeroSection() {
   return (
@@ -13,10 +14,12 @@ export function HeroSection() {
       <div className={styles.scroll}>
         <ul className={styles.list}>
           {Array.from({ length: 4 }).map((_, index) => (
-            <li className={styles.listItem} key={index} />
+            <li className={styles.listItem} key={index}>
+              <Placeholder className={styles.placeholder} />
+            </li>
           ))}
         </ul>
       </div>
     </section>
-  )
+  );
 }

@@ -8,9 +8,6 @@ export const formatPuppyDate = (date: Date | string): string => {
   return `${day}.${month}.${year}`;
 };
 
-export function getFirstPhotoUrl(
-  puppy: Puppy,
-  placeholder = '/placeholder.webp',
-): string {
-  return puppy.photos?.[0]?.url ?? placeholder;
+export function getFirstPhotoUrl(puppy: Puppy): string | undefined {
+  return puppy.photos?.[0]?.url;
 }

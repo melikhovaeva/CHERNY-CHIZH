@@ -6,4 +6,5 @@ export { Card } from './Card';
 export { Checkbox } from './Checkbox';
 export { Form } from './Form';
 export { Modal } from './Modal';
+export { Placeholder } from './Placeholder';
 export { Select, type SelectOption } from './Select';

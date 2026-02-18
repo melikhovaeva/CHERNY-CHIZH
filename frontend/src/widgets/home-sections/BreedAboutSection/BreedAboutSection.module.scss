@@ -67,4 +67,14 @@
       grid-row: 1;
     }
   }
+
+  .placeholder {
+    grid-column: 1 / 3;
+    grid-row: 1 / 4;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    border-radius: 16px;
+    background-color: $accent-secondary-color;
+  }
 }

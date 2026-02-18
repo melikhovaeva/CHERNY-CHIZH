@@ -1,33 +1,49 @@
-import type { Puppy } from '@/entities/puppy'
-import { PuppyGallery, PuppyParents } from '@/entities/puppy'
-import { Tabs } from '@/features/tabs-filter'
-import { cn } from '@/shared/lib/utils'
-import { useState } from 'react'
-import styles from './PuppyTabsSection.module.scss'
+import type { Puppy } from '@/entities/puppy';
+import { PuppyGallery, PuppyParents } from '@/entities/puppy';
+import { Tabs } from '@/features/tabs-filter';
+import { cn } from '@/shared/lib/utils';
+import { useMemo, useState } from 'react';
+import styles from './PuppyTabsSection.module.scss';
 
-const TAB_DESCRIPTION = 'description'
-const TAB_PHOTOS = 'photos'
-const TAB_PARENTS = 'parents'
+const TAB_DESCRIPTION = 'description';
+const TAB_PHOTOS = 'photos';
+const TAB_PARENTS = 'parents';
 
 const TABS = [
   { id: 'desc', label: 'Описание', value: TAB_DESCRIPTION },
   { id: 'photos', label: 'Фотографии', value: TAB_PHOTOS },
   { id: 'parents', label: 'Родители', value: TAB_PARENTS },
-]
+];
 
 interface PuppyTabsSectionProps {
-  puppy: Puppy
-  className?: string
+  puppy: Puppy;
+  className?: string;
 }
 
 export function PuppyTabsSection({ puppy, className }: PuppyTabsSectionProps) {
-  const [activeTab, setActiveTab] = useState(TAB_PHOTOS)
+  const filterTabs = useMemo(() => {
+    const isPhotosExists = puppy.photos?.length && puppy.photos.length > 0;
+    const isParentsExists =
+      puppy.parents?.mother?.id && puppy.parents?.father?.id;
+
+    return TABS.filter((tab) => {
+      if (tab.value === TAB_PHOTOS) {
+        return isPhotosExists;
+      }
+      if (tab.value === TAB_PARENTS) {
+        return isParentsExists;
+      }
+      return true;
+    });
+  }, [puppy.photos, puppy.parents]);
+
+  const [activeTab, setActiveTab] = useState(filterTabs[0].value);
 
   return (
     <section className={cn([styles.root, className || ''])}>
       <div className={styles.tabsWrapper}>
         <Tabs
-          tabs={TABS}
+          tabs={filterTabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           className={styles.tabs}
@@ -55,5 +71,5 @@ export function PuppyTabsSection({ puppy, className }: PuppyTabsSectionProps) {
         )}
       </div>
     </section>
-  )
+  );
 }

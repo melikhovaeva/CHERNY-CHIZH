@@ -1,7 +1,7 @@
 import type { Breed, BreedDescription } from '@/entities/breed/model/types';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui/components';
+import { Button, Placeholder } from '@/shared/ui/components';
 import { useMemo, useState } from 'react';
 import styles from './BreedAboutSection.module.scss';
 import { BreedAboutBlockKey, CARD_LABELS } from './model/enums';
@@ -88,7 +88,7 @@ export function BreedAboutSection({
                 className={styles.image}
               />
             ) : (
-              <div className={styles.image}></div>
+              <Placeholder className={styles.placeholder} />
             )}
             <AppearanceCard
               title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
