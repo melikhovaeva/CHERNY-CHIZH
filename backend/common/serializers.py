@@ -104,7 +104,7 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
     potential = PuppyPotentialSerializer(read_only=True)
     photos = PuppyPhotosSerializer(many=True, read_only=True)
     documents = PuppyDocumentsSerializer(many=True, read_only=True)
-    parents = PuppyParentsSerializer(read_only=True)
+    parents = PuppyParentsSerializer(read_only=True) 
 
     class Meta:
         model = Puppy
