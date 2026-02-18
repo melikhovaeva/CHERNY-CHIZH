@@ -15,13 +15,16 @@ export function FaqAccordion({
   subtitle,
   className,
 }: FaqAccordionProps) {
-  const { data: faqItems, isLoading, isError } = useGetFAQItemsQuery({
+  const {
+    data: faqItems,
+    isLoading,
+    isError,
+  } = useGetFAQItemsQuery({
     category,
   });
 
   const defaultOpenId = faqItems?.[0]?.id;
-  const hasItems =
-    faqItems && faqItems.length > 0 && defaultOpenId != null;
+  const hasItems = faqItems && faqItems.length > 0 && !!defaultOpenId;
 
   if (isLoading || isError || !hasItems) return null;
 
@@ -33,8 +36,8 @@ export function FaqAccordion({
 
   return (
     <div className={className}>
-      {title != null && <h2>{title}</h2>}
-      {subtitle != null && <p>{subtitle}</p>}
+      {title && <h2>{title}</h2>}
+      {subtitle && <p>{subtitle}</p>}
       <Accordion items={accordionItems} defaultOpenId={defaultOpenId} />
     </div>
   );
