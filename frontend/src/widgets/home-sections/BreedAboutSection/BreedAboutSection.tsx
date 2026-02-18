@@ -8,10 +8,15 @@ import { BreedAboutBlockKey, CARD_LABELS } from './model/enums';
 import { AppearanceCard, FeatureCard } from './ui';
 
 interface BreedAboutSectionProps {
+  isLoading: boolean;
   breeds: Breed[];
 }
 
-export function BreedAboutSection({ breeds }: BreedAboutSectionProps) {
+export function BreedAboutSection({
+  breeds,
+  isLoading,
+}: BreedAboutSectionProps) {
+  if (isLoading) return null;
   // TABS
   // TODO: Добавить типизацию для slug вкладок
   const DEFAULT_TAB = breeds[0]?.slug ?? '';
@@ -46,6 +51,11 @@ export function BreedAboutSection({ breeds }: BreedAboutSectionProps) {
     [descriptions],
   );
   const activeDescription = descriptions[activeTab];
+  const activeFeatures = useMemo(() => {
+    return Object.entries(activeDescription).filter(
+      ([key]) => key !== BreedAboutBlockKey.APPEARANCE,
+    );
+  }, [activeDescription]);
 
   // PHOTOS
   const photos = useMemo<Record<string, string | null>>(
@@ -59,12 +69,11 @@ export function BreedAboutSection({ breeds }: BreedAboutSectionProps) {
   const activePhotoAlt = tabs.find((t) => t.value === activeTab)?.label ?? '';
 
   if (!tabs.length || !isDescriptionsValid) return null;
-
   return (
     <section className={cn([styles.root, 'filled secondary'])}>
       <div className={styles.container}>
         <h2 className={styles.title}>О породе</h2>
-        <div className={cn([styles.root])}>
+        <div className={styles.contentContainer}>
           <Tabs
             tabs={tabs}
             activeTab={activeTab}
@@ -72,18 +81,20 @@ export function BreedAboutSection({ breeds }: BreedAboutSectionProps) {
             className={styles.tabs}
           />
           <div className={styles.content}>
-            {activePhotoUrl && (
+            {activePhotoUrl ? (
               <img
                 src={activePhotoUrl}
                 alt={activePhotoAlt}
                 className={styles.image}
               />
+            ) : (
+              <div className={styles.image}></div>
             )}
             <AppearanceCard
               title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
               text={activeDescription.appearance}
             />
-            {Object.entries(activeDescription).map(([key, value]) => (
+            {activeFeatures.map(([key, value]) => (
               <FeatureCard
                 key={key}
                 title={CARD_LABELS[key as BreedAboutBlockKey]}
