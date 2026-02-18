@@ -11,14 +11,14 @@ import {
 import styles from './HomePage.module.scss';
 
 export function HomePage() {
-  const { data: breeds } = useGetBreedsQuery();
+  const { data: breeds, isLoading } = useGetBreedsQuery();
 
   return (
     <div className={styles.container}>
       <HeroSection />
       <PuppiesSection />
       <AdvantagesSection />
-      <BreedAboutSection breeds={breeds ?? []} />
+      <BreedAboutSection breeds={breeds ?? []} isLoading={isLoading} />
       <FAQSection />
       <LibrarySection />
       <FormSection />
