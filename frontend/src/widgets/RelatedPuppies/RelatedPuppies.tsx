@@ -1,29 +1,32 @@
-import type { Puppy } from '@/entities/puppy'
-import { useGetPuppiesQuery } from '@/entities/puppy'
-import { cn } from '@/shared/lib/utils'
-import { Card } from '@/shared/ui/components'
-import { Link } from '@tanstack/react-router'
-import styles from './RelatedPuppies.module.scss'
+import type { Puppy } from '@/entities/puppy';
+import { getFirstPhotoUrl, useGetPuppiesQuery } from '@/entities/puppy';
+import { cn } from '@/shared/lib/utils';
+import { Card } from '@/shared/ui/components';
+import { Link } from '@tanstack/react-router';
+import styles from './RelatedPuppies.module.scss';
 
-const detailPath = '/puppies/$breedId/$puppyId'
+const detailPath = '/puppies/$breedId/$puppyId';
 
 interface RelatedPuppiesProps {
-  currentPuppy: Puppy
-  className?: string
+  currentPuppy: Puppy;
+  className?: string;
 }
 
-const STATUS_AVAILABLE = 'В продаже'
+const STATUS_AVAILABLE = 'В продаже';
 
-export function RelatedPuppies({ currentPuppy, className }: RelatedPuppiesProps) {
-  const { data: allPuppies } = useGetPuppiesQuery()
+export function RelatedPuppies({
+  currentPuppy,
+  className,
+}: RelatedPuppiesProps) {
+  const { data: allPuppies } = useGetPuppiesQuery();
   const related = (allPuppies ?? []).filter(
     (p) =>
       p.breed.slug === currentPuppy.breed.slug &&
       p.id !== currentPuppy.id &&
-      p.status.label === STATUS_AVAILABLE
-  )
+      p.status.label === STATUS_AVAILABLE,
+  );
 
-  if (related.length === 0) return null
+  if (related.length === 0) return null;
 
   return (
     <section className={cn([styles.root, className || ''])}>
@@ -36,14 +39,10 @@ export function RelatedPuppies({ currentPuppy, className }: RelatedPuppiesProps)
             params={{ breedId: puppy.breed.slug, puppyId: String(puppy.id) }}
             className={styles.cardLink}
           >
-            <Card
-              title={puppy.name}
-              subtitle={puppy.internationalName ?? undefined}
-              imgUrl={'p'}
-            />
+            <Card title={puppy.name} imgUrl={getFirstPhotoUrl(puppy)} />
           </Link>
         ))}
       </div>
     </section>
-  )
+  );
 }

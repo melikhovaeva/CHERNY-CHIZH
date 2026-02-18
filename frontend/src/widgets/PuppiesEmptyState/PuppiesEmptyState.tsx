@@ -1,30 +1,34 @@
-import { openBookingModal, useAppDispatch } from '@/app/redux'
-import { cn } from '@/shared/lib/utils'
-import { Button } from '@/shared/ui/components'
-import PuppyNotFoundIcon from './assets/puppy-not-found.svg?react'
-import styles from './PuppiesEmptyState.module.scss'
+import { openBookingModal, useAppDispatch } from '@/app/redux';
+import { cn } from '@/shared/lib/utils';
+import { PuppyNotFoundIcon } from '@/shared/ui/assets';
+import { Button } from '@/shared/ui/components';
+import styles from './PuppiesEmptyState.module.scss';
 
 interface PuppiesEmptyStateProps {
-  className?: string
+  className?: string;
 }
 
 export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   return (
     <div className={cn([styles.root, className || ''])}>
       <div className={styles.content}>
         <h3 className={styles.title}>Нет доступных щенков</h3>
         <p className={styles.paragraph}>
-          К сожалению, на данный момент все щенки уже нашли свои новые дома. Однако вы
-          можете забронировать будущего щенка, чтобы быть первым в очереди, когда новые
-          помёты появятся в нашем питомнике.
+          К сожалению, на данный момент все щенки уже нашли свои новые дома.
+          Однако вы можете забронировать будущего щенка, чтобы быть первым в
+          очереди, когда новые помёты появятся в нашем питомнике.
         </p>
         <p className={styles.paragraph}>
-          Забронировав щенка заранее, вы обеспечите себе возможность выбрать именно того
-          малыша, который покорит ваше сердце. Свяжитесь с нами прямо сейчас, чтобы
-          узнать больше о процессе бронирования и ожидаемых помётах.
+          Забронировав щенка заранее, вы обеспечите себе возможность выбрать
+          именно того малыша, который покорит ваше сердце. Свяжитесь с нами
+          прямо сейчас, чтобы узнать больше о процессе бронирования и ожидаемых
+          помётах.
         </p>
-        <Button className={styles.button} onClick={() => dispatch(openBookingModal())}>
+        <Button
+          className={styles.button}
+          onClick={() => dispatch(openBookingModal())}
+        >
           Забронировать
         </Button>
       </div>
@@ -32,5 +36,5 @@ export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
         <PuppyNotFoundIcon className={styles.image} aria-hidden />
       </div>
     </div>
-  )
+  );
 }

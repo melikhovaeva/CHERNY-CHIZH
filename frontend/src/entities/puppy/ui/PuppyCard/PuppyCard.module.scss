@@ -26,7 +26,13 @@
     flex-direction: column;
     background-color: $background-tertiary-color;
     border-radius: 24px;
-    gap: 24px;
+    justify-content: space-between;
+
+    &__header {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
     @media (max-width: 768px) {
       padding: 24px;

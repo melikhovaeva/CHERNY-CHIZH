@@ -3,31 +3,30 @@ import {
   setSelectedBreed,
   useAppDispatch,
   useAppSelector,
-} from '@/app/redux'
-import { useGetBreedsQuery } from '@/entities/breed/api/breed.api'
-import { getFirstPhotoUrl } from '@/entities/puppy'
-import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api'
-import { cn } from '@/shared/lib/utils'
-import { Button, Card } from '@/shared/ui/components'
-import { FilterableGallery } from '@/widgets'
-import { useRouter } from '@tanstack/react-router'
-import { useEffect, useMemo } from 'react'
-import styles from './PuppiesSection.module.scss'
+} from '@/app/redux';
+import { useGetBreedsQuery } from '@/entities/breed/api/breed.api';
+import { getFirstPhotoUrl } from '@/entities/puppy';
+import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';
+import { cn } from '@/shared/lib/utils';
+import { Button, Card } from '@/shared/ui/components';
+import { FilterableGallery } from '@/widgets';
+import { useRouter } from '@tanstack/react-router';
+import { useEffect, useMemo } from 'react';
+import styles from './PuppiesSection.module.scss';
 
 export function PuppiesSection() {
-  const router = useRouter()
-  const dispatch = useAppDispatch()
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const selectedBreedSlug = useAppSelector(selectSelectedBreedSlug)
+  const selectedBreedSlug = useAppSelector(selectSelectedBreedSlug);
 
-  const { data: breeds } = useGetBreedsQuery()
+  const { data: breeds } = useGetBreedsQuery();
 
-  const shouldSkipPuppiesQuery = !breeds?.length || !selectedBreedSlug
+  const shouldSkipPuppiesQuery = !breeds?.length || !selectedBreedSlug;
 
-  const { data: puppies } = useGetPuppiesByBreedQuery(
-    selectedBreedSlug || '',
-    { skip: shouldSkipPuppiesQuery },
-  )
+  const { data: puppies } = useGetPuppiesByBreedQuery(selectedBreedSlug || '', {
+    skip: shouldSkipPuppiesQuery,
+  });
 
   const breedTabs = useMemo(
     () =>
@@ -37,17 +36,17 @@ export function PuppiesSection() {
         value: breed.slug,
       })) ?? [],
     [breeds],
-  )
+  );
 
   useEffect(() => {
     if (breedTabs.length > 0 && !selectedBreedSlug) {
-      dispatch(setSelectedBreed(breedTabs[0].value))
+      dispatch(setSelectedBreed(breedTabs[0].value));
     }
-  }, [breedTabs, selectedBreedSlug, dispatch])
+  }, [breedTabs, selectedBreedSlug, dispatch]);
 
-  const activeBreed = selectedBreedSlug || (breedTabs[0]?.value ?? '')
+  const activeBreed = selectedBreedSlug || (breedTabs[0]?.value ?? '');
 
-  if (!breeds?.length || !puppies) return null
+  if (!breeds?.length || !puppies) return null;
 
   return (
     <section className={cn([styles.root, 'filled primary'])}>
@@ -62,19 +61,16 @@ export function PuppiesSection() {
           getItemKey={(puppy) => puppy.id}
           getFilterValue={(puppy) => puppy.breed.slug}
           renderItem={(puppy) => (
-            <Card
-              imgUrl={getFirstPhotoUrl(puppy)}
-              subtitle={puppy.name}
-            />
+            <Card imgUrl={getFirstPhotoUrl(puppy)} subtitle={puppy.name} />
           )}
           className={styles.gallery}
         />
         <div className={styles.buttonContainer}>
           <Button
             onClick={() => {
-              const breedId = activeBreed || breedTabs[0]?.value
-              if (!breedId) return
-              router.navigate({ to: '/puppies/$breedId', params: { breedId } })
+              const breedId = activeBreed || breedTabs[0]?.value;
+              if (!breedId) return;
+              router.navigate({ to: '/puppies/$breedId', params: { breedId } });
             }}
           >
             Смотреть всех
@@ -82,5 +78,5 @@ export function PuppiesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
