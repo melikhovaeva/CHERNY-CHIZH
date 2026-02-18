@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'common',
     'crm',
     'consumer',
+    'api_gateway',
 ]
 
 MIDDLEWARE = [

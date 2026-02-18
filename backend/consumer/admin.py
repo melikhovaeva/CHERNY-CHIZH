@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from consumer.models import FAQItem
+
+
+@admin.register(FAQItem)
+class FAQItemAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", "category")
+    list_filter = ("category",)
+    search_fields = ("title", "content")
+
