@@ -1,5 +1,5 @@
 export { BookingModal, BookingModalView } from './BookingModal';
-export { BreedAbout } from './BreedAbout';
+export { DeliverySection } from './DeliverySection';
 export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';
 export { Header } from './Header';
@@ -12,7 +12,6 @@ export {
   LibrarySection,
   PuppiesSection,
 } from './home-sections';
-export { DeliverySection } from './DeliverySection';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';
