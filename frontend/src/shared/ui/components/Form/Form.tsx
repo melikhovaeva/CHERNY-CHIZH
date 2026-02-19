@@ -7,7 +7,7 @@ interface FormProps {
 
 export const Form = ({ onSubmit, children }: FormProps) => {
   return (
-    <form className={styles.form} onSubmit={onSubmit}>
+    <form className={styles.form} onSubmit={onSubmit} noValidate>
       {children}
     </form>
   );

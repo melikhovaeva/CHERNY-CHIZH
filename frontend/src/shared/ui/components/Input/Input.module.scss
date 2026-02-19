@@ -1,10 +1,10 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .label {
+  margin-bottom: 6px;
   font-family: 'Manrope', sans-serif;
   font-size: 14px;
   color: $text-color;
@@ -39,6 +39,20 @@
 .textarea {
   min-height: 108px;
   resize: none;
+}
+
+.error {
+  padding-top: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  line-height: 1;
+  color: $input-invalid-border-color;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+
+  &_visible {
+    opacity: 1;
+  }
 }
 
 .togglePassword {
