@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.consent {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: $text-color;
+
+  a {
+    color: $urls-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

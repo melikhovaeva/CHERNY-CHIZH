@@ -1,16 +1,17 @@
 import { cn } from '@/shared/lib/utils';
+import { useId } from 'react';
 import styles from './Checkbox.module.scss';
 
 interface CheckboxProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
-  label: string;
+  label: React.ReactNode;
   name?: string;
   required?: boolean;
   id?: string;
   disabled?: boolean;
   className?: string;
-   invalid?: boolean;
+  invalid?: boolean;
 }
 
 export const Checkbox = ({
@@ -24,8 +25,8 @@ export const Checkbox = ({
   className,
   invalid = false,
 }: CheckboxProps) => {
-  const inputId =
-    id ?? `checkbox-${name ?? label.replace(/\s/g, '-').toLowerCase()}`;
+  const generatedId = useId();
+  const inputId = id ?? `checkbox-${name ?? generatedId}`;
 
   return (
     <label

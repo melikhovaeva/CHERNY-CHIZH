@@ -29,9 +29,13 @@ export function AuthModalContent() {
     [isAnimating, mode],
   );
 
-  const handleAnimationEnd = useCallback(() => {
-    setIsAnimating(false);
-  }, []);
+  const handleAnimationEnd = useCallback(
+    (e: React.AnimationEvent<HTMLDivElement>) => {
+      if (e.target !== e.currentTarget) return;
+      setIsAnimating(false);
+    },
+    [],
+  );
 
   function getSlideClass(slideMode: AuthMode) {
     if (slideMode === mode) {
@@ -42,7 +46,10 @@ export function AuthModalContent() {
 
   return (
     <div className={styles.slidesContainer}>
-      <div className={cn([styles.slide, getSlideClass('login')])}>
+      <div
+        className={cn([styles.slide, getSlideClass('login')])}
+        onAnimationEnd={mode === 'login' ? handleAnimationEnd : undefined}
+      >
         <h2>{TITLES.login}</h2>
         <div className={styles.switch}>
           <p>Нет аккаунта? </p>
@@ -58,7 +65,7 @@ export function AuthModalContent() {
       </div>
       <div
         className={cn([styles.slide, getSlideClass('register')])}
-        onAnimationEnd={handleAnimationEnd}
+        onAnimationEnd={mode === 'register' ? handleAnimationEnd : undefined}
       >
         <h2>{TITLES.register}</h2>
         <div className={styles.switch}>
