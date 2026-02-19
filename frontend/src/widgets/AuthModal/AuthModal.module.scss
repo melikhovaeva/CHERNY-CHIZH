@@ -16,32 +16,32 @@
 }
 
 .slidesContainer {
-  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .slide {
+  grid-column: 1;
+  grid-row: 1;
   width: 100%;
+  min-width: 0;
 
   &.active {
-    position: relative;
+    z-index: 1;
   }
 
   &.hidden {
-    position: absolute;
-    top: 0;
-    left: 0;
     visibility: hidden;
+    z-index: 0;
   }
 
   &.exitLeft {
-    position: absolute;
-    top: 0;
-    left: 0;
+    z-index: 1;
     animation: slideExitLeft 500ms ease-in-out forwards;
   }
 
   &.enterRight {
-    position: relative;
+    z-index: 2;
     animation: slideEnterRight 500ms ease-in-out forwards;
   }
 }
