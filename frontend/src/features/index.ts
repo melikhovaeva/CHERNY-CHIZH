@@ -8,4 +8,4 @@ export {
 } from './puppy-filters';
 export { Tabs } from './tabs-filter';
 
-export { LoginButton, LoginForm } from './session';
+export { LoginButton, LoginForm, RegisterForm } from './session';

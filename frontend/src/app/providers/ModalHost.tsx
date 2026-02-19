@@ -20,11 +20,7 @@ export function ModalHost() {
 
   if (bookingIsOpen) {
     return (
-      <Modal
-        isOpen
-        onClose={handleCloseBooking}
-        title={<h2>ЗАБРОНИРОВАТЬ</h2>}
-      >
+      <Modal isOpen onClose={handleCloseBooking} title={<h2>ЗАБРОНИРОВАТЬ</h2>}>
         <BookingModalContent onSuccess={handleCloseBooking} />
       </Modal>
     );
@@ -32,11 +28,7 @@ export function ModalHost() {
 
   if (authIsOpen) {
     return (
-      <Modal
-        isOpen
-        onClose={handleCloseAuth}
-        title={<h2>Вход</h2>}
-      >
+      <Modal isOpen onClose={handleCloseAuth} title={<h2>Вход</h2>}>
         <AuthModalContent onClose={handleCloseAuth} />
       </Modal>
     );
