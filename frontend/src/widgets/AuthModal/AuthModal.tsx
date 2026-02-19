@@ -1,11 +1,12 @@
 import { LoginForm, RegisterForm } from '@/features';
 import { useModalTitle } from '@/shared';
 import { useCallback, useEffect, useState } from 'react';
+import styles from './AuthModal.module.scss';
 
 type AuthMode = 'login' | 'register';
 
 const TITLES: Record<AuthMode, string> = {
-  login: 'Вход',
+  login: 'Войти',
   register: 'Регистрация',
 };
 
@@ -28,23 +29,23 @@ export function AuthModalContent({ onClose }: AuthModalContentProps) {
     <div>
       {mode === 'login' ? (
         <>
-          <LoginForm />
-          <p>
-            Нет аккаунта?{' '}
+          <div className={styles.switch}>
+            <p>Нет аккаунта? </p>
             <button type="button" onClick={switchToRegister}>
-              Зарегистрироваться
+              Создай новый
             </button>
-          </p>
+          </div>
+          <LoginForm />
         </>
       ) : (
         <>
-          <RegisterForm />
-          <p>
-            Уже есть аккаунт?{' '}
+          <div className={styles.switch}>
+            <p>Есть аккаунт? </p>
             <button type="button" onClick={switchToLogin}>
               Войти
             </button>
-          </p>
+          </div>
+          <RegisterForm />
         </>
       )}
       <button type="button" onClick={onClose}>
