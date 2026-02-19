@@ -1,14 +1,16 @@
-import { cn } from '@/shared/lib/utils'
-import styles from './Checkbox.module.scss'
+import { cn } from '@/shared/lib/utils';
+import styles from './Checkbox.module.scss';
 
 interface CheckboxProps {
-  checked?: boolean
-  onChange?: (checked: boolean) => void
-  label: string
-  name?: string
-  id?: string
-  disabled?: boolean
-  className?: string
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  label: string;
+  name?: string;
+  required?: boolean;
+  id?: string;
+  disabled?: boolean;
+  className?: string;
+   invalid?: boolean;
 }
 
 export const Checkbox = ({
@@ -17,13 +19,22 @@ export const Checkbox = ({
   label,
   name,
   id,
+  required = false,
   disabled = false,
   className,
+  invalid = false,
 }: CheckboxProps) => {
-  const inputId = id ?? `checkbox-${name ?? label.replace(/\s/g, '-').toLowerCase()}`
+  const inputId =
+    id ?? `checkbox-${name ?? label.replace(/\s/g, '-').toLowerCase()}`;
 
   return (
-    <label className={cn([styles.root, className ?? ''], { [styles.root_disabled]: disabled })} htmlFor={inputId}>
+    <label
+      className={cn([styles.root, className ?? ''], {
+        [styles.root_disabled]: disabled,
+        [styles.root_invalid]: invalid,
+      })}
+      htmlFor={inputId}
+    >
       <input
         id={inputId}
         type="checkbox"
@@ -31,6 +42,7 @@ export const Checkbox = ({
         checked={checked}
         onChange={(e) => onChange?.(e.target.checked)}
         name={name}
+        required={required}
         disabled={disabled}
         aria-checked={checked}
       />
@@ -39,5 +51,5 @@ export const Checkbox = ({
       </span>
       <span className={styles.label}>{label}</span>
     </label>
-  )
-}
+  );
+};
