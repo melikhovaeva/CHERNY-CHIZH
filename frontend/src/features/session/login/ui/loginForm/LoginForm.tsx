@@ -1,5 +1,5 @@
 import styles from './LoginForm.module.scss';
 
 export const LoginForm = () => {
-  return <div className={styles.root}>LoginForm</div>;
+  return <div className={styles.root}></div>;
 };
