@@ -1,1 +1,1 @@
-export { Modal } from './Modal'
+export { Modal, useModalTitle, type ModalTitleContextValue } from './Modal'

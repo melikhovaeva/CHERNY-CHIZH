@@ -5,6 +5,10 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { Checkbox } from './Checkbox';
 export { Form } from './Form';
-export { Modal } from './Modal';
+export {
+  Modal,
+  useModalTitle,
+  type ModalTitleContextValue,
+} from './Modal';
 export { Placeholder } from './Placeholder';
 export { Select, type SelectOption } from './Select';
