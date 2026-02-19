@@ -1,3 +1,41 @@
+$slide-transition-duration: 0.35s;
+
+.sliderWrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.slide {
+  position: relative;
+  width: 100%;
+  transition: transform $slide-transition-duration ease;
+
+  &.slideExit {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(0);
+  }
+
+  &.slideEnter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(100%);
+  }
+}
+
+.sliderWrapper.animating {
+  .slideExit {
+    transform: translateX(-100%);
+  }
+
+  .slideEnter {
+    transform: translateX(0);
+  }
+}
+
 .switch {
   display: flex;
   // justify-content: center;

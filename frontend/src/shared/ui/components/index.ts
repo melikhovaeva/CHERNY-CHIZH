@@ -5,6 +5,7 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { Checkbox } from './Checkbox';
 export { Form } from './Form';
+export { Input, type InputType } from './Input';
 export {
   Modal,
   useModalTitle,

@@ -1,5 +1,4 @@
-import { cn } from '@/shared/lib/utils';
-import { Button, Form } from '@/shared/ui/components';
+import { Button, Form, Input } from '@/shared/ui/components';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import formImage from '../assets/form-image.webp';
 import type { BookingFormFields } from '../model';
@@ -20,54 +19,47 @@ export const BookingForm = ({ onSubmit }: BookingFormProps) => {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.root}>
         <div className={styles.fieldsContainer}>
-          <input
-            className={cn([styles.input], {
-              [styles.invalid]: !!errors.name,
-            })}
+          <Input
             placeholder="Ваше имя"
             type="text"
+            invalid={!!errors.name}
             {...register(BookingFormFieldsEnum.NAME, {
               required: true,
             })}
           />
-          <input
-            className={cn([styles.input], {
-              [styles.invalid]: !!errors.phone,
-            })}
+          <Input
             type="tel"
             placeholder="Ваш телефон"
+            invalid={!!errors.phone}
             {...register(BookingFormFieldsEnum.PHONE, {
               required: true,
             })}
           />
-          <input
-            className={cn([styles.input], {
-              [styles.invalid]: !!errors.telegram,
-            })}
+          <Input
             type="text"
             placeholder="Ваш Telegram ID"
+            invalid={!!errors.telegram}
             {...register(BookingFormFieldsEnum.TELEGRAM, {
               required: true,
             })}
           />
-          <textarea
-            className={cn([styles.textarea], {
-              [styles.invalid]: !!errors.message,
-            })}
+          <Input
+            multiline
             placeholder="Введите ваш вопрос"
+            invalid={!!errors.message}
             {...register(BookingFormFieldsEnum.MESSAGE, {
               required: true,
             })}
           />
-        </div>
-        <div>
-          <Button type="submit" className={styles.submitButton}>
-            Отправить
-          </Button>
-          <p className={styles.consent}>
-            Отправляя заявку, вы соглашаетесь на{' '}
-            <a href="#">обработку персональных данных</a>
-          </p>
+          <div>
+            <Button type="submit" className={styles.submitButton}>
+              Отправить
+            </Button>
+            <p className={styles.consent}>
+              Отправляя заявку, вы соглашаетесь на{' '}
+              <a href="#">обработку персональных данных</a>
+            </p>
+          </div>
         </div>
         <div className={styles.formImageWrapper}>
           <img className={styles.formImage} src={formImage} alt="Form" />
