@@ -1,1 +1,1 @@
-export { BookingModalView } from './BookingModalView';
+export { BookingModalContent } from './BookingModalContent';
