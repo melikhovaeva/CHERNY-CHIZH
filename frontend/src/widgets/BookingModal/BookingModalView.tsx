@@ -4,38 +4,38 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/app/redux';
-import { BookingFields } from '@/features/booking-fields';
+import {
+  BookingForm,
+  type BookingFormFields,
+} from '@/features/booking-form/ui';
 import { useSubmitBookingMutation } from '@/shared/api/booking-api';
-import { Form } from '@/shared/ui/components';
-import { BookingModal } from './BookingModal';
+import { Modal } from '@/shared/ui/components';
+import { type SubmitHandler } from 'react-hook-form';
 
 export function BookingModalView() {
-  const isOpen = useAppSelector(selectBookingModalIsOpen);
   const dispatch = useAppDispatch();
-  const [submitBooking] = useSubmitBookingMutation();
 
+  // MODAL
+  const isOpen = useAppSelector(selectBookingModalIsOpen);
   const handleClose = () => {
     dispatch(closeBookingModal());
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // FORM SUBMIT
+  const onSubmit: SubmitHandler<BookingFormFields> = async (data) => {
     try {
-      await submitBooking({
-        name: '',
-        phone: '',
-      }).unwrap();
+      await submitBooking(data).unwrap();
       dispatch(closeBookingModal());
-    } catch {
-      // TODO: handle error
+      console.log('success', data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
+  const [submitBooking] = useSubmitBookingMutation();
   return (
-    <BookingModal isOpen={isOpen} onClose={handleClose}>
-      <Form onSubmit={handleSubmit}>
-        <BookingFields />
-      </Form>
-    </BookingModal>
+    <Modal isOpen={isOpen} onClose={handleClose} title={<h2>ЗАБРОНИРОВАТЬ</h2>}>
+      <BookingForm onSubmit={onSubmit} />
+    </Modal>
   );
 }
