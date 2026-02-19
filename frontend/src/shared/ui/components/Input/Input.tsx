@@ -8,6 +8,7 @@ export type InputType = 'text' | 'tel' | 'email' | 'password' | 'url';
 
 type BaseInputProps = {
   invalid?: boolean;
+  error?: string;
   className?: string;
   multiline?: boolean;
   type?: InputType;
@@ -54,6 +55,7 @@ export const Input = forwardRef<
 >(function Input(
   {
     invalid = false,
+    error,
     className,
     multiline = false,
     type = 'text',
@@ -64,6 +66,7 @@ export const Input = forwardRef<
   },
   ref
 ) {
+  const isInvalid = invalid || !!error;
   const generatedId = useId();
   const inputId = (rest as Record<string, unknown>).id as string | undefined ?? generatedId;
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -74,7 +77,7 @@ export const Input = forwardRef<
 
   const inputClassName = cn(
     [multiline ? styles.textarea : styles.input],
-    { [styles.invalid]: invalid, [styles.withToggle]: hasToggle }
+    { [styles.invalid]: isInvalid, [styles.withToggle]: hasToggle }
   );
   const resolvedClassName = className ? `${inputClassName} ${className}` : inputClassName;
 
@@ -126,13 +129,21 @@ export const Input = forwardRef<
     }
   }
 
-  if (label) {
+  if (label || error) {
     return (
       <div className={styles.field}>
-        <label className={styles.label} htmlFor={inputId}>
-          {label}
-        </label>
+        {label && (
+          <label className={styles.label} htmlFor={inputId}>
+            {label}
+          </label>
+        )}
         {element}
+        <span
+          className={cn([styles.error], { [styles.error_visible]: !!error })}
+          role={error ? 'alert' : undefined}
+        >
+          {error || '\u00A0'}
+        </span>
       </div>
     );
   }

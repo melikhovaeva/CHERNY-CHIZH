@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from './RegisterForm.module.scss';
 
+const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const MIN_PASSWORD_LENGTH = 8;
+
 interface RegisterFormFields {
   email: string;
   password: string;
@@ -15,8 +18,9 @@ export const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { isValid },
-  } = useForm<RegisterFormFields>({ mode: 'onChange' });
+    watch,
+    formState: { errors },
+  } = useForm<RegisterFormFields>();
 
   const onSubmit = (data: RegisterFormFields) => {
     console.log(data);
@@ -30,22 +34,41 @@ export const RegisterForm = () => {
             label="Почта"
             placeholder="Введите почту"
             type="email"
-            {...register('email', { required: true })}
+            error={errors.email?.message}
+            {...register('email', {
+              required: 'Введите почту',
+              pattern: {
+                value: EMAIL_PATTERN,
+                message: 'Некорректный адрес почты',
+              },
+            })}
           />
           <Input
             label="Пароль"
             placeholder="Введите пароль"
             type="password"
-            {...register('password', { required: true })}
+            error={errors.password?.message}
+            {...register('password', {
+              required: 'Введите пароль',
+              minLength: {
+                value: MIN_PASSWORD_LENGTH,
+                message: `Минимум ${MIN_PASSWORD_LENGTH} символов`,
+              },
+            })}
           />
           <Input
             label="Повторите пароль"
             placeholder="Повторите пароль"
             type="password"
-            {...register('confirmPassword', { required: true })}
+            error={errors.confirmPassword?.message}
+            {...register('confirmPassword', {
+              required: 'Повторите пароль',
+              validate: (value) =>
+                value === watch('password') || 'Пароли не совпадают',
+            })}
           />
         </div>
-        <Button type="submit" disabled={!isValid || !agreed}>
+        <Button type="submit" disabled={!agreed}>
           Создать аккаунт
         </Button>
         <Checkbox
