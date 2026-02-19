@@ -32,9 +32,8 @@ export function ModalHost() {
         mode="large"
         isOpen
         onClose={handleCloseAuth}
-        title={<h2>Войти</h2>}
       >
-        <AuthModalContent onClose={handleCloseAuth} />
+        <AuthModalContent />
       </Modal>
     );
   }

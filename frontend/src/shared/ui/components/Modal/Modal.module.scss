@@ -67,12 +67,14 @@
   .content {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    overflow: hidden;
   }
 
   .leftSide {
     color: $text-inverted-color;
     aspect-ratio: 1/1;
     position: relative;
+    z-index: 1;
     padding: 40px 40px;
     display: flex;
     flex-direction: column;
