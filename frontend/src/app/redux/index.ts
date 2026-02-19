@@ -1,11 +1,13 @@
 import { baseApi } from '@/shared/api/base-api'
 import { configureStore } from '@reduxjs/toolkit'
+import { authModalUiSlice } from './slices/auth-modal-ui'
 import { bookingModalUiSlice } from './slices/booking-modal-ui'
 import { selectedBreedSlice } from './slices/selected-breed'
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    [authModalUiSlice.name]: authModalUiSlice.reducer,
     [bookingModalUiSlice.name]: bookingModalUiSlice.reducer,
     [selectedBreedSlice.name]: selectedBreedSlice.reducer,
   },
@@ -16,6 +18,11 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
+export {
+  openAuthModal,
+  closeAuthModal,
+  selectAuthModalIsOpen,
+} from './slices/auth-modal-ui'
 export {
   openBookingModal,
   closeBookingModal,
