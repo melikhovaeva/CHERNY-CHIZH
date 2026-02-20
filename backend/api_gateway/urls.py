@@ -8,6 +8,7 @@ from common.views import (
     DictionaryViewSet,
     PuppyByBreedSlugViewSet,
     PuppyViewSet,
+    RequestViewSet,
 )
 from consumer.views import FAQItemViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -22,6 +23,7 @@ router.register(
 )
 router.register(r"dictionaries", DictionaryViewSet, basename="dictionary")
 router.register(r"faq", FAQItemViewSet, basename="faq-item")
+router.register(r"requests", RequestViewSet, basename="request")
 
 router.APIRootView.permission_classes = [permissions.AllowAny]
 
