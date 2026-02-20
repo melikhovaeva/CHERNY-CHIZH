@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from common.models import BreedDescription, Puppy, Breed, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument
+from common.models import BreedDescription, Puppy, Breed, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument, Request
 
 
 def _to_camel_case(snake_str: str) -> str:
@@ -168,3 +168,27 @@ class BreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
 
     def get_photo(self, obj):
         return obj.photo.url if obj.photo else None
+    
+
+class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "messenger",
+            "message",
+            "puppy",
+        )
+        read_only_fields = ("id",)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.puppy_id is not None:
+            data["puppy"] = instance.puppy.name
+        else:
+            data["puppy"] = None
+        return data

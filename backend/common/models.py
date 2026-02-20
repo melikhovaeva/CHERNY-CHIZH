@@ -245,3 +245,32 @@ class PuppyParents(models.Model):
             raise ValidationError(
                 {"father": "Эта собака уже является родителем другого щенка"}
             )
+
+
+class RequestManager(models.Manager):
+    """Менеджер для создания и хранения заявок."""
+
+    def create_request(self, *, puppy=None, **kwargs):
+        if puppy is not None and not isinstance(puppy, Puppy):
+            puppy = Puppy.objects.get(pk=puppy)
+        if puppy is not None:
+            kwargs["puppy"] = puppy
+        return self.create(**kwargs)
+
+
+class Request(models.Model):
+    """Сущность заявок на щенка или вопросов общего характера если щенок не указан"""
+    objects = RequestManager()
+    first_name = models.CharField(max_length=255, null=False, blank=False)
+    last_name = models.CharField(max_length=255, null=False, blank=False)
+    email = models.EmailField(null=False, blank=False)
+    phone = models.CharField(max_length=255, null=False, blank=False)
+    messenger = models.CharField(max_length=255, null=False, blank=False)
+    message = models.TextField(null=False, blank=False)
+    puppy = models.ForeignKey(
+        Puppy,
+        on_delete=models.CASCADE,
+        related_name="requests",
+        null=True,
+        blank=True,
+    )

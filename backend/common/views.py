@@ -4,11 +4,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.dictionaries import DICTIONARY_GROUPS
-from common.models import Breed, Puppy
+from common.models import Breed, Puppy, Request as RequestModel
 from common.serializers import (
     BreedListSerializer,
     PuppyByBreedListSerializer,
     PuppyListSerializer,
+    RequestSerializer,
     _keys_to_camel_case,
 )
 
@@ -183,3 +184,17 @@ class DictionaryViewSet(viewsets.ViewSet):
         }
 
         return Response(_keys_to_camel_case(payload))
+    
+    
+class RequestViewSet(viewsets.ModelViewSet):
+    queryset = RequestModel.objects.all()
+    serializer_class = RequestSerializer
+
+    def create(self, request: Request) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = RequestModel.objects.create_request(**serializer.validated_data)
+        return Response(
+            _keys_to_camel_case(RequestSerializer(instance).data),
+            status=status.HTTP_201_CREATED,
+        )
