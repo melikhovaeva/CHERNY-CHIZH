@@ -1,4 +1,4 @@
-import { LoginForm, RegisterForm } from '@/features';
+import { LoginForm, RegisterFlow } from '@/features';
 import { cn } from '@/shared/lib/utils';
 import { useModalTitle } from '@/shared';
 import { useCallback, useEffect, useState } from 'react';
@@ -78,7 +78,7 @@ export function AuthModalContent() {
             Войти
           </button>
         </div>
-        <RegisterForm />
+        <RegisterFlow />
       </div>
     </div>
   );

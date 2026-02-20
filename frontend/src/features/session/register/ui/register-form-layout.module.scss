@@ -7,7 +7,21 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 6px;
+}
+
+.apiErrorSlot {
+  min-height: 1.4em;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.apiError {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: $input-invalid-border-color;
 }
 
 .consent {

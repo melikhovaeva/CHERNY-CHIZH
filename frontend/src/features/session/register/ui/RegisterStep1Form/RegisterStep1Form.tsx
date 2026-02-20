@@ -1,30 +1,55 @@
+import { useRegisterStep1Mutation } from '@/entities/session';
+import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Checkbox, Form, Input } from '@/shared/ui/components';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styles from './RegisterForm.module.scss';
+import styles from '../register-form-layout.module.scss';
 
 const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const MIN_PASSWORD_LENGTH = 8;
 
-interface RegisterFormFields {
+const STEP1_ERROR_FIELDS = [
+  'email',
+  'password',
+  'password2',
+  'detail',
+] as const;
+
+export interface RegisterStep1FormFields {
   email: string;
   password: string;
   confirmPassword: string;
 }
 
-export const RegisterForm = () => {
+interface RegisterStep1FormProps {
+  onSuccess: (email: string, password: string) => void;
+}
+
+export const RegisterStep1Form = ({ onSuccess }: RegisterStep1FormProps) => {
   const [agreed, setAgreed] = useState(false);
+  const [registerStep1, { isLoading, error }] = useRegisterStep1Mutation();
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<RegisterFormFields>();
+  } = useForm<RegisterStep1FormFields>();
 
-  const onSubmit = (data: RegisterFormFields) => {
-    console.log(data);
+  const onSubmit = async (data: RegisterStep1FormFields) => {
+    try {
+      const result = await registerStep1({
+        email: data.email,
+        password: data.password,
+        password2: data.confirmPassword,
+      }).unwrap();
+      onSuccess(result.email, data.password);
+    } catch {
+      console.error(error);
+    }
   };
+
+  const apiError = getFirstApiErrorMessage(error, [...STEP1_ERROR_FIELDS]);
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -67,17 +92,20 @@ export const RegisterForm = () => {
                 value === watch('password') || 'Пароли не совпадают',
             })}
           />
+          <div className={styles.apiErrorSlot}>
+            {apiError && <p className={styles.apiError}>{apiError}</p>}
+          </div>
         </div>
-        <Button type="submit" disabled={!agreed}>
-          Создать аккаунт
+        <Button type="submit" disabled={!agreed || isLoading}>
+          Зарегестрироваться
         </Button>
         <Checkbox
           checked={agreed}
           onChange={setAgreed}
           label={
             <span className={styles.consent}>
-              Нажимая «Создать аккаунт», я подтверждаю, что ознакомился(лась) и
-              принимаю <a href="#">Условия использования</a> и{' '}
+              Нажимая «Зарегестрироваться», я подтверждаю, что ознакомился(лась)
+              и принимаю <a href="#">Условия использования</a> и{' '}
               <a href="#">Политику конфиденциальности</a>
             </span>
           }
