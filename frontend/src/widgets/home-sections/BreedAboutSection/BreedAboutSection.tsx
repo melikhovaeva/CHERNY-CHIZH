@@ -52,6 +52,7 @@ export function BreedAboutSection({
   );
   const activeDescription = descriptions[activeTab];
   const activeFeatures = useMemo(() => {
+    if (!activeDescription) return [];
     return Object.entries(activeDescription).filter(
       ([key]) => key !== BreedAboutBlockKey.APPEARANCE,
     );
