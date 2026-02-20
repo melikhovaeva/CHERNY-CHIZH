@@ -1,4 +1,9 @@
 export {
+  getFirstApiErrorMessage,
+  type ApiErrorPayload,
+  type RtkQueryErrorWithData,
+} from './lib/api-error';
+export {
   Accordion,
   Backdrop,
   Button,

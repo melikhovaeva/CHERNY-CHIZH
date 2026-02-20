@@ -13,6 +13,7 @@ import ArrowLeftIcon from './assets/arrow-left.svg?react';
 import largeModalImage from './assets/large-modal-image.png';
 import styles from './Modal.module.scss';
 import type { ModalTitleContextValue } from './model';
+export type { ModalTitleContextValue } from './model';
 
 const ModalTitleContext = createContext<ModalTitleContextValue | null>(null);
 

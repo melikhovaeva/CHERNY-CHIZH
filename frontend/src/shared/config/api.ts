@@ -9,11 +9,14 @@ export const API_CONFIG = {
     BREEDS: 'api/breeds/',
     FAQ: 'api/faq/',
     DICTIONARIES: 'api/dictionaries/',
+    REGISTER_STEP1: 'api/users/register/step1/',
+    REGISTER_STEP2: 'api/users/register/step2/',
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',
     BREEDS: 'Breeds',
     FAQ: 'FAQ',
     DICTIONARIES: 'Dictionaries',
+    SESSION: 'Session',
   } as const,
 } as const;

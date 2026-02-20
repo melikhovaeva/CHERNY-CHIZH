@@ -1,1 +1,1 @@
-export { RegisterForm } from './ui/RegisterForm';
+export { RegisterFlow } from './ui';
