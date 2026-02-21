@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
@@ -261,6 +262,13 @@ class RequestManager(models.Manager):
 class Request(models.Model):
     """Сущность заявок на щенка или вопросов общего характера если щенок не указан"""
     objects = RequestManager()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="requests",
+        null=True,
+        blank=True,
+    )
     first_name = models.CharField(max_length=255, null=False, blank=False)
     last_name = models.CharField(max_length=255, null=False, blank=False)
     email = models.EmailField(null=False, blank=False)
@@ -274,3 +282,12 @@ class Request(models.Model):
         null=True,
         blank=True,
     )
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+
+    def __str__(self):
+        if self.user:
+            return f"Заявка #{self.pk} от {self.user.email}"
+        return f"Заявка #{self.pk} от {self.first_name} {self.last_name}"

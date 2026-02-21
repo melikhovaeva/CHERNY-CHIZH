@@ -1,5 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -187,14 +188,36 @@ class DictionaryViewSet(viewsets.ViewSet):
     
     
 class RequestViewSet(viewsets.ModelViewSet):
-    queryset = RequestModel.objects.all()
     serializer_class = RequestSerializer
+    http_method_names = ["get", "post", "head", "options"]
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return RequestModel.objects.all()
+        return RequestModel.objects.filter(user=user)
 
     def create(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        instance = RequestModel.objects.create_request(**serializer.validated_data)
+
+        data = serializer.validated_data
+        if request.user.is_authenticated:
+            data["user"] = request.user
+            data.setdefault("first_name", request.user.first_name)
+            data.setdefault("last_name", request.user.last_name)
+            data.setdefault("email", request.user.email)
+            data.setdefault("phone", request.user.phone or "")
+            data.setdefault("messenger", request.user.telegram or "")
+
+        instance = RequestModel.objects.create_request(**data)
+        out_serializer = RequestSerializer(instance, context={"request": request})
         return Response(
-            _keys_to_camel_case(RequestSerializer(instance).data),
+            _keys_to_camel_case(out_serializer.data),
             status=status.HTTP_201_CREATED,
         )

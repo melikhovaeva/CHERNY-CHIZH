@@ -171,10 +171,13 @@ class BreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
     
 
 class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    PERSONAL_FIELDS = ("first_name", "last_name", "email", "phone", "messenger")
+
     class Meta:
         model = Request
         fields = (
             "id",
+            "user",
             "first_name",
             "last_name",
             "email",
@@ -183,7 +186,15 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "message",
             "puppy",
         )
-        read_only_fields = ("id",)
+        read_only_fields = ("id", "user")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and request.user.is_authenticated:
+            for field_name in self.PERSONAL_FIELDS:
+                self.fields[field_name].required = False
+                self.fields[field_name].allow_blank = True
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -191,4 +202,8 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             data["puppy"] = instance.puppy.name
         else:
             data["puppy"] = None
+        if instance.user_id is not None:
+            data["user"] = instance.user.email
+        else:
+            data["user"] = None
         return data

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument
+from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument, Request
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -96,3 +96,11 @@ class PuppyAdmin(admin.ModelAdmin):
         return 0
 
     photos_count.short_description = "Фото"
+
+
+@admin.register(Request)
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "first_name", "last_name", "email", "phone", "messenger", "puppy")
+    list_filter = ("user",)
+    search_fields = ("first_name", "last_name", "email", "message")
+    raw_id_fields = ("user", "puppy")
