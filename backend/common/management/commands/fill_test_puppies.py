@@ -1,14 +1,14 @@
 import random
 from datetime import date, timedelta
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from common.models import (
+    AnimalPotential,
+    AnimalSex,
+    AnimalStatus,
     Breed,
     Puppy,
-    PuppyPotential,
-    PuppySex,
-    PuppyStatus,
 )
 
 
@@ -88,13 +88,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         clear: bool = options["clear"]
 
-        statuses = list(PuppyStatus.objects.all())
-        sexes = list(PuppySex.objects.all())
-        potentials = list(PuppyPotential.objects.all())
+        statuses = list(AnimalStatus.objects.all())
+        sexes = list(AnimalSex.objects.all())
+        potentials = list(AnimalPotential.objects.all())
 
         if not statuses or not sexes or not potentials:
             raise CommandError(
-                "PuppyStatus / PuppySex / PuppyPotential not found. "
+                "AnimalStatus / AnimalSex / AnimalPotential not found."
             )
 
         breeds = {}
@@ -133,4 +133,3 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(f"Создано тестовых щенков: {created}")
         )
-
