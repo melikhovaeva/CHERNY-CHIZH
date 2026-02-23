@@ -54,7 +54,7 @@ export function PuppiesSection() {
         <h2 className={styles.title}>Наши Щенки</h2>
         <FilterableGallery
           tabs={breedTabs}
-          items={puppies}
+          items={puppies.slice(0, 3)}
           filterBy="breed"
           activeTab={activeBreed}
           onActiveTabChange={(value) => dispatch(setSelectedBreed(value))}
