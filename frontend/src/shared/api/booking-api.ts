@@ -1,22 +1,22 @@
-import { baseApi } from './base-api'
+import { baseApi } from './base-api';
 
 export interface SubmitBookingRequest {
-  name: string
-  phone: string
-  email?: string
-  comment?: string
+  name: string;
+  phone: string;
+  email?: string;
+  comment?: string;
 }
 
 export const bookingApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     submitBooking: build.mutation<void, SubmitBookingRequest>({
       query: (body) => ({
-        url: '/booking',
+        url: '/api/requests/',
         method: 'POST',
         body,
       }),
     }),
   }),
-})
+});
 
-export const { useSubmitBookingMutation } = bookingApi
+export const { useSubmitBookingMutation } = bookingApi;
