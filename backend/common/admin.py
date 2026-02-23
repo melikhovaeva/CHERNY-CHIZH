@@ -1,7 +1,25 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from common.models import Breed, BreedDescription, Puppy, PuppyParents, PuppyPhoto, PuppyStatus, PuppySex, PuppyPotential, PuppyDocument, Request
+from common.models import (
+    AnimalPotential,
+    AnimalSex,
+    AnimalStatus,
+    Breed,
+    BreedDescription,
+    Dog,
+    Puppy,
+    PuppyDocument,
+    PuppyParents,
+    PuppyPhoto,
+    Request,
+)
+
+
+class CodeLabelAdmin(admin.ModelAdmin):
+    """Базовый админ для справочников code+label."""
+
+    list_display = ("code", "label")
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -17,11 +35,20 @@ class BreedDescriptionInline(admin.StackedInline):
         ("activity_rating", "activity_text"),
     )
 
-class PuppyParentsInline(admin.StackedInline):
+
+class PuppyParentsInline(admin.TabularInline):
     model = PuppyParents
     fk_name = "puppy"
-    extra = 0
-    max_num = 1
+    extra = 2
+    max_num = 2
+    fields = ("role", "dog")
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "dog":
+            breed_id = getattr(request, "_puppy_breed_id", None)
+            if breed_id is not None:
+                kwargs["queryset"] = Dog.objects.filter(breed_id=breed_id)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class PuppyPhotoInline(admin.TabularInline):
@@ -44,19 +71,20 @@ class PuppyDocumentInline(admin.TabularInline):
     extra = 1
     fields = ("name", "file")
 
-@admin.register(PuppyStatus)
-class PuppyStatusAdmin(admin.ModelAdmin):
-    list_display = ("code", "label")
+
+@admin.register(AnimalStatus)
+class AnimalStatusAdmin(CodeLabelAdmin):
+    pass
 
 
-@admin.register(PuppySex)
-class PuppySexAdmin(admin.ModelAdmin):
-    list_display = ("code", "label")
+@admin.register(AnimalSex)
+class AnimalSexAdmin(CodeLabelAdmin):
+    pass
 
 
-@admin.register(PuppyPotential)
-class PuppyPotentialAdmin(admin.ModelAdmin):
-    list_display = ("code", "label")
+@admin.register(AnimalPotential)
+class AnimalPotentialAdmin(CodeLabelAdmin):
+    pass
 
 
 @admin.register(Breed)
@@ -82,6 +110,12 @@ class BreedAdmin(admin.ModelAdmin):
 
     photo_preview_list.short_description = "Фото"
 
+
+@admin.register(Dog)
+class DogAdmin(admin.ModelAdmin):
+    list_display = ("name", "breed", "status", "birth_date", "sex", "color", "potential")
+
+
 @admin.register(Puppy)
 class PuppyAdmin(admin.ModelAdmin):
     list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photos_count")
@@ -89,6 +123,11 @@ class PuppyAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("name", "breed", "status", "birth_date", "sex", "color", "potential", "description")}),
     )
+
+    def get_form(self, request, obj=None, **kwargs):
+        if obj is not None:
+            request._puppy_breed_id = obj.breed_id
+        return super().get_form(request, obj, **kwargs)
 
     def photos_count(self, obj):
         if obj and obj.pk:
