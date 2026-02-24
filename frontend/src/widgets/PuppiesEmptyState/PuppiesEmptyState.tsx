@@ -27,7 +27,7 @@ export function PuppiesEmptyState({ className }: PuppiesEmptyStateProps) {
         </p>
         <Button
           className={styles.button}
-          onClick={() => dispatch(openBookingModal())}
+          onClick={() => dispatch(openBookingModal(null))}
         >
           Забронировать
         </Button>

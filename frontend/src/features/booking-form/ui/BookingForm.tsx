@@ -5,44 +5,57 @@ import type { BookingFormFields } from '../model';
 import { BookingFormFieldsEnum } from '../model/enums';
 import styles from './BookingForm.module.scss';
 
+type BookingFormMode = 'guest' | 'auth';
+
 interface BookingFormProps {
   onSubmit: SubmitHandler<BookingFormFields>;
+  mode?: BookingFormMode;
 }
 
-export const BookingForm = ({ onSubmit }: BookingFormProps) => {
+export const BookingForm = ({ onSubmit, mode = 'guest' }: BookingFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<BookingFormFields>();
+
+  const isGuest = mode === 'guest';
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.root}>
         <div className={styles.fieldsContainer}>
-          <Input
-            placeholder="Ваше имя"
-            type="text"
-            invalid={!!errors.name}
-            {...register(BookingFormFieldsEnum.NAME, {
-              required: true,
-            })}
-          />
-          <Input
-            type="tel"
-            placeholder="Ваш телефон"
-            invalid={!!errors.phone}
-            {...register(BookingFormFieldsEnum.PHONE, {
-              required: true,
-            })}
-          />
-          <Input
-            type="text"
-            placeholder="Ваш Telegram ID"
-            invalid={!!errors.telegram}
-            {...register(BookingFormFieldsEnum.TELEGRAM, {
-              required: true,
-            })}
-          />
+          {isGuest && (
+            <>
+              <Input
+                placeholder="Ваше имя"
+                type="text"
+                invalid={!!errors.first_name}
+                {...register(BookingFormFieldsEnum.FIRST_NAME, {
+                  required: true,
+                })}
+              />
+              <Input
+                type="tel"
+                placeholder="Ваш телефон"
+                invalid={!!errors.phone}
+                {...register(BookingFormFieldsEnum.PHONE, {
+                  required: true,
+                })}
+              />
+              <Input
+                type="text"
+                placeholder="Мессенджер для связи (например, Telegram)"
+                invalid={!!errors.messenger}
+                {...register(BookingFormFieldsEnum.MESSENGER, {
+                  required: true,
+                })}
+              />
+            </>
+          )}
+          {!isGuest && (
+            null
+          )}
           <Input
             multiline
             placeholder="Введите ваш вопрос"

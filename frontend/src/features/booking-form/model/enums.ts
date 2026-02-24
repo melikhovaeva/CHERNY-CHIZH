@@ -1,6 +1,6 @@
 export enum BookingFormFieldsEnum {
-  NAME = 'name',
+  FIRST_NAME = 'first_name',
   PHONE = 'phone',
+  MESSENGER = 'messenger',
   MESSAGE = 'message',
-  TELEGRAM = 'telegram',
 }

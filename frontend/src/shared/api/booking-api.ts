@@ -2,10 +2,13 @@ import { baseApi } from '@/shared/api/base-api';
 import { API_CONFIG } from '@/shared/config/api';
 
 export interface SubmitBookingRequest {
-  name: string;
-  phone: string;
+  first_name: string;
+  last_name?: string;
   email?: string;
-  comment?: string;
+  phone: string;
+  messenger: string;
+  message: string;
+  dog?: number;
 }
 
 export const bookingApi = baseApi.injectEndpoints({

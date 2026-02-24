@@ -8,7 +8,7 @@ const STEP2_ERROR_FIELDS = ['first_name', 'last_name', 'email', 'detail'] as con
 
 export interface RegisterStep2FormFields {
   first_name: string;
-  last_name: string;
+  last_name?: string;
   phone: string;
   telegram: string;
 }
@@ -41,7 +41,7 @@ export const RegisterStep2Form = ({
         password,
         password2: password,
         first_name: data.first_name,
-        last_name: data.last_name,
+        last_name: data.last_name?.trim() || undefined,
         phone: data.phone?.trim() || undefined,
         telegram: data.telegram?.trim() || undefined,
       }).unwrap();
@@ -67,11 +67,9 @@ export const RegisterStep2Form = ({
           />
           <Input
             label="Фамилия"
-            placeholder="Введите фамилию"
+            placeholder="Необязательно"
             error={errors.last_name?.message}
-            {...register('last_name', {
-              required: 'Введите фамилию',
-            })}
+            {...register('last_name')}
           />
           <Input
             label="Телефон"

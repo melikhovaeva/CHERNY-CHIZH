@@ -1,6 +1,6 @@
 export interface BookingFormFields {
-  name: string;
+  first_name: string;
   phone: string;
+  messenger: string;
   message: string;
-  telegram: string;
 }

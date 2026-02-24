@@ -8,7 +8,7 @@ class UserAccountManager(BaseUserManager):
             raise ValueError('Email is required')
         
         first_name = extra_fields.pop('first_name', email.split('@')[0])
-        last_name = extra_fields.pop('last_name', email.split('@')[0])
+        last_name = extra_fields.pop('last_name', '')
         phone = extra_fields.pop('phone', None)
         telegram = extra_fields.pop('telegram', None)
         extra_fields.pop('first_name', None)
@@ -45,7 +45,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=12, blank=True, null=True)
     telegram = models.CharField(max_length=255, blank=True, null=True)
     courses = models.ManyToManyField(
@@ -60,4 +60,4 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name']
