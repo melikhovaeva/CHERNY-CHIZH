@@ -49,8 +49,8 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=12, blank=True, null=True)
     telegram = models.CharField(max_length=255, blank=True, null=True)
     courses = models.ManyToManyField(
-        "common.Course",
-        through="common.CourseEnrollment",
+        "education.Course",
+        through="education.CourseEnrollment",
         related_name="users",
         blank=True,
     )
