@@ -131,6 +131,14 @@ export function Modal({
                 <img src={largeModalImage} alt="Modal image" />
               </div>
               <div className={styles.rightSide}>
+                <button
+                  type="button"
+                  className={styles.closeButton}
+                  onClick={onClose}
+                  aria-label="Закрыть"
+                >
+                  <ArrowLeftIcon width={24} height={24} aria-hidden />
+                </button>
                 {currentTitle && currentTitle}
                 <div className={styles.body}>{children}</div>
               </div>
