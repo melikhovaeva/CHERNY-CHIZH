@@ -264,6 +264,18 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         )
         read_only_fields = ("id", "user")
 
+    last_name = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+        max_length=255,
+    )
+    email = serializers.EmailField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get("request")

@@ -367,8 +367,8 @@ class Request(models.Model):
         blank=True,
     )
     first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField()
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=255)
     messenger = models.CharField(max_length=255)
     message = models.TextField()

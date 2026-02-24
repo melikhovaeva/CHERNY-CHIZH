@@ -1,8 +1,8 @@
-import { baseApi } from '@/shared/api/base-api'
-import { configureStore } from '@reduxjs/toolkit'
-import { authModalUiSlice } from './slices/auth-modal-ui'
-import { bookingModalUiSlice } from './slices/booking-modal-ui'
-import { selectedBreedSlice } from './slices/selected-breed'
+import { baseApi } from '@/shared/api/base-api';
+import { configureStore } from '@reduxjs/toolkit';
+import { authModalUiSlice } from './slices/auth-modal-ui';
+import { bookingModalUiSlice } from './slices/booking-modal-ui';
+import { selectedBreedSlice } from './slices/selected-breed';
 
 export const store = configureStore({
   reducer: {
@@ -13,28 +13,29 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export {
-  openAuthModal,
   closeAuthModal,
+  openAuthModal,
   selectAuthModalIsOpen,
-} from './slices/auth-modal-ui'
+} from './slices/auth-modal-ui';
 export {
-  openBookingModal,
   closeBookingModal,
+  openBookingModal,
   selectBookingModalIsOpen,
-} from './slices/booking-modal-ui'
+  selectBookingModalDogId,
+} from './slices/booking-modal-ui';
 export {
-  setSelectedBreed,
   selectSelectedBreedSlug,
-} from './slices/selected-breed'
+  setSelectedBreed,
+} from './slices/selected-breed';
 
-import type { TypedUseSelectorHook } from 'react-redux'
-import { useDispatch, useSelector } from 'react-redux'
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-export const useAppDispatch = () => useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

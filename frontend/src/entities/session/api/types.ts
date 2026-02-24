@@ -13,7 +13,7 @@ export interface RegisterStep2Request {
   password: string;
   password2: string;
   first_name: string;
-  last_name: string;
+  last_name?: string;
   phone?: string;
   telegram?: string;
 }
@@ -22,7 +22,7 @@ export interface RegisterStep2Response {
   id: number;
   email: string;
   first_name: string;
-  last_name: string;
+  last_name: string | null;
   phone: string | null;
   telegram: string | null;
 }

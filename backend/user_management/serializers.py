@@ -11,6 +11,7 @@ class UserAccountSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
   password2 = serializers.CharField(write_only=True, required=True)
+  last_name = serializers.CharField(required=False, allow_blank=True, max_length=255)
   
   class Meta:
     model = UserAccount
@@ -47,7 +48,7 @@ class RegisterStep2Serializer(serializers.Serializer):
   password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
   password2 = serializers.CharField(write_only=True, required=True)
   first_name = serializers.CharField(required=True, max_length=255)
-  last_name = serializers.CharField(required=True, max_length=255)
+  last_name = serializers.CharField(required=False, allow_blank=True, max_length=255)
   phone = serializers.CharField(required=False, allow_blank=True, max_length=50)
   telegram = serializers.CharField(required=False, allow_blank=True, max_length=255)
 
@@ -62,6 +63,8 @@ class RegisterStep2Serializer(serializers.Serializer):
       attrs['phone'] = None
     if attrs.get('telegram') == '':
       attrs['telegram'] = None
+    if attrs.get('last_name') == '':
+      attrs['last_name'] = None
     return attrs
 
   def create(self, validated_data):

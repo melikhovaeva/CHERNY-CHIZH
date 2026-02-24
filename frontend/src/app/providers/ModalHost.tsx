@@ -2,6 +2,7 @@ import {
   closeAuthModal,
   closeBookingModal,
   selectAuthModalIsOpen,
+  selectBookingModalDogId,
   selectBookingModalIsOpen,
   useAppDispatch,
   useAppSelector,
@@ -13,6 +14,7 @@ import { BookingModalContent } from '@/widgets/BookingModal';
 export function ModalHost() {
   const dispatch = useAppDispatch();
   const bookingIsOpen = useAppSelector(selectBookingModalIsOpen);
+  const dogId = useAppSelector(selectBookingModalDogId);
   const authIsOpen = useAppSelector(selectAuthModalIsOpen);
 
   const handleCloseBooking = () => dispatch(closeBookingModal());
@@ -21,7 +23,7 @@ export function ModalHost() {
   if (bookingIsOpen) {
     return (
       <Modal isOpen onClose={handleCloseBooking} title={<h2>ЗАБРОНИРОВАТЬ</h2>}>
-        <BookingModalContent onSuccess={handleCloseBooking} />
+        <BookingModalContent dogId={dogId} onSuccess={handleCloseBooking} />
       </Modal>
     );
   }

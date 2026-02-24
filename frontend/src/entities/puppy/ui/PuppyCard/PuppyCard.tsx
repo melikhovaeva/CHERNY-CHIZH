@@ -60,7 +60,7 @@ export const PuppyCard = ({
           <PuppyCharacteristics puppy={puppy} />
         </div>
         <div className={styles.card__buttonContainer}>
-          <Button onClick={() => dispatch(openBookingModal())}>
+          <Button onClick={() => dispatch(openBookingModal(puppy.id))}>
             Забронировать
           </Button>
           {!detailed && (
