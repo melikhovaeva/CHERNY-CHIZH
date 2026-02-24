@@ -5,11 +5,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.dictionaries import DICTIONARY_GROUPS
-from common.models import Breed, Puppy, Request as RequestModel
+from common.models import Breed, Dog, Request as RequestModel
 from common.serializers import (
     BreedListSerializer,
-    PuppyByBreedListSerializer,
-    PuppyListSerializer,
+    DogByBreedListSerializer,
+    DogListSerializer,
     RequestSerializer,
     _keys_to_camel_case,
 )
@@ -52,16 +52,27 @@ def _find_dictionary_in_group(group_conf, dict_identifier: str):
     return None, None
 
 
-class PuppyViewSet(viewsets.ReadOnlyModelViewSet):
-    """Эндпоинт для получения списка щенков"""
+class DogViewSet(viewsets.ReadOnlyModelViewSet):
+    """Эндпоинт для получения списка собак (щенки и взрослые)."""
 
-    queryset = Puppy.objects.select_related("breed").prefetch_related("photos", "documents").all()
-    serializer_class = PuppyListSerializer
+    serializer_class = DogListSerializer
 
-class PuppyByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
-    """Эндпоинт для получения списка щенков по породе"""
+    def get_queryset(self):
+        queryset = (
+            Dog.objects.select_related("breed")
+            .prefetch_related("photos", "documents")
+            .all()
+        )
+        age_group = self.request.query_params.get("age_group")
+        if age_group in {Dog.AGE_GROUP_PUPPY, Dog.AGE_GROUP_ADULT}:
+            queryset = queryset.filter(age_group=age_group)
+        return queryset
 
-    serializer_class = PuppyByBreedListSerializer
+
+class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
+    """Эндпоинт для получения списка собак по породе."""
+
+    serializer_class = DogByBreedListSerializer
 
     def get_queryset(self):
         breed_slug = self.kwargs.get("breed_slug")
@@ -70,13 +81,19 @@ class PuppyByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
             None,
         )
         if not matching_breed:
-            return Puppy.objects.none()
+            return Dog.objects.none()
 
-        return (
-            Puppy.objects.filter(breed=matching_breed)
+        queryset = (
+            Dog.objects.filter(breed=matching_breed)
             .select_related("breed")
             .prefetch_related("photos", "documents")
         )
+
+        age_group = self.request.query_params.get("age_group")
+        if age_group in {Dog.AGE_GROUP_PUPPY, Dog.AGE_GROUP_ADULT}:
+            queryset = queryset.filter(age_group=age_group)
+
+        return queryset
 
 class BreedViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка всех пород"""
@@ -123,17 +140,17 @@ class DictionaryViewSet(viewsets.ViewSet):
 
         dictionaries_payload = {}
         for dict_key, dict_conf in group_conf["dictionaries"].items():
-            model = dict_conf["model"]
-            serializer_class = dict_conf["serializer"]
-
-            queryset = model.objects.all()
-            serializer = serializer_class(queryset, many=True)
+            choices = dict_conf["choices"]
+            items = [
+                {"code": code, "label": label}
+                for code, label in choices
+            ]
 
             dictionaries_payload[dict_key] = {
                 "id": dict_conf["id"],
                 "name": dict_conf["name"],
                 "verbose_name": dict_conf["verbose_name"],
-                "items": serializer.data,
+                "items": items,
             }
 
         payload = {
@@ -163,25 +180,27 @@ class DictionaryViewSet(viewsets.ViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        dict_key, target_conf = _find_dictionary_in_group(group_conf, dict_identifier)
+        dict_key, target_conf = _find_dictionary_in_group(
+            group_conf, dict_identifier
+        )
         if not target_conf:
             return Response(
                 {"detail": "Dictionary not found in group."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        model = target_conf["model"]
-        serializer_class = target_conf["serializer"]
-
-        queryset = model.objects.all()
-        serializer = serializer_class(queryset, many=True)
+        choices = target_conf["choices"]
+        items = [
+            {"code": code, "label": label}
+            for code, label in choices
+        ]
 
         payload = {
             "id": target_conf["id"],
             "name": target_conf["name"],
             "key": dict_key,
             "verbose_name": target_conf["verbose_name"],
-            "items": serializer.data,
+            "items": items,
         }
 
         return Response(_keys_to_camel_case(payload))

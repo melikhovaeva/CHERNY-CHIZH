@@ -43,6 +43,28 @@ class OrderedCodeLabelModel(CodeLabelModel):
         ordering = ["order", "id"]
 
 
+# ---------------------------------------------------------------------------
+# Enum-справочники для животных
+# ---------------------------------------------------------------------------
+
+
+class DogStatus(models.TextChoices):
+    ON_SALE = "on_sale", "В продаже"
+    BOOKED = "booked", "Забронирован"
+    SOLD = "sold", "Куплен"
+
+
+class DogSex(models.TextChoices):
+    MALE = "male", "Мальчик"
+    FEMALE = "female", "Девочка"
+
+
+class DogPotential(models.TextChoices):
+    PET = "pet", "Домашний питомец"
+    SHOW = "show", "Шоу"
+    BREEDING = "breeding", "Разведение"
+
+
 class BaseAnimal(TimeStampModel):
     """Общие поля для щенков и взрослых собак."""
 
@@ -52,22 +74,19 @@ class BaseAnimal(TimeStampModel):
         on_delete=models.CASCADE,
         related_name="%(class)ss",
     )
-    status = models.ForeignKey(
-        "AnimalStatus",
-        on_delete=models.PROTECT,
-        related_name="%(class)ss",
+    status = models.CharField(
+        max_length=32,
+        choices=DogStatus.choices,
     )
     birth_date = models.DateField()
-    sex = models.ForeignKey(
-        "AnimalSex",
-        on_delete=models.PROTECT,
-        related_name="%(class)ss",
+    sex = models.CharField(
+        max_length=16,
+        choices=DogSex.choices,
     )
     color = models.CharField(max_length=255)
-    potential = models.ForeignKey(
-        "AnimalPotential",
-        on_delete=models.PROTECT,
-        related_name="%(class)ss",
+    potential = models.CharField(
+        max_length=32,
+        choices=DogPotential.choices,
     )
     description = models.TextField(null=True, blank=True)
 
@@ -85,35 +104,6 @@ class OrderedItemModel(TimeStampModel):
 
     class Meta(TimeStampModel.Meta):
         abstract = True
-
-
-# ---------------------------------------------------------------------------
-# Lookup / reference models
-# ---------------------------------------------------------------------------
-
-class AnimalStatus(CodeLabelModel):
-    """Справочник статусов животного."""
-
-    class Meta(CodeLabelModel.Meta):
-        verbose_name = "Статус животного"
-        verbose_name_plural = "Статусы животных"
-
-
-class AnimalSex(CodeLabelModel):
-    """Справочник пола животного."""
-
-    class Meta(CodeLabelModel.Meta):
-        verbose_name = "Пол животного"
-        verbose_name_plural = "Пол животных"
-
-
-class AnimalPotential(CodeLabelModel):
-    """Справочник потенциала животного."""
-
-    class Meta(CodeLabelModel.Meta):
-        verbose_name = "Потенциал животного"
-        verbose_name_plural = "Потенциалы животных"
-
 
 # ---------------------------------------------------------------------------
 # Breed
@@ -172,16 +162,30 @@ class BreedDescription(models.Model):
 # Animals
 # ---------------------------------------------------------------------------
 
-class Puppy(BaseAnimal):
-    """Щенок."""
+class Dog(BaseAnimal):
+    """Собака (щенок или взрослая) в единой таблице."""
+
+    AGE_GROUP_PUPPY = "puppy"
+    AGE_GROUP_ADULT = "adult"
+
+    AGE_GROUP_CHOICES = [
+        (AGE_GROUP_PUPPY, "Щенок"),
+        (AGE_GROUP_ADULT, "Собака"),
+    ]
+
+    age_group = models.CharField(
+        max_length=16,
+        choices=AGE_GROUP_CHOICES,
+        default=AGE_GROUP_ADULT,
+    )
 
     class Meta:
-        verbose_name = "Щенок"
-        verbose_name_plural = "Щенки"
+        verbose_name = "Собака"
+        verbose_name_plural = "Собаки"
         constraints = [
             models.UniqueConstraint(
                 fields=["id", "breed"],
-                name="puppy_id_breed_unique",
+                name="dog_id_breed_unique",
             ),
         ]
 
@@ -196,58 +200,45 @@ class Puppy(BaseAnimal):
             return self.name
 
 
-class PuppyPhoto(models.Model):
-    """Фото щенка."""
+class DogPhoto(models.Model):
+    """Фото собаки (включая щенков)."""
 
-    puppy = models.ForeignKey(
-        Puppy,
+    dog = models.ForeignKey(
+        Dog,
         on_delete=models.CASCADE,
         related_name="photos",
     )
-    photo = models.ImageField(upload_to="puppies/")
+    photo = models.ImageField(upload_to="dogs/")
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
         ordering = ["order", "id"]
-        verbose_name = "Фото щенка"
-        verbose_name_plural = "Фото щенков"
+        verbose_name = "Фото собаки"
+        verbose_name_plural = "Фото собак"
 
 
-class PuppyDocument(models.Model):
-    """Документ щенка."""
+class DogDocument(models.Model):
+    """Документ собаки (включая щенков)."""
 
-    puppy = models.ForeignKey(
-        Puppy,
+    dog = models.ForeignKey(
+        Dog,
         on_delete=models.CASCADE,
         related_name="documents",
     )
-    file = models.FileField(upload_to="puppies/documents/", null=True, blank=True)
+    file = models.FileField(upload_to="dogs/documents/", null=True, blank=True)
     name = models.CharField(max_length=255)
 
     class Meta:
-        verbose_name = "Документ щенка"
-        verbose_name_plural = "Документы щенков"
+        verbose_name = "Документ собаки"
+        verbose_name_plural = "Документы собак"
 
 
-class Dog(BaseAnimal):
-    """Взрослая собака."""
+class DogParent(models.Model):
+    """Связь собаки-ребёнка с родителем-собакой.
 
-    class Meta:
-        verbose_name = "Собака"
-        verbose_name_plural = "Собаки"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["id", "breed"],
-                name="dog_id_breed_unique",
-            ),
-        ]
-
-
-class PuppyParents(models.Model):
-    """Связь щенка с родителем-собакой.
-
-    Поле breed денормализовано из Puppy/Dog и защищено композитными FK
-    на уровне БД (см. миграцию RunSQL), что гарантирует совпадение пород.
+    Для щенка-ребёнка родителем может быть только взрослая собака.
+    Щенок не может быть родителем. Собака может быть родителем собаки.
+    Поле breed денормализовано из Dog и контролируется на совпадение пород.
     """
 
     ROLE_MOTHER = "mother"
@@ -258,12 +249,12 @@ class PuppyParents(models.Model):
         (ROLE_FATHER, "Отец"),
     ]
 
-    puppy = models.ForeignKey(
-        Puppy,
+    child = models.ForeignKey(
+        Dog,
         on_delete=models.CASCADE,
         related_name="parent_links",
     )
-    dog = models.ForeignKey(
+    parent = models.ForeignKey(
         Dog,
         on_delete=models.CASCADE,
         related_name="children",
@@ -281,33 +272,60 @@ class PuppyParents(models.Model):
     )
 
     class Meta:
-        verbose_name = "Родитель щенка"
-        verbose_name_plural = "Родители щенков"
+        verbose_name = "Родитель собаки"
+        verbose_name_plural = "Родители собак"
         constraints = [
             models.UniqueConstraint(
-                fields=["dog"],
+                fields=["parent"],
                 name="unique_dog_as_parent",
             ),
             models.UniqueConstraint(
-                fields=["puppy", "role"],
-                name="unique_role_per_puppy",
+                fields=["child", "role"],
+                name="unique_role_per_child",
             ),
         ]
 
     def clean(self):
         super().clean()
-        if self.puppy_id:
-            self.breed_id = Puppy.objects.filter(
-                pk=self.puppy_id,
+        if self.child_id:
+            self.breed_id = Dog.objects.filter(
+                pk=self.child_id,
             ).values_list("breed_id", flat=True).first()
-        if self.dog_id and self.breed_id:
-            dog_breed = Dog.objects.filter(
-                pk=self.dog_id,
-            ).values_list("breed_id", flat=True).first()
-            if dog_breed and self.breed_id != dog_breed:
-                raise ValidationError({
-                    "dog": "Порода собаки-родителя должна совпадать с породой щенка.",
-                })
+
+        parent = None
+        if self.parent_id:
+            parent = Dog.objects.filter(pk=self.parent_id).values(
+                "breed_id",
+                "age_group",
+            ).first()
+
+        if parent and self.breed_id and parent["breed_id"] != self.breed_id:
+            raise ValidationError(
+                {
+                    "parent": "Порода родителя должна совпадать с породой ребёнка.",
+                }
+            )
+
+        if parent:
+            parent_age_group = parent["age_group"]
+            if parent_age_group == Dog.AGE_GROUP_PUPPY:
+                raise ValidationError(
+                    {
+                        "parent": "Щенок не может быть родителем.",
+                    }
+                )
+
+        child = None
+        if self.child_id:
+            child = Dog.objects.filter(pk=self.child_id).values("age_group").first()
+
+        if child and child["age_group"] == Dog.AGE_GROUP_PUPPY:
+            if not parent or parent["age_group"] != Dog.AGE_GROUP_ADULT:
+                raise ValidationError(
+                    {
+                        "parent": "Родителем щенка может быть только взрослая собака.",
+                    }
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -321,11 +339,18 @@ class PuppyParents(models.Model):
 class RequestManager(models.Manager):
     """Менеджер для создания и хранения заявок."""
 
-    def create_request(self, *, puppy=None, **kwargs):
-        if puppy is not None and not isinstance(puppy, Puppy):
-            puppy = Puppy.objects.get(pk=puppy)
-        if puppy is not None:
-            kwargs["puppy"] = puppy
+    def create_request(self, *, dog=None, puppy=None, **kwargs):
+        """
+        Унифицированный метод создания заявки.
+
+        Предпочтительно передавать dog (экземпляр или id).
+        Параметр puppy поддерживается для обратной совместимости.
+        """
+        target = dog if dog is not None else puppy
+        if target is not None and not isinstance(target, Dog):
+            target = Dog.objects.get(pk=target)
+        if target is not None:
+            kwargs["dog"] = target
         return self.create(**kwargs)
 
 
@@ -347,8 +372,8 @@ class Request(models.Model):
     phone = models.CharField(max_length=255)
     messenger = models.CharField(max_length=255)
     message = models.TextField()
-    puppy = models.ForeignKey(
-        Puppy,
+    dog = models.ForeignKey(
+        Dog,
         on_delete=models.CASCADE,
         related_name="requests",
         null=True,
@@ -363,12 +388,3 @@ class Request(models.Model):
         if self.user:
             return f"Заявка #{self.pk} от {self.user.email}"
         return f"Заявка #{self.pk} от {self.first_name} {self.last_name}"
-
-
-# ---------------------------------------------------------------------------
-# Info content
-# ---------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------
-# Course hierarchy
-# ---------------------------------------------------------------------------

@@ -2,24 +2,14 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from common.models import (
-    AnimalPotential,
-    AnimalSex,
-    AnimalStatus,
     Breed,
     BreedDescription,
     Dog,
-    Puppy,
-    PuppyDocument,
-    PuppyParents,
-    PuppyPhoto,
+    DogDocument,
+    DogParent,
+    DogPhoto,
     Request,
 )
-
-
-class CodeLabelAdmin(admin.ModelAdmin):
-    """Базовый админ для справочников code+label."""
-
-    list_display = ("code", "label")
 
 
 class BreedDescriptionInline(admin.StackedInline):
@@ -36,23 +26,23 @@ class BreedDescriptionInline(admin.StackedInline):
     )
 
 
-class PuppyParentsInline(admin.TabularInline):
-    model = PuppyParents
-    fk_name = "puppy"
+class DogParentInline(admin.TabularInline):
+    model = DogParent
+    fk_name = "child"
     extra = 2
     max_num = 2
-    fields = ("role", "dog")
+    fields = ("role", "parent")
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "dog":
-            breed_id = getattr(request, "_puppy_breed_id", None)
+        if db_field.name == "parent":
+            breed_id = getattr(request, "_dog_breed_id", None)
             if breed_id is not None:
                 kwargs["queryset"] = Dog.objects.filter(breed_id=breed_id)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class PuppyPhotoInline(admin.TabularInline):
-    model = PuppyPhoto
+class DogPhotoInline(admin.TabularInline):
+    model = DogPhoto
     extra = 1
     min_num = 1
     fields = ("order", "photo", "photo_preview")
@@ -66,25 +56,10 @@ class PuppyPhotoInline(admin.TabularInline):
     photo_preview.short_description = "Превью"
 
 
-class PuppyDocumentInline(admin.TabularInline):
-    model = PuppyDocument
+class DogDocumentInline(admin.TabularInline):
+    model = DogDocument
     extra = 1
     fields = ("name", "file")
-
-
-@admin.register(AnimalStatus)
-class AnimalStatusAdmin(CodeLabelAdmin):
-    pass
-
-
-@admin.register(AnimalSex)
-class AnimalSexAdmin(CodeLabelAdmin):
-    pass
-
-
-@admin.register(AnimalPotential)
-class AnimalPotentialAdmin(CodeLabelAdmin):
-    pass
 
 
 @admin.register(Breed)
@@ -113,20 +88,42 @@ class BreedAdmin(admin.ModelAdmin):
 
 @admin.register(Dog)
 class DogAdmin(admin.ModelAdmin):
-    list_display = ("name", "breed", "status", "birth_date", "sex", "color", "potential")
-
-
-@admin.register(Puppy)
-class PuppyAdmin(admin.ModelAdmin):
-    list_display = ("name", "international_name", "breed", "status", "birth_date", "sex", "color", "potential", "photos_count")
-    inlines = [PuppyPhotoInline, PuppyDocumentInline, PuppyParentsInline]
+    list_display = (
+        "name",
+        "international_name",
+        "breed",
+        "age_group",
+        "status",
+        "birth_date",
+        "sex",
+        "color",
+        "potential",
+        "photos_count",
+    )
+    list_filter = ("age_group", "breed", "status", "sex")
+    inlines = [DogPhotoInline, DogDocumentInline, DogParentInline]
     fieldsets = (
-        (None, {"fields": ("name", "breed", "status", "birth_date", "sex", "color", "potential", "description")}),
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "breed",
+                    "age_group",
+                    "status",
+                    "birth_date",
+                    "sex",
+                    "color",
+                    "potential",
+                    "description",
+                )
+            },
+        ),
     )
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is not None:
-            request._puppy_breed_id = obj.breed_id
+            request._dog_breed_id = obj.breed_id
         return super().get_form(request, obj, **kwargs)
 
     def photos_count(self, obj):
@@ -139,7 +136,7 @@ class PuppyAdmin(admin.ModelAdmin):
 
 @admin.register(Request)
 class RequestAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "first_name", "last_name", "email", "phone", "messenger", "puppy")
+    list_display = ("id", "user", "first_name", "last_name", "email", "phone", "messenger", "dog")
     list_filter = ("user",)
     search_fields = ("first_name", "last_name", "email", "message")
-    raw_id_fields = ("user", "puppy")
+    raw_id_fields = ("user", "dog")

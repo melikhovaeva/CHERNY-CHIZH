@@ -4,15 +4,14 @@ from datetime import date, timedelta
 from django.core.management.base import BaseCommand, CommandError
 
 from common.models import (
-    AnimalPotential,
-    AnimalSex,
-    AnimalStatus,
+    DogPotential,
+    DogSex,
+    DogStatus,
     Breed,
     Dog,
-    Puppy,
-    PuppyDocument,
-    PuppyParents,
-    PuppyPhoto,
+    DogDocument,
+    DogParent,
+    DogPhoto,
 )
 
 from ._test_photos import assign_photo_from_path, get_photos_by_breed
@@ -101,28 +100,19 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         clear: bool = options["clear"]
 
-        try:
-            female_sex = AnimalSex.objects.get(code="female")
-            male_sex = AnimalSex.objects.get(code="male")
-        except AnimalSex.DoesNotExist as e:
-            raise CommandError(
-                "В справочнике пола нужны записи с code='female' и code='male'. "
-            ) from e
+        female_sex = DogSex.FEMALE.value
+        male_sex = DogSex.MALE.value
 
-        statuses = list(
-            AnimalStatus.objects.filter(
-                code__in=["on_sale", "booked", "sold"]
-            )
-        )
-        potentials = list(
-            AnimalPotential.objects.filter(
-                code__in=["pet", "show", "breeding"]
-            )
-        )
-        if not statuses or not potentials:
-            raise CommandError(
-                "В справочниках статуса и потенциала должны быть записи с кодами "
-            )
+        statuses = [
+            DogStatus.ON_SALE.value,
+            DogStatus.BOOKED.value,
+            DogStatus.SOLD.value,
+        ]
+        potentials = [
+            DogPotential.PET.value,
+            DogPotential.SHOW.value,
+            DogPotential.BREEDING.value,
+        ]
 
         breeds = {}
         for short_name, full_name in DEFAULT_BREEDS:
@@ -144,7 +134,7 @@ class Command(BaseCommand):
                 )
 
         if clear:
-            deleted, _ = Puppy.objects.all().delete()
+            deleted, _ = Dog.objects.filter(age_group=Dog.AGE_GROUP_PUPPY).delete()
             self.stdout.write(
                 self.style.WARNING(f"Puppies deleted: {deleted}")
             )
@@ -159,9 +149,10 @@ class Command(BaseCommand):
             puppies_by_breed[breed_name] = []
             for name in names:
                 birth_date = today - timedelta(days=random.randint(60, 365))
-                puppy = Puppy.objects.create(
+                puppy = Dog.objects.create(
                     name=name,
                     breed=breed,
+                    age_group=Dog.AGE_GROUP_PUPPY,
                     status=random.choice(statuses),
                     birth_date=birth_date,
                     sex=random.choice(sexes),
@@ -179,24 +170,32 @@ class Command(BaseCommand):
                         min(random.randint(2, 5), len(breed_photos)),
                     )
                     for order, photo_path in enumerate(chosen):
-                        pp = PuppyPhoto(puppy=puppy, order=order)
+                        pp = DogPhoto(dog=puppy, order=order)
                         assign_photo_from_path(
                             pp,
                             "photo",
                             photo_path,
-                            f"puppies/{puppy.id}_{order}_{photo_path.name}",
+                            f"dogs/{puppy.id}_{order}_{photo_path.name}",
                         )
 
         parents_created = 0
-        used_dog_ids = set(PuppyParents.objects.values_list("dog_id", flat=True))
+        used_dog_ids = set(DogParent.objects.values_list("parent_id", flat=True))
         for breed_name, breed in breeds.items():
             mothers = list(
-                Dog.objects.filter(breed=breed, sex=female_sex)
+                Dog.objects.filter(
+                    breed=breed,
+                    sex=female_sex,
+                    age_group=Dog.AGE_GROUP_ADULT,
+                )
                 .exclude(id__in=used_dog_ids)
                 .order_by("id")[:6]
             )
             fathers = list(
-                Dog.objects.filter(breed=breed, sex=male_sex)
+                Dog.objects.filter(
+                    breed=breed,
+                    sex=male_sex,
+                    age_group=Dog.AGE_GROUP_ADULT,
+                )
                 .exclude(id__in=used_dog_ids)
                 .order_by("id")[:6]
             )
@@ -209,15 +208,15 @@ class Command(BaseCommand):
                 )
                 continue
             for i, puppy in enumerate(puppies):
-                PuppyParents.objects.create(
-                    puppy=puppy,
-                    dog=mothers[i],
-                    role=PuppyParents.ROLE_MOTHER,
+                DogParent.objects.create(
+                    child=puppy,
+                    parent=mothers[i],
+                    role=DogParent.ROLE_MOTHER,
                 )
-                PuppyParents.objects.create(
-                    puppy=puppy,
-                    dog=fathers[i],
-                    role=PuppyParents.ROLE_FATHER,
+                DogParent.objects.create(
+                    child=puppy,
+                    parent=fathers[i],
+                    role=DogParent.ROLE_FATHER,
                 )
                 used_dog_ids.add(mothers[i].id)
                 used_dog_ids.add(fathers[i].id)
@@ -227,7 +226,7 @@ class Command(BaseCommand):
         for breed_name in breeds:
             for puppy in puppies_by_breed.get(breed_name, []):
                 for doc_name in PUPPY_DOCUMENT_NAMES[:2]:
-                    PuppyDocument.objects.create(puppy=puppy, name=doc_name)
+                    DogDocument.objects.create(dog=puppy, name=doc_name)
                     docs_created += 1
 
         self.stdout.write(

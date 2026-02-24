@@ -6,20 +6,20 @@ from rest_framework.routers import DefaultRouter
 from common.views import (
     BreedViewSet,
     DictionaryViewSet,
-    PuppyByBreedSlugViewSet,
-    PuppyViewSet,
+    DogByBreedSlugViewSet,
+    DogViewSet,
     RequestViewSet,
 )
 from consumer.views import FAQItemViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
-router.register(r"puppies", PuppyViewSet, basename="puppy")
+router.register(r"dogs", DogViewSet, basename="dog")
 router.register(r"breeds", BreedViewSet, basename="breed")
 router.register(
-    r"breeds/(?P<breed_slug>[-\w]+)/puppies",
-    PuppyByBreedSlugViewSet,
-    basename="puppy-by-breed",
+    r"breeds/(?P<breed_slug>[-\w]+)/dogs",
+    DogByBreedSlugViewSet,
+    basename="dog-by-breed",
 )
 router.register(r"dictionaries", DictionaryViewSet, basename="dictionary")
 router.register(r"faq", FAQItemViewSet, basename="faq-item")

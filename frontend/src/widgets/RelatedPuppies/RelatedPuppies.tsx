@@ -12,7 +12,7 @@ interface RelatedPuppiesProps {
   className?: string;
 }
 
-const STATUS_AVAILABLE = 'В продаже';
+const STATUS_AVAILABLE_CODE = 'on_sale';
 
 export function RelatedPuppies({
   currentPuppy,
@@ -23,7 +23,7 @@ export function RelatedPuppies({
     (p) =>
       p.breed.slug === currentPuppy.breed.slug &&
       p.id !== currentPuppy.id &&
-      p.status.label === STATUS_AVAILABLE,
+      p.status.code === STATUS_AVAILABLE_CODE,
   );
 
   if (related.length === 0) return null;

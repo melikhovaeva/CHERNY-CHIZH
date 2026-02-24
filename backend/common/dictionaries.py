@@ -1,9 +1,6 @@
-from typing import Dict, Any, Type
+from typing import Dict, Any
 
-from django.db.models import Model
-
-from common.models import AnimalStatus, AnimalSex, AnimalPotential
-from common.serializers import CodeLabelSerializer
+from common.models import DogPotential, DogSex, DogStatus
 
 
 DictionaryConfig = Dict[str, Any]
@@ -19,43 +16,38 @@ def _make_animal_group() -> DictionaryConfig:
         pk: int,
         name: str,
         verbose_name: str,
-        model: Type[Model],
-        serializer,
+        choices,
     ) -> Dict[str, Any]:
         return {
             "id": pk,
             "name": name,
             "verbose_name": verbose_name,
-            "model": model,
-            "serializer": serializer,
+            "choices": choices,
         }
 
     return {
         1: {
-            "key": "animal",
-            "name": "animal",
+            "key": "puppy",
+            "name": "puppy",
             "verbose_name": "Справочники, относящиеся к животным",
             "dictionaries": {
                 "status": _entry(
                     pk=1,
                     name="status",
                     verbose_name="Статус",
-                    model=AnimalStatus,
-                    serializer=CodeLabelSerializer,
+                    choices=DogStatus.choices,
                 ),
                 "sex": _entry(
                     pk=2,
                     name="sex",
                     verbose_name="Пол",
-                    model=AnimalSex,
-                    serializer=CodeLabelSerializer,
+                    choices=DogSex.choices,
                 ),
                 "potential": _entry(
                     pk=3,
                     name="potential",
                     verbose_name="Потенциал",
-                    model=AnimalPotential,
-                    serializer=CodeLabelSerializer,
+                    choices=DogPotential.choices,
                 ),
             },
         }

@@ -1,15 +1,15 @@
 from rest_framework import serializers
 
 from common.models import (
-    AnimalPotential,
-    AnimalSex,
-    AnimalStatus,
+    DogStatus,
+    DogSex,
+    DogPotential,
     Breed,
     BreedDescription,
-    Puppy,
-    PuppyDocument,
-    PuppyParents,
-    PuppyPhoto,
+    Dog,
+    DogDocument,
+    DogParent,
+    DogPhoto,
     Request,
 )
 
@@ -62,44 +62,44 @@ class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer
         return obj.photo.url if obj.photo else None
 
 
-class PuppyPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class DogPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     url = serializers.CharField(source="photo.url")
 
     class Meta:
-        model = PuppyPhoto
+        model = DogPhoto
         fields = ("id", "url")
 
 
-class PuppyDocumentsSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class DogDocumentsSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
 
     class Meta:
-        model = PuppyDocument
+        model = DogDocument
         fields = ("id", "name", "url")
 
     def get_url(self, obj):
         return obj.file.url if obj.file else None
 
 
-class PuppyBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class DogBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
-        model = Puppy
+        model = Dog
         fields = ("id", "name")
 
 
-class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class DogListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Сериализатор для списка щенков"""
 
     breed = BreedBriefSerializer(read_only=True)
-    status = CodeLabelSerializer(read_only=True)
-    sex = CodeLabelSerializer(read_only=True)
-    potential = CodeLabelSerializer(read_only=True)
-    photos = PuppyPhotosSerializer(many=True, read_only=True)
-    documents = PuppyDocumentsSerializer(many=True, read_only=True)
+    status = serializers.SerializerMethodField()
+    sex = serializers.SerializerMethodField()
+    potential = serializers.SerializerMethodField()
+    photos = DogPhotosSerializer(many=True, read_only=True)
+    documents = DogDocumentsSerializer(many=True, read_only=True)
     parents = serializers.SerializerMethodField()
 
     class Meta:
-        model = Puppy
+        model = Dog
         fields = (
             "id",
             "name",
@@ -115,7 +115,26 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
             "parents",
         )
 
-    def get_parents(self, obj: Puppy):
+    def _build_enum_payload(self, value: str, enum_cls):
+        if value is None:
+            return None
+        try:
+            enum_member = enum_cls(value)
+            return {"code": enum_member.value, "label": enum_member.label}
+        except ValueError:
+            # На случай старых нестандартных значений оставляем код как есть
+            return {"code": value, "label": value}
+
+    def get_status(self, obj: Dog):
+        return self._build_enum_payload(obj.status, DogStatus)
+
+    def get_sex(self, obj: Dog):
+        return self._build_enum_payload(obj.sex, DogSex)
+
+    def get_potential(self, obj: Dog):
+        return self._build_enum_payload(obj.potential, DogPotential)
+
+    def get_parents(self, obj: Dog):
         """
         Возвращает словарь с информацией о родителях щенка:
         {
@@ -123,39 +142,55 @@ class PuppyListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
           "father": {"id": <dog_id>, "name": <dog_name>},
         }
         """
-        links = PuppyParents.objects.filter(puppy=obj)
+        links = DogParent.objects.filter(child=obj).select_related("parent")
         if not links:
             return None
 
         result = {}
         for link in links:
             parent_data = {
-                "id": str(link.dog_id),
-                "name": link.dog.name,
+                "id": str(link.parent_id),
+                "name": link.parent.name,
             }
-            if link.role == PuppyParents.ROLE_MOTHER:
+            if link.role == DogParent.ROLE_MOTHER:
                 result["mother"] = parent_data
-            elif link.role == PuppyParents.ROLE_FATHER:
+            elif link.role == DogParent.ROLE_FATHER:
                 result["father"] = parent_data
 
         return result or None
 
 
-class PuppyByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class DogByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Сериализатор для списка щенков по породе."""
 
     breed = BreedBriefSerializer(read_only=True)
-    status = CodeLabelSerializer(read_only=True)
-    sex = CodeLabelSerializer(read_only=True)
-    potential = CodeLabelSerializer(read_only=True)
-    photos = PuppyPhotosSerializer(many=True, read_only=True)
-    documents = PuppyDocumentsSerializer(many=True, read_only=True)
+    status = serializers.SerializerMethodField()
+    sex = serializers.SerializerMethodField()
+    potential = serializers.SerializerMethodField()
+    photos = DogPhotosSerializer(many=True, read_only=True)
+    documents = DogDocumentsSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Puppy
-        fields = (
-            "__all__"
-        )
+        model = Dog
+        fields = "__all__"
+
+    def _build_enum_payload(self, value: str, enum_cls):
+        if value is None:
+            return None
+        try:
+            enum_member = enum_cls(value)
+            return {"code": enum_member.value, "label": enum_member.label}
+        except ValueError:
+            return {"code": value, "label": value}
+
+    def get_status(self, obj: Dog):
+        return self._build_enum_payload(obj.status, DogStatus)
+
+    def get_sex(self, obj: Dog):
+        return self._build_enum_payload(obj.sex, DogSex)
+
+    def get_potential(self, obj: Dog):
+        return self._build_enum_payload(obj.potential, DogPotential)
 
 
 class BreedDescriptionSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -204,7 +239,7 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "phone",
             "messenger",
             "message",
-            "puppy",
+            "dog",
         )
         read_only_fields = ("id", "user")
 
@@ -218,10 +253,10 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        if instance.puppy_id is not None:
-            data["puppy"] = instance.puppy.name
+        if instance.dog_id is not None:
+            data["dog"] = instance.dog.name
         else:
-            data["puppy"] = None
+            data["dog"] = None
         if instance.user_id is not None:
             data["user"] = instance.user.email
         else:
