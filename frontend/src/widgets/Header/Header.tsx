@@ -44,6 +44,7 @@ export function Header() {
 
   const authControl = isAuthUnknown ? (
     <div className={styles.userMenu} aria-hidden>
+      <Skeleton variant="text" lines={1} width="70px" height="17px" />
       <Skeleton
         variant="avatar"
         width={AVATAR_SIZE}
