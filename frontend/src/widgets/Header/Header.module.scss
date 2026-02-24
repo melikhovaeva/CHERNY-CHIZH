@@ -55,6 +55,10 @@
   gap: 10px;
 }
 
+.avatarSkeleton {
+  flex-shrink: 0;
+}
+
 .burgerWrap {
   display: none;
 

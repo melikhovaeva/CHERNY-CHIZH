@@ -1,9 +1,13 @@
-import { selectIsAuthenticated, useAppSelector } from '@/app/redux';
+import {
+  selectIsAuthenticated,
+  selectSessionStatus,
+  useAppSelector,
+} from '@/app/redux';
 import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
 import { UserImage } from '@/features/session';
 import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
 import { cn } from '@/shared/lib/utils';
-import { Backdrop } from '@/shared/ui/components';
+import { Backdrop, Skeleton } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import styles from './Header.module.scss';
@@ -29,14 +33,28 @@ const headerLinks = [
 
 const mobileMenuLinks = [{ to: '/', label: 'Главная' }, ...headerLinks];
 
+const AVATAR_SIZE = 50;
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const sessionStatus = useAppSelector(selectSessionStatus);
 
-  const authControl = isAuthenticated ? (
+  const isAuthUnknown = sessionStatus === 'idle' || sessionStatus === 'loading';
+
+  const authControl = isAuthUnknown ? (
+    <div className={styles.userMenu} aria-hidden>
+      <Skeleton
+        variant="avatar"
+        width={AVATAR_SIZE}
+        height={AVATAR_SIZE}
+        className={styles.avatarSkeleton}
+      />
+    </div>
+  ) : isAuthenticated ? (
     <div className={styles.userMenu}>
       <LogoutButton />
-      <UserImage />
+      <UserImage size={AVATAR_SIZE} />
     </div>
   ) : (
     <LoginButton />
