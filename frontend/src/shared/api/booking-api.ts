@@ -1,4 +1,5 @@
-import { baseApi } from './base-api';
+import { baseApi } from '@/shared/api/base-api';
+import { API_CONFIG } from '@/shared/config/api';
 
 export interface SubmitBookingRequest {
   name: string;
@@ -11,7 +12,7 @@ export const bookingApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     submitBooking: build.mutation<void, SubmitBookingRequest>({
       query: (body) => ({
-        url: '/api/requests/',
+        url: API_CONFIG.ENDPOINTS.REQUESTS,
         method: 'POST',
         body,
       }),
