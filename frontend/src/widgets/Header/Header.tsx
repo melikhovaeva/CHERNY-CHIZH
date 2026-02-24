@@ -1,3 +1,4 @@
+import { getHeaderLinks, getMobileMenuLinks } from '@/app/lib/nav-links';
 import {
   selectIsAuthenticated,
   selectSessionStatus,
@@ -9,29 +10,8 @@ import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
 import { cn } from '@/shared/lib/utils';
 import { Backdrop, Skeleton } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import styles from './Header.module.scss';
-
-const headerLinks = [
-  {
-    to: '/puppies',
-    label: 'Щенки',
-  },
-  {
-    to: '/about',
-    label: 'О нас',
-  },
-  {
-    to: '/library',
-    label: 'База знаний',
-  },
-  {
-    to: '/contacts',
-    label: 'Контакты',
-  },
-];
-
-const mobileMenuLinks = [{ to: '/', label: 'Главная' }, ...headerLinks];
 
 const AVATAR_SIZE = 50;
 
@@ -39,6 +19,9 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const sessionStatus = useAppSelector(selectSessionStatus);
+
+  const headerLinks = useMemo(() => getHeaderLinks(), []);
+  const mobileMenuLinks = useMemo(() => getMobileMenuLinks(), []);
 
   const isAuthUnknown = sessionStatus === 'idle' || sessionStatus === 'loading';
 
