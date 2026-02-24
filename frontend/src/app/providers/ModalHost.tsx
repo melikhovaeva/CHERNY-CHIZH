@@ -8,8 +8,7 @@ import {
   useAppSelector,
 } from '@/app/redux';
 import { Modal } from '@/shared/ui/components';
-import { AuthModalContent } from '@/widgets/AuthModal';
-import { BookingModalContent } from '@/widgets/BookingModal';
+import { AuthModalContent, BookingModalContent } from '@/widgets';
 
 export function ModalHost() {
   const dispatch = useAppDispatch();
@@ -30,11 +29,7 @@ export function ModalHost() {
 
   if (authIsOpen) {
     return (
-      <Modal
-        mode="large"
-        isOpen
-        onClose={handleCloseAuth}
-      >
+      <Modal mode="large" isOpen onClose={handleCloseAuth}>
         <AuthModalContent />
       </Modal>
     );
