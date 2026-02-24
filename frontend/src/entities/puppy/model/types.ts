@@ -3,7 +3,7 @@ import type { Breed } from '@/entities/breed/model/types';
 export type PuppyStatusName = 'В продаже' | 'Забронирован' | 'Куплен';
 
 export interface PuppyCharacteristic {
-  id: number;
+  id?: number;
   code: string;
   label: string;
 }
@@ -39,6 +39,7 @@ export interface Puppy {
   sex: PuppyCharacteristic;
   birthDate: string;
   color: string;
+  ageGroup?: 'puppy' | 'adult';
   documents?: PuppyDocument[];
   parents?: PuppyParents;
   photos?: PuppyPhoto[];

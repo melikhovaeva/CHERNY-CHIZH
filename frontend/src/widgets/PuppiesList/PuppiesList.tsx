@@ -1,4 +1,4 @@
-import { PuppyCard, useGetPuppiesQuery } from '@/entities/puppy';
+import { PuppyCard, useGetPuppiesByBreedQuery } from '@/entities/puppy';
 import { matchPuppyByFilters, type PuppyFilters } from '@/features';
 import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults';
 import { PuppiesEmptyState } from '@/widgets';
@@ -11,15 +11,17 @@ interface PuppiesListProps {
 }
 
 export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
-  const { data: allPuppies, isLoading } = useGetPuppiesQuery();
-  const puppies = (allPuppies ?? []).filter((puppy) => {
-    if (breedId && puppy.breed.slug !== breedId) return false;
-    return matchPuppyByFilters(puppy, filters ?? PUPPY_FILTERS_DEFAULTS);
-  });
+  const { data: puppies, isLoading } = useGetPuppiesByBreedQuery(
+    breedId || '',
+    { skip: !breedId },
+  );
+  const filteredPuppies = (puppies ?? []).filter((puppy) =>
+    matchPuppyByFilters(puppy, filters ?? PUPPY_FILTERS_DEFAULTS),
+  );
 
   if (isLoading) return null;
 
-  if (puppies.length === 0) {
+  if (filteredPuppies.length === 0) {
     return (
       <div className={className}>
         <PuppiesEmptyState />
@@ -30,7 +32,7 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   return (
     <div className={className}>
       <div className={styles.list}>
-        {puppies.map((puppy) => (
+        {filteredPuppies.map((puppy) => (
           <PuppyCard key={puppy.id} puppy={puppy} />
         ))}
       </div>

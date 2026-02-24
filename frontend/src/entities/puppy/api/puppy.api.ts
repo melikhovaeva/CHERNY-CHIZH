@@ -5,7 +5,8 @@ import type { Puppy } from '../model/types';
 export const puppyApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getPuppies: build.query<Puppy[], void>({
-      query: () => API_CONFIG.ENDPOINTS.PUPPIES,
+      query: () =>
+        `${API_CONFIG.ENDPOINTS.DOGS}?age_group=puppy`,
       providesTags: (result) =>
         result
           ? [
@@ -18,14 +19,15 @@ export const puppyApi = baseApi.injectEndpoints({
           : [{ type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' }],
     }),
     getPuppy: build.query<Puppy, number>({
-      query: (id) => `${API_CONFIG.ENDPOINTS.PUPPIES}${id}/`,
+      query: (id) =>
+        `${API_CONFIG.ENDPOINTS.DOGS}${id}/`,
       providesTags: (_result, _err, id) => [
         { type: API_CONFIG.TAG_TYPES.PUPPIES, id },
       ],
     }),
     getPuppiesByBreed: build.query<Puppy[], string>({
       query: (breedSlug: string) =>
-        `${API_CONFIG.ENDPOINTS.PUPPIES_BY_BREED(breedSlug)}`,
+        `${API_CONFIG.ENDPOINTS.DOGS_BY_BREED(breedSlug)}?age_group=puppy`,
       providesTags: (result) =>
         result
           ? [

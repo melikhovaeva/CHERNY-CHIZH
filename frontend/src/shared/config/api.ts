@@ -4,8 +4,8 @@ export const API_CONFIG = {
     import.meta.env.VITE_API_BASE_URL_LOCAL,
   API_REDUCER_PATH: 'api',
   ENDPOINTS: {
-    PUPPIES: 'api/puppies/',
-    PUPPIES_BY_BREED: (breedSlug: string) => `api/breeds/${breedSlug}/puppies/`,
+    DOGS: 'api/dogs/',
+    DOGS_BY_BREED: (breedSlug: string) => `api/breeds/${breedSlug}/dogs/`,
     BREEDS: 'api/breeds/',
     FAQ: 'api/faq/',
     DICTIONARIES: 'api/dictionaries/',
