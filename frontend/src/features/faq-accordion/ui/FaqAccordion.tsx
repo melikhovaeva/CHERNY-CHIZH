@@ -23,8 +23,7 @@ export function FaqAccordion({
     category,
   });
 
-  const defaultOpenId = faqItems?.[0]?.id;
-  const hasItems = faqItems && faqItems.length > 0 && !!defaultOpenId;
+  const hasItems = faqItems && faqItems.length > 0;
 
   if (isLoading || isError || !hasItems) return null;
 
@@ -38,7 +37,7 @@ export function FaqAccordion({
     <div className={className}>
       {title && <h2>{title}</h2>}
       {subtitle && <p>{subtitle}</p>}
-      <Accordion items={accordionItems} defaultOpenId={defaultOpenId} />
+      <Accordion items={accordionItems} />
     </div>
   );
 }
