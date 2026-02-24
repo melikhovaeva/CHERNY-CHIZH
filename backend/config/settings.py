@@ -113,7 +113,31 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Cherniy Chizh API',
-    'SERVE_INCLUDE_SCHEMA': True,
+    'DESCRIPTION': 'Публичное API платформы «Черный Чиж» для работы с собаками, породами, справочниками и заявками.',
+    'VERSION': '1.0.0',
+    # Скрываем служебный эндпоинт /api/schema/ из самой документации
+    'SERVE_INCLUDE_SCHEMA': False,
+    'CONTACT': {
+        'name': 'Команда Черный Чиж',
+        'email': 'support@cherniy-chizh.local',
+    },
+    'LICENSE': {
+        'name': 'Proprietary',
+    },
+    'SERVERS': [
+        {
+            'url': 'http://localhost:8000',
+            'description': 'Локальный сервер разработки',
+        },
+    ],
+    'TAGS': [
+        {'name': 'Dogs', 'description': 'Операции с собаками (щенки и взрослые).'},
+        {'name': 'Breeds', 'description': 'Информация о породах и их описания.'},
+        {'name': 'Dictionaries', 'description': 'Справочники и словари, используемые на фронтенде.'},
+        {'name': 'Requests', 'description': 'Заявки пользователей на щенков и обратную связь.'},
+        {'name': 'FAQ', 'description': 'Часто задаваемые вопросы.'},
+        {'name': 'Users', 'description': 'Регистрация, профиль и управление пользователями.'},
+    ],
 }
 
 
