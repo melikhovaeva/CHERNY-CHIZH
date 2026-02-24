@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_spectacular',
     'common',
     'education',
     'crm',
@@ -92,6 +93,7 @@ TEMPLATES = [
 
 # JWT authentication
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -108,6 +110,11 @@ SIMPLE_JWT = {
 }
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cherniy Chizh API',
+    'SERVE_INCLUDE_SCHEMA': True,
+}
 
 
 # Database
