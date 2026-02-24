@@ -11,6 +11,7 @@ export {
   Form,
   Modal,
   Select,
+  Skeleton,
   useModalTitle,
   type AccordionItem,
   type BreadcrumbItem,

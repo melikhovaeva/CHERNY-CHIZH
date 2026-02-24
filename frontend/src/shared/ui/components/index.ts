@@ -6,11 +6,8 @@ export { Card } from './Card';
 export { Checkbox } from './Checkbox';
 export { Form } from './Form';
 export { Input, type InputType } from './Input';
-export {
-  Modal,
-  useModalTitle,
-  type ModalTitleContextValue,
-} from './Modal';
+export { Modal, useModalTitle, type ModalTitleContextValue } from './Modal';
 export { Placeholder } from './Placeholder';
-export { Select, type SelectOption } from './Select';
 export { ProtectedRoute } from './ProtectedRoute';
+export { Select, type SelectOption } from './Select';
+export { Skeleton } from './Skeleton/Skeleton';
