@@ -18,9 +18,7 @@ export function HomePage() {
       <HeroSection />
       <PuppiesSection />
       <AdvantagesSection />
-      {breeds && (
-        <BreedAboutSection breeds={breeds} isLoading={breedsLoading} />
-      )}
+      <BreedAboutSection breeds={breeds} isLoading={breedsLoading} />
       <FAQSection />
       <LibrarySection />
       <FormSection />
