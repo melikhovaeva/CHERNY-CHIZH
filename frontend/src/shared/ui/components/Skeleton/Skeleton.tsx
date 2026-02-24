@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils';
 import type { CSSProperties } from 'react';
 import styles from './Skeleton.module.scss';
 
-type SkeletonVariant = 'text' | 'rect' | 'circle';
+type SkeletonVariant = 'text' | 'rect' | 'avatar';
 
 interface SkeletonProps {
   variant?: SkeletonVariant;
@@ -66,7 +66,7 @@ export const Skeleton = ({
       className={cn([
         styles.skeleton,
         inline ? styles.skeleton_inline : '',
-        variant === 'circle' ? styles.skeleton_circle : '',
+        variant === 'avatar' ? styles.skeleton_circle : '',
         className || '',
       ])}
       style={baseStyle}
