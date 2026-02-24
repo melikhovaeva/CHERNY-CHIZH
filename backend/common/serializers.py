@@ -193,20 +193,41 @@ class DogByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerial
         return self._build_enum_payload(obj.potential, DogPotential)
 
 
-class BreedDescriptionSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+class RatingBlockSerializer(serializers.Serializer):
+    """Вспомогательный сериализатор для блока rating + text."""
+
+    rating = serializers.IntegerField()
+    text = serializers.CharField()
+
+
+class BreedDescriptionSerializer(CamelCaseSerializerMixin, serializers.Serializer):
     """Описание породы с полями, сгруппированными как на фронте (блоки rating + text)."""
 
-    class Meta:
-        model = BreedDescription
-        fields = ("appearance", "character", "adaptability", "care", "activity")
+    appearance = serializers.CharField()
+    character = RatingBlockSerializer()
+    adaptability = RatingBlockSerializer()
+    care = RatingBlockSerializer()
+    activity = RatingBlockSerializer()
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: BreedDescription):
         data = {
             "appearance": instance.appearance,
-            "character": {"rating": instance.character_rating, "text": instance.character_text},
-            "adaptability": {"rating": instance.adaptability_rating, "text": instance.adaptability_text},
-            "care": {"rating": instance.care_rating, "text": instance.care_text},
-            "activity": {"rating": instance.activity_rating, "text": instance.activity_text},
+            "character": {
+                "rating": instance.character_rating,
+                "text": instance.character_text,
+            },
+            "adaptability": {
+                "rating": instance.adaptability_rating,
+                "text": instance.adaptability_text,
+            },
+            "care": {
+                "rating": instance.care_rating,
+                "text": instance.care_text,
+            },
+            "activity": {
+                "rating": instance.activity_rating,
+                "text": instance.activity_text,
+            },
         }
         return _keys_to_camel_case(data)
 
