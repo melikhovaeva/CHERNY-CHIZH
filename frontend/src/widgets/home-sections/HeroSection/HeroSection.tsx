@@ -35,11 +35,12 @@ export function HeroSection() {
       </div>
       <div className={styles.scroll}>
         <ul className={styles.list}>
-          {items.map((puppy) => (
-            <li className={styles.listItem} key={puppy?.id}>
+          {items.map((puppy, index) => (
+            <li className={styles.listItem} key={puppy?.id ?? index}>
               {puppy ? (
                 <img
                   className={styles.photo}
+                  key={puppy?.id}
                   src={getFirstPhotoUrl(puppy) ?? ''}
                   alt={puppy.name}
                 />

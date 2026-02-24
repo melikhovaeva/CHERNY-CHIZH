@@ -27,34 +27,64 @@
   }
 
   .skeletonGallery {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: 38px 1fr;
-    gap: 24px;
-    row-gap: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     margin-bottom: 40px;
+
     .skeletonTabs {
-      grid-column: 1 / -1;
-      grid-row: 1 / 2;
       height: 38px;
       max-width: 50%;
-      justify-self: center;
+      margin-bottom: 40px;
     }
 
-    @media (max-width: 1024px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .skeletonScroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      @media (max-width: 1200px) {
+        padding: 0 32px;
+      }
+
+      @media (max-width: 576px) {
+        padding: 0 20px;
+      }
     }
 
-    @media (max-width: 640px) {
-      grid-template-columns: 1fr;
+    .skeletonList {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      min-width: min-content;
+      @media (max-width: 576px) {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   }
 
   .skeletonCard {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-shrink: 0;
+    width: 387px;
+    height: 385px;
+    border-radius: 16px;
+    overflow: hidden;
+
+    @media (max-width: 420px) {
+      width: 320px;
+      height: 320px;
+    }
   }
 
   .skeletonButton {

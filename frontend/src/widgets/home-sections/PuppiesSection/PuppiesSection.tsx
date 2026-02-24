@@ -77,12 +77,16 @@ export function PuppiesSection() {
               width="100%"
               className={styles.skeletonTabs}
             />
-            {Array.from({ length: 3 }).map((_, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <div key={index} className={styles.skeletonCard}>
-                <Skeleton height={385} />
-              </div>
-            ))}
+            <div className={styles.skeletonScroll}>
+              <ul className={styles.skeletonList}>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <li key={index} className={styles.skeletonCard}>
+                    <Skeleton height="100%" width="100%" />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ) : (
           puppies && (
