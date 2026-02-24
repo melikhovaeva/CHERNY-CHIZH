@@ -1,6 +1,6 @@
-import { Placeholder } from '@/shared/ui/components';
+import { getFirstPhotoUrl, type Puppy } from '@/entities/puppy';
 import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api';
-import { getFirstPhotoUrl } from '@/entities/puppy/model/utils';
+import { Skeleton } from '@/shared/ui/components';
 import styles from './HeroSection.module.scss';
 
 export function HeroSection() {
@@ -10,7 +10,7 @@ export function HeroSection() {
     (puppy) => puppy.photos && puppy.photos.length > 0,
   );
 
-  const getRandomPuppies = () => {
+  const getRandomPuppies = (): Puppy[] => {
     if (!puppiesWithPhotos.length) {
       return [];
     }
@@ -19,7 +19,10 @@ export function HeroSection() {
     return shuffled.slice(0, 4);
   };
 
-  const randomPuppies = !isLoading ? getRandomPuppies() : [];
+  const randomPuppies: Puppy[] = !isLoading ? getRandomPuppies() : [];
+  const items: (Puppy | null)[] = randomPuppies.length
+    ? randomPuppies
+    : Array.from({ length: 4 }, () => null);
 
   return (
     <section className={styles.root}>
@@ -32,22 +35,19 @@ export function HeroSection() {
       </div>
       <div className={styles.scroll}>
         <ul className={styles.list}>
-          {(randomPuppies.length ? randomPuppies : Array.from({ length: 4 })).map(
-            (puppyOrPlaceholder, index) => (
-              <li className={styles.listItem} key={index}>
-                {typeof puppyOrPlaceholder === 'object' &&
-                puppyOrPlaceholder !== null ? (
-                  <img
-                    className={styles.photo}
-                    src={getFirstPhotoUrl(puppyOrPlaceholder) ?? ''}
-                    alt={puppyOrPlaceholder.name}
-                  />
-                ) : (
-                  <Placeholder className={styles.placeholder} />
-                )}
-              </li>
-            ),
-          )}
+          {items.map((puppy) => (
+            <li className={styles.listItem} key={puppy?.id}>
+              {puppy ? (
+                <img
+                  className={styles.photo}
+                  src={getFirstPhotoUrl(puppy) ?? ''}
+                  alt={puppy.name}
+                />
+              ) : (
+                <Skeleton width="100%" height="100%" />
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     </section>

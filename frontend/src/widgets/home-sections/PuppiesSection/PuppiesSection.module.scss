@@ -15,6 +15,8 @@
   .title {
     margin-bottom: 20px;
     text-align: center;
+    height: 64px;
+    width: 40%;
   }
 
   .buttonContainer {
@@ -22,5 +24,42 @@
     @media (max-width: 1200px) {
       padding: 0 32px;
     }
+  }
+
+  .skeletonGallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 38px 1fr;
+    gap: 24px;
+    row-gap: 40px;
+    width: 100%;
+    margin-bottom: 40px;
+    .skeletonTabs {
+      grid-column: 1 / -1;
+      grid-row: 1 / 2;
+      height: 38px;
+      max-width: 50%;
+      justify-self: center;
+    }
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .skeletonCard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .skeletonButton {
+    // max-width: 200px;
+    width: 100%;
+    height: 61px;
   }
 }

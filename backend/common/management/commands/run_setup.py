@@ -14,6 +14,7 @@ class Command(BaseCommand):
         if not Dog.objects.exists():
             call_command("run_all_static_commands")
             call_command("run_all_test_commands")
+            call_command("fill_static_breed_descriptions")
         else:
             self.stdout.write(
                 self.style.WARNING(
