@@ -1,4 +1,7 @@
+import { selectIsAuthenticated, useAppSelector } from '@/app/redux';
 import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
+import { UserImage } from '@/features/session';
+import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
 import { cn } from '@/shared/lib/utils';
 import { Backdrop } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
@@ -28,8 +31,16 @@ const mobileMenuLinks = [{ to: '/', label: 'Главная' }, ...headerLinks];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  const loginButton = <LoginButton />;
+  const authControl = isAuthenticated ? (
+    <div className={styles.userMenu}>
+      <LogoutButton />
+      <UserImage />
+    </div>
+  ) : (
+    <LoginButton />
+  );
   return (
     <header className={styles.container}>
       {isMenuOpen && (
@@ -60,7 +71,7 @@ export function Header() {
             onOpen={() => setIsMenuOpen(true)}
           />
         </div>
-        <div className={styles.desktopActions}>{loginButton}</div>
+        <div className={styles.desktopActions}>{authControl}</div>
       </div>
       <div
         className={cn([
@@ -71,7 +82,7 @@ export function Header() {
       >
         <BurgerMenuList
           links={mobileMenuLinks}
-          loginButton={loginButton}
+          loginButton={authControl}
           onLinkClick={() => setIsMenuOpen(false)}
         />
       </div>

@@ -1,10 +1,13 @@
 import { baseApi } from '@/shared/api/base-api';
 import { API_CONFIG } from '@/shared/config/api';
 import type {
+  LoginRequest,
+  LoginResponse,
   RegisterStep1Request,
   RegisterStep1Response,
   RegisterStep2Request,
   RegisterStep2Response,
+  User,
 } from './types';
 
 export const sessionApi = baseApi.injectEndpoints({
@@ -23,12 +26,40 @@ export const sessionApi = baseApi.injectEndpoints({
         body: {
           ...body,
           phone: body.phone || undefined,
-          telegram: body.telegram || undefined,
+          messenger: body.messenger || undefined,
         },
+      }),
+      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
+    }),
+    login: build.mutation<LoginResponse, LoginRequest>({
+      query: (body) => ({
+        url: API_CONFIG.ENDPOINTS.LOGIN,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
+    }),
+    me: build.query<User, void>({
+      query: () => ({
+        url: API_CONFIG.ENDPOINTS.ME,
+        method: 'GET',
+      }),
+      providesTags: [API_CONFIG.TAG_TYPES.SESSION],
+    }),
+    logout: build.mutation<void, void>({
+      query: () => ({
+        url: API_CONFIG.ENDPOINTS.LOGOUT,
+        method: 'POST',
       }),
       invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
     }),
   }),
 });
 
-export const { useRegisterStep1Mutation, useRegisterStep2Mutation } = sessionApi;
+export const {
+  useRegisterStep1Mutation,
+  useRegisterStep2Mutation,
+  useLoginMutation,
+  useMeQuery,
+  useLogoutMutation,
+} = sessionApi;

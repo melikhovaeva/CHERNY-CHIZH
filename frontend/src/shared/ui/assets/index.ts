@@ -12,7 +12,7 @@ export const SocialIcons: Record<
   FunctionComponent<SVGProps<SVGSVGElement>>
 > = {
   instagram: InstagramIcon,
-  telegram: TelegramIcon,
+  messenger: TelegramIcon,
   vk: VkIcon,
   whatsapp: WhatsappIcon,
 };

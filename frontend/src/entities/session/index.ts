@@ -1,10 +1,19 @@
 export {
   useRegisterStep1Mutation,
   useRegisterStep2Mutation,
+  useLoginMutation,
+  useMeQuery,
+  useLogoutMutation,
 } from './api/session.api';
+
 export type {
   RegisterStep1Request,
   RegisterStep1Response,
   RegisterStep2Request,
   RegisterStep2Response,
+  LoginRequest,
+  LoginResponse,
+  User,
 } from './api/types';
+
+export { useAuth } from './model/useAuth';

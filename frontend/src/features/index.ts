@@ -8,4 +8,9 @@ export {
 } from './puppy-filters';
 export { Tabs } from './tabs-filter';
 
-export { LoginButton, LoginForm, RegisterFlow } from './session';
+export {
+  LoginButton,
+  LoginForm,
+  RegisterFlow,
+  UserImage as UserMenu,
+} from './session';

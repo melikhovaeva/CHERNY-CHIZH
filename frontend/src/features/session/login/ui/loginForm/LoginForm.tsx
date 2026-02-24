@@ -1,3 +1,5 @@
+import { closeAuthModal, selectSessionError, useAppDispatch, useAppSelector } from '@/app/redux';
+import { useLoginMutation } from '@/entities/session';
 import { Button, Form, Input } from '@/shared/ui/components';
 import { useForm } from 'react-hook-form';
 import styles from './LoginForm.module.scss';
@@ -10,14 +12,23 @@ interface LoginFormFields {
 }
 
 export const LoginForm = () => {
+  const dispatch = useAppDispatch();
+  const [login, { isLoading }] = useLoginMutation();
+  const sessionError = useAppSelector(selectSessionError);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormFields>();
 
-  const onSubmit = (data: LoginFormFields) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormFields) => {
+    try {
+      await login(data).unwrap();
+      dispatch(closeAuthModal());
+    } catch {
+      // Ошибки обрабатываются через sessionSlice
+    }
   };
 
   return (
@@ -52,7 +63,10 @@ export const LoginForm = () => {
             </a>
           </div>
         </div>
-        <Button type="submit">
+        {sessionError && (
+          <p className={styles.error}>{sessionError}</p>
+        )}
+        <Button type="submit" disabled={isLoading}>
           Войти
         </Button>
       </div>
