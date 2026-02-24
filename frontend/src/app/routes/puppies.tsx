@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { store } from '../redux'
 
 export const Route = createFileRoute('/puppies')({
+  staticData: { navLabel: 'Щенки', navOrder: 1 },
   beforeLoad: ({ location }) => {
     if (location.pathname === '/puppies') {
       const selectedBreedSlug = store.getState().selectedBreed.selectedBreedSlug
