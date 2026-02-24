@@ -1,18 +1,12 @@
 import { LoginForm, RegisterFlow } from '@/features';
-import { cn } from '@/shared/lib/utils';
 import { useModalTitle } from '@/shared';
+import { cn } from '@/shared/lib/utils';
 import { useCallback, useEffect, useState } from 'react';
+import { AuthMode, TITLES } from '../model';
 import styles from './AuthModal.module.scss';
 
-type AuthMode = 'login' | 'register';
-
-const TITLES: Record<AuthMode, string> = {
-  login: 'Войти',
-  register: 'Регистрация',
-};
-
 export function AuthModalContent() {
-  const [mode, setMode] = useState<AuthMode>('login');
+  const [mode, setMode] = useState<AuthMode>(AuthMode.LOGIN);
   const [isAnimating, setIsAnimating] = useState(false);
   const setTitle = useModalTitle()?.setTitle;
 
@@ -47,15 +41,17 @@ export function AuthModalContent() {
   return (
     <div className={styles.slidesContainer}>
       <div
-        className={cn([styles.slide, getSlideClass('login')])}
-        onAnimationEnd={mode === 'login' ? handleAnimationEnd : undefined}
+        className={cn([styles.slide, getSlideClass(AuthMode.LOGIN)])}
+        onAnimationEnd={
+          mode === AuthMode.LOGIN ? handleAnimationEnd : undefined
+        }
       >
-        <h2>{TITLES.login}</h2>
+        <h2>{TITLES[AuthMode.LOGIN]}</h2>
         <div className={styles.switch}>
           <p>Нет аккаунта? </p>
           <button
             type="button"
-            onClick={() => switchMode('register')}
+            onClick={() => switchMode(AuthMode.REGISTER)}
             disabled={isAnimating}
           >
             Создай новый
@@ -64,15 +60,17 @@ export function AuthModalContent() {
         <LoginForm />
       </div>
       <div
-        className={cn([styles.slide, getSlideClass('register')])}
-        onAnimationEnd={mode === 'register' ? handleAnimationEnd : undefined}
+        className={cn([styles.slide, getSlideClass(AuthMode.REGISTER)])}
+        onAnimationEnd={
+          mode === AuthMode.REGISTER ? handleAnimationEnd : undefined
+        }
       >
-        <h2>{TITLES.register}</h2>
+        <h2>{TITLES[AuthMode.REGISTER]}</h2>
         <div className={styles.switch}>
           <p>Есть аккаунт? </p>
           <button
             type="button"
-            onClick={() => switchMode('login')}
+            onClick={() => switchMode(AuthMode.LOGIN)}
             disabled={isAnimating}
           >
             Войти

@@ -1,3 +1,5 @@
+export { AuthModalContent } from './auth-modal';
+export { BookingModalContent } from './BookingModal';
 export { DeliverySection } from './DeliverySection';
 export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';
