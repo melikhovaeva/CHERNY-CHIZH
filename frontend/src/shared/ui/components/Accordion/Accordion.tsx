@@ -22,7 +22,7 @@ export function Accordion({
   allowMultiple = false,
   className,
 }: AccordionProps) {
-  const initialOpen = defaultOpenId ?? items[0]?.id ?? null;
+  const initialOpen = defaultOpenId ?? null;
   const [openIds, setOpenIds] = useState<Set<string | number>>(
     () => new Set(initialOpen != null ? [initialOpen] : []),
   );
