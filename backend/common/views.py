@@ -476,7 +476,7 @@ class RequestViewSet(viewsets.ModelViewSet):
             data.setdefault("last_name", request.user.last_name)
             data.setdefault("email", request.user.email)
             data.setdefault("phone", request.user.phone or "")
-            data.setdefault("messenger", request.user.telegram or "")
+            data.setdefault("messenger", request.user.messenger or "")
 
         instance = RequestModel.objects.create_request(**data)
         out_serializer = RequestSerializer(instance, context={"request": request})

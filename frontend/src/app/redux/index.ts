@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { authModalUiSlice } from './slices/auth-modal-ui';
 import { bookingModalUiSlice } from './slices/booking-modal-ui';
 import { selectedBreedSlice } from './slices/selected-breed';
+import { sessionSlice } from './slices/session';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [authModalUiSlice.name]: authModalUiSlice.reducer,
     [bookingModalUiSlice.name]: bookingModalUiSlice.reducer,
     [selectedBreedSlice.name]: selectedBreedSlice.reducer,
+    [sessionSlice.name]: sessionSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),
@@ -33,6 +35,14 @@ export {
   selectSelectedBreedSlug,
   setSelectedBreed,
 } from './slices/selected-breed';
+
+export {
+  selectCurrentUser,
+  selectIsAuthenticated,
+  selectSessionStatus,
+  selectSessionError,
+  clearSession,
+} from './slices/session';
 
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';

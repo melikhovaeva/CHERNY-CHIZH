@@ -13,3 +13,4 @@ export {
 } from './Modal';
 export { Placeholder } from './Placeholder';
 export { Select, type SelectOption } from './Select';
+export { ProtectedRoute } from './ProtectedRoute';

@@ -26,7 +26,7 @@ export const CONTACT_DATA: ContactData[] = [
   {
     id: 4,
     type: ContactEnum.SOCIALS,
-    name: 'telegram',
+    name: 'messenger',
     value: '@sharpei.club',
     href: 'https://t.me/sharpei.club',
   },

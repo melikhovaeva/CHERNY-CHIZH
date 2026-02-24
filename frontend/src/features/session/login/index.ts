@@ -1,1 +1,1 @@
-export { LoginButton, LoginForm } from './ui';
+export { LoginButton, LoginForm, UserImage } from './ui';

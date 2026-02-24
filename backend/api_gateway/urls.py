@@ -11,7 +11,7 @@ from common.views import (
     RequestViewSet,
 )
 from consumer.views import FAQItemViewSet
-from api_gateway.views import JWTTokenObtainPairView, JWTTokenRefreshView
+from user_management.views import ProfileView
 
 router = DefaultRouter()
 router.register(r"dogs", DogViewSet, basename="dog")
@@ -29,7 +29,5 @@ router.APIRootView.permission_classes = [permissions.AllowAny]
 
 urlpatterns = [
     path("users/", include("user_management.urls")),
-    path("token/", JWTTokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("token/refresh/", JWTTokenRefreshView.as_view(), name="token_refresh"),
     path("", include(router.urls)),
 ]

@@ -1,11 +1,21 @@
+import { useAuth } from '@/entities/session'
 import { StoreProvider } from './store/StoreProvider'
 import { ModalHost } from './ModalHost'
+
+const AppBootstrap = ({ children }: { children: React.ReactNode }) => {
+  useAuth()
+  return (
+    <>
+      <ModalHost />
+      {children}
+    </>
+  )
+}
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <ModalHost />
-      {children}
+      <AppBootstrap>{children}</AppBootstrap>
     </StoreProvider>
   )
 }

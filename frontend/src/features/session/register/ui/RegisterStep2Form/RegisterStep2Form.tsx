@@ -1,16 +1,21 @@
 import { useRegisterStep2Mutation } from '@/entities/session';
+import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Form, Input } from '@/shared/ui/components';
 import { useForm } from 'react-hook-form';
-import { getFirstApiErrorMessage } from '@/shared';
 import styles from '../register-form-layout.module.scss';
 
-const STEP2_ERROR_FIELDS = ['first_name', 'last_name', 'email', 'detail'] as const;
+const STEP2_ERROR_FIELDS = [
+  'first_name',
+  'last_name',
+  'email',
+  'detail',
+] as const;
 
 export interface RegisterStep2FormFields {
   first_name: string;
   last_name?: string;
   phone: string;
-  telegram: string;
+  messenger: string;
 }
 
 interface RegisterStep2FormProps {
@@ -31,7 +36,7 @@ export const RegisterStep2Form = ({
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterStep2FormFields>({
-    defaultValues: { phone: '', telegram: '' },
+    defaultValues: { phone: '', messenger: '' },
   });
 
   const onSubmit = async (data: RegisterStep2FormFields) => {
@@ -43,7 +48,7 @@ export const RegisterStep2Form = ({
         first_name: data.first_name,
         last_name: data.last_name?.trim() || undefined,
         phone: data.phone?.trim() || undefined,
-        telegram: data.telegram?.trim() || undefined,
+        messenger: data.messenger?.trim() || undefined,
       }).unwrap();
       onSuccess?.();
     } catch {
@@ -78,10 +83,10 @@ export const RegisterStep2Form = ({
             {...register('phone')}
           />
           <Input
-            label="Телеграм"
+            label="Мессенджер"
             placeholder="Необязательно"
-            error={errors.telegram?.message}
-            {...register('telegram')}
+            error={errors.messenger?.message}
+            {...register('messenger')}
           />
           <div className={styles.apiErrorSlot}>
             {apiError && <p className={styles.apiError}>{apiError}</p>}

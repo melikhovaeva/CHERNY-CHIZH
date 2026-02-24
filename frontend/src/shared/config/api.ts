@@ -18,6 +18,10 @@ export const API_CONFIG = {
     REGISTER_STEP1: `${API_PREFIX}users/register/step1/`,
     REGISTER_STEP2: `${API_PREFIX}users/register/step2/`,
     REQUESTS: `${API_PREFIX}requests/`,
+    LOGIN: `${API_PREFIX}users/auth/login/`,
+    ME: `${API_PREFIX}users/me/`,
+    REFRESH: `${API_PREFIX}users/auth/refresh/`,
+    LOGOUT: `${API_PREFIX}users/auth/logout/`,
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',

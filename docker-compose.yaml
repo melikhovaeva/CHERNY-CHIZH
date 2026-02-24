@@ -21,7 +21,7 @@ services:
       - ./backend:/backend-app
     env_file:
       - .env
-    command: sh -c "pip install -r requirements.txt && python manage.py ensure_minio_bucket && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "pip install -r requirements.txt && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       postgres:
         condition: service_healthy
