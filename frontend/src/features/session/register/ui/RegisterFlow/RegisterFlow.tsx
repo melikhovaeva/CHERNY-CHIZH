@@ -1,23 +1,22 @@
-import { closeAuthModal, useAppDispatch } from '@/app/redux';
-import { useCallback, useState } from 'react';
-import { cn } from '@/shared/lib/utils';
 import slideStyles from '@/shared/lib/slide-transition.module.scss';
+import { cn } from '@/shared/lib/utils';
+import { useCallback, useState } from 'react';
+import { useRegisterFlow } from '../../model/useRegisterFlow';
 import { RegisterStep1Form } from '../RegisterStep1Form';
 import { RegisterStep2Form } from '../RegisterStep2Form';
 
 export function RegisterFlow() {
-  const dispatch = useAppDispatch();
-  const [step, setStep] = useState<1 | 2>(1);
+  const { step, email, password, handleStep1Success, handleStep2Success } =
+    useRegisterFlow();
   const [isAnimating, setIsAnimating] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleStep1Success = useCallback((step1Email: string, step1Password: string) => {
-    setEmail(step1Email);
-    setPassword(step1Password);
-    setStep(2);
-    setIsAnimating(true);
-  }, []);
+  const handleStep1SuccessUi = useCallback(
+    (step1Email: string, step1Password: string) => {
+      handleStep1Success(step1Email, step1Password);
+      setIsAnimating(true);
+    },
+    [handleStep1Success],
+  );
 
   const handleAnimationEnd = useCallback(
     (e: React.AnimationEvent<HTMLDivElement>) => {
@@ -26,10 +25,6 @@ export function RegisterFlow() {
     },
     [],
   );
-
-  const handleStep2Success = useCallback(() => {
-    dispatch(closeAuthModal());
-  }, [dispatch]);
 
   function getSlideClass(slideStep: 1 | 2) {
     if (slideStep === step) {
@@ -44,7 +39,7 @@ export function RegisterFlow() {
         className={cn([slideStyles.slide, getSlideClass(1)])}
         onAnimationEnd={step === 1 ? handleAnimationEnd : undefined}
       >
-        <RegisterStep1Form onSuccess={handleStep1Success} />
+        <RegisterStep1Form onSuccess={handleStep1SuccessUi} />
       </div>
       <div
         className={cn([slideStyles.slide, getSlideClass(2)])}
