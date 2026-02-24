@@ -67,6 +67,31 @@ export const sessionSlice = createSlice({
         },
       )
       .addMatcher(
+        sessionApi.endpoints.registerStep2.matchPending,
+        (state) => {
+          state.status = 'loading';
+          state.error = null;
+        },
+      )
+      .addMatcher(
+        sessionApi.endpoints.registerStep2.matchFulfilled,
+        (state, action) => {
+          state.user = action.payload;
+          state.isAuthenticated = true;
+          state.status = 'succeeded';
+          state.error = null;
+        },
+      )
+      .addMatcher(
+        sessionApi.endpoints.registerStep2.matchRejected,
+        (state, action) => {
+          state.status = 'failed';
+          const errorData = (action.payload as { data?: unknown } | undefined)
+            ?.data as { detail?: string } | undefined;
+          state.error = errorData?.detail ?? 'Не удалось завершить регистрацию';
+        },
+      )
+      .addMatcher(
         sessionApi.endpoints.me.matchPending,
         (state) => {
           if (state.status === 'idle') {
