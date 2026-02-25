@@ -7,6 +7,8 @@ from .views import (
     ProfileView,
     RegisterStep1View,
     RegisterStep2View,
+    UserAdminDetailView,
+    UserListAdminView,
 )
 
 urlpatterns = [
@@ -16,4 +18,6 @@ urlpatterns = [
     path("me/", ProfileView.as_view(), name="auth_me"),
     path("register/step1/", RegisterStep1View.as_view(), name="register-step1"),
     path("register/step2/", RegisterStep2View.as_view(), name="register-step2"),
+    path("admin/users/", UserListAdminView.as_view(), name="admin-user-list"),
+    path("admin/users/<int:pk>/", UserAdminDetailView.as_view(), name="admin-user-detail"),
 ]

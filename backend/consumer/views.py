@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiExample,
@@ -58,6 +59,7 @@ from consumer.serializers import FAQItemSerializer
 class FAQItemViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения FAQ-элементов."""
 
+    permission_classes = [AllowAny]
     serializer_class = FAQItemSerializer
 
     def get_queryset(self):

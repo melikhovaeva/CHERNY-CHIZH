@@ -1,20 +1,51 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from user_management.models import User
+from user_management.models import Role, User
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    """Только код и название роли; is_staff/is_superuser в API не отдаём."""
+
+    class Meta:
+        model = Role
+        fields = ("code", "label")
+        read_only_fields = ("code", "label")
 
 
 class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = "__all__"
-    read_only_fields = ("id", "date_joined", "is_active")
+    role = RoleSerializer(read_only=True, allow_null=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "messenger",
+            "role",
+            "date_joined",
+            "is_active",
+        )
+        read_only_fields = ("id", "date_joined", "is_active", "role")
+
+
+class UserRoleUpdateSerializer(serializers.ModelSerializer):
+    """Только смена роли; только для админа."""
+
+    class Meta:
+        model = User
+        fields = ("role",)
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = User
-    fields = ("id", "email", "first_name", "last_name", "phone", "messenger")
-    read_only_fields = ("id", "email")
+    role = RoleSerializer(read_only=True, allow_null=True)
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "first_name", "last_name", "phone", "messenger", "role")
+        read_only_fields = ("id", "email", "role")
 
 class RegisterSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True, required=True, validators=[validate_password])

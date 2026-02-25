@@ -8,11 +8,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from user_management.models import User
+from user_management.permissions import IsAdmin
 from user_management.serializers import (
   CurrentUserSerializer,
   RegisterSerializer,
   RegisterStep1Serializer,
   RegisterStep2Serializer,
+  UserRoleUpdateSerializer,
   UserSerializer,
 )
 
@@ -142,6 +144,35 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
   def get_object(self):
     return self.request.user
+
+
+@extend_schema(
+  tags=["Users"],
+  summary="Список пользователей (только админ)",
+  description="Возвращает список пользователей с полями профиля и ролью. Доступно только суперпользователю.",
+)
+class UserListAdminView(generics.ListAPIView):
+  queryset = User.objects.all().select_related("role").order_by("email")
+  serializer_class = UserSerializer
+  permission_classes = (IsAdmin,)
+
+
+@extend_schema(
+  tags=["Users"],
+  summary="Профиль пользователя по id (только админ)",
+  description="GET — данные пользователя; PATCH — смена роли. Доступно только суперпользователю.",
+  responses={200: UserSerializer},
+)
+class UserAdminDetailView(generics.RetrieveUpdateAPIView):
+  queryset = User.objects.all().select_related("role")
+  serializer_class = UserSerializer
+  permission_classes = (IsAdmin,)
+  http_method_names = ["get", "patch", "head", "options"]
+
+  def get_serializer_class(self):
+    if self.request.method == "PATCH":
+      return UserRoleUpdateSerializer
+    return UserSerializer
 
 
 @extend_schema(
