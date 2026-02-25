@@ -190,7 +190,7 @@ class Dog(BaseAnimal):
         ]
 
     def __str__(self):
-        return f"{self.name} {self.international_name}"
+        return f"{self.name} ({self.age_group == Dog.AGE_GROUP_PUPPY and 'щенок' or 'собака'})"
 
     @property
     def international_name(self):
@@ -275,10 +275,6 @@ class DogParent(models.Model):
         verbose_name = "Родитель собаки"
         verbose_name_plural = "Родители собак"
         constraints = [
-            models.UniqueConstraint(
-                fields=["parent"],
-                name="unique_dog_as_parent",
-            ),
             models.UniqueConstraint(
                 fields=["child", "role"],
                 name="unique_role_per_child",
