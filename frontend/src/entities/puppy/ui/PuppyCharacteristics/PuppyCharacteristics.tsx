@@ -1,19 +1,22 @@
-import { Link } from '@tanstack/react-router'
-import type { Puppy } from '../../model/types'
-import { formatPuppyDate } from '../../model/utils'
-import styles from './PuppyCharacteristics.module.scss'
+import { Link } from '@tanstack/react-router';
+import type { Puppy } from '../../model/types';
+import { formatPuppyDate } from '../../model/utils';
+import styles from './PuppyCharacteristics.module.scss';
 
 interface PuppyCharacteristicsProps {
-  puppy: Puppy
-  className?: string
+  puppy: Puppy;
+  className?: string;
 }
 
-export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsProps) => {
-  const parentsExists = puppy.parents && Object.keys(puppy.parents).length > 0
-  const documentsExists = puppy.documents && puppy.documents?.length > 0
+export const PuppyCharacteristics = ({
+  puppy,
+  className,
+}: PuppyCharacteristicsProps) => {
+  const parentsExists = puppy.parents && Object.keys(puppy.parents).length > 0;
+  const documentsExists = puppy.documents && puppy.documents?.length > 0;
 
-  const puppyMother = puppy.parents?.mother
-  const puppyFather = puppy.parents?.father
+  const puppyMother = puppy.parents?.mother;
+  const puppyFather = puppy.parents?.father;
 
   return (
     <dl className={[styles.list, className].filter(Boolean).join(' ')}>
@@ -37,22 +40,21 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
         <div className={styles.item}>
           <dt className={styles.label}>Документы:</dt>
           <dd className={styles.value}>
-            {
-              puppy.documents?.map((document) => (
-
-                document.url ? (
-                  <a key={document.id}
-                    className={styles.value__link}
-                    href={document.url}
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    {document.name}
-                  </a>
-                ) : (
-                  <span key={document.id}>{document.name}</span>
-                )
-              ))
-            }
+            {puppy.documents?.map((document) =>
+              document.url ? (
+                <a
+                  key={document.id}
+                  className={styles.value__link}
+                  href={document.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {document.name}
+                </a>
+              ) : (
+                <span key={document.id}>{document.name}</span>
+              ),
+            )}
           </dd>
         </div>
       )}
@@ -67,8 +69,11 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
             {puppyMother && (
               <p>
                 <Link
-                  to="/puppies/$breedId/$puppyId"
-                  params={{ breedId: puppy.breed.slug, puppyId: String(puppyMother.id) }}
+                  to="/dogs/$breedId/$dogId"
+                  params={{
+                    breedId: puppy.breed.slug,
+                    dogId: String(puppyMother.id),
+                  }}
                 >
                   {puppyMother.name}
                 </Link>
@@ -77,8 +82,11 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
             {puppyFather && (
               <p>
                 <Link
-                  to="/puppies/$breedId/$puppyId"
-                  params={{ breedId: puppy.breed.slug, puppyId: String(puppyFather.id) }}
+                  to="/dogs/$breedId/$dogId"
+                  params={{
+                    breedId: puppy.breed.slug,
+                    dogId: String(puppyFather.id),
+                  }}
                 >
                   {puppyFather.name}
                 </Link>
@@ -87,6 +95,6 @@ export const PuppyCharacteristics = ({ puppy, className }: PuppyCharacteristicsP
           </dd>
         </div>
       )}
-    </dl >
-  )
-}
+    </dl>
+  );
+};

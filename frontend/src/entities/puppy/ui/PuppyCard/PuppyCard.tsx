@@ -11,21 +11,32 @@ interface PuppyCardProps {
   puppy: Puppy;
   className?: string;
   detailed?: boolean;
+  showBookingButton?: boolean;
+  detailPathPrefix?: 'puppies' | 'dogs';
 }
 
 export const PuppyCard = ({
   puppy,
   className,
   detailed = false,
+  showBookingButton = true,
+  detailPathPrefix = 'puppies',
 }: PuppyCardProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const goToDetails = () => {
-    navigate({
-      to: '/puppies/$breedId/$puppyId',
-      params: { breedId: puppy.breed.slug, puppyId: String(puppy.id) },
-    });
+    if (detailPathPrefix === 'dogs') {
+      navigate({
+        to: '/dogs/$breedId/$dogId',
+        params: { breedId: puppy.breed.slug, dogId: String(puppy.id) },
+      });
+    } else {
+      navigate({
+        to: '/puppies/$breedId/$puppyId',
+        params: { breedId: puppy.breed.slug, puppyId: String(puppy.id) },
+      });
+    }
   };
 
   const isPhotoExists = puppy.photos?.length && puppy.photos.length > 0;
@@ -60,9 +71,11 @@ export const PuppyCard = ({
           <PuppyCharacteristics puppy={puppy} />
         </div>
         <div className={styles.card__buttonContainer}>
-          <Button onClick={() => dispatch(openBookingModal(puppy.id))}>
-            Забронировать
-          </Button>
+          {showBookingButton && (
+            <Button onClick={() => dispatch(openBookingModal(puppy.id))}>
+              Забронировать
+            </Button>
+          )}
           {!detailed && (
             <Button variant="secondary" onClick={goToDetails}>
               Подробнее

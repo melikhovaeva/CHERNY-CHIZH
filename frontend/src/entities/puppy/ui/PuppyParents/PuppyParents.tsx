@@ -11,7 +11,11 @@ export const PuppyParents = ({ puppy, className }: PuppyParentsProps) => (
   <ul className={[styles.list, className].filter(Boolean).join(' ')}>
     {Object.values(puppy.parents ?? {}).map((parent) => (
       <li key={parent.id} className={styles.item}>
-        <Link to={parent.url} className={styles.link}>
+        <Link
+          to="/dogs/$breedId/$dogId"
+          params={{ breedId: puppy.breed.slug, dogId: parent.id }}
+          className={styles.link}
+        >
           {parent.name}
         </Link>
       </li>

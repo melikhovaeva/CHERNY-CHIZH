@@ -1,0 +1,80 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 150px;
+  margin: 0 0 100px;
+
+  @media (max-width: 768px) {
+    gap: 100px;
+  }
+}
+
+.catalogSection {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.catalogContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 20px;
+  background-color: $accent-primary-color;
+  border-radius: 24px;
+
+  @media (max-width: 768px) {
+    padding: 40px 20px;
+  }
+}
+
+.filters {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 24px;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+
+  @media (min-width: 1024px) {
+    gap: 40px;
+  }
+}
+
+.titleContainer {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+  gap: 14px;
+  padding: 0 20px;
+}
+
+.breedTabs {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.breedName {
+  display: inline-block;
+  width: 100%;
+}
+
+.breedDescription {
+  max-width: 600px;
+  font-family: 'Manrope';
+  font-size: 20px;
+  line-height: 140%;
+}
