@@ -71,14 +71,9 @@ class DogPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
 
 
 class DogDocumentsSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
-    url = serializers.SerializerMethodField()
-
     class Meta:
         model = DogDocument
-        fields = ("id", "name", "url")
-
-    def get_url(self, obj):
-        return obj.file.url if obj.file else None
+        fields = ("id", "name")
 
 
 class DogBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):

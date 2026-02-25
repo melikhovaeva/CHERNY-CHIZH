@@ -11,7 +11,6 @@ export interface PuppyCharacteristic {
 export interface PuppyDocument {
   id: string;
   name: string;
-  url: string;
 }
 
 export interface PuppyParent {

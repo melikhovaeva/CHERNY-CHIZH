@@ -40,21 +40,7 @@ export const PuppyCharacteristics = ({
         <div className={styles.item}>
           <dt className={styles.label}>Документы:</dt>
           <dd className={styles.value}>
-            {puppy.documents?.map((document) =>
-              document.url ? (
-                <a
-                  key={document.id}
-                  className={styles.value__link}
-                  href={document.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {document.name}
-                </a>
-              ) : (
-                <span key={document.id}>{document.name}</span>
-              ),
-            )}
+            {puppy.documents?.map((document) => document.name).join(', ')}
           </dd>
         </div>
       )}
@@ -66,8 +52,8 @@ export const PuppyCharacteristics = ({
         <div className={styles.item}>
           <dt className={styles.label}>Родители:</dt>
           <dd className={styles.value}>
-            {puppyMother && (
-              <p>
+            <div className={styles.parents__links}>
+              {puppyMother && (
                 <Link
                   to="/dogs/$breedId/$dogId"
                   params={{
@@ -77,12 +63,11 @@ export const PuppyCharacteristics = ({
                 >
                   {puppyMother.name}
                 </Link>
-              </p>
-            )}
-            {puppyFather && (
-              <p>
+              )}
+              {puppyFather && (
                 <Link
                   to="/dogs/$breedId/$dogId"
+                  className={styles.value__link}
                   params={{
                     breedId: puppy.breed.slug,
                     dogId: String(puppyFather.id),
@@ -90,8 +75,8 @@ export const PuppyCharacteristics = ({
                 >
                   {puppyFather.name}
                 </Link>
-              </p>
-            )}
+              )}
+            </div>
           </dd>
         </div>
       )}

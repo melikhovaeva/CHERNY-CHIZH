@@ -34,7 +34,13 @@
     font-size: 14px;
   }
 
-  &__link {
-    text-decoration: underline;
+  .parents__links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    a {
+      text-decoration: underline;
+    }
   }
 }

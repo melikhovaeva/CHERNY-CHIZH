@@ -58,7 +58,7 @@ class DogPhotoInline(admin.TabularInline):
 
 class DogDocumentInline(admin.TabularInline):
     model = DogDocument
-    extra = 1
+    extra = 0
     fields = ("name", "file")
 
 
