@@ -106,7 +106,7 @@ def _find_dictionary_in_group(group_conf, dict_identifier: str):
                             {"id": 10, "url": "/media/dogs/1/photo1.jpg"},
                         ],
                         "documents": [
-                            {"id": 5, "name": "Ветпаспорт", "url": "/media/docs/passport.pdf"},
+                            {"id": 5, "name": "Ветпаспорт"},
                         ],
                         "parents": {
                             "mother": {"id": "2", "name": "Луна"},

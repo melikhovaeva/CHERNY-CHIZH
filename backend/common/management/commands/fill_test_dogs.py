@@ -5,7 +5,12 @@ from django.core.management.base import BaseCommand, CommandError
 
 from common.models import Breed, Dog, DogPotential, DogSex, DogStatus
 
-from .fill_test_puppies import COLORS, DEFAULT_BREEDS, DESCRIPTIONS
+from .fill_test_puppies import (
+    COLORS,
+    DEFAULT_BREEDS,
+    DESCRIPTIONS_FEMALE,
+    DESCRIPTIONS_MALE,
+)
 from ._test_photos import assign_photo_from_path, get_photos_by_breed
 
 
@@ -143,6 +148,7 @@ class Command(BaseCommand):
 
             for name in mother_names:
                 birth_date = today - timedelta(days=random.randint(365 * 2, 365 * 10))
+                desc_template = random.choice(DESCRIPTIONS_FEMALE)
                 Dog.objects.create(
                     name=name,
                     breed=breed,
@@ -152,12 +158,13 @@ class Command(BaseCommand):
                     sex=female_sex,
                     color=random.choice(COLORS),
                     potential=random.choice(potentials),
-                    description=random.choice(DESCRIPTIONS),
+                    description=desc_template.format(name=name),
                 )
                 created += 1
 
             for name in father_names:
                 birth_date = today - timedelta(days=random.randint(365 * 2, 365 * 10))
+                desc_template = random.choice(DESCRIPTIONS_MALE)
                 Dog.objects.create(
                     name=name,
                     breed=breed,
@@ -167,7 +174,7 @@ class Command(BaseCommand):
                     sex=male_sex,
                     color=random.choice(COLORS),
                     potential=random.choice(potentials),
-                    description=random.choice(DESCRIPTIONS),
+                    description=desc_template.format(name=name),
                 )
                 created += 1
 
