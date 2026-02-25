@@ -14,6 +14,8 @@ import { useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
 import styles from './PuppiesSection.module.scss';
 
+const PUPPIES_SECTION_PAGE_SIZE = 3;
+
 export function PuppiesSection() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -29,12 +31,21 @@ export function PuppiesSection() {
   const shouldSkipPuppiesQuery = !breeds?.length || !selectedBreedSlug;
 
   const {
-    data: puppies,
+    data,
     isLoading: isPuppiesLoading,
     isFetching: isPuppiesFetching,
-  } = useGetPuppiesByBreedQuery(selectedBreedSlug || '', {
-    skip: shouldSkipPuppiesQuery,
-  });
+  } = useGetPuppiesByBreedQuery(
+    {
+      breedSlug: selectedBreedSlug || '',
+      page: 1,
+      pageSize: PUPPIES_SECTION_PAGE_SIZE,
+    },
+    {
+      skip: shouldSkipPuppiesQuery,
+    },
+  );
+
+  const puppies = data?.results ?? [];
 
   const breedTabs = useMemo(
     () =>
@@ -89,7 +100,7 @@ export function PuppiesSection() {
             </div>
           </div>
         ) : (
-          puppies && (
+          puppies.length > 0 && (
             <FilterableGallery
               tabs={breedTabs}
               items={puppies.slice(0, 3)}

@@ -13,6 +13,7 @@ from drf_spectacular.utils import (
 
 from common.dictionaries import DICTIONARY_GROUPS
 from common.models import Breed, Dog, Request as RequestModel
+from common.pagination import DogPagination
 from common.serializers import (
     BreedListSerializer,
     DogByBreedListSerializer,
@@ -129,12 +130,13 @@ class DogViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак (щенки и взрослые)."""
 
     serializer_class = DogListSerializer
+    pagination_class = DogPagination
 
     def get_queryset(self):
         queryset = (
             Dog.objects.select_related("breed")
             .prefetch_related("photos", "documents")
-            .all()
+            .order_by("-id")
         )
         age_group = self.request.query_params.get("age_group")
         if age_group in {Dog.AGE_GROUP_PUPPY, Dog.AGE_GROUP_ADULT}:
@@ -182,6 +184,7 @@ class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак по породе."""
 
     serializer_class = DogByBreedListSerializer
+    pagination_class = DogPagination
 
     def get_queryset(self):
         breed_slug = self.kwargs.get("breed_slug")
@@ -196,6 +199,7 @@ class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
             Dog.objects.filter(breed=matching_breed)
             .select_related("breed")
             .prefetch_related("photos", "documents")
+            .order_by("-id")
         )
 
         age_group = self.request.query_params.get("age_group")
