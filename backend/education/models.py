@@ -14,13 +14,11 @@ class InfoTag(OrderedCodeLabelModel):
         verbose_name_plural = "Теги"
 
 
-class InfoStatus(OrderedCodeLabelModel):
-    """Справочник статусов информативного контента (статья, курс)."""
+class InfoStatus(models.TextChoices):
+    """Предзаданные статусы информативного контента."""
 
-    class Meta(OrderedCodeLabelModel.Meta):
-        db_table = "common_infostatus"
-        verbose_name = "Статус"
-        verbose_name_plural = "Статусы"
+    PUBLISHED = "published", "Опубликован"
+    UNPUBLISHED = "unpublished", "Не опубликован"
 
 
 class InfoModel(TimeStampModel):
@@ -50,10 +48,10 @@ class InfoModel(TimeStampModel):
 class Article(InfoModel):
     """Статья."""
 
-    status = models.ForeignKey(
-        InfoStatus,
-        on_delete=models.PROTECT,
-        related_name="articles",
+    status = models.CharField(
+        max_length=32,
+        choices=InfoStatus.choices,
+        default=InfoStatus.UNPUBLISHED,
     )
     tags = models.ManyToManyField(
         InfoTag,
@@ -84,10 +82,10 @@ class Course(InfoModel):
         choices=CHOICES_DIFFICULTY,
         default="beginner",
     )
-    status = models.ForeignKey(
-        InfoStatus,
-        on_delete=models.PROTECT,
-        related_name="courses",
+    status = models.CharField(
+        max_length=32,
+        choices=InfoStatus.choices,
+        default=InfoStatus.UNPUBLISHED,
     )
     tags = models.ManyToManyField(
         InfoTag,
