@@ -3,14 +3,20 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from .forms import UserCreationForm
-from .models import User
+from .models import Role, User
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ("code", "label")
+    ordering = ("code",)
 
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
-    list_display = ("email", "first_name", "last_name", "is_active", "is_staff", "date_joined")
-    list_filter = ("is_active", "is_staff")
+    list_display = ("email", "first_name", "last_name", "is_active", "role", "date_joined")
+    list_filter = ("is_active", "role")
     search_fields = ("email", "first_name", "last_name")
     ordering = ("email",)
 
@@ -18,7 +24,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ("email", "password_display")}),
         ("Имя", {"fields": ("first_name", "last_name")}),
         ("Контакты", {"fields": ("phone", "messenger")}),
-        ("Статус", {"fields": ("is_active", "is_staff", "is_superuser")}),
+        ("Статус", {"fields": ("is_active", "role")}),
         ("Даты", {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
@@ -39,12 +45,6 @@ class UserAdmin(BaseUserAdmin):
         return "********" if obj.password else "Не установлен"
 
     password_display.short_description = "пароль"
-
-    def get_readonly_fields(self, request, obj=None):
-        readonly = list(super().get_readonly_fields(request, obj))
-        if not request.user.is_superuser and obj is not None:
-            readonly.extend(("is_superuser", "is_staff"))
-        return readonly
 
     def get_fieldsets(self, request, obj=None):
         if obj is None:

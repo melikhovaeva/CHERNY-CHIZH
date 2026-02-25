@@ -129,6 +129,7 @@ def _find_dictionary_in_group(group_conf, dict_identifier: str):
 class DogViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак (щенки и взрослые)."""
 
+    permission_classes = [AllowAny]
     serializer_class = DogListSerializer
     pagination_class = DogPagination
 
@@ -183,6 +184,7 @@ class DogViewSet(viewsets.ReadOnlyModelViewSet):
 class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак по породе."""
 
+    permission_classes = [AllowAny]
     serializer_class = DogByBreedListSerializer
     pagination_class = DogPagination
 
@@ -223,6 +225,7 @@ class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
 class BreedViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка всех пород"""
 
+    permission_classes = [AllowAny]
     queryset = Breed.objects.all()
     serializer_class = BreedListSerializer
 
@@ -327,8 +330,7 @@ class BreedViewSet(viewsets.ReadOnlyModelViewSet):
     ),
 )
 class DictionaryViewSet(viewsets.ViewSet):
-    """
-    Эндпоинт для получения групп словарей и их содержимого.
+    """Эндпоинт для получения групп словарей и их содержимого.
 
     - GET /api/dictionaries/ - список групп словарей (минимизированный)
     - GET /api/dictionaries/{id}/ - конкретная группа по id со всеми словарями
@@ -336,6 +338,8 @@ class DictionaryViewSet(viewsets.ViewSet):
     - GET /api/dictionaries/{id}/{dict_id}/ - конкретный словарь группы по id группы и id словаря.
     - GET /api/dictionaries/{name}/{dict_name}/ - конкретный словарь группы по имени группы и имени словаря.
     """
+
+    permission_classes = [AllowAny]
 
     def list(self, request: Request) -> Response:
         """

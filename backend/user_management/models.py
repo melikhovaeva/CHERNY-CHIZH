@@ -2,6 +2,25 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
+class Role(models.Model):
+    """Роль пользователя: пользователь, персонал, админ."""
+
+    CODE_USER = "user"
+    CODE_STAFF = "staff"
+    CODE_ADMIN = "admin"
+
+    code = models.CharField(max_length=32, unique=True)
+    label = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Роль"
+        verbose_name_plural = "Роли"
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.label
+
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -34,6 +53,9 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+        role = Role.objects.filter(code=Role.CODE_ADMIN).first()
+        if role:
+            user.role = role
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -42,7 +64,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
-    
+
+    role = models.ForeignKey(
+        Role,
+        on_delete=models.PROTECT,
+        related_name="users",
+        null=True,
+        blank=True,
+    )
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255, blank=True, null=True)
@@ -58,6 +87,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name']
+
+    def save(self, *args, **kwargs):
+        if self.role_id is None and self.pk is None:
+            default_role = Role.objects.filter(code=Role.CODE_USER).first()
+            if default_role:
+                self.role = default_role
+        if self.role_id is not None:
+            if self.role.code == Role.CODE_ADMIN:
+                self.is_staff = True
+                self.is_superuser = True
+            elif self.role.code == Role.CODE_STAFF:
+                self.is_staff = True
+                self.is_superuser = False
+            else:
+                self.is_staff = False
+                self.is_superuser = False
+        super().save(*args, **kwargs)
