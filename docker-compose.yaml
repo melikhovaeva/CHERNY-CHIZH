@@ -2,10 +2,8 @@ services:
   frontend-user:
     platform: linux/amd64
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
-      args:
-        APP_NAME: user-app
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     volumes:
@@ -16,10 +14,8 @@ services:
   frontend-admin:
     platform: linux/amd64
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
-      args:
-        APP_NAME: admin-app
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - 3001:3001
     volumes:
@@ -29,8 +25,8 @@ services:
     command: sh -c "yarn install && yarn workspace admin-app docker:dev"
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - 8000:8000
     volumes:
