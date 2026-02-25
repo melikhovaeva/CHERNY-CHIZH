@@ -1,14 +1,14 @@
-FROM node:24-alpine
+FROM node:25-alpine
 
 WORKDIR /frontend-app
 
 RUN npm install -g --force yarn
 
-COPY frontend/package.json ./package.json
+COPY package.json ./package.json
 
 RUN yarn install
 
-COPY frontend/ .
+COPY . .
 
 ARG APP_NAME=user-app
 
