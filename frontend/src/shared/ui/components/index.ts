@@ -11,3 +11,4 @@ export { Placeholder } from './Placeholder';
 export { ProtectedRoute } from './ProtectedRoute';
 export { Select, type SelectOption } from './Select';
 export { Skeleton } from './Skeleton/Skeleton';
+export { DropdownMenu } from './DropdownMenu';

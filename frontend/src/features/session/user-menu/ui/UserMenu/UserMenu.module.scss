@@ -1,0 +1,54 @@
+.userMenu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .dropdownMenu {
+    padding: 0 16px;
+  }
+}
+
+.userMenuTrigger {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.item {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Manrope';
+  font-size: 14px;
+  line-height: 1.4;
+  color: $text-color;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+
+  &:first-child {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+
+    @media (max-width: 768px) {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+  }
+
+  &:hover {
+    background-color: $background-secondary-color;
+  }
+}
+
+.logoutButton {
+  padding: 8px 16px;
+}

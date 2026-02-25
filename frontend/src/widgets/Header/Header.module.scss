@@ -49,16 +49,6 @@
   }
 }
 
-.userMenu {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  @media (max-width: 768px) {
-    justify-content: space-between;
-  }
-}
-
 .avatarSkeleton {
   flex-shrink: 0;
 }

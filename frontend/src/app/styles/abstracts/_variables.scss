@@ -58,7 +58,12 @@ $burger-transition-duration: 0.25s;
 
 // Header (menu panel)
 $menu-transition-duration: 0.25s;
-$menu-panel-max-height: 400px;
+$menu-panel-max-height: 500px;
+
+// Abstract Colors
+$error-color: #ff6272;
+$success-color: #5ef381;
+$warning-color: #ffd967;
 
 // Form validation
 $input-invalid-border-color: #dc3545;

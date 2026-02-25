@@ -5,9 +5,6 @@
 
   &:hover {
     transition: all 0.2s ease;
-    color: $error-color;
-    svg path {
-      stroke: $error-color;
-    }
   }
 }
+
