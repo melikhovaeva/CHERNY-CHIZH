@@ -3,10 +3,15 @@ import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api';
 import { Skeleton } from '@/shared/ui/components';
 import styles from './HeroSection.module.scss';
 
-export function HeroSection() {
-  const { data: puppies, isLoading } = useGetPuppiesQuery();
+const HERO_PUPPIES_PAGE_SIZE = 4;
 
-  const puppiesWithPhotos = (puppies ?? []).filter(
+export function HeroSection() {
+  const { data, isLoading } = useGetPuppiesQuery({
+    page: 1,
+    pageSize: HERO_PUPPIES_PAGE_SIZE,
+  });
+
+  const puppiesWithPhotos = (data?.results ?? []).filter(
     (puppy) => puppy.photos && puppy.photos.length > 0,
   );
 

@@ -13,18 +13,27 @@ interface RelatedPuppiesProps {
 }
 
 const STATUS_AVAILABLE_CODE = 'on_sale';
+const RELATED_PUPPIES_PAGE_SIZE = 50;
 
 export function RelatedPuppies({
   currentPuppy,
   className,
 }: RelatedPuppiesProps) {
-  const { data: allPuppies } = useGetPuppiesQuery();
-  const related = (allPuppies ?? []).filter(
-    (p) =>
-      p.breed.slug === currentPuppy.breed.slug &&
-      p.id !== currentPuppy.id &&
-      p.status.code === STATUS_AVAILABLE_CODE,
-  );
+  const { data } = useGetPuppiesQuery({
+    page: 1,
+    pageSize: RELATED_PUPPIES_PAGE_SIZE,
+  });
+
+  const allPuppies = data?.results ?? [];
+
+  const related = allPuppies
+    .filter(
+      (p) =>
+        p.breed.slug === currentPuppy.breed.slug &&
+        p.id !== currentPuppy.id &&
+        p.status.code === STATUS_AVAILABLE_CODE,
+    )
+    .slice(0, 3);
 
   if (related.length === 0) return null;
 
