@@ -7,17 +7,17 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from user_management.models import UserAccount
+from user_management.models import User
 from user_management.serializers import (
   CurrentUserSerializer,
   RegisterSerializer,
   RegisterStep1Serializer,
   RegisterStep2Serializer,
-  UserAccountSerializer,
+  UserSerializer,
 )
 
 
-def _set_jwt_cookies_for_user(response: Response, user: UserAccount) -> None:
+def _set_jwt_cookies_for_user(response: Response, user: User) -> None:
   """
   Создаёт пару refresh/access токенов для пользователя и кладёт их в httpOnly-cookies.
   Используется для автологина после регистрации.
@@ -249,7 +249,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
     tokens = serializer.validated_data
     access = tokens.get("access")
     refresh = tokens.get("refresh")
-    user: UserAccount = serializer.user
+    user: User = serializer.user
 
     response = Response(CurrentUserSerializer(user).data, status=status.HTTP_200_OK)
 

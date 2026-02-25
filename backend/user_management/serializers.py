@@ -1,18 +1,18 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from user_management.models import UserAccount
+from user_management.models import User
 
 
-class UserAccountSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
   class Meta:
-    model = UserAccount
+    model = User
     fields = "__all__"
     read_only_fields = ("id", "date_joined", "is_active")
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
   class Meta:
-    model = UserAccount
+    model = User
     fields = ("id", "email", "first_name", "last_name", "phone", "messenger")
     read_only_fields = ("id", "email")
 
@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
   last_name = serializers.CharField(required=False, allow_blank=True, max_length=255)
   
   class Meta:
-    model = UserAccount
+    model = User
     fields = ('email', 'password', 'password2', 'first_name', 'last_name')
 
   def validate(self, attrs):
@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     validated_data.pop('password2')
-    user = UserAccount.objects.create_user(**validated_data)
+    user = User.objects.create_user(**validated_data)
     return user
 
 
@@ -44,8 +44,8 @@ class RegisterStep1Serializer(serializers.Serializer):
   def validate(self, attrs):
     if attrs['password'] != attrs['password2']:
       raise serializers.ValidationError({"password2": "Пароли не совпадают"})
-    email = UserAccount.objects.normalize_email(attrs['email'])
-    if UserAccount.objects.filter(email=email).exists():
+    email = User.objects.normalize_email(attrs['email'])
+    if User.objects.filter(email=email).exists():
       raise serializers.ValidationError({"email": "Пользователь с таким email уже зарегистрирован"})
     attrs['email'] = email
     return attrs
@@ -63,8 +63,8 @@ class RegisterStep2Serializer(serializers.Serializer):
   def validate(self, attrs):
     if attrs['password'] != attrs['password2']:
       raise serializers.ValidationError({"password2": "Пароли не совпадают"})
-    email = UserAccount.objects.normalize_email(attrs['email'])
-    if UserAccount.objects.filter(email=email).exists():
+    email = User.objects.normalize_email(attrs['email'])
+    if User.objects.filter(email=email).exists():
       raise serializers.ValidationError({"email": "Пользователь с таким email уже зарегистрирован"})
     attrs['email'] = email
     if attrs.get('phone') == '':
@@ -77,4 +77,4 @@ class RegisterStep2Serializer(serializers.Serializer):
 
   def create(self, validated_data):
     validated_data.pop('password2')
-    return UserAccount.objects.create_user(**validated_data)
+    return User.objects.create_user(**validated_data)
