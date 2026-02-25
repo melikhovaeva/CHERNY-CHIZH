@@ -11,6 +11,7 @@ from common.views import (
     RequestViewSet,
 )
 from consumer.views import FAQItemViewSet
+from education.views import ArticleViewSet, CourseViewSet
 from user_management.views import ProfileView
 
 router = DefaultRouter()
@@ -24,6 +25,8 @@ router.register(
 router.register(r"dictionaries", DictionaryViewSet, basename="dictionary")
 router.register(r"faq", FAQItemViewSet, basename="faq-item")
 router.register(r"requests", RequestViewSet, basename="request")
+router.register(r"articles", ArticleViewSet, basename="article")
+router.register(r"courses", CourseViewSet, basename="course")
 
 router.APIRootView.permission_classes = [permissions.AllowAny]
 
