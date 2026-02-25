@@ -1,5 +1,7 @@
 export { AboutPage } from './AboutPage/AboutPage'
 export { ContactsPage } from './ContactsPage/ContactsPage'
+export { DogDetailsPage } from './DogDetailsPage'
+export { DogsPage } from './DogsPage/DogsPage'
 export { HomePage } from './HomePage'
 export { LibraryPage } from './LibraryPage/LibraryPage'
 export { PuppiesPage } from './PuppiesPage/PuppiesPage'

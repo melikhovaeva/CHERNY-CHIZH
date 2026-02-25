@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 
 const SEGMENT_LABELS: Record<string, string> = {
   puppies: 'Щенки',
+  dogs: 'Собаки',
   about: 'О нас',
   contacts: 'Контакты',
   library: 'База знаний',
@@ -22,9 +23,13 @@ export function useSegmentLabel(): (
   const segments = currentPathname.split('/').filter(Boolean);
 
   const isPuppiesRoute = segments[0] === 'puppies';
-  const breedSlug = isPuppiesRoute ? segments[1] : undefined;
+  const isDogsRoute = segments[0] === 'dogs';
+  const breedSlug =
+    (isPuppiesRoute || isDogsRoute) ? segments[1] : undefined;
   const puppyId =
-    isPuppiesRoute && segments[2] ? Number(segments[2]) : undefined;
+    (isPuppiesRoute || isDogsRoute) && segments[2]
+      ? Number(segments[2])
+      : undefined;
 
   const shouldLoadBreed = Boolean(breedSlug);
   const shouldLoadPuppy = Boolean(puppyId) && !Number.isNaN(puppyId);
@@ -47,12 +52,12 @@ export function useSegmentLabel(): (
 
       if (pathname) {
         const pathSegments = pathname.split('/').filter(Boolean);
-        if (
-          pathSegments[0] === 'puppies' &&
+        const isPuppyOrDogSegment =
+          (pathSegments[0] === 'puppies' || pathSegments[0] === 'dogs') &&
           pathSegments[2] &&
           segment === pathSegments[2] &&
-          puppy
-        ) {
+          puppy;
+        if (isPuppyOrDogSegment) {
           return puppy.name;
         }
       }

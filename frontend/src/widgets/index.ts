@@ -1,6 +1,8 @@
 export { AuthModalContent } from './auth-modal';
 export { BookingModalContent } from './BookingModal';
 export { DeliverySection } from './DeliverySection';
+export { DogsEmptyState } from './DogsEmptyState';
+export { DogsList } from './DogsList';
 export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';
 export { Header } from './Header';

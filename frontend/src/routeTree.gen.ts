@@ -11,12 +11,16 @@
 import { Route as rootRouteImport } from './app/routes/__root'
 import { Route as PuppiesRouteImport } from './app/routes/puppies'
 import { Route as LibraryRouteImport } from './app/routes/library'
+import { Route as DogsRouteImport } from './app/routes/dogs'
 import { Route as ContactsRouteImport } from './app/routes/contacts'
 import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
+import { Route as DogsBreedIdRouteImport } from './app/routes/dogs.$breedId'
 import { Route as PuppiesBreedIdIndexRouteImport } from './app/routes/puppies.$breedId.index'
+import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs.$breedId.index'
 import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies.$breedId.$puppyId'
+import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs.$breedId.$dogId'
 
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
@@ -26,6 +30,11 @@ const PuppiesRoute = PuppiesRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DogsRoute = DogsRouteImport.update({
+  id: '/dogs',
+  path: '/dogs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactsRoute = ContactsRouteImport.update({
@@ -48,34 +57,56 @@ const PuppiesBreedIdRoute = PuppiesBreedIdRouteImport.update({
   path: '/$breedId',
   getParentRoute: () => PuppiesRoute,
 } as any)
+const DogsBreedIdRoute = DogsBreedIdRouteImport.update({
+  id: '/$breedId',
+  path: '/$breedId',
+  getParentRoute: () => DogsRoute,
+} as any)
 const PuppiesBreedIdIndexRoute = PuppiesBreedIdIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PuppiesBreedIdRoute,
+} as any)
+const DogsBreedIdIndexRoute = DogsBreedIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DogsBreedIdRoute,
 } as any)
 const PuppiesBreedIdPuppyIdRoute = PuppiesBreedIdPuppyIdRouteImport.update({
   id: '/$puppyId',
   path: '/$puppyId',
   getParentRoute: () => PuppiesBreedIdRoute,
 } as any)
+const DogsBreedIdDogIdRoute = DogsBreedIdDogIdRouteImport.update({
+  id: '/$dogId',
+  path: '/$dogId',
+  getParentRoute: () => DogsBreedIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
+  '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
+  '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
+  '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId/': typeof PuppiesBreedIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
+  '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
+  '/dogs/$breedId': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId': typeof PuppiesBreedIdIndexRoute
 }
 export interface FileRoutesById {
@@ -83,10 +114,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
+  '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
+  '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
+  '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId/': typeof PuppiesBreedIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -95,29 +130,40 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contacts'
+    | '/dogs'
     | '/library'
     | '/puppies'
+    | '/dogs/$breedId'
     | '/puppies/$breedId'
+    | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
+    | '/dogs/$breedId/'
     | '/puppies/$breedId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contacts'
+    | '/dogs'
     | '/library'
     | '/puppies'
+    | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
+    | '/dogs/$breedId'
     | '/puppies/$breedId'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contacts'
+    | '/dogs'
     | '/library'
     | '/puppies'
+    | '/dogs/$breedId'
     | '/puppies/$breedId'
+    | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
+    | '/dogs/$breedId/'
     | '/puppies/$breedId/'
   fileRoutesById: FileRoutesById
 }
@@ -125,6 +171,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactsRoute: typeof ContactsRoute
+  DogsRoute: typeof DogsRouteWithChildren
   LibraryRoute: typeof LibraryRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
 }
@@ -143,6 +190,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dogs': {
+      id: '/dogs'
+      path: '/dogs'
+      fullPath: '/dogs'
+      preLoaderRoute: typeof DogsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contacts': {
@@ -173,12 +227,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuppiesBreedIdRouteImport
       parentRoute: typeof PuppiesRoute
     }
+    '/dogs/$breedId': {
+      id: '/dogs/$breedId'
+      path: '/$breedId'
+      fullPath: '/dogs/$breedId'
+      preLoaderRoute: typeof DogsBreedIdRouteImport
+      parentRoute: typeof DogsRoute
+    }
     '/puppies/$breedId/': {
       id: '/puppies/$breedId/'
       path: '/'
       fullPath: '/puppies/$breedId/'
       preLoaderRoute: typeof PuppiesBreedIdIndexRouteImport
       parentRoute: typeof PuppiesBreedIdRoute
+    }
+    '/dogs/$breedId/': {
+      id: '/dogs/$breedId/'
+      path: '/'
+      fullPath: '/dogs/$breedId/'
+      preLoaderRoute: typeof DogsBreedIdIndexRouteImport
+      parentRoute: typeof DogsBreedIdRoute
     }
     '/puppies/$breedId/$puppyId': {
       id: '/puppies/$breedId/$puppyId'
@@ -187,8 +255,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuppiesBreedIdPuppyIdRouteImport
       parentRoute: typeof PuppiesBreedIdRoute
     }
+    '/dogs/$breedId/$dogId': {
+      id: '/dogs/$breedId/$dogId'
+      path: '/$dogId'
+      fullPath: '/dogs/$breedId/$dogId'
+      preLoaderRoute: typeof DogsBreedIdDogIdRouteImport
+      parentRoute: typeof DogsBreedIdRoute
+    }
   }
 }
+
+interface DogsBreedIdRouteChildren {
+  DogsBreedIdDogIdRoute: typeof DogsBreedIdDogIdRoute
+  DogsBreedIdIndexRoute: typeof DogsBreedIdIndexRoute
+}
+
+const DogsBreedIdRouteChildren: DogsBreedIdRouteChildren = {
+  DogsBreedIdDogIdRoute: DogsBreedIdDogIdRoute,
+  DogsBreedIdIndexRoute: DogsBreedIdIndexRoute,
+}
+
+const DogsBreedIdRouteWithChildren = DogsBreedIdRoute._addFileChildren(
+  DogsBreedIdRouteChildren,
+)
+
+interface DogsRouteChildren {
+  DogsBreedIdRoute: typeof DogsBreedIdRouteWithChildren
+}
+
+const DogsRouteChildren: DogsRouteChildren = {
+  DogsBreedIdRoute: DogsBreedIdRouteWithChildren,
+}
+
+const DogsRouteWithChildren = DogsRoute._addFileChildren(DogsRouteChildren)
 
 interface PuppiesBreedIdRouteChildren {
   PuppiesBreedIdPuppyIdRoute: typeof PuppiesBreedIdPuppyIdRoute
@@ -219,6 +318,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactsRoute: ContactsRoute,
+  DogsRoute: DogsRouteWithChildren,
   LibraryRoute: LibraryRoute,
   PuppiesRoute: PuppiesRouteWithChildren,
 }

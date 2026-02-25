@@ -25,6 +25,7 @@ export const API_CONFIG = {
   } as const,
   TAG_TYPES: {
     PUPPIES: 'Puppies',
+    DOGS: 'Dogs',
     BREEDS: 'Breeds',
     FAQ: 'FAQ',
     DICTIONARIES: 'Dictionaries',

@@ -1,0 +1,39 @@
+.root {
+  margin: 0 0 148px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 40px;
+  }
+}
+
+.title {
+  margin: 0 0 48px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+
+  @media (max-width: 768px) {
+    gap: 48px;
+  }
+}
+
+.details {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.tabs {
+  width: 100%;
+}
+
+.notFound {
+  padding: 48px 20px;
+  text-align: center;
+}
