@@ -5,8 +5,7 @@ import {
   useAppSelector,
 } from '@/app/redux';
 import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
-import { UserImage } from '@/features/session';
-import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
+import { UserMenu } from '@/features/session';
 import { cn } from '@/shared/lib/utils';
 import { Backdrop, Skeleton } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
@@ -17,6 +16,7 @@ const AVATAR_SIZE = 50;
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const sessionStatus = useAppSelector(selectSessionStatus);
 
@@ -25,7 +25,7 @@ export function Header() {
 
   const isAuthUnknown = sessionStatus === 'idle' || sessionStatus === 'loading';
 
-  const authControl = isAuthUnknown ? (
+  const renderSkeletonAuthControl = () => (
     <div className={styles.userMenu} aria-hidden>
       <Skeleton variant="text" lines={1} width="70px" height="17px" />
       <Skeleton
@@ -35,14 +35,27 @@ export function Header() {
         className={styles.avatarSkeleton}
       />
     </div>
-  ) : isAuthenticated ? (
-    <div className={styles.userMenu}>
-      <LogoutButton />
-      <UserImage size={AVATAR_SIZE} />
-    </div>
-  ) : (
-    <LoginButton />
   );
+
+  const renderLoginControl = () => <LoginButton />;
+
+  const renderUserControl = () => (
+    <div className={styles.userMenu}>
+      <UserMenu />
+    </div>
+  );
+
+  const authControlDesktop = isAuthUnknown
+    ? renderSkeletonAuthControl()
+    : isAuthenticated
+      ? renderUserControl()
+      : renderLoginControl();
+
+  const authControlMobile = isAuthUnknown
+    ? renderSkeletonAuthControl()
+    : isAuthenticated
+      ? renderUserControl()
+      : renderLoginControl();
   return (
     <header className={styles.container}>
       {isMenuOpen && (
@@ -73,7 +86,7 @@ export function Header() {
             onOpen={() => setIsMenuOpen(true)}
           />
         </div>
-        <div className={styles.desktopActions}>{authControl}</div>
+        <div className={styles.desktopActions}>{authControlDesktop}</div>
       </div>
       <div
         className={cn([
@@ -84,7 +97,7 @@ export function Header() {
       >
         <BurgerMenuList
           links={mobileMenuLinks}
-          loginButton={authControl}
+          loginButton={authControlMobile}
           onLinkClick={() => setIsMenuOpen(false)}
         />
       </div>

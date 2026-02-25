@@ -1,8 +1,10 @@
 import { useLogoutMutation } from '@/entities/session';
+import { cn } from '@/shared/lib/utils';
 import { useCallback } from 'react';
 import styles from './LogoutButton.module.scss';
+import LogoutIcon from './assets/logout.svg?react';
 
-export const LogoutButton = () => {
+export const LogoutButton = ({ className }: { className?: string } = {}) => {
   const [logout, { isLoading }] = useLogoutMutation();
 
   const handleLogout = useCallback(async () => {
@@ -15,10 +17,11 @@ export const LogoutButton = () => {
   return (
     <button
       type="button"
-      className={styles.button}
+      className={cn([styles.button, className || ''])}
       onClick={handleLogout}
       disabled={isLoading}
     >
+      <LogoutIcon width={16} height={16} />
       Выйти
     </button>
   );

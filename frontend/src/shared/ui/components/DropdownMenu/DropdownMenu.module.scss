@@ -1,0 +1,55 @@
+.menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: -12px;
+  min-width: 160px;
+  padding: 10px 0 0 0;
+  border-radius: 0 0 12px 12px;
+  @include bg-color($background-tertiary-color);
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    max-height 0.2s ease;
+}
+
+.menu_open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 400px;
+}
+
+.item {
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Manrope';
+  font-size: 14px;
+  line-height: 1.4;
+  color: $text-color;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $background-secondary-color;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu {
+    position: static;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 12px;
+  }
+}
