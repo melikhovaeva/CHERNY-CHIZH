@@ -1,0 +1,11 @@
+{
+  "name": "common",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo \"common: nothing to build yet\"",
+    "lint": "echo \"common: no lint configured\"",
+    "test": "echo \"common: no tests\""
+  }
+}

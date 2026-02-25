@@ -9,6 +9,3 @@ count.txt
 .tanstack
 .wrangler
 .vscode
-
-yarn.lock
-package-lock.json
