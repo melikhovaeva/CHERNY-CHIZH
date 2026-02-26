@@ -1,5 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
+
+from .avatar import generate_default_avatar
 
 
 class Role(models.Model):
@@ -41,8 +43,9 @@ class UserManager(BaseUserManager):
             messenger=messenger,
             **extra_fields,
         )
-        
+
         user.set_password(password)
+        generate_default_avatar(user)
         user.save(using=self._db)
         return user
     
@@ -77,6 +80,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=12, blank=True, null=True)
     messenger = models.CharField(max_length=255, blank=True, null=True)
+    avatar_image = models.ImageField(
+        upload_to="avatars/",
+        blank=True,
+        null=True,
+    )
     courses = models.ManyToManyField(
         "education.Course",
         through="education.CourseEnrollment",
@@ -105,4 +113,5 @@ class User(AbstractBaseUser, PermissionsMixin):
             else:
                 self.is_staff = False
                 self.is_superuser = False
+        generate_default_avatar(self)
         super().save(*args, **kwargs)
