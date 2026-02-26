@@ -46,3 +46,23 @@
     background-color: $tabs-active-background-color;
   }
 }
+
+.variant {
+  &--secondary {
+    .button {
+      background-color: transparent;
+      color: $text-color;
+      opacity: 0.5;
+      transition: 0.3s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      &_active {
+        background-color: transparent;
+        opacity: 1;
+      }
+    }
+  }
+}

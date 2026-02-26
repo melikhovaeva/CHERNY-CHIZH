@@ -1,17 +1,28 @@
-import { cn } from '@/shared/lib/utils'
-import type { Tab } from '../model/types'
-import styles from './Tabs.module.scss'
+import { cn } from '@/shared/lib/utils';
+import type { Tab } from '../model/types';
+import styles from './Tabs.module.scss';
 
 interface TabsProps {
-  tabs: Tab[]
-  activeTab: string
-  onTabChange: (value: string) => void
-  className?: string
+  tabs: Tab[];
+  activeTab: string;
+  onTabChange: (value: string) => void;
+  variant?: 'primary' | 'secondary';
+  className?: string;
 }
 
-export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
+export function Tabs({
+  tabs,
+  variant = 'primary',
+  activeTab,
+  onTabChange,
+  className,
+}: TabsProps) {
   return (
-    <div className={cn([styles.scroll, className || ''])}>
+    <div
+      className={cn([styles.scroll, className || ''], {
+        [styles['variant--secondary']]: variant === 'secondary',
+      })}
+    >
       <ul className={styles.list} role="tablist">
         {tabs.map((tab) => (
           <li key={tab.id} className={styles.item} role="presentation">
@@ -31,5 +42,5 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
         ))}
       </ul>
     </div>
-  )
+  );
 }
