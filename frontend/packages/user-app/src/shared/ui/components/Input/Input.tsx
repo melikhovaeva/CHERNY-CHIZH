@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 import { forwardRef, useId, useState } from 'react';
-import EyeIcon from './assets/eye.svg?react';
 import EyeOffIcon from './assets/eye-off.svg?react';
+import EyeIcon from './assets/eye.svg?react';
 import styles from './Input.module.scss';
 
 export type InputType = 'text' | 'tel' | 'email' | 'password' | 'url';
@@ -15,13 +15,11 @@ type BaseInputProps = {
   placeholder?: string;
   label?: string;
   showPasswordToggle?: boolean;
+  actionButton?: React.ReactElement;
 };
 
 type InputProps = BaseInputProps &
-  Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    keyof BaseInputProps
-  >;
+  Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
 
 type TextareaProps = BaseInputProps &
   Omit<
@@ -44,7 +42,9 @@ function getAutoComplete(type: InputType): string | undefined {
   }
 }
 
-function getInputMode(type: InputType): React.HTMLAttributes<HTMLInputElement>['inputMode'] {
+function getInputMode(
+  type: InputType,
+): React.HTMLAttributes<HTMLInputElement>['inputMode'] {
   if (type === 'tel') return 'tel';
   return undefined;
 }
@@ -62,24 +62,28 @@ export const Input = forwardRef<
     placeholder,
     label,
     showPasswordToggle,
+    actionButton,
     ...rest
   },
-  ref
+  ref,
 ) {
   const isInvalid = invalid || !!error;
   const generatedId = useId();
-  const inputId = (rest as Record<string, unknown>).id as string | undefined ?? generatedId;
+  const inputId =
+    ((rest as Record<string, unknown>).id as string | undefined) ?? generatedId;
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const isPassword = type === 'password';
   const hasToggle = showPasswordToggle ?? isPassword;
   const resolvedType = isPassword && passwordVisible ? 'text' : type;
 
-  const inputClassName = cn(
-    [multiline ? styles.textarea : styles.input],
-    { [styles.invalid]: isInvalid, [styles.withToggle]: hasToggle }
-  );
-  const resolvedClassName = className ? `${inputClassName} ${className}` : inputClassName;
+  const inputClassName = cn([multiline ? styles.textarea : styles.input], {
+    [styles.invalid]: isInvalid,
+    [styles.withToggle]: hasToggle,
+  });
+  const resolvedClassName = className
+    ? `${inputClassName} ${className}`
+    : inputClassName;
 
   let element: React.ReactNode;
 
@@ -125,7 +129,12 @@ export const Input = forwardRef<
         </div>
       );
     } else {
-      element = inputElement;
+      element = (
+        <div className={styles.inputWrapper}>
+          {inputElement}
+          {actionButton}
+        </div>
+      );
     }
   }
 
