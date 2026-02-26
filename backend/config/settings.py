@@ -112,8 +112,10 @@ SIMPLE_JWT = {
 
 ACCESS_TOKEN_COOKIE_NAME = "access_token"
 REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
+SESSION_BINDING_COOKIE_NAME = "session_binding"
 JWT_COOKIE_SAMESITE = "Lax"
 JWT_COOKIE_SECURE = not DEBUG
+JWT_SESSION_BINDING_CLAIM = "session_binding"
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
