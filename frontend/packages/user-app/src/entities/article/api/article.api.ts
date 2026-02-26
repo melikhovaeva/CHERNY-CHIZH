@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api/base-api';
 import { API_CONFIG } from '@/shared/config/api';
-import type { Article } from '../model/types';
+import type { Article, HomeLibraryResponse } from '../model/types';
 
 export const articleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -10,7 +10,11 @@ export const articleApi = baseApi.injectEndpoints({
         { type: API_CONFIG.TAG_TYPES.ARTICLES, id: slug },
       ],
     }),
+    getHomeLibrary: build.query<HomeLibraryResponse, void>({
+      query: () => API_CONFIG.ENDPOINTS.ARTICLES_HOME_LIBRARY,
+      providesTags: [{ type: API_CONFIG.TAG_TYPES.ARTICLES, id: 'HOME_LIBRARY' }],
+    }),
   }),
 });
 
-export const { useGetArticleBySlugQuery } = articleApi;
+export const { useGetArticleBySlugQuery, useGetHomeLibraryQuery } = articleApi;

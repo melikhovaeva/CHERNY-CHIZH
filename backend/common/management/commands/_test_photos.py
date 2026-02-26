@@ -21,6 +21,23 @@ def get_test_photos_dir() -> Path:
     return Path(settings.BASE_DIR) / "test-photos"
 
 
+def get_all_photo_paths() -> list[Path]:
+    """
+    Возвращает список путей ко всем файлам-картинкам в test-photos
+    (любые расширения из PHOTO_EXTENSIONS). Для назначения статей без привязки к породе.
+    """
+    photos_dir = get_test_photos_dir()
+    if not photos_dir.is_dir():
+        return []
+    paths = [
+        p
+        for p in photos_dir.iterdir()
+        if p.is_file() and p.suffix.lower() in PHOTO_EXTENSIONS
+    ]
+    paths.sort(key=lambda p: p.name)
+    return paths
+
+
 def get_photos_by_breed() -> dict[str, list[Path]]:
     """
     Сканирует test-photos и возвращает словарь: короткое имя породы -> список путей к файлам.

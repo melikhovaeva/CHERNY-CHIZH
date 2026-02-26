@@ -1,2 +1,7 @@
-export { useGetArticleBySlugQuery } from './api/article.api';
-export type { Article } from './model/types';
+export { useGetArticleBySlugQuery, useGetHomeLibraryQuery } from './api/article.api';
+export type {
+  Article,
+  ArticleMinimal,
+  HomeLibraryResponse,
+  HomeLibraryTag,
+} from './model/types';

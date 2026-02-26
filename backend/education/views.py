@@ -1,12 +1,18 @@
+from django.db.models import Count, Q
+
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from education.models import Article, Course
+from education.models import Article, Course, InfoStatus, InfoTag
 from education.serializers import (
     ArticleListSerializer,
+    ArticleMinimalSerializer,
     ArticleSerializer,
     CourseDetailSerializer,
     CourseSerializer,
+    InfoTagSerializer,
 )
 
 
@@ -19,6 +25,11 @@ from education.serializers import (
     retrieve=extend_schema(
         summary="Детали статьи",
         description="Возвращает полное содержимое одной статьи.",
+        tags=["Articles"],
+    ),
+    home_library=extend_schema(
+        summary="Блок «База знаний» для главной",
+        description="Теги с не менее чем 3 статьями (макс. 4 тега), для каждого — минимум 3 статьи. Только опубликованные статьи.",
         tags=["Articles"],
     ),
 )
@@ -39,6 +50,30 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == "list":
             return ArticleListSerializer
         return ArticleSerializer
+
+    @action(detail=False, url_path="home-library")
+    def home_library(self, request):
+        published = Article.objects.filter(status=InfoStatus.PUBLISHED)
+        tag_ids_qs = (
+            InfoTag.objects.annotate(
+                article_count=Count(
+                    "articles", filter=Q(articles__status=InfoStatus.PUBLISHED)
+                )
+            )
+            .filter(article_count__gte=3)
+            .order_by("order", "id")[:4]
+        )
+        selected_tags = list(tag_ids_qs)
+        tags_data = InfoTagSerializer(selected_tags, many=True).data
+        groups = []
+        for tag in selected_tags:
+            articles = (
+                published.filter(tags=tag)
+                .order_by("-created_at")[:12]
+            )
+            articles_data = ArticleMinimalSerializer(articles, many=True).data
+            groups.append({"tagId": tag.id, "articles": articles_data})
+        return Response({"tags": tags_data, "groups": groups})
 
 
 @extend_schema_view(
