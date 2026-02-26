@@ -48,6 +48,13 @@ class InfoModel(TimeStampModel):
 class Article(InfoModel):
     """Статья."""
 
+    breed = models.OneToOneField(
+        "common.Breed",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="article",
+    )
     status = models.CharField(
         max_length=32,
         choices=InfoStatus.choices,

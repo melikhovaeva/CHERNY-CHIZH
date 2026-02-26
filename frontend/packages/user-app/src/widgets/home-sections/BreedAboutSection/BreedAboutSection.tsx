@@ -2,6 +2,7 @@ import type { Breed, BreedDescription } from '@/entities/breed/model/types';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { cn } from '@/shared/lib/utils';
 import { Button, Placeholder, Skeleton } from '@/shared/ui/components';
+import { Link } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import styles from './BreedAboutSection.module.scss';
 import { BreedAboutBlockKey, CARD_LABELS } from './model/enums';
@@ -73,6 +74,8 @@ export function BreedAboutSection({
   );
   const activePhotoUrl = photos[activeTab];
   const activePhotoAlt = tabs.find((t) => t.value === activeTab)?.label ?? '';
+  const activeBreed = breeds.find((b) => b.slug === activeTab);
+  const articleSlug = activeBreed?.articleSlug ?? null;
 
   const isSectionLoading =
     isLoading ||
@@ -144,8 +147,16 @@ export function BreedAboutSection({
         </div>
         {isSectionLoading ? (
           <Skeleton className={styles.skeletonButton} />
+        ) : articleSlug ? (
+          <Link
+            to="/articles/$slug"
+            params={{ slug: articleSlug }}
+            className={styles.detailLink}
+          >
+            Узнать подробнее
+          </Link>
         ) : (
-          <Button>Подробнее</Button>
+          <Button disabled>Подробнее</Button>
         )}
       </div>
     </section>

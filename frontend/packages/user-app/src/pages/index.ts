@@ -1,4 +1,5 @@
 export { AboutPage } from './AboutPage/AboutPage'
+export { ArticlePage } from './ArticlePage/ArticlePage'
 export { ContactsPage } from './ContactsPage/ContactsPage'
 export { DogDetailsPage } from './DogDetailsPage'
 export { DogsPage } from './DogsPage/DogsPage'

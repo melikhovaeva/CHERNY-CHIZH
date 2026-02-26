@@ -19,6 +19,7 @@ import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
 import { Route as DogsBreedIdRouteImport } from './app/routes/dogs.$breedId'
+import { Route as ArticlesSlugRouteImport } from './app/routes/articles.$slug'
 import { Route as PuppiesBreedIdIndexRouteImport } from './app/routes/puppies.$breedId.index'
 import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs.$breedId.index'
 import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies.$breedId.$puppyId'
@@ -74,6 +75,11 @@ const DogsBreedIdRoute = DogsBreedIdRouteImport.update({
   path: '/$breedId',
   getParentRoute: () => DogsRoute,
 } as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuppiesBreedIdIndexRoute = PuppiesBreedIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/user': typeof UserRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/user': typeof UserRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId': typeof DogsBreedIdIndexRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/user': typeof UserRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/puppies'
     | '/user'
+    | '/articles/$slug'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/dogs/$breedId/$dogId'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/puppies'
     | '/user'
+    | '/articles/$slug'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/puppies'
     | '/user'
+    | '/articles/$slug'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/dogs/$breedId/$dogId'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
   UserRoute: typeof UserRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dogs/$breedId'
       preLoaderRoute: typeof DogsBreedIdRouteImport
       parentRoute: typeof DogsRoute
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/puppies/$breedId/': {
       id: '/puppies/$breedId/'
@@ -363,6 +383,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   PuppiesRoute: PuppiesRouteWithChildren,
   UserRoute: UserRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
