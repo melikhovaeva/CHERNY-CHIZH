@@ -20,6 +20,9 @@ export const API_CONFIG = {
     REQUESTS: `${API_PREFIX}requests/`,
     LOGIN: `${API_PREFIX}users/auth/login/`,
     ME: `${API_PREFIX}users/me/`,
+    ME_COURSES: `${API_PREFIX}users/me/courses/`,
+    ME_CHANGE_PASSWORD: `${API_PREFIX}users/me/change-password/`,
+    COURSES: `${API_PREFIX}courses/`,
     REFRESH: `${API_PREFIX}users/auth/refresh/`,
     LOGOUT: `${API_PREFIX}users/auth/logout/`,
   } as const,
@@ -30,6 +33,7 @@ export const API_CONFIG = {
     FAQ: 'FAQ',
     DICTIONARIES: 'Dictionaries',
     SESSION: 'Session',
+    COURSES: 'Courses',
   } as const,
 } as const;
 

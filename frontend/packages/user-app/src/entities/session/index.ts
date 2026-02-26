@@ -3,6 +3,8 @@ export {
   useRegisterStep2Mutation,
   useLoginMutation,
   useMeQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation,
 } from './api/session.api';
 
