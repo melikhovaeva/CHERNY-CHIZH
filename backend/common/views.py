@@ -226,8 +226,10 @@ class BreedViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка всех пород"""
 
     permission_classes = [AllowAny]
-    queryset = Breed.objects.all()
     serializer_class = BreedListSerializer
+
+    def get_queryset(self):
+        return Breed.objects.select_related("article").all()
 
 
 @extend_schema_view(

@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 from common.models import (
@@ -232,13 +233,28 @@ class BreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
 
     description = BreedDescriptionSerializer(read_only=True)
     photo = serializers.SerializerMethodField()
+    article_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = Breed
-        fields = ("id", "slug", "name", "full_name", "photo", "description")
+        fields = (
+            "id",
+            "slug",
+            "name",
+            "full_name",
+            "photo",
+            "description",
+            "article_slug",
+        )
 
     def get_photo(self, obj):
         return obj.photo.url if obj.photo else None
+
+    def get_article_slug(self, obj):
+        try:
+            return obj.article.slug
+        except ObjectDoesNotExist:
+            return None
 
 
 class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):

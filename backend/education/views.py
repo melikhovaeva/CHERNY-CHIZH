@@ -26,11 +26,12 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
 
     permission_classes = [permissions.AllowAny]
     serializer_class = ArticleSerializer
+    lookup_field = "slug"
+    lookup_url_kwarg = "slug"
 
     def get_queryset(self):
         return (
-            Article.objects.select_related("status")
-            .prefetch_related("tags")
+            Article.objects.prefetch_related("tags")
             .order_by("-created_at")
         )
 
