@@ -6,7 +6,7 @@ export interface Article {
   imagePreview: string | null;
   status: { code: string; label: string } | null;
   tags: Array<{ id: number; code: string; label: string; order: number }>;
-  content: string;
+  contentHtml: string;
   createdAt: string;
   updatedAt: string;
 }

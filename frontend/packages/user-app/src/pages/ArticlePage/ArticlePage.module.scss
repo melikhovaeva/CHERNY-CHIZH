@@ -37,22 +37,22 @@
 
 .content {
   line-height: 1.7;
-}
 
-.contentH1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 2rem 0 1rem;
-}
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem;
+  }
 
-.contentH2 {
-  font-size: 1.35rem;
-  font-weight: 600;
-  margin: 1.5rem 0 0.75rem;
-}
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.75rem;
+  }
 
-.contentP {
-  margin-bottom: 1rem;
+  p {
+    margin-bottom: 1rem;
+  }
 }
 
 .skeletonTitle,

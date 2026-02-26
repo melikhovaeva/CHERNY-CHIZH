@@ -26,6 +26,23 @@ class ArticleAdmin(admin.ModelAdmin):
     list_filter = ("status", "tags")
     search_fields = ("title", "description", "content")
     prepopulated_fields = {"slug": ("title",)}
+    fieldsets = (
+        (None, {"fields": ("title", "slug", "description", "image_preview", "status", "tags", "breed")}),
+        (
+            "Контент (Markdown)",
+            {
+                "fields": ("content",),
+                "description": "Контент статьи в формате Markdown. Поддерживаются заголовки, списки, ссылки, код и т.д.",
+            },
+        ),
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if "content" in form.base_fields:
+            form.base_fields["content"].help_text = "Используйте синтаксис Markdown: # заголовок, ## подзаголовок, **жирный**, [ссылка](url)."
+            form.base_fields["content"].widget.attrs.setdefault("rows", 20)
+        return form
 
 
 class CourseStepInline(admin.TabularInline):

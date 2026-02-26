@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from common.serializers import CamelCaseSerializerMixin
+from education.markdown_utils import markdown_to_safe_html
 from education.models import (
     Article,
     Course,
@@ -23,6 +24,7 @@ class InfoTagSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
 
 class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
+    content_html = serializers.SerializerMethodField()
     tags = InfoTagSerializer(many=True, read_only=True)
 
     class Meta:
@@ -35,10 +37,13 @@ class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "image_preview",
             "status",
             "tags",
-            "content",
+            "content_html",
             "created_at",
             "updated_at",
         )
+
+    def get_content_html(self, obj: Article) -> str:
+        return markdown_to_safe_html(obj.content or "")
 
     def get_status(self, obj: Article):
         if not obj.status:
