@@ -3,6 +3,7 @@ from rest_framework import permissions, viewsets
 
 from education.models import Article, Course
 from education.serializers import (
+    ArticleListSerializer,
     ArticleSerializer,
     CourseDetailSerializer,
     CourseSerializer,
@@ -25,7 +26,6 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """Публичный API для статей."""
 
     permission_classes = [permissions.AllowAny]
-    serializer_class = ArticleSerializer
     lookup_field = "slug"
     lookup_url_kwarg = "slug"
 
@@ -34,6 +34,11 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             Article.objects.prefetch_related("tags")
             .order_by("-created_at")
         )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ArticleListSerializer
+        return ArticleSerializer
 
 
 @extend_schema_view(
