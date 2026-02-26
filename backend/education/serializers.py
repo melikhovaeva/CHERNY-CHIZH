@@ -29,7 +29,15 @@ class ArticleListSerializer(CamelCaseSerializerMixin, serializers.ModelSerialize
 
     class Meta:
         model = Article
-        fields = ("id", "title", "slug", "description", "image_preview", "tags")
+        fields = (
+            "id",
+            "title",
+            "slug",
+            "description",
+            "image_preview",
+            "tags",
+            "created_at",
+        )
 
 
 class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):

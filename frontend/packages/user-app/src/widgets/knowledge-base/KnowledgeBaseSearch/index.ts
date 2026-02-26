@@ -1,0 +1,1 @@
+export { KnowledgeBaseSearch } from './KnowledgeBaseSearch';

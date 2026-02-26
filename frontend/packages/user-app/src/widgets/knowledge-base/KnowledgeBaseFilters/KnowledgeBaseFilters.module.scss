@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.tabs {
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.tabs {
+  &__button {
+    color: $text-color;
+
+    &:hover {
+      color: $text-inverted-color;
+      background-color: $accent-primary-hover-color;
+    }
+  }
+  &__button__active {
+    background-color: $accent-primary-color;
+    color: $text-inverted-color !important;
+
+    &:hover {
+      background-color: $accent-primary-hover-color;
+    }
+  }
+}

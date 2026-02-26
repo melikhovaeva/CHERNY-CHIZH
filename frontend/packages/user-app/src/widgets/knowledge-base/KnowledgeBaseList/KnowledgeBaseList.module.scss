@@ -1,0 +1,50 @@
+@use '@styles/abstracts/variables' as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 12px;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: $filled-section-primary-bg-color;
+}
+
+.skeletonImage {
+  flex-shrink: 0;
+  border-radius: 0;
+}
+
+.skeletonContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+}
+
+.sentinel {
+  height: 1px;
+  grid-column: 1 / -1;
+}
+
+.empty {
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  color: $text-color;
+  padding: 48px 20px;
+}

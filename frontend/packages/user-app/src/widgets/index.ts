@@ -7,12 +7,22 @@ export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';
 export { Header } from './Header';
 export {
+  ArticleCard,
+  KnowledgeBaseFilters,
+  KnowledgeBaseList,
+  KnowledgeBaseSearch,
+  KNOWLEDGE_BASE_CATEGORY_ALL,
+  KNOWLEDGE_BASE_CATEGORY_ARTICLES,
+  KNOWLEDGE_BASE_TABS,
+} from './knowledge-base';
+export type { KnowledgeBaseCategory } from './knowledge-base';
+export {
   AdvantagesSection,
   BreedAboutSection,
   FAQSection,
   FormSection,
   HeroSection,
-  LibrarySection,
+  KnowledgeBaseSection,
   PuppiesSection,
 } from './home-sections';
 export { ProfileMyCourses } from './profile-my-courses';

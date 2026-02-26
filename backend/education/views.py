@@ -1,5 +1,6 @@
 from django.db.models import Count, Q
 
+from common.pagination import DogPagination
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
@@ -39,12 +40,20 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
     lookup_field = "slug"
     lookup_url_kwarg = "slug"
+    pagination_class = DogPagination
 
     def get_queryset(self):
-        return (
-            Article.objects.prefetch_related("tags")
+        qs = (
+            Article.objects.filter(status=InfoStatus.PUBLISHED)
+            .prefetch_related("tags")
             .order_by("-created_at")
         )
+        search = self.request.query_params.get("search", "").strip()
+        if search:
+            qs = qs.filter(
+                Q(title__icontains=search) | Q(description__icontains=search)
+            )
+        return qs
 
     def get_serializer_class(self):
         if self.action == "list":
