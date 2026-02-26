@@ -32,3 +32,5 @@ export const API_CONFIG = {
     SESSION: 'Session',
   } as const,
 } as const;
+
+export const ADMIN_BASE_PATH = '/admin/' as const;
