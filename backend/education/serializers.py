@@ -65,6 +65,14 @@ class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             return {"code": obj.status, "label": obj.status}
 
 
+class ArticleMinimalSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Минимальный набор полей для карточки статьи (блок home_library)."""
+
+    class Meta:
+        model = Article
+        fields = ("id", "title", "slug", "description", "image_preview")
+
+
 class ArticleBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Article

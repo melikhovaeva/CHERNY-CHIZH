@@ -24,6 +24,7 @@ export const API_CONFIG = {
     ME_CHANGE_PASSWORD: `${API_PREFIX}users/me/change-password/`,
     COURSES: `${API_PREFIX}courses/`,
     ARTICLES: `${API_PREFIX}articles/`,
+    ARTICLES_HOME_LIBRARY: `${API_PREFIX}articles/home-library/`,
     ARTICLE_BY_SLUG: (slug: string) => `${API_PREFIX}articles/${slug}/`,
     REFRESH: `${API_PREFIX}users/auth/refresh/`,
     LOGOUT: `${API_PREFIX}users/auth/logout/`,

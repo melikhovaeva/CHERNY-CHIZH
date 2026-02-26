@@ -1,12 +1,15 @@
 """
 Создаёт теги (InfoTag) и статьи без привязки к породе (Article, breed=None)
-со случайным текстом о собаках. Используется при заполнении БД тестовыми данными.
+со случайным текстом о собаках. Картинки для image_preview берутся из test-photos.
+Используется при заполнении БД тестовыми данными.
 """
 import random
 
 from django.core.management.base import BaseCommand
 
 from education.models import Article, InfoStatus, InfoTag
+
+from ._test_photos import assign_photo_from_path, get_all_photo_paths
 
 
 # Теги: (code, label)
@@ -202,6 +205,18 @@ class Command(BaseCommand):
         tags = _ensure_tags()
         self.stdout.write(self.style.SUCCESS(f"Теги: {len(tags)} шт."))
 
+        all_photos = get_all_photo_paths()
+        if all_photos:
+            self.stdout.write(
+                self.style.SUCCESS(f"Найдено фото в test-photos: {len(all_photos)} шт.")
+            )
+        else:
+            self.stdout.write(
+                self.style.WARNING(
+                    "В test-photos нет картинок — image_preview у статей не заполняется."
+                )
+            )
+
         created = 0
         updated = 0
 
@@ -229,6 +244,15 @@ class Command(BaseCommand):
                 article.status = InfoStatus.PUBLISHED
                 article.breed = None
                 article.save()
+
+            # Картинка из test-photos: по одному файлу на статью (циклически)
+            if all_photos:
+                photo_path = all_photos[(i - 1) % len(all_photos)]
+                save_name = f"info_models/standalone_{slug}{photo_path.suffix}"
+                if assign_photo_from_path(
+                    article, "image_preview", photo_path, save_name
+                ):
+                    article.save()
 
             # Назначаем случайное подмножество тегов (от 1 до всех)
             k = random.randint(1, len(tags))
