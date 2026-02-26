@@ -6,9 +6,9 @@ RUN npm install -g --force yarn
 
 COPY package.json ./package.json
 
-RUN yarn install
-
 COPY . .
+
+RUN yarn install
 
 ARG APP_NAME=user-app
 
