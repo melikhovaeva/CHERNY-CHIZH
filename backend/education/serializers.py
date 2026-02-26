@@ -4,6 +4,7 @@ from common.serializers import CamelCaseSerializerMixin
 from education.models import (
     Article,
     Course,
+    CourseEnrollment,
     CourseLesson,
     CourseStep,
     CourseTask,
@@ -131,4 +132,19 @@ class CourseDetailSerializer(CourseSerializer):
 
     class Meta(CourseSerializer.Meta):
         fields = CourseSerializer.Meta.fields + ("steps",)
+
+
+class CourseEnrollmentSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    course = CourseSerializer(read_only=True)
+
+    class Meta:
+        model = CourseEnrollment
+        fields = (
+            "id",
+            "course",
+            "status",
+            "progress",
+            "started_at",
+            "completed_at",
+        )
 

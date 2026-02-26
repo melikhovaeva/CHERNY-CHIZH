@@ -53,14 +53,10 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        return (
-            Course.objects.select_related("status")
-            .prefetch_related(
-                "tags",
-                "steps__lessons__tasks__questions__answers",
-            )
-            .order_by("id")
-        )
+        return Course.objects.prefetch_related(
+            "tags",
+            "steps__lessons__tasks__questions__answers",
+        ).order_by("id")
 
     def get_serializer_class(self):
         if self.action == "retrieve":

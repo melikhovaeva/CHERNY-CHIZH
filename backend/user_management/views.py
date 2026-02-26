@@ -7,9 +7,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from education.models import CourseEnrollment
+from education.serializers import CourseEnrollmentSerializer
 from user_management.models import User
 from user_management.permissions import IsAdmin
 from user_management.serializers import (
+  ChangePasswordSerializer,
   CurrentUserSerializer,
   RegisterSerializer,
   RegisterStep1Serializer,
@@ -144,6 +147,46 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
   def get_object(self):
     return self.request.user
+
+
+@extend_schema(
+  tags=["Users"],
+  summary="Курсы текущего пользователя",
+  description=(
+    "Возвращает список записей пользователя на курсы с информацией о курсе, статусе и прогрессе."
+  ),
+  responses={200: CourseEnrollmentSerializer(many=True)},
+)
+class MyCoursesView(generics.ListAPIView):
+  serializer_class = CourseEnrollmentSerializer
+  permission_classes = (permissions.IsAuthenticated,)
+
+  def get_queryset(self):
+    return (
+      CourseEnrollment.objects.filter(user=self.request.user)
+      .select_related("course")
+      .order_by("created_at")
+    )
+
+
+@extend_schema(
+  tags=["Users"],
+  summary="Смена пароля текущего пользователя",
+  description=(
+    "Меняет пароль текущего аутентифицированного пользователя. "
+    "Требует указать старый пароль и дважды новый пароль."
+  ),
+  request=ChangePasswordSerializer,
+  responses={204: None},
+)
+class ChangePasswordView(APIView):
+  permission_classes = (permissions.IsAuthenticated,)
+
+  def post(self, request):
+    serializer = ChangePasswordSerializer(data=request.data, context={"request": request})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema(
