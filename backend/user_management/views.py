@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from user_management.jwt_serializers import CookieTokenObtainPairSerializer, make_session_binding
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from education.models import CourseEnrollment
 from education.serializers import CourseEnrollmentSerializer
@@ -24,10 +26,12 @@ from user_management.serializers import (
 
 def _set_jwt_cookies_for_user(response: Response, user: User) -> None:
   """
-  Создаёт пару refresh/access токенов для пользователя и кладёт их в httpOnly-cookies.
+  Создаёт пару refresh/access токенов с привязкой к сессии и кладёт их в httpOnly-cookies.
   Используется для автологина после регистрации.
   """
   refresh = RefreshToken.for_user(user)
+  binding = make_session_binding()
+  refresh[settings.JWT_SESSION_BINDING_CLAIM] = binding
   access = refresh.access_token
 
   response.set_cookie(
@@ -40,6 +44,13 @@ def _set_jwt_cookies_for_user(response: Response, user: User) -> None:
   response.set_cookie(
     settings.REFRESH_TOKEN_COOKIE_NAME,
     str(refresh),
+    httponly=True,
+    secure=settings.JWT_COOKIE_SECURE,
+    samesite=settings.JWT_COOKIE_SAMESITE,
+  )
+  response.set_cookie(
+    settings.SESSION_BINDING_COOKIE_NAME,
+    binding,
     httponly=True,
     secure=settings.JWT_COOKIE_SECURE,
     samesite=settings.JWT_COOKIE_SAMESITE,
@@ -280,10 +291,11 @@ class JWTTokenRefreshView(TokenRefreshView):
 
 class CookieTokenObtainPairView(TokenObtainPairView):
   """
-  Выдаёт пару access/refresh токенов и кладёт их в httpOnly‑cookies.
+  Выдаёт пару access/refresh токенов с привязкой к сессии и кладёт их в httpOnly‑cookies.
   В теле ответа возвращает данные пользователя.
   """
 
+  serializer_class = CookieTokenObtainPairSerializer
   permission_classes = (permissions.AllowAny,)
 
   @extend_schema(
@@ -323,6 +335,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
     tokens = serializer.validated_data
     access = tokens.get("access")
     refresh = tokens.get("refresh")
+    session_binding = tokens.get("session_binding")
     user: User = serializer.user
 
     response = Response(CurrentUserSerializer(user).data, status=status.HTTP_200_OK)
@@ -343,6 +356,14 @@ class CookieTokenObtainPairView(TokenObtainPairView):
         secure=settings.JWT_COOKIE_SECURE,
         samesite=settings.JWT_COOKIE_SAMESITE,
       )
+    if session_binding:
+      response.set_cookie(
+        settings.SESSION_BINDING_COOKIE_NAME,
+        session_binding,
+        httponly=True,
+        secure=settings.JWT_COOKIE_SECURE,
+        samesite=settings.JWT_COOKIE_SAMESITE,
+      )
 
     return response
 
@@ -350,7 +371,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 class CookieTokenRefreshView(TokenRefreshView):
   """
   Обновляет access‑токен по refresh‑токену из httpOnly‑cookie.
-  Токен в теле запроса не требуется.
+  Проверяет привязку сессии: cookie session_binding должна совпадать с claim в refresh‑токене.
   """
 
   permission_classes = (permissions.AllowAny,)
@@ -370,6 +391,23 @@ class CookieTokenRefreshView(TokenRefreshView):
     if not refresh_token:
       return Response(
         {"detail": "Refresh token is missing"},
+        status=status.HTTP_401_UNAUTHORIZED,
+      )
+
+    # Проверка привязки сессии до обновления токена
+    try:
+      rt = RefreshToken(refresh_token)
+      binding_claim = getattr(settings, "JWT_SESSION_BINDING_CLAIM", "session_binding")
+      token_binding = rt.get(binding_claim) or rt.payload.get(binding_claim)
+      cookie_binding = request.COOKIES.get(settings.SESSION_BINDING_COOKIE_NAME)
+      if not token_binding or cookie_binding != token_binding:
+        return Response(
+          {"detail": "Session binding mismatch"},
+          status=status.HTTP_401_UNAUTHORIZED,
+        )
+    except Exception:
+      return Response(
+        {"detail": "Invalid refresh token"},
         status=status.HTTP_401_UNAUTHORIZED,
       )
 
@@ -408,4 +446,5 @@ class CookieLogoutView(TokenObtainPairView):
     response = Response(status=status.HTTP_204_NO_CONTENT)
     response.delete_cookie(settings.ACCESS_TOKEN_COOKIE_NAME)
     response.delete_cookie(settings.REFRESH_TOKEN_COOKIE_NAME)
+    response.delete_cookie(settings.SESSION_BINDING_COOKIE_NAME)
     return response
