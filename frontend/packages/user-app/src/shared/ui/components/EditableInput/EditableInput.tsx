@@ -15,6 +15,7 @@ interface EditableInputProps {
   readOnlyWhenNotEditing?: boolean;
   initialEditing?: boolean;
   saving?: boolean;
+  error?: string;
 }
 
 export function EditableInput({
@@ -27,6 +28,7 @@ export function EditableInput({
   readOnlyWhenNotEditing = true,
   initialEditing = false,
   saving,
+  error,
 }: EditableInputProps) {
   const [isEditing, setIsEditing] = useState(initialEditing);
   const [isSaving, setIsSaving] = useState(false);
@@ -63,6 +65,7 @@ export function EditableInput({
         placeholder={placeholder}
         readOnly={readOnly}
         className={inputClassName}
+        error={error}
         actionButton={
           <EditSaveButton
             className={styles.editSaveButton}

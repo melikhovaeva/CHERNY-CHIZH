@@ -15,6 +15,8 @@ export {
   LibrarySection,
   PuppiesSection,
 } from './home-sections';
+export { ProfileMyCourses } from './profile-my-courses';
+export { ProfileSettings } from './profile-settings';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';
