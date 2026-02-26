@@ -1,40 +1,9 @@
 import { useGetArticleBySlugQuery } from '@/entities/article';
+import { SafeHtmlContent } from 'common';
 import { useParams } from '@tanstack/react-router';
 import { API_CONFIG } from '@/shared/config/api';
 import { Placeholder } from '@/shared/ui/components';
 import styles from './ArticlePage.module.scss';
-
-function renderMarkdownContent(content: string) {
-  const blocks = content.split(/\n\n+/);
-  return blocks.map((block, index) => {
-    const trimmed = block.trim();
-    if (!trimmed) return null;
-    if (trimmed.startsWith('## ')) {
-      return (
-        <h2 key={index} className={styles.contentH2}>
-          {trimmed.slice(3)}
-        </h2>
-      );
-    }
-    if (trimmed.startsWith('# ')) {
-      return (
-        <h1 key={index} className={styles.contentH1}>
-          {trimmed.slice(2)}
-        </h1>
-      );
-    }
-    return (
-      <p key={index} className={styles.contentP}>
-        {trimmed.split('\n').map((line, i) => (
-          <span key={i}>
-            {line}
-            {i < trimmed.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-    );
-  });
-}
 
 export const ArticlePage = () => {
   const { slug } = useParams({ from: '/articles/$slug' });
@@ -83,9 +52,10 @@ export const ArticlePage = () => {
         {article.description && (
           <p className={styles.description}>{article.description}</p>
         )}
-        <div className={styles.content}>
-          {renderMarkdownContent(article.content)}
-        </div>
+        <SafeHtmlContent
+          html={article.contentHtml}
+          className={styles.content}
+        />
       </div>
     </article>
   );
