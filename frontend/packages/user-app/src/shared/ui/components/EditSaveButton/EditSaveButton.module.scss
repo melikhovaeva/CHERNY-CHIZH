@@ -1,0 +1,57 @@
+.button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &.editing {
+    background-color: $button-primary-background-color;
+    border-color: $button-primary-background-color;
+    svg path {
+      stroke: $text-inverted-color;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:active {
+      opacity: 0.7;
+      transform: scale(0.99);
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.6;
+      box-shadow: none;
+    }
+  }
+
+  .button:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+  }
+
+  .button:active {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+    box-shadow: none;
+  }
+
+  .button:disabled {
+    cursor: default;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+}

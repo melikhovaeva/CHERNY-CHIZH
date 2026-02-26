@@ -1,0 +1,27 @@
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.row > :first-child {
+  flex: 1;
+}
+
+.input {
+  width: 100%;
+  max-height: 44px;
+}
+
+.editSaveButton {
+  width: 44px;
+  height: 44px;
+  aspect-ratio: 1/1;
+}
+
+.readonlyInput {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  color: #6b7280;
+}
