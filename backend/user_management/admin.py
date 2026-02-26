@@ -24,6 +24,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ("email", "password_display")}),
         ("Имя", {"fields": ("first_name", "last_name")}),
         ("Контакты", {"fields": ("phone", "messenger")}),
+        ("Аватар", {"fields": ("avatar_image",)}),
         ("Статус", {"fields": ("is_active", "role")}),
         ("Даты", {"fields": ("last_login", "date_joined")}),
     )

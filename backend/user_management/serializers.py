@@ -24,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "phone",
             "messenger",
+            "avatar_image",
             "role",
             "date_joined",
             "is_active",
@@ -44,8 +45,32 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "first_name", "last_name", "phone", "messenger", "role")
-        read_only_fields = ("id", "email", "role")
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "messenger",
+            "avatar_image",
+            "role",
+        )
+        read_only_fields = ("id", "role")
+
+    def validate_email(self, value: str) -> str:
+        email = User.objects.normalize_email(value)
+        qs = User.objects.filter(email=email)
+        if self.instance is not None:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("Пользователь с таким email уже зарегистрирован")
+        return email
+
+    def validate(self, attrs):
+        for field in ("phone", "messenger", "last_name"):
+            if attrs.get(field) == "":
+                attrs[field] = None
+        return attrs
 
 class RegisterSerializer(serializers.ModelSerializer):
   password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -109,3 +134,31 @@ class RegisterStep2Serializer(serializers.Serializer):
   def create(self, validated_data):
     validated_data.pop('password2')
     return User.objects.create_user(**validated_data)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+  old_password = serializers.CharField(write_only=True, required=True)
+  new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+  new_password2 = serializers.CharField(write_only=True, required=True)
+
+  def validate(self, attrs):
+    if attrs['new_password'] != attrs['new_password2']:
+      raise serializers.ValidationError({"new_password2": "Пароли не совпадают"})
+
+    request = self.context.get('request')
+    user = getattr(request, 'user', None)
+    if user is None or not user.is_authenticated:
+      raise serializers.ValidationError({"old_password": "Пользователь не аутентифицирован"})
+
+    if not user.check_password(attrs['old_password']):
+      raise serializers.ValidationError({"old_password": "Неверный текущий пароль"})
+
+    return attrs
+
+  def save(self, **kwargs):
+    request = self.context.get('request')
+    user = request.user
+    new_password = self.validated_data['new_password']
+    user.set_password(new_password)
+    user.save(update_fields=['password'])
+    return user
