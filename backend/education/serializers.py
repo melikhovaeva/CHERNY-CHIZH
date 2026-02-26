@@ -22,6 +22,16 @@ class InfoTagSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         fields = ("id", "code", "label", "order")
 
 
+class ArticleListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Минимальный набор полей для списка статей (карточки, ссылки)."""
+
+    tags = InfoTagSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Article
+        fields = ("id", "title", "slug", "description", "image_preview", "tags")
+
+
 class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     content_html = serializers.SerializerMethodField()
