@@ -1,3 +1,4 @@
+import { useGetArticleBySlugQuery } from '@/entities/article';
 import { useGetBreedsQuery } from '@/entities/breed';
 import { useGetPuppyQuery } from '@/entities/puppy';
 import { useLocation } from '@tanstack/react-router';
@@ -9,6 +10,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   about: 'О нас',
   contacts: 'Контакты',
   library: 'База знаний',
+  articles: 'Статьи',
   user: 'Профиль',
 };
 
@@ -35,12 +37,22 @@ export function useSegmentLabel(): (
   const shouldLoadBreed = Boolean(breedSlug);
   const shouldLoadPuppy = Boolean(puppyId) && !Number.isNaN(puppyId);
 
+  const pathSegmentsForArticle = currentPathname.split('/').filter(Boolean);
+  const articleSlug =
+    pathSegmentsForArticle[0] === 'articles' && pathSegmentsForArticle[1]
+      ? pathSegmentsForArticle[1]
+      : undefined;
+
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
   });
 
   const { data: puppy } = useGetPuppyQuery(puppyId as number, {
     skip: !shouldLoadPuppy,
+  });
+
+  const { data: article } = useGetArticleBySlugQuery(articleSlug ?? '', {
+    skip: !articleSlug,
   });
 
   return useCallback(
@@ -61,6 +73,14 @@ export function useSegmentLabel(): (
         if (isPuppyOrDogSegment) {
           return puppy.name;
         }
+
+        const isArticleSlugSegment =
+          pathSegments[0] === 'articles' &&
+          pathSegments[1] === segment &&
+          article;
+        if (isArticleSlugSegment) {
+          return article.title;
+        }
       }
 
       if (pathname) {
@@ -69,6 +89,6 @@ export function useSegmentLabel(): (
 
       return segment;
     },
-    [breeds, puppy],
+    [breeds, puppy, article],
   );
 }
