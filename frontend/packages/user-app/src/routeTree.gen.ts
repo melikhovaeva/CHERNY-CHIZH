@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
+import { Route as UserRouteImport } from './app/routes/user'
 import { Route as PuppiesRouteImport } from './app/routes/puppies'
 import { Route as LibraryRouteImport } from './app/routes/library'
 import { Route as DogsRouteImport } from './app/routes/dogs'
@@ -23,6 +24,11 @@ import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs.$breedId
 import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies.$breedId.$puppyId'
 import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs.$breedId.$dogId'
 
+const UserRoute = UserRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
   path: '/puppies',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/user': typeof UserRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/user': typeof UserRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId': typeof DogsBreedIdIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/dogs': typeof DogsRouteWithChildren
   '/library': typeof LibraryRoute
   '/puppies': typeof PuppiesRouteWithChildren
+  '/user': typeof UserRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/dogs'
     | '/library'
     | '/puppies'
+    | '/user'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/dogs/$breedId/$dogId'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/dogs'
     | '/library'
     | '/puppies'
+    | '/user'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/dogs'
     | '/library'
     | '/puppies'
+    | '/user'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/dogs/$breedId/$dogId'
@@ -187,10 +199,18 @@ export interface RootRouteChildren {
   DogsRoute: typeof DogsRouteWithChildren
   LibraryRoute: typeof LibraryRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
+  UserRoute: typeof UserRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/user': {
+      id: '/user'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof UserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puppies': {
       id: '/puppies'
       path: '/puppies'
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   DogsRoute: DogsRouteWithChildren,
   LibraryRoute: LibraryRoute,
   PuppiesRoute: PuppiesRouteWithChildren,
+  UserRoute: UserRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,10 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    transition: all 0.2s ease;
+  }
+}
+

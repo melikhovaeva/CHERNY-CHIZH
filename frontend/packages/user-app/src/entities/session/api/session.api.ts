@@ -46,6 +46,34 @@ export const sessionApi = baseApi.injectEndpoints({
       }),
       providesTags: [API_CONFIG.TAG_TYPES.SESSION],
     }),
+    updateProfile: build.mutation<User, Partial<User>>({
+      query: (body) => ({
+        url: API_CONFIG.ENDPOINTS.ME,
+        method: 'PATCH',
+        body: {
+          ...body,
+          phone: body.phone || undefined,
+          messenger: body.messenger || undefined,
+          last_name: body.last_name || undefined,
+        },
+      }),
+      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
+    }),
+    changePassword: build.mutation<
+      void,
+      { oldPassword: string; newPassword: string; newPassword2: string }
+    >({
+      query: (body) => ({
+        url: API_CONFIG.ENDPOINTS.ME_CHANGE_PASSWORD,
+        method: 'POST',
+        body: {
+          old_password: body.oldPassword,
+          new_password: body.newPassword,
+          new_password2: body.newPassword2,
+        },
+      }),
+      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
+    }),
     logout: build.mutation<void, void>({
       query: () => ({
         url: API_CONFIG.ENDPOINTS.LOGOUT,
@@ -61,5 +89,7 @@ export const {
   useRegisterStep2Mutation,
   useLoginMutation,
   useMeQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation,
 } = sessionApi;

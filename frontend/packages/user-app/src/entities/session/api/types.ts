@@ -25,6 +25,7 @@ export interface RegisterStep2Response {
   last_name: string | null;
   phone: string | null;
   messenger: string | null;
+  avatar_image: string | null;
 }
 
 export interface LoginRequest {
@@ -39,6 +40,7 @@ export interface User {
   last_name: string | null;
   phone: string | null;
   messenger: string | null;
+  avatar_image: string | null;
 }
 
 export interface LoginResponse extends User {}
