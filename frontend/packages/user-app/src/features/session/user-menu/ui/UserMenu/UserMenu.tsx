@@ -1,28 +1,31 @@
-import { UserImage } from '@/features/session';
-import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
-import { ProfileButton } from '@/features/session/user-menu';
-import { cn } from '@/shared/lib/utils';
-import { DropdownMenu } from '@/shared/ui/components';
-import { useRef, useState } from 'react';
-import styles from './UserMenu.module.scss';
+import { UserImage } from '@/features/session'
+import { LogoutButton } from '@/features/session/logout/ui/LogoutButton'
+import { ProfileButton } from '@/features/session/user-menu'
+import { cn } from '@/shared/lib/utils'
+import { DropdownMenu } from '@/shared/ui/components'
+import { useNavigate } from '@tanstack/react-router'
+import { useRef, useState } from 'react'
+import styles from './UserMenu.module.scss'
 
-const AVATAR_SIZE = 50;
+const AVATAR_SIZE = 50
 
 export function UserMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const navigate = useNavigate()
 
   const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
+    setIsOpen((prev) => !prev)
+  }
 
   const handleClose = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   const handleProfile = () => {
-    handleClose();
-  };
+    handleClose()
+    navigate({ to: '/admin' })
+  }
 
   return (
     <div className={styles.userMenu}>
@@ -46,5 +49,5 @@ export function UserMenu() {
         <LogoutButton className={styles.item} />
       </DropdownMenu>
     </div>
-  );
+  )
 }

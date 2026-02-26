@@ -4,8 +4,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
     volumes:
       - ./frontend:/frontend-app
     environment:
@@ -16,8 +14,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - 3001:3001
     volumes:
       - ./frontend:/frontend-app
     environment:
@@ -69,4 +65,15 @@ services:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9090"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - frontend-user
+      - frontend-admin
+    ports:
+      - "3000:80"
+    volumes:
+      - ./infra/nginx/dev.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
