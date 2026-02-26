@@ -5,7 +5,7 @@ import {
   FAQSection,
   FormSection,
   HeroSection,
-  LibrarySection,
+  KnowledgeBaseSection,
   PuppiesSection,
 } from '@/widgets';
 import styles from './HomePage.module.scss';
@@ -20,7 +20,7 @@ export function HomePage() {
       <AdvantagesSection />
       <BreedAboutSection breeds={breeds} isLoading={breedsLoading} />
       <FAQSection />
-      <LibrarySection />
+      <KnowledgeBaseSection />
       <FormSection />
     </div>
   );

@@ -9,7 +9,7 @@ import { Button, Card, Skeleton } from '@/shared/ui/components';
 import { FilterableGallery } from '@/widgets';
 import { Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
-import styles from './LibrarySection.module.scss';
+import styles from './KnowledgeBaseSection.module.scss';
 
 const SKELETON_ITEMS = 6;
 
@@ -20,11 +20,11 @@ function getImageUrl(imagePreview: string | null): string | undefined {
   return `${base}${imagePreview.startsWith('/') ? '' : '/'}${imagePreview}`;
 }
 
-export interface LibrarySectionItem extends ArticleMinimal {
+export interface KnowledgeBaseSectionItem extends ArticleMinimal {
   _tagId: string;
 }
 
-export function LibrarySection() {
+export function KnowledgeBaseSection() {
   const { data, isLoading } = useGetHomeLibraryQuery();
 
   const tabs: Tab[] = useMemo(
@@ -37,7 +37,7 @@ export function LibrarySection() {
     [data?.tags],
   );
 
-  const items: LibrarySectionItem[] = useMemo(
+  const items: KnowledgeBaseSectionItem[] = useMemo(
     () =>
       (data?.groups ?? []).flatMap((group) =>
         group.articles.map((article) => ({
@@ -79,7 +79,7 @@ export function LibrarySection() {
         <div className={styles.container}>
           <h2 className={styles.title}>База знаний</h2>
           <div className={styles.buttonContainer}>
-            <Link to="/library" className={styles.buttonLink}>
+            <Link to="/knowledge-base" className={styles.buttonLink}>
               Смотреть все
             </Link>
           </div>
@@ -92,14 +92,18 @@ export function LibrarySection() {
     <section className={cn([styles.root, 'filled primary'])}>
       <div className={styles.container}>
         <h2 className={styles.title}>База знаний</h2>
-        <FilterableGallery<LibrarySectionItem>
+        <FilterableGallery<KnowledgeBaseSectionItem>
           tabs={tabs}
           items={items}
           filterBy="_tagId"
           getFilterValue={(item) => item._tagId}
           getItemKey={(item) => `${item.id}-${item._tagId}`}
           renderItem={(item) => (
-            <Link to={`/articles/${item.slug}`} className={styles.cardLink}>
+            <Link
+              to="/articles/$slug"
+              params={{ slug: item.slug }}
+              className={styles.cardLink}
+            >
               <Card
                 imgUrl={getImageUrl(item.imagePreview) ?? ''}
                 title={item.title}
@@ -109,7 +113,7 @@ export function LibrarySection() {
           className={styles.gallery}
         />
         <div className={styles.buttonContainer}>
-          <Link to="/library" className={styles.buttonLink}>
+          <Link to="/knowledge-base" className={styles.buttonLink}>
             Смотреть все
           </Link>
         </div>

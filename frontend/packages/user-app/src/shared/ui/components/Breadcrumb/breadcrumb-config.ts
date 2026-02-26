@@ -3,7 +3,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   dogs: 'Собаки',
   about: 'О нас',
   contacts: 'Контакты',
-  library: 'База знаний',
+  'knowledge-base': 'База знаний',
   articles: 'Статьи',
 };
 

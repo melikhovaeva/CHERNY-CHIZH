@@ -19,6 +19,23 @@ export interface ArticleMinimal {
   imagePreview: string | null;
 }
 
+export interface ArticleListItem {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  imagePreview: string | null;
+  tags: Array<{ id: number; code: string; label: string; order: number }>;
+  createdAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export interface HomeLibraryTag {
   id: number;
   code: string;

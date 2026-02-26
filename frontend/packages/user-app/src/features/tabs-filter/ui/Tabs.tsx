@@ -4,18 +4,22 @@ import styles from './Tabs.module.scss';
 
 interface TabsProps {
   tabs: Tab[];
-  activeTab: string;
+  activeTab?: string;
   onTabChange: (value: string) => void;
   variant?: 'primary' | 'secondary';
   className?: string;
+  buttonClassName?: string;
+  buttonActiveClassName?: string;
 }
 
 export function Tabs({
   tabs,
   variant = 'primary',
-  activeTab,
+  activeTab = tabs[0]?.value ?? '',
   onTabChange,
   className,
+  buttonClassName,
+  buttonActiveClassName,
 }: TabsProps) {
   return (
     <div
@@ -32,7 +36,10 @@ export function Tabs({
               aria-selected={activeTab === tab.value}
               className={cn([
                 styles.button,
-                activeTab === tab.value ? styles.button_active : '',
+                buttonClassName ?? '',
+                activeTab === tab.value
+                  ? (buttonActiveClassName ?? styles.button_active)
+                  : '',
               ])}
               onClick={() => onTabChange(tab.value)}
             >
