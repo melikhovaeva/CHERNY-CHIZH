@@ -1,21 +1,24 @@
-import { useAuth } from '@/entities/session'
-import { StoreProvider } from './store/StoreProvider'
-import { ModalHost } from './ModalHost'
+import { useAuth } from '@/entities/session';
+import { ToastProvider } from 'common';
+import { ModalHost } from './ModalHost';
+import { StoreProvider } from './store/StoreProvider';
 
 const AppBootstrap = ({ children }: { children: React.ReactNode }) => {
-  useAuth()
+  useAuth();
   return (
     <>
       <ModalHost />
       {children}
     </>
-  )
-}
+  );
+};
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <AppBootstrap>{children}</AppBootstrap>
+      <ToastProvider position="bottom-right">
+        <AppBootstrap>{children}</AppBootstrap>
+      </ToastProvider>
     </StoreProvider>
-  )
-}
+  );
+};
