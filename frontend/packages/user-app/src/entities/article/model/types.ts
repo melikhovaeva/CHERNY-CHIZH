@@ -19,6 +19,11 @@ export interface ArticleMinimal {
   imagePreview: string | null;
 }
 
+export interface ArticleAuthor {
+  avatar: string | null;
+  displayName: string;
+}
+
 export interface ArticleListItem {
   id: number;
   title: string;
@@ -27,6 +32,7 @@ export interface ArticleListItem {
   imagePreview: string | null;
   tags: Array<{ id: number; code: string; label: string; order: number }>;
   createdAt: string;
+  author?: ArticleAuthor | null;
 }
 
 export interface PaginatedResponse<T> {

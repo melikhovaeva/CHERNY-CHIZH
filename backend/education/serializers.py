@@ -22,10 +22,22 @@ class InfoTagSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         fields = ("id", "code", "label", "order")
 
 
+def _article_author_display_name(article: Article) -> str:
+    """Имя автора: для пользователя — «Имя Ф.» (инициал фамилии), иначе author_text."""
+    if article.author_id and article.author:
+        user = article.author
+        parts = [user.first_name or ""]
+        if user.last_name:
+            parts.append(f"{user.last_name[0].upper()}.")
+        return " ".join(filter(None, parts)).strip() or user.email
+    return (article.author_text or "").strip()
+
+
 class ArticleListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Минимальный набор полей для списка статей (карточки, ссылки)."""
 
     tags = InfoTagSerializer(many=True, read_only=True)
+    author = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
@@ -37,7 +49,22 @@ class ArticleListSerializer(CamelCaseSerializerMixin, serializers.ModelSerialize
             "image_preview",
             "tags",
             "created_at",
+            "author",
         )
+
+    def get_author(self, obj: Article) -> dict:
+        if obj.author_id and obj.author:
+            avatar = None
+            if obj.author.avatar_image:
+                avatar = obj.author.avatar_image.url
+            return {
+                "avatar": avatar,
+                "display_name": _article_author_display_name(obj),
+            }
+        display = _article_author_display_name(obj)
+        if not display:
+            return None
+        return {"avatar": None, "display_name": display}
 
 
 class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):

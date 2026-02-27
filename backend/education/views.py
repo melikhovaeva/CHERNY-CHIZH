@@ -45,6 +45,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         qs = (
             Article.objects.filter(status=InfoStatus.PUBLISHED)
+            .select_related("author")
             .prefetch_related("tags")
             .order_by("-created_at")
         )

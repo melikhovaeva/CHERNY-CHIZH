@@ -55,6 +55,18 @@ class Article(InfoModel):
         blank=True,
         related_name="article",
     )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="authored_articles",
+    )
+    author_text = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Текст автора, если автор не пользователь системы",
+    )
     status = models.CharField(
         max_length=32,
         choices=InfoStatus.choices,
