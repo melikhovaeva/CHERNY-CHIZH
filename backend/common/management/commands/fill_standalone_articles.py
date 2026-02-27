@@ -1,6 +1,8 @@
 """
 Создаёт теги (InfoTag) и статьи без привязки к породе (Article, breed=None)
 со случайным текстом о собаках. Картинки для image_preview берутся из test-photos.
+Большинство статей привязываются к пользователю admin@admin.com; несколько статей
+имеют автора в виде текста (author_text).
 Используется при заполнении БД тестовыми данными.
 """
 import random
@@ -8,6 +10,7 @@ import random
 from django.core.management.base import BaseCommand
 
 from education.models import Article, InfoStatus, InfoTag
+from user_management.models import User
 
 from ._test_photos import assign_photo_from_path, get_all_photo_paths
 
@@ -41,6 +44,13 @@ DOG_TITLES = [
     "Кормление по возрасту",
     "Игры и игрушки для собак",
     "Подготовка к выставке",
+]
+
+# Текстовые авторы для части статей (без привязки к пользователю)
+AUTHOR_TEXT_SAMPLES = [
+    "Редакция",
+    "Команда Черный Чиж",
+    "Ветеринарный эксперт",
 ]
 
 # Короткие абзацы для description
@@ -205,6 +215,14 @@ class Command(BaseCommand):
         tags = _ensure_tags()
         self.stdout.write(self.style.SUCCESS(f"Теги: {len(tags)} шт."))
 
+        admin_user = User.objects.filter(email="admin@admin.com").first()
+        if not admin_user:
+            self.stdout.write(
+                self.style.WARNING(
+                    "Пользователь admin@admin.com не найден — статьи создаются без автора (author)."
+                )
+            )
+
         all_photos = get_all_photo_paths()
         if all_photos:
             self.stdout.write(
@@ -219,10 +237,24 @@ class Command(BaseCommand):
 
         created = 0
         updated = 0
+        # Несколько статей — с текстовым автором (author_text), остальные — author=admin
+        n_text_author = min(3, count) if count >= 4 else (1 if count >= 2 else 0)
+        text_author_indices = (
+            set(random.sample(range(1, count + 1), n_text_author)) if n_text_author else set()
+        )
 
         for i in range(1, count + 1):
             slug = f"sobaki-{i}"
             data = _random_article_data(DOG_TITLES, DOG_PARAGRAPHS, DOG_MARKDOWN_SECTIONS)
+
+            use_text_author = i in text_author_indices
+            author_kw = {}
+            if use_text_author:
+                author_kw["author"] = None
+                author_kw["author_text"] = random.choice(AUTHOR_TEXT_SAMPLES)
+            else:
+                author_kw["author"] = admin_user
+                author_kw["author_text"] = ""
 
             article, was_created = Article.objects.get_or_create(
                 slug=slug,
@@ -232,6 +264,7 @@ class Command(BaseCommand):
                     "content": data["content"],
                     "status": InfoStatus.PUBLISHED,
                     "breed": None,
+                    **author_kw,
                 },
             )
             if was_created:
@@ -243,6 +276,8 @@ class Command(BaseCommand):
                 article.content = data["content"]
                 article.status = InfoStatus.PUBLISHED
                 article.breed = None
+                article.author = author_kw["author"]
+                article.author_text = author_kw["author_text"]
                 article.save()
 
             # Картинка из test-photos: по одному файлу на статью (циклически)

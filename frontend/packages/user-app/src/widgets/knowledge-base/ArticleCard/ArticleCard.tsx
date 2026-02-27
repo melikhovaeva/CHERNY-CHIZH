@@ -4,11 +4,11 @@ import { Placeholder } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
 import styles from './ArticleCard.module.scss';
 
-function getImageUrl(imagePreview: string | null): string | undefined {
-  if (!imagePreview) return undefined;
-  if (imagePreview.startsWith('http')) return imagePreview;
+function getImageUrl(path: string | null | undefined): string | undefined {
+  if (!path) return undefined;
+  if (path.startsWith('http')) return path;
   const base = API_CONFIG.BASE_URL?.replace(/\/$/, '') ?? '';
-  return `${base}${imagePreview.startsWith('/') ? '' : '/'}${imagePreview}`;
+  return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
 }
 
 function formatDate(isoDate: string): string {
@@ -30,7 +30,7 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article, className }: ArticleCardProps) {
-  const imageUrl = getImageUrl(article.imagePreview);
+  const imageUrl = getImageUrl(article.imagePreview ?? null);
 
   return (
     <Link
@@ -56,6 +56,18 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
         )}
         <div className={styles.footer}>
           <span className={styles.date}>{formatDate(article.createdAt)}</span>
+          {article.author?.displayName && (
+            <span className={styles.author}>
+              {article.author.avatar && (
+                <img
+                  src={getImageUrl(article.author.avatar) ?? ''}
+                  alt=""
+                  className={styles.authorAvatar}
+                />
+              )}
+              <span className={styles.authorName}>{article.author.displayName}</span>
+            </span>
+          )}
         </div>
       </div>
     </Link>

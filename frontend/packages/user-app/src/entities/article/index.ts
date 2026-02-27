@@ -6,6 +6,7 @@ export {
 export type { GetArticlesListQueryArgs } from './api/article.api';
 export type {
   Article,
+  ArticleAuthor,
   ArticleListItem,
   ArticleMinimal,
   HomeLibraryResponse,

@@ -22,12 +22,37 @@ class InfoTagAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ("title", "status", "created_at", "updated_at")
-    list_filter = ("status", "tags")
-    search_fields = ("title", "description", "content")
+    list_display = (
+        "title",
+        "get_author_display",
+        "status",
+        "breed",
+        "created_at",
+        "updated_at",
+    )
+    list_filter = ("status", "tags", "created_at")
+    list_editable = ("status",)
+    search_fields = ("title", "description", "content", "author_text")
     prepopulated_fields = {"slug": ("title",)}
+    raw_id_fields = ("author", "breed")
+    readonly_fields = ("created_at", "updated_at")
+    date_hierarchy = "created_at"
+    list_per_page = 25
+    list_select_related = ("author", "breed")
     fieldsets = (
-        (None, {"fields": ("title", "slug", "description", "image_preview", "status", "tags", "breed")}),
+        (
+            None,
+            {
+                "fields": ("title", "slug", "description", "image_preview", "status", "tags", "breed"),
+            },
+        ),
+        (
+            "Автор",
+            {
+                "fields": ("author", "author_text"),
+                "description": "Укажите пользователя-автора или текст автора (например, «Редакция»). Если выбран пользователь, author_text не используется на сайте.",
+            },
+        ),
         (
             "Контент (Markdown)",
             {
@@ -35,7 +60,23 @@ class ArticleAdmin(admin.ModelAdmin):
                 "description": "Контент статьи в формате Markdown. Поддерживаются заголовки, списки, ссылки, код и т.д.",
             },
         ),
+        (
+            "Даты",
+            {
+                "fields": ("created_at", "updated_at"),
+                "classes": ("collapse",),
+            },
+        ),
     )
+
+    @admin.display(description="Автор")
+    def get_author_display(self, obj):
+        if obj.author_id and obj.author:
+            name = f"{obj.author.first_name or ''} {obj.author.last_name or ''}".strip()
+            return name or obj.author.email
+        if obj.author_text:
+            return obj.author_text
+        return "—"
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)

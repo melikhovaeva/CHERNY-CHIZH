@@ -7,7 +7,9 @@
   background-color: $filled-section-primary-bg-color;
   color: $filled-section-text-color;
   text-decoration: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
     opacity: 0.95;
@@ -81,4 +83,25 @@
   font-size: 13px;
   color: $text-inverted-color;
   opacity: 0.85;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.authorAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.authorName {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: $text-inverted-color;
+  opacity: 0.9;
 }
