@@ -1,0 +1,240 @@
+/* ── Stack container (fixed corner) ── */
+
+.stack {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  max-width: 420px;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.topLeft {
+  top: 0;
+  left: 0;
+}
+
+.topRight {
+  top: 0;
+  right: 0;
+}
+
+.bottomRight {
+  bottom: 0;
+  right: 0;
+}
+
+.bottomLeft {
+  bottom: 0;
+  left: 0;
+}
+
+/* ── Slot wrapper — handles height collapse on exit ── */
+
+.slot {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 300ms ease,
+    margin-bottom 300ms ease;
+  margin-bottom: 8px;
+}
+
+.slot:last-child {
+  margin-bottom: 0;
+}
+
+.slotExiting {
+  grid-template-rows: 0fr;
+  margin-bottom: 0;
+}
+
+.slotInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Toast body ── */
+
+.toast {
+  position: relative;
+  padding: 12px 16px 15px;
+  border-radius: var(--toast-radius, 12px);
+  background: var(--toast-bg, rgba(255, 255, 255, 0.75));
+  backdrop-filter: blur(var(--toast-blur, 16px));
+  -webkit-backdrop-filter: blur(var(--toast-blur, 16px));
+  box-shadow: var(
+    --toast-shadow,
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04)
+  );
+  cursor: pointer;
+  pointer-events: auto;
+  overflow: hidden;
+  user-select: none;
+  animation: toastEnter 250ms ease both;
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toastExiting {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+/* Direction-aware enter based on stack position */
+.bottomLeft .toast,
+.bottomRight .toast {
+  animation-name: toastEnterFromBottom;
+}
+
+.topLeft .toast,
+.topRight .toast {
+  animation-name: toastEnterFromTop;
+}
+
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastEnterFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastEnterFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Icon ── */
+
+.icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Title ── */
+
+.title {
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+/* ── Message ── */
+
+.message {
+  margin: 0;
+  padding-left: 28px;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 400;
+  opacity: 0.78;
+}
+
+/* ── Progress bar ── */
+
+.progressTrack {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.progressBar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  animation: progressShrink var(--toast-duration) linear forwards;
+}
+
+@keyframes progressShrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ── Variant colors ── */
+
+.error .icon,
+.error .title,
+.error .message {
+  color: var(--toast-error-color, #ef4444);
+}
+.error .progressBar {
+  background-color: var(--toast-error-color, #ef4444);
+}
+
+.success .icon,
+.success .title,
+.success .message {
+  color: var(--toast-success-color, #22c55e);
+}
+.success .progressBar {
+  background-color: var(--toast-success-color, #22c55e);
+}
+
+.warning .icon,
+.warning .title,
+.warning .message {
+  color: var(--toast-warning-color, #eab308);
+}
+.warning .progressBar {
+  background-color: var(--toast-warning-color, #eab308);
+}
+
+.info .icon,
+.info .title,
+.info .message {
+  color: var(--toast-info-color, #3b82f6);
+}
+.info .progressBar {
+  background-color: var(--toast-info-color, #3b82f6);
+}
