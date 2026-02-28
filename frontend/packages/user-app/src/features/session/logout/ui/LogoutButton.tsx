@@ -1,19 +1,22 @@
 import { useLogoutMutation } from '@/entities/session';
 import { cn } from '@/shared/lib/utils';
+import { useError } from 'common';
 import { useCallback } from 'react';
 import styles from './LogoutButton.module.scss';
 import LogoutIcon from './assets/logout.svg?react';
 
 export const LogoutButton = ({ className }: { className?: string } = {}) => {
   const [logout, { isLoading }] = useLogoutMutation();
+  const addError = useError();
 
   const handleLogout = useCallback(async () => {
     try {
       await logout().unwrap();
-    } catch {
-      console.error('Failed to logout');
+    } catch (error) {
+      console.error(error, 'Failed to logout');
+      addError('Не удалось выйти');
     }
-  }, [logout]);
+  }, [logout, addError]);
   return (
     <button
       type="button"
