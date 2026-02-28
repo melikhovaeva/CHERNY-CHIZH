@@ -1,6 +1,8 @@
-import { closeAuthModal, selectSessionError, useAppDispatch, useAppSelector } from '@/app/redux';
+import { closeAuthModal, useAppDispatch } from '@/app/redux';
 import { useLoginMutation } from '@/entities/session';
+import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Form, Input } from '@/shared/ui/components';
+import { useError, useSuccess } from 'common';
 import { useForm } from 'react-hook-form';
 import styles from './LoginForm.module.scss';
 
@@ -14,7 +16,8 @@ interface LoginFormFields {
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
-  const sessionError = useAppSelector(selectSessionError);
+  const addError = useError();
+  const addSuccess = useSuccess();
 
   const {
     register,
@@ -25,14 +28,23 @@ export const LoginForm = () => {
   const onSubmit = async (data: LoginFormFields) => {
     try {
       await login(data).unwrap();
+      addSuccess('Вход выполнен');
       dispatch(closeAuthModal());
-    } catch {
-      // Ошибки обрабатываются через sessionSlice
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err, ['detail', 'email', 'password']) ??
+        'Не удалось войти';
+      console.error(err, 'Failed to login');
+      addError(message);
     }
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, () =>
+        addError('Проверьте заполнение полей'),
+      )}
+    >
       <div className={styles.root}>
         <div className={styles.fields}>
           <Input
@@ -63,9 +75,6 @@ export const LoginForm = () => {
             </a>
           </div>
         </div>
-        {sessionError && (
-          <p className={styles.error}>{sessionError}</p>
-        )}
         <Button type="submit" disabled={isLoading}>
           Войти
         </Button>

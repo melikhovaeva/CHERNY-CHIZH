@@ -1,6 +1,7 @@
 import { useRegisterStep1Mutation } from '@/entities/session';
 import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Checkbox, Form, Input } from '@/shared/ui/components';
+import { useError } from 'common';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from '../register-form-layout.module.scss';
@@ -27,7 +28,8 @@ interface RegisterStep1FormProps {
 
 export const RegisterStep1Form = ({ onSuccess }: RegisterStep1FormProps) => {
   const [agreed, setAgreed] = useState(false);
-  const [registerStep1, { isLoading, error }] = useRegisterStep1Mutation();
+  const [registerStep1, { isLoading }] = useRegisterStep1Mutation();
+  const addError = useError();
 
   const {
     register,
@@ -44,15 +46,20 @@ export const RegisterStep1Form = ({ onSuccess }: RegisterStep1FormProps) => {
         password2: data.confirmPassword,
       }).unwrap();
       onSuccess(result.email, data.password);
-    } catch {
-      console.error(error);
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err, [...STEP1_ERROR_FIELDS]) ??
+        'Ошибка регистрации';
+      addError(message);
     }
   };
 
-  const apiError = getFirstApiErrorMessage(error, [...STEP1_ERROR_FIELDS]);
-
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, () =>
+        addError('Проверьте заполнение полей'),
+      )}
+    >
       <div className={styles.root}>
         <div className={styles.fields}>
           <Input
@@ -92,9 +99,6 @@ export const RegisterStep1Form = ({ onSuccess }: RegisterStep1FormProps) => {
                 value === watch('password') || 'Пароли не совпадают',
             })}
           />
-          <div className={styles.apiErrorSlot}>
-            {apiError && <p className={styles.apiError}>{apiError}</p>}
-          </div>
         </div>
         <Button type="submit" disabled={!agreed || isLoading}>
           Зарегестрироваться

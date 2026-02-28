@@ -1,4 +1,5 @@
 import { Button, Form, Input } from '@/shared/ui/components';
+import { useError } from 'common';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import formImage from '../assets/form-image.webp';
 import type { BookingFormFields } from '../model';
@@ -18,11 +19,16 @@ export const BookingForm = ({ onSubmit, mode = 'guest' }: BookingFormProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<BookingFormFields>();
+  const addError = useError();
 
   const isGuest = mode === 'guest';
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, () =>
+        addError('Проверьте заполнение полей'),
+      )}
+    >
       <div className={styles.root}>
         <div className={styles.fieldsContainer}>
           {isGuest && (

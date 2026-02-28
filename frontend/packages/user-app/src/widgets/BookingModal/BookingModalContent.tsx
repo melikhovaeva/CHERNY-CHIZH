@@ -6,6 +6,8 @@ import {
   type SubmitBookingRequest,
   useSubmitBookingMutation,
 } from '@/shared/api/booking-api';
+import { getFirstApiErrorMessage } from '@/shared';
+import { useError, useSuccess } from 'common';
 import { type SubmitHandler } from 'react-hook-form';
 
 interface BookingModalContentProps {
@@ -18,6 +20,8 @@ export function BookingModalContent({
   onSuccess,
 }: BookingModalContentProps) {
   const [submitBooking] = useSubmitBookingMutation();
+  const addError = useError();
+  const addSuccess = useSuccess();
 
   const onSubmit: SubmitHandler<BookingFormFields> = async (data) => {
     try {
@@ -30,10 +34,12 @@ export function BookingModalContent({
       };
 
       await submitBooking(payload).unwrap();
+      addSuccess('Заявка отправлена');
       onSuccess();
-      console.log('success', data);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err) ?? 'Не удалось отправить заявку';
+      addError(message);
     }
   };
 

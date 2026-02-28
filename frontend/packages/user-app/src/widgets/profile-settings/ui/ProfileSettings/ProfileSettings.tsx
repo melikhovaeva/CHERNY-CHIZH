@@ -18,7 +18,6 @@ interface ProfileSettingsProps {
   user: SessionUser;
   isLoading: boolean;
   isUploadingAvatar: boolean;
-  avatarError: string | null;
   onAvatarChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onUpdateProfile: (
     payload: Partial<
@@ -36,7 +35,6 @@ export function ProfileSettings({
   user,
   isLoading,
   isUploadingAvatar,
-  avatarError,
   onAvatarChange,
   onUpdateProfile,
   isChangingPassword,
@@ -128,9 +126,6 @@ export function ProfileSettings({
               disabled={isUploadingAvatar}
             />
           </label>
-          {avatarError && (
-            <p className={styles.avatarError}>{avatarError}</p>
-          )}
         </div>
 
         <Controller

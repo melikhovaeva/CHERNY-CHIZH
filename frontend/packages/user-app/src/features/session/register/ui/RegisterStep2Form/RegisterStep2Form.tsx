@@ -1,6 +1,7 @@
 import { useRegisterStep2Mutation } from '@/entities/session';
 import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Form, Input } from '@/shared/ui/components';
+import { useError, useSuccess } from 'common';
 import { useForm } from 'react-hook-form';
 import styles from '../register-form-layout.module.scss';
 
@@ -29,7 +30,9 @@ export const RegisterStep2Form = ({
   password,
   onSuccess,
 }: RegisterStep2FormProps) => {
-  const [registerStep2, { isLoading, error }] = useRegisterStep2Mutation();
+  const [registerStep2, { isLoading }] = useRegisterStep2Mutation();
+  const addError = useError();
+  const addSuccess = useSuccess();
 
   const {
     register,
@@ -50,16 +53,22 @@ export const RegisterStep2Form = ({
         phone: data.phone?.trim() || undefined,
         messenger: data.messenger?.trim() || undefined,
       }).unwrap();
+      addSuccess('Регистрация завершена');
       onSuccess?.();
-    } catch {
-      // Error shown via apiError
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err, [...STEP2_ERROR_FIELDS]) ??
+        'Не удалось завершить регистрацию';
+      addError(message);
     }
   };
 
-  const apiError = getFirstApiErrorMessage(error, [...STEP2_ERROR_FIELDS]);
-
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit, () =>
+        addError('Проверьте заполнение полей'),
+      )}
+    >
       <div className={styles.root}>
         <div className={styles.fields}>
           <Input
@@ -88,9 +97,6 @@ export const RegisterStep2Form = ({
             error={errors.messenger?.message}
             {...register('messenger')}
           />
-          <div className={styles.apiErrorSlot}>
-            {apiError && <p className={styles.apiError}>{apiError}</p>}
-          </div>
         </div>
         <Button type="submit" disabled={isLoading}>
           Завершить регистрацию
