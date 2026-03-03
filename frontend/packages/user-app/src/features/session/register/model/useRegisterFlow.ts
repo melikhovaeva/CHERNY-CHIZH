@@ -1,4 +1,5 @@
-import { closeAuthModal, useAppDispatch } from '@/app/redux';
+import { closeAuthModal } from '@/features/auth-modal';
+import { useAppDispatch } from '@/shared/lib/store';
 import { useCallback, useState } from 'react';
 
 type RegisterStep = 1 | 2;

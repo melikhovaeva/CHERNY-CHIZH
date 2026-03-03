@@ -1,9 +1,5 @@
-import {
-  selectSelectedBreedSlug,
-  setSelectedBreed,
-  useAppDispatch,
-  useAppSelector,
-} from '@/app/redux';
+import { selectSelectedBreedSlug, setSelectedBreed } from '@/features/selected-breed';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { useGetBreedsQuery } from '@/entities/breed/api/breed.api';
 import { getFirstPhotoUrl } from '@/entities/puppy';
 import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';

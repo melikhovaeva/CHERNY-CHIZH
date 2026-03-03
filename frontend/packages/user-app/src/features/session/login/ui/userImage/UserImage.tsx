@@ -1,4 +1,5 @@
-import { selectCurrentUser, useAppSelector } from '@/app/redux';
+import { selectCurrentUser } from '@/entities/session';
+import { useAppSelector } from '@/shared/lib/store';
 import { cn } from '@/shared/lib/utils';
 import styles from './UserImage.module.scss';
 

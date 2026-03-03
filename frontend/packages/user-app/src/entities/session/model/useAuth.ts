@@ -3,8 +3,8 @@ import {
   selectCurrentUser,
   selectIsAuthenticated,
   selectSessionStatus,
-  useAppSelector,
-} from '@/app/redux';
+} from '@/entities/session';
+import { useAppSelector } from '@/shared/lib/store';
 
 export function useAuth(options?: { skip?: boolean }) {
   const user = useAppSelector(selectCurrentUser);

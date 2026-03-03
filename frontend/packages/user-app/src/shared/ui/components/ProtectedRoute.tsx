@@ -1,10 +1,6 @@
-import {
-  openAuthModal,
-  selectAuthModalIsOpen,
-  selectIsAuthenticated,
-  useAppDispatch,
-  useAppSelector,
-} from '@/app/redux';
+import { openAuthModal, selectAuthModalIsOpen } from '@/features/auth-modal';
+import { selectIsAuthenticated } from '@/entities/session';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { useAuth } from '@/entities/session';
 import { useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';

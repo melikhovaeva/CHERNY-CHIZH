@@ -1,4 +1,5 @@
-import { openBookingModal, useAppDispatch } from '@/app/redux';
+import { openBookingModal } from '@/features/booking-modal';
+import { useAppDispatch } from '@/shared/lib/store';
 import { cn } from '@/shared/lib/utils';
 import { Button, Placeholder } from '@/shared/ui/components';
 import { useNavigate } from '@tanstack/react-router';

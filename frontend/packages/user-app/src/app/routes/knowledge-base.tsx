@@ -1,6 +1,6 @@
 import { KnowledgeBasePage } from '@/pages'
 import { createFileRoute } from '@tanstack/react-router'
-import { store } from '../redux'
+import { store } from '@/app/store'
 import { articleApi } from '@/entities/article/api/article.api'
 
 export const Route = createFileRoute('/knowledge-base')({

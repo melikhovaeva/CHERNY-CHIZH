@@ -1,4 +1,5 @@
-import { openBookingModal, useAppDispatch } from '@/app/redux';
+import { openBookingModal } from '@/features/booking-modal';
+import { useAppDispatch } from '@/shared/lib/store';
 import { cn } from '@/shared/lib/utils';
 import { PuppyNotFoundIcon } from '@/shared/ui/assets';
 import { Button } from '@/shared/ui/components';
