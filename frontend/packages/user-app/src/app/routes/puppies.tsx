@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { store } from '../redux'
+import { store } from '@/app/store'
 
 export const Route = createFileRoute('/puppies')({
   staticData: { navLabel: 'Щенки', navOrder: 1 },

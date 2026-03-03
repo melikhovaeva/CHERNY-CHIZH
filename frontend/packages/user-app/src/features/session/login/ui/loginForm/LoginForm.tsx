@@ -1,4 +1,5 @@
-import { closeAuthModal, useAppDispatch } from '@/app/redux';
+import { closeAuthModal } from '@/features/auth-modal';
+import { useAppDispatch } from '@/shared/lib/store';
 import { useLoginMutation } from '@/entities/session';
 import { getFirstApiErrorMessage } from '@/shared';
 import { Button, Form, Input } from '@/shared/ui/components';

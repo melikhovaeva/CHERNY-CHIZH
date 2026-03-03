@@ -19,3 +19,17 @@ export type {
 } from './api/types';
 
 export { useAuth } from './model/useAuth';
+
+export {
+  sessionSlice,
+  setUser,
+  clearSession,
+  setStatus,
+  setError,
+  selectCurrentUser,
+  selectIsAuthenticated,
+  selectSessionStatus,
+  selectSessionError,
+  SessionStatusEnum,
+} from './model/sessionSlice';
+

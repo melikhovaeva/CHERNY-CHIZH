@@ -1,6 +1,6 @@
 import { PuppyDetailsPage } from '@/pages'
 import { createFileRoute } from '@tanstack/react-router'
-import { store } from '../redux'
+import { store } from '@/app/store'
 import { puppyApi } from '@/entities/puppy/api/puppy.api'
 
 export const Route = createFileRoute('/puppies/$breedId/$puppyId')({

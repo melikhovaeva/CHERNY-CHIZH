@@ -1,4 +1,5 @@
-import { openAuthModal, useAppDispatch } from '@/app/redux';
+import { openAuthModal } from '@/features/auth-modal';
+import { useAppDispatch } from '@/shared/lib/store';
 import styles from './LoginButton.module.scss';
 import ArrowLeftIcon from './assets/arrow-left.svg?react';
 

@@ -1,4 +1,5 @@
-import { setSelectedBreed, useAppDispatch } from '@/app/redux';
+import { setSelectedBreed } from '@/features/selected-breed';
+import { useAppDispatch } from '@/shared/lib/store';
 import { useGetBreedsQuery } from '@/entities/breed';
 import type { PuppyFilters } from '@/features';
 import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults';

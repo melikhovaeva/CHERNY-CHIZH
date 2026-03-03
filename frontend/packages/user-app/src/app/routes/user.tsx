@@ -1,6 +1,6 @@
 import { UserProfilePage } from '@/pages/UserProfilePage/UserProfilePage'
 import { createFileRoute } from '@tanstack/react-router'
-import { store } from '../redux'
+import { store } from '@/app/store'
 import { sessionApi } from '@/entities/session/api/session.api'
 import { coursesApi } from '@/entities/course/api/courses.api'
 

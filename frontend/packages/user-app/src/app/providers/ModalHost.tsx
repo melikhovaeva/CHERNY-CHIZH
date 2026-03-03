@@ -1,12 +1,13 @@
 import {
-  closeAuthModal,
-  closeBookingModal,
-  selectAuthModalIsOpen,
   selectBookingModalDogId,
   selectBookingModalIsOpen,
-  useAppDispatch,
-  useAppSelector,
-} from '@/app/redux';
+  closeBookingModal,
+} from '@/features/booking-modal';
+import {
+  closeAuthModal,
+  selectAuthModalIsOpen,
+} from '@/features/auth-modal';
+import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { Modal } from '@/shared/ui/components';
 import { AuthModalContent, BookingModalContent } from '@/widgets';
 

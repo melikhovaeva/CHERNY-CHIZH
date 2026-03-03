@@ -1,4 +1,4 @@
-import { store } from '@/app/redux'
+import { store } from '@/app/store'
 import { Provider } from 'react-redux'
 
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {

@@ -1,6 +1,7 @@
 import { DogsPage } from '@/pages'
 import { createFileRoute } from '@tanstack/react-router'
-import { store, setSelectedBreed } from '../redux'
+import { store } from '@/app/store'
+import { setSelectedBreed } from '@/features/selected-breed'
 import { breedApi } from '@/entities/breed/api/breed.api'
 import { dogApi } from '@/entities/puppy/api/dog.api'
 

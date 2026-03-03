@@ -1,9 +1,6 @@
 import { getHeaderLinks, getMobileMenuLinks } from '@/app/lib/nav-links';
-import {
-  selectIsAuthenticated,
-  selectSessionStatus,
-  useAppSelector,
-} from '@/app/redux';
+import { selectIsAuthenticated, selectSessionStatus } from '@/entities/session';
+import { useAppSelector } from '@/shared/lib/store';
 import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
 import { UserMenu } from '@/features/session';
 import { cn } from '@/shared/lib/utils';
