@@ -6,14 +6,19 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:user": "yarn workspace user-app dev",
-    "dev:admin": "yarn workspace admin-app dev",
-    "build": "yarn workspaces foreach -Ap run build",
-    "lint": "yarn workspaces foreach -Ap run lint",
-    "test": "yarn workspaces foreach -Ap run test",
+    "dev:user": "pnpm --filter user-app dev",
+    "dev:admin": "pnpm --filter admin-app dev",
+    "build": "pnpm -r run build",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
     "prepare": "husky"
   },
   "devDependencies": {
-    "husky": "^9.1.7"
-  }
+    "husky": "^9.1.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  },
+  "packageManager": "pnpm@10.30.3"
 }

@@ -8,7 +8,7 @@ services:
       - ./frontend:/frontend-app
     environment:
       - NODE_ENV=development
-    command: sh -c "yarn install && yarn workspace user-app docker:dev"
+    command: sh -c "pnpm install && pnpm --filter user-app docker:dev"
   frontend-admin:
     platform: linux/amd64
     build:
@@ -18,7 +18,7 @@ services:
       - ./frontend:/frontend-app
     environment:
       - NODE_ENV=development
-    command: sh -c "yarn install && yarn workspace admin-app docker:dev"
+    command: sh -c "pnpm install && pnpm --filter admin-app docker:dev"
   backend:
     build:
       context: ./backend
