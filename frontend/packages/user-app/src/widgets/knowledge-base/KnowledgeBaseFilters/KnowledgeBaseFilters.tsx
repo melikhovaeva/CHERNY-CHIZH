@@ -5,10 +5,12 @@ import styles from './KnowledgeBaseFilters.module.scss';
 
 export const KNOWLEDGE_BASE_CATEGORY_ALL = 'all';
 export const KNOWLEDGE_BASE_CATEGORY_ARTICLES = 'articles';
+export const KNOWLEDGE_BASE_CATEGORY_COURSES = 'courses';
 
 export const KNOWLEDGE_BASE_TABS: Tab[] = [
   { id: 'all', label: 'Все', value: KNOWLEDGE_BASE_CATEGORY_ALL },
   { id: 'articles', label: 'Статьи', value: KNOWLEDGE_BASE_CATEGORY_ARTICLES },
+  { id: 'courses', label: 'Курсы', value: KNOWLEDGE_BASE_CATEGORY_COURSES },
 ];
 
 export type KnowledgeBaseCategory = string;
