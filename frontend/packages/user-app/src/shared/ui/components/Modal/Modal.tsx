@@ -1,7 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -39,15 +38,8 @@ export function Modal({
   const panelRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const [currentTitle, setCurrentTitle] = useState<React.ReactNode>(title);
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose],
-  );
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -78,16 +70,24 @@ export function Modal({
     setCurrentTitle(title);
   }, [title]);
 
+  // Сохраняем фокус при открытии и восстанавливаем только при закрытии.
+  // Обработчик Escape через ref, чтобы эффект не зависел от onClose (иначе при каждом
+  // вводе в форме родитель перерисовывается, onClose новый → эффект перезапускается и
+  // забирает фокус с инпута).
   useEffect(() => {
-    if (!isOpen) return;
-    previousActiveElement.current =
-      document.activeElement as HTMLElement | null;
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+    if (isOpen) {
+      previousActiveElement.current =
+        document.activeElement as HTMLElement | null;
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onCloseRef.current();
+      };
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    } else {
       previousActiveElement.current?.focus();
-    };
-  }, [isOpen, handleKeyDown]);
+      previousActiveElement.current = null;
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

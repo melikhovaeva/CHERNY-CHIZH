@@ -36,6 +36,23 @@ from user_management.serializers import (
 )
 
 
+def _to_snake_case(camel_str: str) -> str:
+    """Преобразует camelCase в snake_case."""
+    result = [camel_str[0].lower()] if camel_str else []
+    for c in camel_str[1:]:
+        result.append("_" + c.lower() if c.isupper() else c)
+    return "".join(result)
+
+
+def _keys_to_snake_case(data):
+    """Рекурсивно преобразует ключи словаря из camelCase в snake_case."""
+    if isinstance(data, dict):
+        return {_to_snake_case(k): _keys_to_snake_case(v) for k, v in data.items()}
+    if isinstance(data, list):
+        return [_keys_to_snake_case(item) for item in data]
+    return data
+
+
 def _set_jwt_cookies_for_user(response: Response, user: User) -> None:
   """
   Создаёт пару refresh/access токенов с привязкой к сессии и кладёт их в httpOnly-cookies.
@@ -83,11 +100,13 @@ class RegisterStep2View(APIView):
   permission_classes = (permissions.AllowAny,)
 
   def post(self, request):
-    serializer = RegisterStep2Serializer(data=request.data)
+    # Фронт присылает camelCase (firstName, lastName); сериализатор ожидает snake_case.
+    data = _keys_to_snake_case(dict(request.data))
+    serializer = RegisterStep2Serializer(data=data)
     serializer.is_valid(raise_exception=True)
     user = serializer.save()
     response = Response(
-      CurrentUserSerializer(user).data,
+      CurrentUserSerializer(user, context={"request": request}).data,
       status=status.HTTP_201_CREATED,
     )
     _set_jwt_cookies_for_user(response, user)
@@ -101,6 +120,16 @@ class ProfileView(generics.RetrieveUpdateDestroyAPIView):
 
   def get_object(self):
     return self.request.user
+
+  def update(self, request, *args, **kwargs):
+    partial = kwargs.pop("partial", False)
+    instance = self.get_object()
+    # Фронт присылает camelCase (firstName, lastName); сериализатор ожидает snake_case.
+    data = _keys_to_snake_case(dict(request.data))
+    serializer = self.get_serializer(instance, data=data, partial=partial)
+    serializer.is_valid(raise_exception=True)
+    self.perform_update(serializer)
+    return Response(serializer.data)
 
 
 @extend_schema(**MY_COURSES_VIEW_SCHEMA)
@@ -121,7 +150,9 @@ class ChangePasswordView(APIView):
   permission_classes = (permissions.IsAuthenticated,)
 
   def post(self, request):
-    serializer = ChangePasswordSerializer(data=request.data, context={"request": request})
+    # Фронт присылает camelCase (oldPassword, newPassword, newPassword2); сериализатор ожидает snake_case.
+    data = _keys_to_snake_case(dict(request.data))
+    serializer = ChangePasswordSerializer(data=data, context={"request": request})
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(status=status.HTTP_204_NO_CONTENT)
@@ -181,7 +212,10 @@ class CookieTokenObtainPairView(TokenObtainPairView):
     session_binding = tokens.get("session_binding")
     user: User = serializer.user
 
-    response = Response(CurrentUserSerializer(user).data, status=status.HTTP_200_OK)
+    response = Response(
+        CurrentUserSerializer(user, context={"request": request}).data,
+        status=status.HTTP_200_OK,
+    )
 
     if access:
       response.set_cookie(

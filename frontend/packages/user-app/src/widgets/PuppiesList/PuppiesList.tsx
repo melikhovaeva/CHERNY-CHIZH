@@ -27,6 +27,7 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   const hasMoreRef = useRef(false);
   const isFetchingRef = useRef(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const filterJustResetRef = useRef(false);
 
   const { data, isLoading, isFetching, isError } = useGetPuppiesByBreedQuery(
     { breedSlug: breedId || '', page, pageSize: PAGE_SIZE },
@@ -34,6 +35,7 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   );
 
   useEffect(() => {
+    filterJustResetRef.current = true;
     setPage(1);
     setItems([]);
   }, [breedId, filters]);
@@ -41,14 +43,19 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   useEffect(() => {
     if (!data?.results) return;
 
-    setItems((prev) => {
-      const existingIds = new Set(prev.map((p: DogByBreedListRead) => p.id));
-      const nextItems = data.results.filter(
-        (p: DogByBreedListRead) => !existingIds.has(p.id),
-      );
-      return [...prev, ...nextItems];
-    });
-  }, [data]);
+    if (filterJustResetRef.current || page === 1) {
+      filterJustResetRef.current = false;
+      setItems(data.results);
+    } else {
+      setItems((prev) => {
+        const existingIds = new Set(prev.map((p: DogByBreedListRead) => p.id));
+        const nextItems = data.results.filter(
+          (p: DogByBreedListRead) => !existingIds.has(p.id),
+        );
+        return [...prev, ...nextItems];
+      });
+    }
+  }, [data, page, breedId, filters]);
 
   const hasMore = useMemo(() => {
     if (!data) return false;
