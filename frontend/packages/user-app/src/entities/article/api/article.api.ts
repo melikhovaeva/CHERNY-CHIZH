@@ -1,11 +1,12 @@
-import { baseApi } from '@/shared/api/base-api';
-import { API_CONFIG } from '@/shared/config/api';
-import type {
-  Article,
-  ArticleListItem,
-  HomeLibraryResponse,
-  PaginatedResponse,
-} from '../model/types';
+import {
+  enhancedApi,
+  useV1ArticlesListQuery,
+  useV1ArticlesRetrieveQuery,
+  useV1ArticlesHomeLibraryRetrieveQuery,
+} from '@/shared/api/generated/articles.generated';
+import type { HomeLibraryResponse } from '../model/types';
+
+export const articleApi = enhancedApi;
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -17,61 +18,41 @@ export interface GetArticlesListQueryArgs {
   contentType?: string;
 }
 
-function buildArticlesListQuery(args?: GetArticlesListQueryArgs): string {
-  const params = new URLSearchParams();
-  const page = args?.page ?? 1;
-  if (page > 1) {
-    params.set('page', String(page));
-  }
-  const pageSize = args?.pageSize ?? DEFAULT_PAGE_SIZE;
-  if (pageSize > 0) {
-    params.set('page_size', String(pageSize));
-  }
-  if (args?.search?.trim()) {
-    params.set('search', args.search.trim());
-  }
-  const ct = args?.contentType?.trim().toLowerCase();
-  if (ct === 'articles' || ct === 'article') {
-    params.set('content_type', 'article');
-  }
-  const queryString = params.toString();
-  const base = API_CONFIG.ENDPOINTS.ARTICLES;
-  return queryString ? `${base}?${queryString}` : base;
+/** Wrapper: app uses slug string; generated hook expects { slug }. */
+export function useGetArticleBySlugQuery(slug: string, options?: Parameters<typeof useV1ArticlesRetrieveQuery>[1]) {
+  return useV1ArticlesRetrieveQuery({ slug }, options);
 }
 
-export const articleApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    getArticleBySlug: build.query<Article, string>({
-      query: (slug) => API_CONFIG.ENDPOINTS.ARTICLE_BY_SLUG(slug),
-      providesTags: (_result, _err, slug) => [
-        { type: API_CONFIG.TAG_TYPES.ARTICLES, id: slug },
-      ],
-    }),
-    getHomeLibrary: build.query<HomeLibraryResponse, void>({
-      query: () => API_CONFIG.ENDPOINTS.ARTICLES_HOME_LIBRARY,
-      providesTags: [{ type: API_CONFIG.TAG_TYPES.ARTICLES, id: 'HOME_LIBRARY' }],
-    }),
-    getArticlesList: build.query<
-      PaginatedResponse<ArticleListItem>,
-      GetArticlesListQueryArgs | void
-    >({
-      query: (args) => buildArticlesListQuery(args ?? {}),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.results.map(({ id }) => ({
-                type: API_CONFIG.TAG_TYPES.ARTICLES,
-                id: `list-${id}`,
-              })),
-              { type: API_CONFIG.TAG_TYPES.ARTICLES, id: 'LIST' },
-            ]
-          : [{ type: API_CONFIG.TAG_TYPES.ARTICLES, id: 'LIST' }],
-    }),
-  }),
-});
+/** Real API returns tags+groups; schema types it as ArticleRead. We type as HomeLibraryResponse for widgets. */
+export function useGetHomeLibraryQuery(
+  options?: Parameters<typeof useV1ArticlesHomeLibraryRetrieveQuery>[1]
+) {
+  const result = useV1ArticlesHomeLibraryRetrieveQuery(undefined, options);
+  return {
+    ...result,
+    data: result.data as unknown as HomeLibraryResponse | undefined,
+    isLoading: result.isLoading,
+    isFetching: result.isFetching,
+    isError: result.isError,
+    isSuccess: result.isSuccess,
+    isUninitialized: result.isUninitialized,
+    refetch: result.refetch,
+    currentData: result.currentData as unknown as HomeLibraryResponse | undefined,
+  };
+}
 
-export const {
-  useGetArticleBySlugQuery,
-  useGetHomeLibraryQuery,
-  useGetArticlesListQuery,
-} = articleApi;
+/** Wrapper: app uses page/pageSize; generated uses limit/offset. search/contentType not in schema yet. */
+export function useGetArticlesListQuery(
+  args?: GetArticlesListQueryArgs | void,
+  options?: Parameters<typeof useV1ArticlesListQuery>[1]
+) {
+  const page = args?.page ?? 1;
+  const pageSize = args?.pageSize ?? DEFAULT_PAGE_SIZE;
+  return useV1ArticlesListQuery(
+    {
+      limit: pageSize,
+      offset: (page - 1) * pageSize,
+    },
+    options
+  );
+}

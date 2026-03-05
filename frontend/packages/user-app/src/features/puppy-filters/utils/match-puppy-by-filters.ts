@@ -1,9 +1,9 @@
-import type { Puppy } from '@/entities/puppy/model/types';
+import type { DogByBreedListRead, Puppy } from '@/entities/puppy/model/types';
 import { FILTER_VALUE_ALL } from '../config/filter-constants';
 import type { PuppyFilters } from '../model/types';
 
 export function matchPuppyByFilters(
-  puppy: Puppy,
+  puppy: Puppy | DogByBreedListRead,
   filters: PuppyFilters,
 ): boolean {
   if (filters.sex && filters.sex.value !== FILTER_VALUE_ALL && puppy.sex.code !== filters.sex.value) {

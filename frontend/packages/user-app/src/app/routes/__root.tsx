@@ -17,7 +17,7 @@ function RootContent() {
 
   useEffect(() => {
     if (dictionariesIndex?.puppy) {
-      dictionaryApi.util.prefetch('getDictionaryGroup', 'puppy', {
+      dictionaryApi.util.prefetch('dictionariesRetrieve', { id: 'puppy', pk: 'puppy' }, {
         force: false,
       })
     }

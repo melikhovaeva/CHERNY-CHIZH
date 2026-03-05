@@ -13,11 +13,11 @@ export function UserImage({ size = 50, className }: UserImageProps) {
 
   if (!user) return null;
 
-  if (user.avatar_image) {
+  if (user.avatarImage) {
     return (
       <img
-        src={user.avatar_image}
-        alt={user.first_name || user.email}
+        src={user.avatarImage}
+        alt={user.firstName || user.email}
         className={cn([styles.container, className || ''])}
         style={{ width: size, height: size }}
       />

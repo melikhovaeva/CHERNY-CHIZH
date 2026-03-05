@@ -12,7 +12,7 @@ export const Route = createFileRoute('/dogs/$breedId/$dogId')({
     }
 
     const queryPromise = store.dispatch(
-      puppyApi.endpoints.getPuppy.initiate(id),
+      puppyApi.endpoints.v1DogsRetrieve.initiate({ id, pk: id }),
     )
 
     try {

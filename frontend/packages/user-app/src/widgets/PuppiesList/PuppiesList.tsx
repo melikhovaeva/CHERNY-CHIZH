@@ -1,4 +1,5 @@
 import {
+  type DogByBreedListRead,
   PuppyCard,
   PuppyCardSkeleton,
   useGetPuppiesByBreedQuery,
@@ -20,9 +21,7 @@ const SKELETON_COUNT = 6;
 
 export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState<
-    Array<Parameters<typeof matchPuppyByFilters>[0]>
-  >([]);
+  const [items, setItems] = useState<DogByBreedListRead[]>([]);
 
   const isLoadingMoreRef = useRef(false);
   const hasMoreRef = useRef(false);
@@ -43,9 +42,9 @@ export function PuppiesList({ breedId, filters, className }: PuppiesListProps) {
     if (!data?.results) return;
 
     setItems((prev) => {
-      const existingIds = new Set(prev.map((puppy) => puppy.id));
+      const existingIds = new Set(prev.map((p: DogByBreedListRead) => p.id));
       const nextItems = data.results.filter(
-        (puppy) => !existingIds.has(puppy.id),
+        (p: DogByBreedListRead) => !existingIds.has(p.id),
       );
       return [...prev, ...nextItems];
     });

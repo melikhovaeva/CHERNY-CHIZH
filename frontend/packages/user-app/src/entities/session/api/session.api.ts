@@ -1,95 +1,58 @@
-import { baseApi } from '@/shared/api/base-api';
-import { API_CONFIG } from '@/shared/config/api';
-import type {
-  LoginRequest,
-  LoginResponse,
-  RegisterStep1Request,
-  RegisterStep1Response,
-  RegisterStep2Request,
-  RegisterStep2Response,
-  User,
-} from './types';
+import {
+  enhancedApi,
+  useV1UsersAuthLoginCreateMutation,
+  useV1UsersAuthLogoutCreateMutation,
+  useV1UsersMeRetrieveQuery,
+  useV1UsersMePartialUpdateMutation,
+  useV1UsersMeChangePasswordCreateMutation,
+  useV1UsersRegisterStep1CreateMutation,
+  useV1UsersRegisterStep2CreateMutation,
+} from '@/shared/api/generated/users.generated';
+import type { PatchedCurrentUserRead } from '@/shared/api/generated/users.generated';
 
-export const sessionApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    registerStep1: build.mutation<RegisterStep1Response, RegisterStep1Request>({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.REGISTER_STEP1,
-        method: 'POST',
-        body,
-      }),
-    }),
-    registerStep2: build.mutation<RegisterStep2Response, RegisterStep2Request>({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.REGISTER_STEP2,
-        method: 'POST',
-        body: {
-          ...body,
-          phone: body.phone || undefined,
-          messenger: body.messenger || undefined,
-        },
-      }),
-      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-    login: build.mutation<LoginResponse, LoginRequest>({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.LOGIN,
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-    me: build.query<User, void>({
-      query: () => ({
-        url: API_CONFIG.ENDPOINTS.ME,
-        method: 'GET',
-      }),
-      providesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-    updateProfile: build.mutation<User, Partial<User>>({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.ME,
-        method: 'PATCH',
-        body: {
-          ...body,
-          phone: body.phone || undefined,
-          messenger: body.messenger || undefined,
-          last_name: body.last_name || undefined,
-        },
-      }),
-      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-    changePassword: build.mutation<
-      void,
-      { oldPassword: string; newPassword: string; newPassword2: string }
-    >({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.ME_CHANGE_PASSWORD,
-        method: 'POST',
-        body: {
-          old_password: body.oldPassword,
-          new_password: body.newPassword,
-          new_password2: body.newPassword2,
-        },
-      }),
-      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-    logout: build.mutation<void, void>({
-      query: () => ({
-        url: API_CONFIG.ENDPOINTS.LOGOUT,
-        method: 'POST',
-      }),
-      invalidatesTags: [API_CONFIG.TAG_TYPES.SESSION],
-    }),
-  }),
-});
+export const sessionApi = enhancedApi;
 
-export const {
-  useRegisterStep1Mutation,
-  useRegisterStep2Mutation,
-  useLoginMutation,
-  useMeQuery,
-  useUpdateProfileMutation,
-  useChangePasswordMutation,
-  useLogoutMutation,
-} = sessionApi;
+export const useLoginMutation = useV1UsersAuthLoginCreateMutation;
+export const useLogoutMutation = useV1UsersAuthLogoutCreateMutation;
+export const useMeQuery = useV1UsersMeRetrieveQuery;
+export const useRegisterStep1Mutation = useV1UsersRegisterStep1CreateMutation;
+export const useRegisterStep2Mutation = useV1UsersRegisterStep2CreateMutation;
+
+/** App profile payload (snake_case); maps to patchedCurrentUser (camelCase) for API. */
+export type UpdateProfilePayload = Partial<{
+  email: string;
+  first_name: string;
+  last_name: string | null;
+  phone: string | null;
+  messenger: string | null;
+}>;
+
+function toPatchedCurrentUser(p: UpdateProfilePayload): PatchedCurrentUserRead {
+  const out: PatchedCurrentUserRead = {};
+  if (p.email !== undefined) out.email = p.email;
+  if (p.first_name !== undefined) out.firstName = p.first_name;
+  if (p.last_name !== undefined) out.lastName = p.last_name;
+  if (p.phone !== undefined) out.phone = p.phone;
+  if (p.messenger !== undefined) out.messenger = p.messenger;
+  return out;
+}
+
+export function useUpdateProfileMutation() {
+  const [mutate, rest] = useV1UsersMePartialUpdateMutation();
+  const updateProfile = (payload: UpdateProfilePayload) =>
+    mutate({ patchedCurrentUser: toPatchedCurrentUser(payload) });
+  return [updateProfile, rest] as const;
+}
+
+export type ChangePasswordPayload = {
+  oldPassword: string;
+  newPassword: string;
+  newPassword2: string;
+};
+
+export function useChangePasswordMutation() {
+  const [mutate, rest] = useV1UsersMeChangePasswordCreateMutation();
+  const changePassword = (payload: ChangePasswordPayload) =>
+    mutate({ changePassword: payload });
+  return [changePassword, rest] as const;
+}

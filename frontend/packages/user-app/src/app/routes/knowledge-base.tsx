@@ -6,9 +6,9 @@ import { articleApi } from '@/entities/article/api/article.api'
 export const Route = createFileRoute('/knowledge-base')({
   loader: async () => {
     const articlesPromise = store.dispatch(
-      articleApi.endpoints.getArticlesList.initiate({
-        page: 1,
-        pageSize: 12,
+      articleApi.endpoints.v1ArticlesList.initiate({
+        limit: 12,
+        offset: 0,
       }),
     )
 

@@ -1,7 +1,7 @@
 import { selectSelectedBreedSlug, setSelectedBreed } from '@/features/selected-breed';
 import { useAppDispatch, useAppSelector } from '@/shared/lib/store';
 import { useGetBreedsQuery } from '@/entities/breed/api/breed.api';
-import { getFirstPhotoUrl } from '@/entities/puppy';
+import { type DogByBreedListRead, getFirstPhotoUrl } from '@/entities/puppy';
 import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';
 import { cn } from '@/shared/lib/utils';
 import { Button, Card, Skeleton } from '@/shared/ui/components';
@@ -97,7 +97,7 @@ export function PuppiesSection() {
           </div>
         ) : (
           puppies.length > 0 && (
-            <FilterableGallery
+            <FilterableGallery<DogByBreedListRead>
               tabs={breedTabs}
               items={puppies.slice(0, 3)}
               filterBy="breed"

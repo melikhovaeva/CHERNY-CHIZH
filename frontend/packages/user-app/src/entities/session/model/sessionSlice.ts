@@ -46,28 +46,28 @@ export const sessionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addMatcher(sessionApi.endpoints.login.matchPending, (state) => {
+      .addMatcher(sessionApi.endpoints.v1UsersAuthLoginCreate.matchPending, (state) => {
         state.status = SessionStatusEnum.LOADING;
         state.error = null;
       })
-      .addMatcher(sessionApi.endpoints.login.matchFulfilled, (state, action) => {
+      .addMatcher(sessionApi.endpoints.v1UsersAuthLoginCreate.matchFulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
         state.status = SessionStatusEnum.SUCCEEDED;
         state.error = null;
       })
-      .addMatcher(sessionApi.endpoints.login.matchRejected, (state, action) => {
+      .addMatcher(sessionApi.endpoints.v1UsersAuthLoginCreate.matchRejected, (state, action) => {
         state.status = SessionStatusEnum.FAILED;
         const errorData = (action.payload as { data?: unknown } | undefined)
           ?.data as { detail?: string } | undefined;
         state.error = errorData?.detail ?? 'Не удалось войти';
       })
-      .addMatcher(sessionApi.endpoints.registerStep2.matchPending, (state) => {
+      .addMatcher(sessionApi.endpoints.v1UsersRegisterStep2Create.matchPending, (state) => {
         state.status = SessionStatusEnum.LOADING;
         state.error = null;
       })
       .addMatcher(
-        sessionApi.endpoints.registerStep2.matchFulfilled,
+        sessionApi.endpoints.v1UsersRegisterStep2Create.matchFulfilled,
         (state, action) => {
           state.user = action.payload;
           state.isAuthenticated = true;
@@ -76,7 +76,7 @@ export const sessionSlice = createSlice({
         },
       )
       .addMatcher(
-        sessionApi.endpoints.registerStep2.matchRejected,
+        sessionApi.endpoints.v1UsersRegisterStep2Create.matchRejected,
         (state, action) => {
           state.status = SessionStatusEnum.FAILED;
           const errorData = (action.payload as { data?: unknown } | undefined)
@@ -84,24 +84,24 @@ export const sessionSlice = createSlice({
           state.error = errorData?.detail ?? 'Не удалось завершить регистрацию';
         },
       )
-      .addMatcher(sessionApi.endpoints.me.matchPending, (state) => {
+      .addMatcher(sessionApi.endpoints.v1UsersMeRetrieve.matchPending, (state) => {
         if (state.status === SessionStatusEnum.IDLE) {
           state.status = SessionStatusEnum.LOADING;
         }
         state.error = null;
       })
-      .addMatcher(sessionApi.endpoints.me.matchFulfilled, (state, action) => {
+      .addMatcher(sessionApi.endpoints.v1UsersMeRetrieve.matchFulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
         state.status = SessionStatusEnum.SUCCEEDED;
         state.error = null;
       })
-      .addMatcher(sessionApi.endpoints.me.matchRejected, (state) => {
+      .addMatcher(sessionApi.endpoints.v1UsersMeRetrieve.matchRejected, (state) => {
         state.user = null;
         state.isAuthenticated = false;
         state.status = SessionStatusEnum.FAILED;
       })
-      .addMatcher(sessionApi.endpoints.logout.matchFulfilled, (state) => {
+      .addMatcher(sessionApi.endpoints.v1UsersAuthLogoutCreate.matchFulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
         state.status = SessionStatusEnum.IDLE;

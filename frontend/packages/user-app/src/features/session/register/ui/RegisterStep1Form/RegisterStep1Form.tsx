@@ -41,11 +41,13 @@ export const RegisterStep1Form = ({ onSuccess }: RegisterStep1FormProps) => {
   const onSubmit = async (data: RegisterStep1FormFields) => {
     try {
       const result = await registerStep1({
-        email: data.email,
-        password: data.password,
-        password2: data.confirmPassword,
+        registerStep1: {
+          email: data.email,
+          password: data.password,
+          password2: data.confirmPassword,
+        },
       }).unwrap();
-      onSuccess(result.email, data.password);
+      onSuccess((result as { email: string }).email, data.password);
     } catch (err) {
       const message =
         getFirstApiErrorMessage(err, [...STEP1_ERROR_FIELDS]) ??

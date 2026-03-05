@@ -28,7 +28,7 @@ export function RelatedPuppies({
 
   const related = allPuppies
     .filter(
-      (p) =>
+      (p: Puppy) =>
         p.breed.slug === currentPuppy.breed.slug &&
         p.id !== currentPuppy.id &&
         p.status.code === STATUS_AVAILABLE_CODE,
@@ -41,7 +41,7 @@ export function RelatedPuppies({
     <section className={cn([styles.root, className || ''])}>
       <h2 className={styles.title}>ДОСТУПНЫЕ ЩЕНКИ</h2>
       <div className={styles.list}>
-        {related.map((puppy) => (
+        {related.map((puppy: Puppy) => (
           <Link
             key={puppy.id}
             to={detailPath}

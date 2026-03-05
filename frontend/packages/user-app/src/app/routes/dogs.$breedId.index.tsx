@@ -8,12 +8,14 @@ import { dogApi } from '@/entities/puppy/api/dog.api'
 export const Route = createFileRoute('/dogs/$breedId/')({
   loader: async ({ params: { breedId } }) => {
     const breedsPromise = store.dispatch(
-      breedApi.endpoints.getBreeds.initiate(),
+      breedApi.endpoints.v1BreedsList.initiate(),
     )
     const dogsPromise = store.dispatch(
-      dogApi.endpoints.getDogsByBreed.initiate({
+      dogApi.endpoints.v1BreedsDogsList.initiate({
         breedSlug: breedId,
-        page: 1,
+        ageGroup: 'adult',
+        limit: 20,
+        offset: 0,
       }),
     )
 

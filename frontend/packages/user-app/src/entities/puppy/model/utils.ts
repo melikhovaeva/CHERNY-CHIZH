@@ -8,6 +8,8 @@ export const formatPuppyDate = (date: Date | string): string => {
   return `${day}.${month}.${year}`;
 };
 
-export function getFirstPhotoUrl(puppy: Puppy): string | undefined {
+export function getFirstPhotoUrl(
+  puppy: Puppy | { photos?: Array<{ url: string }> },
+): string | undefined {
   return puppy.photos?.[0]?.url;
 }
