@@ -1,0 +1,237 @@
+.card {
+  display: flex;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background-color: $filled-section-primary-bg-color;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    opacity: 0.98;
+  }
+
+  &:active {
+    transform: scale(0.995);
+  }
+}
+
+.cardHorizontal {
+  flex-direction: column;
+  min-height: 0;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+    min-height: 200px;
+  }
+}
+
+.cardVertical {
+  flex-direction: column;
+  height: 100%;
+}
+
+.imageWrap {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.imageWrapHorizontal {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-width: 0;
+
+  @media (min-width: 640px) {
+    width: 40%;
+    min-width: 200px;
+    max-width: 480px;
+    aspect-ratio: auto;
+  }
+
+  @media (min-width: 1024px) {
+    min-width: 280px;
+  }
+}
+
+.imageWrapVertical {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.difficultyOverlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+
+  @media (min-width: 640px) {
+    bottom: 12px;
+    right: 12px;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background-color: $card-dark-bg-color;
+  color: $text-inverted-color;
+}
+
+.panelHorizontal {
+  padding: 16px 20px;
+  justify-content: space-between;
+
+  @media (min-width: 640px) {
+    padding: 20px 24px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 24px 28px;
+  }
+}
+
+.panelVertical {
+  padding: 20px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: $text-inverted-color;
+
+  @media (min-width: 640px) {
+    font-size: 20px;
+  }
+}
+
+.description {
+  margin: 0 0 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  color: $text-inverted-color;
+  opacity: 0.9;
+
+  @media (min-width: 640px) {
+    font-size: 14px;
+  }
+}
+
+.descriptionClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.descriptionClamp2 {
+  line-clamp: 2;
+}
+
+.descriptionClamp4 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+
+  @media (min-width: 640px) {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.date {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: $text-inverted-color;
+  opacity: 0.85;
+}
+
+.status {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #7eb8a0;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background-color: $accent-primary-color;
+  color: $text-inverted-color;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  @media (min-width: 640px) {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  &:hover {
+    background-color: $accent-primary-hover-color;
+  }
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: $text-inverted-color;
+}
+
+.tagGreen {
+  background-color: rgba(126, 184, 160, 0.35);
+  color: #272727;
+}
+
+.tagPurple {
+  background-color: rgba(160, 140, 180, 0.4);
+  color: #272727;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  background-color: $background-secondary-color;
+
+  @media (min-width: 640px) {
+    min-height: 200px;
+  }
+}

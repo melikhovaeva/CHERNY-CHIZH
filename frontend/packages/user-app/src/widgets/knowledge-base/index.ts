@@ -1,8 +1,10 @@
 export { ArticleCard } from './ArticleCard';
+export { CourseCard } from './CourseCard';
 export {
   KnowledgeBaseFilters,
   KNOWLEDGE_BASE_CATEGORY_ALL,
   KNOWLEDGE_BASE_CATEGORY_ARTICLES,
+  KNOWLEDGE_BASE_CATEGORY_COURSES,
   KNOWLEDGE_BASE_TABS,
 } from './KnowledgeBaseFilters';
 export { KnowledgeBaseList } from './KnowledgeBaseList';

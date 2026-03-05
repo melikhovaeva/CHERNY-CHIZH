@@ -2,13 +2,24 @@ import {
   useGetArticlesListQuery,
   type ArticleListItem,
 } from '@/entities/article';
+import type { CourseRead } from '@/entities/course';
+import { useGetCoursesQuery } from '@/entities/course';
 import { Skeleton } from '@/shared/ui/components';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArticleCard } from '../ArticleCard';
+import { CourseCard } from '../CourseCard';
+import {
+  KNOWLEDGE_BASE_CATEGORY_ARTICLES,
+  KNOWLEDGE_BASE_CATEGORY_COURSES,
+} from '../KnowledgeBaseFilters';
 import styles from './KnowledgeBaseList.module.scss';
 
 const PAGE_SIZE = 12;
 const SKELETON_COUNT = 6;
+
+type KnowledgeBaseItem =
+  | { type: 'course'; data: CourseRead }
+  | { type: 'article'; data: ArticleListItem };
 
 interface KnowledgeBaseListProps {
   search?: string;
@@ -22,7 +33,7 @@ export function KnowledgeBaseList({
   className,
 }: KnowledgeBaseListProps) {
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState<ArticleListItem[]>([]);
+  const [articleItems, setArticleItems] = useState<ArticleListItem[]>([]);
 
   const isLoadingMoreRef = useRef(false);
   const hasMoreRef = useRef(false);
@@ -30,50 +41,68 @@ export function KnowledgeBaseList({
   const observerRef = useRef<IntersectionObserver | null>(null);
   const filterJustResetRef = useRef(false);
 
-  const { data, isLoading, isFetching, isError } = useGetArticlesListQuery({
-    page,
-    pageSize: PAGE_SIZE,
-    search: search.trim() || undefined,
-    contentType: category,
+  const isArticlesOnly = category === KNOWLEDGE_BASE_CATEGORY_ARTICLES;
+  const isCoursesOnly = category === KNOWLEDGE_BASE_CATEGORY_COURSES;
+  const isAll = !category || category === 'all';
+
+  const { data: articlesData, isLoading: articlesLoading, isFetching: articlesFetching } = useGetArticlesListQuery(
+    isCoursesOnly
+      ? undefined
+      : {
+          page,
+          pageSize: PAGE_SIZE,
+          search: search.trim() || undefined,
+        },
+    { skip: isCoursesOnly },
+  );
+
+  const { data: coursesData, isLoading: coursesLoading } = useGetCoursesQuery(undefined, {
+    skip: isArticlesOnly,
   });
+
+  const courses = coursesData ?? [];
+  const articlesResponse = articlesData;
 
   useEffect(() => {
     filterJustResetRef.current = true;
     setPage(1);
-    setItems([]);
+    setArticleItems([]);
   }, [search, category]);
 
-  // При смене search/category список обнуляется выше; здесь снова заполняем из data.
-  // В deps — search и category, т.к. при смене категории page и data могут не измениться (page уже 1, тот же кэш).
   useEffect(() => {
-    if (!data?.results) return;
+    if (!articlesResponse?.results) return;
 
     if (filterJustResetRef.current || page === 1) {
       filterJustResetRef.current = false;
-      setItems(data.results);
+      setArticleItems(articlesResponse.results);
     } else {
-      setItems((prev) => {
+      setArticleItems((prev) => {
         const existingIds = new Set(prev.map((a: ArticleListItem) => a.id));
-        const nextItems = data.results.filter((a: ArticleListItem) => !existingIds.has(a.id));
+        const nextItems = articlesResponse.results.filter(
+          (a: ArticleListItem) => !existingIds.has(a.id),
+        );
         return [...prev, ...nextItems];
       });
     }
-  }, [data, page, search, category]);
+  }, [articlesResponse, page, search, category]);
 
   const hasMore = useMemo(() => {
-    if (!data) return false;
-    if (data.next) return true;
-    return data.results.length > 0 && data.count > items.length;
-  }, [data, items.length]);
+    if (!articlesResponse) return false;
+    if (articlesResponse.next) return true;
+    return (
+      articlesResponse.results.length > 0 &&
+      articlesResponse.count > articleItems.length
+    );
+  }, [articlesResponse, articleItems.length]);
 
   hasMoreRef.current = hasMore;
-  isFetchingRef.current = isFetching;
+  isFetchingRef.current = articlesFetching;
 
   useEffect(() => {
-    if (!isFetching) {
+    if (!articlesFetching) {
       isLoadingMoreRef.current = false;
     }
-  }, [isFetching]);
+  }, [articlesFetching]);
 
   const sentinelRef = useCallback((node: HTMLDivElement | null) => {
     if (observerRef.current) {
@@ -104,16 +133,72 @@ export function KnowledgeBaseList({
     return () => observerRef.current?.disconnect();
   }, []);
 
-  // For now only articles; courses tab could show empty or same list later
-  const showEmpty = !isLoading && !isFetching && (isError || items.length === 0);
+  const mergedItems: KnowledgeBaseItem[] = useMemo(() => {
+    if (isCoursesOnly) {
+      return courses.map((c) => ({ type: 'course' as const, data: c }));
+    }
+    if (isArticlesOnly) {
+      return articleItems.map((a) => ({ type: 'article' as const, data: a }));
+    }
+    const courseItems: KnowledgeBaseItem[] = courses.map((c) => ({
+      type: 'course' as const,
+      data: c,
+    }));
+    const articleItemsMapped: KnowledgeBaseItem[] = articleItems.map((a) => ({
+      type: 'article' as const,
+      data: a,
+    }));
+    return [...courseItems, ...articleItemsMapped];
+  }, [isCoursesOnly, isArticlesOnly, courses, articleItems]);
 
-  if (isLoading && items.length === 0) {
+  const isLoading =
+    (isAll && (articlesLoading || coursesLoading)) ||
+    (isArticlesOnly && articlesLoading) ||
+    (isCoursesOnly && coursesLoading);
+  const isFetching = articlesFetching;
+  const showEmpty = !isLoading && !isFetching && mergedItems.length === 0;
+
+  if (showEmpty) {
+    return (
+      <div className={className}>
+        <p className={styles.empty}>Ничего не найдено</p>
+      </div>
+    );
+  }
+
+  if (isLoading && mergedItems.length === 0) {
+    if (isCoursesOnly) {
+      return (
+        <div className={className}>
+          <div className={styles.grid}>
+            {[1, 2].map((i) => (
+              <div key={i} className={styles.skeletonCourseRow}>
+                <Skeleton
+                  width="40%"
+                  height={200}
+                  className={styles.skeletonCourseImage}
+                />
+                <div className={styles.skeletonCoursePanel}>
+                  <Skeleton width="70%" height={24} />
+                  <Skeleton width="100%" height={16} />
+                  <Skeleton width="90%" height={16} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
     return (
       <div className={className}>
         <div className={styles.grid}>
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             <div key={i} className={styles.skeletonCard}>
-              <Skeleton width="100%" height={180} className={styles.skeletonImage} />
+              <Skeleton
+                width="100%"
+                height={180}
+                className={styles.skeletonImage}
+              />
               <div className={styles.skeletonContent}>
                 <Skeleton width="90%" height={22} />
                 <Skeleton width="100%" height={16} />
@@ -126,30 +211,34 @@ export function KnowledgeBaseList({
     );
   }
 
-  if (showEmpty) {
-    return (
-      <div className={className}>
-        <p className={styles.empty}>Ничего не найдено</p>
-      </div>
-    );
-  }
-
   return (
     <div className={className}>
       <div className={styles.grid}>
-        {items.map((article) => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-        {isFetching && (
+        {mergedItems.map((item) =>
+          item.type === 'course' ? (
+            <div key={`course-${item.data.id}`} className={styles.courseCardFullRow}>
+              <CourseCard course={item.data} variant="horizontal" />
+            </div>
+          ) : (
+            <ArticleCard key={`article-${item.data.id}`} article={item.data} />
+          ),
+        )}
+        {(isArticlesOnly || isAll) && isFetching && (
           <div className={styles.skeletonCard}>
-            <Skeleton width="100%" height={180} className={styles.skeletonImage} />
+            <Skeleton
+              width="100%"
+              height={180}
+              className={styles.skeletonImage}
+            />
             <div className={styles.skeletonContent}>
               <Skeleton width="90%" height={22} />
               <Skeleton width="100%" height={16} />
             </div>
           </div>
         )}
-        {hasMore && <div ref={sentinelRef} className={styles.sentinel} />}
+        {(isArticlesOnly || isAll) && hasMore && (
+          <div ref={sentinelRef} className={styles.sentinel} />
+        )}
       </div>
     </div>
   );

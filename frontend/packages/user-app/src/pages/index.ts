@@ -1,6 +1,7 @@
 export { AboutPage } from './AboutPage/AboutPage'
 export { ArticlePage } from './ArticlePage/ArticlePage'
 export { ContactsPage } from './ContactsPage/ContactsPage'
+export { CoursePage } from './CoursePage'
 export { DogDetailsPage } from './DogDetailsPage'
 export { DogsPage } from './DogsPage/DogsPage'
 export { HomePage } from './HomePage'

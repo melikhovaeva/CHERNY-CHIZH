@@ -8,11 +8,13 @@ export { Footer } from './Footer';
 export { Header } from './Header';
 export {
   ArticleCard,
+  CourseCard,
   KnowledgeBaseFilters,
   KnowledgeBaseList,
   KnowledgeBaseSearch,
   KNOWLEDGE_BASE_CATEGORY_ALL,
   KNOWLEDGE_BASE_CATEGORY_ARTICLES,
+  KNOWLEDGE_BASE_CATEGORY_COURSES,
   KNOWLEDGE_BASE_TABS,
 } from './knowledge-base';
 export type { KnowledgeBaseCategory } from './knowledge-base';

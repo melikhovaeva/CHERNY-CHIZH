@@ -1,0 +1,43 @@
+.root {
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.title {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.description {
+  margin-bottom: 1.5rem;
+  color: var(--color-text-secondary, #666);
+  line-height: 1.6;
+}
+
+.skeletonTitle,
+.skeletonContent {
+  background: var(--color-skeleton, #e0e0e0);
+  border-radius: 4px;
+}
+
+.skeletonTitle {
+  height: 2.5rem;
+  width: 70%;
+  margin-bottom: 1.5rem;
+}
+
+.skeletonContent {
+  height: 300px;
+}
+
+.error {
+  color: var(--color-error, #c00);
+  text-align: center;
+  padding: 2rem;
+}
