@@ -22,18 +22,18 @@ export function usePuppyFilterOptions() {
       };
     }
     return {
-      sex: puppyDicts?.dictionaries[DICTIONARY_KEYS.SEX].items.map((item) => ({
+      sex: puppyDicts?.dictionaries[DICTIONARY_KEYS.SEX].items.map((item: { code: string; label: string }) => ({
         value: item.code,
         label: item.label,
       })),
       potential: puppyDicts?.dictionaries[DICTIONARY_KEYS.POTENTIAL].items.map(
-        (item) => ({
+        (item: { code: string; label: string }) => ({
           value: item.code,
           label: item.label,
         }),
       ),
       status: puppyDicts?.dictionaries[DICTIONARY_KEYS.STATUS].items.map(
-        (item) => ({
+        (item: { code: string; label: string }) => ({
           value: item.code,
           label: item.label,
         }),

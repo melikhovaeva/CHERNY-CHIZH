@@ -105,7 +105,7 @@ export function KnowledgeBaseSection() {
               className={styles.cardLink}
             >
               <Card
-                imgUrl={getImageUrl(item.imagePreview) ?? ''}
+                imgUrl={getImageUrl(item.imagePreview ?? null) ?? ''}
                 title={item.title}
               />
             </Link>

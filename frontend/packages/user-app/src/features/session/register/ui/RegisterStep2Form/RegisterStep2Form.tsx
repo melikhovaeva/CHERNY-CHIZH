@@ -45,13 +45,15 @@ export const RegisterStep2Form = ({
   const onSubmit = async (data: RegisterStep2FormFields) => {
     try {
       await registerStep2({
-        email,
-        password,
-        password2: password,
-        first_name: data.first_name,
-        last_name: data.last_name?.trim() || undefined,
-        phone: data.phone?.trim() || undefined,
-        messenger: data.messenger?.trim() || undefined,
+        registerStep2: {
+          email,
+          password,
+          password2: password,
+          firstName: data.first_name,
+          lastName: data.last_name?.trim() || undefined,
+          phone: data.phone?.trim() || undefined,
+          messenger: data.messenger?.trim() || undefined,
+        },
       }).unwrap();
       addSuccess('Регистрация завершена');
       onSuccess?.();

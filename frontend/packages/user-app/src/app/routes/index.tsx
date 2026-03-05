@@ -7,10 +7,10 @@ import { articleApi } from '@/entities/article/api/article.api'
 export const Route = createFileRoute('/')({
   loader: async () => {
     const breedsPromise = store.dispatch(
-      breedApi.endpoints.getBreeds.initiate(),
+      breedApi.endpoints.v1BreedsList.initiate(),
     )
     const homeLibraryPromise = store.dispatch(
-      articleApi.endpoints.getHomeLibrary.initiate(),
+      articleApi.endpoints.v1ArticlesHomeLibraryRetrieve.initiate(),
     )
 
     try {

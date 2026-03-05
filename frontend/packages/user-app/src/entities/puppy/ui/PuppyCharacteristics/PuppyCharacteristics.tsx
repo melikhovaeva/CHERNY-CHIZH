@@ -1,10 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import type { Puppy } from '../../model/types';
+import type { DogByBreedListRead, Puppy } from '../../model/types';
 import { formatPuppyDate } from '../../model/utils';
 import styles from './PuppyCharacteristics.module.scss';
 
 interface PuppyCharacteristicsProps {
-  puppy: Puppy;
+  puppy: Puppy | DogByBreedListRead;
   className?: string;
 }
 
@@ -12,11 +12,13 @@ export const PuppyCharacteristics = ({
   puppy,
   className,
 }: PuppyCharacteristicsProps) => {
-  const parentsExists = puppy.parents && Object.keys(puppy.parents).length > 0;
+  const parents =
+    'parents' in puppy ? (puppy as Puppy).parents : undefined;
+  const parentsExists = parents && Object.keys(parents).length > 0;
   const documentsExists = puppy.documents && puppy.documents?.length > 0;
 
-  const puppyMother = puppy.parents?.mother;
-  const puppyFather = puppy.parents?.father;
+  const puppyMother = parents?.mother;
+  const puppyFather = parents?.father;
 
   return (
     <dl className={[styles.list, className].filter(Boolean).join(' ')}>

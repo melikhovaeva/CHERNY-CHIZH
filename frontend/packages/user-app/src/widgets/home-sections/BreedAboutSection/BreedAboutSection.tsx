@@ -1,4 +1,4 @@
-import type { Breed, BreedDescription } from '@/entities/breed/model/types';
+import type { Breed, BreedDescription, BreedDescriptionBlock } from '@/entities/breed/model/types';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { cn } from '@/shared/lib/utils';
 import { Button, Placeholder, Skeleton } from '@/shared/ui/components';
@@ -132,14 +132,17 @@ export function BreedAboutSection({
                     title={CARD_LABELS[BreedAboutBlockKey.APPEARANCE]}
                     text={activeDescription.appearance}
                   />
-                  {activeFeatures.map(([key, value]) => (
-                    <FeatureCard
-                      key={key}
-                      title={CARD_LABELS[key as BreedAboutBlockKey]}
-                      text={value.text}
-                      rating={value.rating}
-                    />
-                  ))}
+                  {activeFeatures.map(([key, value]) => {
+                    const block = value as BreedDescriptionBlock;
+                    return (
+                      <FeatureCard
+                        key={key}
+                        title={CARD_LABELS[key as BreedAboutBlockKey]}
+                        text={block.text}
+                        rating={block.rating}
+                      />
+                    );
+                  })}
                 </>
               )
             )}

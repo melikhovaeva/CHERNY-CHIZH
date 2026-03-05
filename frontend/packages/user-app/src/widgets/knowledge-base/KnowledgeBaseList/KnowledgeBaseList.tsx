@@ -45,8 +45,8 @@ export function KnowledgeBaseList({
     if (!data?.results) return;
 
     setItems((prev) => {
-      const existingIds = new Set(prev.map((a) => a.id));
-      const nextItems = data.results.filter((a) => !existingIds.has(a.id));
+      const existingIds = new Set(prev.map((a: ArticleListItem) => a.id));
+      const nextItems = data.results.filter((a: ArticleListItem) => !existingIds.has(a.id));
       return [...prev, ...nextItems];
     });
   }, [data]);

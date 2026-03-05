@@ -1,6 +1,11 @@
-import { baseApi } from '@/shared/api/base-api';
-import { API_CONFIG } from '@/shared/config/api';
-import type { PaginatedResponse, Puppy } from '../model/types';
+import {
+  enhancedApi,
+  useV1DogsListQuery,
+  useV1DogsRetrieveQuery,
+  useV1BreedsDogsListQuery,
+} from '@/shared/api/generated/dogs.generated';
+
+export const puppyApi = enhancedApi;
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -17,73 +22,43 @@ export interface GetPuppiesByBreedQueryArgs {
   pageSize?: number;
 }
 
-const buildPaginationQuery = (base: string, args?: GetPuppiesQueryArgs) => {
-  const params = new URLSearchParams();
-  params.set('age_group', 'puppy');
-
-  if (args?.skip != null) {
-    params.set('skip', String(args.skip));
-  }
-
+function toLimitOffset(args?: GetPuppiesQueryArgs | GetPuppiesByBreedQueryArgs) {
   const page = args?.page ?? 1;
-  if (page > 1) {
-    params.set('page', String(page));
-  }
-
   const pageSize = args?.pageSize ?? DEFAULT_PAGE_SIZE;
-  if (pageSize > 0) {
-    params.set('page_size', String(pageSize));
-  }
+  return {
+    limit: pageSize,
+    offset: (page - 1) * pageSize + (args?.skip ?? 0),
+  };
+}
 
-  const queryString = params.toString();
-  return `${base}?${queryString}`;
-};
+/** Wrapper: app uses page/pageSize; generated uses limit/offset. */
+export function useGetPuppiesQuery(
+  args?: GetPuppiesQueryArgs | void,
+  options?: Parameters<typeof useV1DogsListQuery>[1]
+) {
+  const { limit, offset } = toLimitOffset(args ?? {});
+  return useV1DogsListQuery(
+    { ageGroup: 'puppy', limit, offset },
+    options
+  );
+}
 
-export const puppyApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    getPuppies: build.query<PaginatedResponse<Puppy>, GetPuppiesQueryArgs | void>({
-      query: (args) =>
-        buildPaginationQuery(API_CONFIG.ENDPOINTS.DOGS, args ?? { page: 1 }),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.results.map(({ id }) => ({
-                type: API_CONFIG.TAG_TYPES.PUPPIES,
-                id,
-              })),
-              { type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' },
-            ]
-          : [{ type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' }],
-    }),
-    getPuppy: build.query<Puppy, number>({
-      query: (id) =>
-        `${API_CONFIG.ENDPOINTS.DOGS}${id}/`,
-      providesTags: (_result, _err, id) => [
-        { type: API_CONFIG.TAG_TYPES.PUPPIES, id },
-      ],
-    }),
-    getPuppiesByBreed: build.query<
-      PaginatedResponse<Puppy>,
-      GetPuppiesByBreedQueryArgs
-    >({
-      query: ({ breedSlug, ...args }) =>
-        buildPaginationQuery(API_CONFIG.ENDPOINTS.DOGS_BY_BREED(breedSlug), args),
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.results.map(({ id }) => ({
-                type: API_CONFIG.TAG_TYPES.PUPPIES,
-                id,
-              })),
-              { type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' },
-            ]
-          : [{ type: API_CONFIG.TAG_TYPES.PUPPIES, id: 'LIST' }],
-    }),
-  }),
-});
+/** Wrapper: app passes id; generated expects { id, pk }. */
+export function useGetPuppyQuery(
+  id: number,
+  options?: Parameters<typeof useV1DogsRetrieveQuery>[1]
+) {
+  return useV1DogsRetrieveQuery({ id, pk: id }, options);
+}
 
-export const {
-  useGetPuppiesQuery,
-  useGetPuppyQuery,
-  useGetPuppiesByBreedQuery,
-} = puppyApi;
+/** Wrapper: app uses page/pageSize; generated uses limit/offset. */
+export function useGetPuppiesByBreedQuery(
+  args: GetPuppiesByBreedQueryArgs,
+  options?: Parameters<typeof useV1BreedsDogsListQuery>[1]
+) {
+  const { limit, offset } = toLimitOffset(args);
+  return useV1BreedsDogsListQuery(
+    { breedSlug: args.breedSlug, ageGroup: 'puppy', limit, offset },
+    options
+  );
+}

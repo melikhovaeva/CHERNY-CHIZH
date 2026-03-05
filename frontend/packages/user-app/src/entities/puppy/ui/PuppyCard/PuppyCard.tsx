@@ -3,13 +3,13 @@ import { useAppDispatch } from '@/shared/lib/store';
 import { cn } from '@/shared/lib/utils';
 import { Button, Placeholder } from '@/shared/ui/components';
 import { useNavigate } from '@tanstack/react-router';
-import type { Puppy } from '../../model/types';
+import type { DogByBreedListRead, Puppy } from '../../model/types';
 import { getFirstPhotoUrl } from '../../model/utils';
 import { PuppyCharacteristics } from '../PuppyCharacteristics';
 import styles from './PuppyCard.module.scss';
 
 interface PuppyCardProps {
-  puppy: Puppy;
+  puppy: Puppy | DogByBreedListRead;
   className?: string;
   detailed?: boolean;
   showBookingButton?: boolean;
@@ -60,7 +60,7 @@ export const PuppyCard = ({
           {!detailed ? (
             <div>
               <h4 className={styles.card__title}>{puppy.name}</h4>
-              {puppy.internationalName && (
+              {'internationalName' in puppy && puppy.internationalName && (
                 <p className={styles.card__subtitle}>
                   {puppy.internationalName}
                 </p>

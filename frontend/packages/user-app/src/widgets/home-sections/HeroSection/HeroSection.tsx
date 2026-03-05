@@ -12,7 +12,7 @@ export function HeroSection() {
   });
 
   const puppiesWithPhotos = (data?.results ?? []).filter(
-    (puppy) => puppy.photos && puppy.photos.length > 0,
+    (puppy: Puppy) => puppy.photos && puppy.photos.length > 0,
   );
 
   const getRandomPuppies = (): Puppy[] => {

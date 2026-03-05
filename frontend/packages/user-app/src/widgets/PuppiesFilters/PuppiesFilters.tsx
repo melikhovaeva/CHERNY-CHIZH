@@ -28,7 +28,7 @@ export function PuppiesFilters({
       options: typeof sexOptions,
     ) => {
       const filteredOptions = options.filter(
-        (opt) =>
+        (opt: { value: string; label: string }) =>
           opt.value !== defaultOption.value && opt.value !== currentValue.value,
       );
 

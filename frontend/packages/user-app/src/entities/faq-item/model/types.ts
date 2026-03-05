@@ -1,5 +1,4 @@
-export type FAQItem = {
-  id: number;
-  title: string;
-  content: string;
-};
+export type {
+  FaqItemRead as FAQItem,
+  CategoryEnum,
+} from '@/shared/api/generated/faq.generated';

@@ -1,14 +1,7 @@
-import { baseApi } from '@/shared/api/base-api';
-import { API_CONFIG } from '@/shared/config/api';
-import type { Breed } from '../model/types';
+import {
+  enhancedApi,
+  useV1BreedsListQuery,
+} from '@/shared/api/generated/breeds.generated';
 
-export const breedApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    getBreeds: build.query<Breed[], void>({
-      query: () => API_CONFIG.ENDPOINTS.BREEDS,
-      providesTags: [API_CONFIG.TAG_TYPES.BREEDS],
-    }),
-  }),
-});
-
-export const { useGetBreedsQuery } = breedApi;
+export const breedApi = enhancedApi;
+export const useGetBreedsQuery = useV1BreedsListQuery;

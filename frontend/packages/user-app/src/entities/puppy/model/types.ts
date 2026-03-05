@@ -1,49 +1,37 @@
-import type { Breed } from '@/entities/breed/model/types';
+export type {
+  DogListRead as Puppy,
+  DogByBreedListRead,
+  BreedBriefRead,
+  CodeLabel,
+  DogPhotosRead,
+  DogDocumentsRead,
+  PaginatedDogListListRead,
+  PaginatedDogByBreedListListRead,
+  AgeGroupEnum,
+} from '@/shared/api/generated/dogs.generated';
 
+/** Local: not in API schema. */
 export type PuppyStatusName = 'В продаже' | 'Забронирован' | 'Куплен';
 
-export interface PuppyCharacteristic {
-  id?: number;
-  code: string;
-  label: string;
-}
+/** Alias for schema CodeLabel (code/label). */
+export type PuppyCharacteristic = import('@/shared/api/generated/dogs.generated').CodeLabel;
 
-export interface PuppyDocument {
-  id: string;
-  name: string;
-}
+/** Alias for schema type. */
+export type PuppyDocument = import('@/shared/api/generated/dogs.generated').DogDocumentsRead;
 
+/** Parent shape from schema (parents.mother / parents.father). */
 export interface PuppyParent {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
 }
 
 export interface PuppyParents {
-  mother: PuppyParent;
-  father: PuppyParent;
+  mother?: PuppyParent;
+  father?: PuppyParent;
 }
 
-export interface PuppyPhoto {
-  id: string;
-  url: string;
-}
-
-export interface Puppy {
-  id: number;
-  name: string;
-  internationalName?: string;
-  breed: Breed;
-  status: PuppyCharacteristic;
-  potential: PuppyCharacteristic;
-  sex: PuppyCharacteristic;
-  birthDate: string;
-  color: string;
-  ageGroup?: 'puppy' | 'adult';
-  documents?: PuppyDocument[];
-  parents?: PuppyParents;
-  photos?: PuppyPhoto[];
-  description?: string;
-}
+/** Alias for schema type. */
+export type PuppyPhoto = import('@/shared/api/generated/dogs.generated').DogPhotosRead;
 
 export interface PaginatedResponse<T> {
   count: number;

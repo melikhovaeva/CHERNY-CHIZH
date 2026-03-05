@@ -20,12 +20,13 @@ interface ProfileSettingsProps {
   isUploadingAvatar: boolean;
   onAvatarChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onUpdateProfile: (
-    payload: Partial<
-      Pick<
-        SessionUser,
-        'email' | 'first_name' | 'last_name' | 'phone' | 'messenger'
-      >
-    >,
+    payload: Partial<{
+      email: string;
+      first_name: string;
+      last_name: string | null;
+      phone: string | null;
+      messenger: string | null;
+    }>,
   ) => Promise<void>;
   isChangingPassword: boolean;
   onChangePassword: (payload: ProfilePasswordForm) => Promise<void>;
@@ -68,8 +69,8 @@ export function ProfileSettings({
     if (user) {
       reset({
         email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name ?? '',
+        firstName: user.firstName,
+        lastName: user.lastName ?? '',
         phone: user.phone ?? '',
         messenger: user.messenger ?? '',
       });

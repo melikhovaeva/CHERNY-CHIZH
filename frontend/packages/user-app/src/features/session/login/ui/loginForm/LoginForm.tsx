@@ -28,7 +28,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
-      await login(data).unwrap();
+      await login({ tokenObtainPair: data }).unwrap();
       addSuccess('Вход выполнен');
       dispatch(closeAuthModal());
     } catch (err) {

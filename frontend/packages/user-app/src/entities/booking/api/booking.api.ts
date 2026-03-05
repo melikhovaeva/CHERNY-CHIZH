@@ -1,5 +1,5 @@
-import { baseApi } from '@/shared/api/base-api';
-import { API_CONFIG } from '@/shared/config/api';
+import { useV1RequestsCreateMutation } from '@/shared/api/generated/requests.generated';
+import type { Request } from '@/shared/api/generated/requests.generated';
 
 export interface SubmitBookingRequest {
   first_name: string;
@@ -11,16 +11,21 @@ export interface SubmitBookingRequest {
   dog?: number;
 }
 
-export const bookingApi = baseApi.injectEndpoints({
-  endpoints: (build) => ({
-    submitBooking: build.mutation<void, SubmitBookingRequest>({
-      query: (body) => ({
-        url: API_CONFIG.ENDPOINTS.REQUESTS,
-        method: 'POST',
-        body,
-      }),
-    }),
-  }),
-});
+function toRequest(p: SubmitBookingRequest): Request {
+  return {
+    firstName: p.first_name,
+    lastName: p.last_name ?? null,
+    email: p.email ?? null,
+    phone: p.phone,
+    messenger: p.messenger,
+    message: p.message,
+    dog: p.dog ?? null,
+  };
+}
 
-export const { useSubmitBookingMutation } = bookingApi;
+export function useSubmitBookingMutation() {
+  const [mutate, rest] = useV1RequestsCreateMutation();
+  const submitBooking = (payload: SubmitBookingRequest) =>
+    mutate({ request: toRequest(payload) });
+  return [submitBooking, rest] as const;
+}

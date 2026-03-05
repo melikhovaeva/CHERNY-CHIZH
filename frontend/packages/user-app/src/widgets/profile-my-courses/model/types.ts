@@ -13,7 +13,7 @@ export interface ProfileMyCourseInfo {
 export interface ProfileMyCourseEnrollment {
   id: string | number;
   course: ProfileMyCourseInfo;
-  status: string;
+  status?: string;
   progress?: number | null;
 }
 
