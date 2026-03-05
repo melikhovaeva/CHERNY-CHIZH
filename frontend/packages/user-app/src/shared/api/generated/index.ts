@@ -1,6 +1,13 @@
 /**
- * Re-exports generated API and types from OpenAPI schema.
- * After running `pnpm run generate:api`, types and hooks will be generated in api.generated.ts.
- * Prefer importing entity types from here when they exist: import type { Breed } from '@/shared/api/generated'
+ * Generated API by entity (from OpenAPI schema).
+ * Import this module so all injectEndpoints run and register with baseApi.
+ * For types/hooks import from the specific file, e.g. @/shared/api/generated/articles.generated
  */
-export { generatedApi } from './api.generated';
+import './articles.generated';
+import './breeds.generated';
+import './courses.generated';
+import './dictionaries.generated';
+import './dogs.generated';
+import './faq.generated';
+import './requests.generated';
+import './users.generated';

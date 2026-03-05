@@ -1,6 +1,6 @@
 /**
  * Entity types. After running `pnpm run generate:api` (user-app), prefer importing
- * types from `@/shared/api/generated` when they exist there, so FE stays in sync with BE schema.
+ * types from the generated file for this entity, e.g. `@/shared/api/generated/breeds.generated`.
  */
 export type BreedValue = 'sharpey' | 'sibainu' | 'corgi' | 'spitz';
 
