@@ -1,12 +1,14 @@
 import { useSegmentLabel } from '@/app/lib/breadcrumb-labels'
-import { useGetDictionariesIndexQuery } from '@/shared/api/dictionaries-api'
+import {
+  dictionaryApi,
+  useGetDictionariesIndexQuery,
+} from '@/entities/dictionary'
 import { Breadcrumb } from '@/shared/ui/components'
 import { Footer, Header } from '@/widgets'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { useEffect } from 'react'
-import { dictionariesApi } from '@/shared/api/dictionaries-api'
 import { Providers } from '../providers/Providers'
 
 function RootContent() {
@@ -15,7 +17,7 @@ function RootContent() {
 
   useEffect(() => {
     if (dictionariesIndex?.puppy) {
-      dictionariesApi.util.prefetch('getDictionaryGroup', 'puppy', {
+      dictionaryApi.util.prefetch('getDictionaryGroup', 'puppy', {
         force: false,
       })
     }

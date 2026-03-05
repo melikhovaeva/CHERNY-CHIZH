@@ -4,7 +4,7 @@ import { getFirstApiErrorMessage } from '@/shared';
 import {
   type SubmitBookingRequest,
   useSubmitBookingMutation,
-} from '@/shared/api/booking-api';
+} from '@/entities/booking';
 import { useError, useSuccess } from 'common';
 import { type SubmitHandler } from 'react-hook-form';
 import styles from './FormSection.module.scss';
