@@ -1,5 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+
+from common.serializers import CamelCaseSerializerMixin
 from user_management.models import Role, User
 
 
@@ -40,8 +42,11 @@ class UserRoleUpdateSerializer(serializers.ModelSerializer):
         fields = ("role",)
 
 
-class CurrentUserSerializer(serializers.ModelSerializer):
+class CurrentUserSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Данные текущего пользователя; ключи в camelCase для фронта."""
+
     role = RoleSerializer(read_only=True, allow_null=True)
+    avatar_image = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -56,6 +61,14 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "role",
         )
         read_only_fields = ("id", "role")
+
+    def get_avatar_image(self, obj):
+        if obj.avatar_image:
+            request = self.context.get("request")
+            if request:
+                return request.build_absolute_uri(obj.avatar_image.url)
+            return obj.avatar_image.url
+        return None
 
     def validate_email(self, value: str) -> str:
         email = User.objects.normalize_email(value)

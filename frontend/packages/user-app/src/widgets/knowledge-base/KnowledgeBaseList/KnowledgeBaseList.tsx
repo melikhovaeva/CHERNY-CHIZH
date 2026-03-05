@@ -28,6 +28,7 @@ export function KnowledgeBaseList({
   const hasMoreRef = useRef(false);
   const isFetchingRef = useRef(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const filterJustResetRef = useRef(false);
 
   const { data, isLoading, isFetching, isError } = useGetArticlesListQuery({
     page,
@@ -37,19 +38,27 @@ export function KnowledgeBaseList({
   });
 
   useEffect(() => {
+    filterJustResetRef.current = true;
     setPage(1);
     setItems([]);
   }, [search, category]);
 
+  // При смене search/category список обнуляется выше; здесь снова заполняем из data.
+  // В deps — search и category, т.к. при смене категории page и data могут не измениться (page уже 1, тот же кэш).
   useEffect(() => {
     if (!data?.results) return;
 
-    setItems((prev) => {
-      const existingIds = new Set(prev.map((a: ArticleListItem) => a.id));
-      const nextItems = data.results.filter((a: ArticleListItem) => !existingIds.has(a.id));
-      return [...prev, ...nextItems];
-    });
-  }, [data]);
+    if (filterJustResetRef.current || page === 1) {
+      filterJustResetRef.current = false;
+      setItems(data.results);
+    } else {
+      setItems((prev) => {
+        const existingIds = new Set(prev.map((a: ArticleListItem) => a.id));
+        const nextItems = data.results.filter((a: ArticleListItem) => !existingIds.has(a.id));
+        return [...prev, ...nextItems];
+      });
+    }
+  }, [data, page, search, category]);
 
   const hasMore = useMemo(() => {
     if (!data) return false;
