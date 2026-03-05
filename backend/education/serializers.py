@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from common.serializers import CamelCaseSerializerMixin
+from common.serializers import CamelCaseSerializerMixin, CodeLabelSerializer
+from education.schema import extend_schema_field
 from education.markdown_utils import markdown_to_safe_html
 from education.models import (
     Article,
@@ -90,6 +91,7 @@ class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     def get_content_html(self, obj: Article) -> str:
         return markdown_to_safe_html(obj.content or "")
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Article):
         if not obj.status:
             return None
@@ -175,6 +177,7 @@ class CourseSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "updated_at",
         )
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Course):
         if not obj.status:
             return None

@@ -1,4 +1,5 @@
 import { baseApi } from '@/shared/api/base-api';
+import '@/shared/api/generated';
 import { configureStore } from '@reduxjs/toolkit';
 import { sessionSlice } from '@/entities/session';
 import { authModalUiSlice } from '@/features/auth-modal';

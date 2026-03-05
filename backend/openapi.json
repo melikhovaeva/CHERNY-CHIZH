@@ -1,0 +1,2890 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cherniy Chizh API",
+    "version": "1.0.0",
+    "description": "Публичное API платформы «Черный Чиж» для работы с собаками, породами, справочниками и заявками.",
+    "contact": {
+      "name": "Команда Черный Чиж",
+      "email": "support@cherniy-chizh.local"
+    },
+    "license": {
+      "name": "Proprietary"
+    }
+  },
+  "paths": {
+    "/api/v1/articles/": {
+      "get": {
+        "operationId": "v1_articles_list",
+        "description": "Возвращает список статей с краткой информацией.",
+        "summary": "Список статей",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": ["Articles"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedArticleListList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/articles/{slug}/": {
+      "get": {
+        "operationId": "v1_articles_retrieve",
+        "description": "Возвращает полное содержимое одной статьи.",
+        "summary": "Детали статьи",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": ["Articles"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/articles/home-library/": {
+      "get": {
+        "operationId": "v1_articles_home_library_retrieve",
+        "description": "Теги с не менее чем 3 статьями (макс. 4 тега), для каждого — минимум 3 статьи. Только опубликованные статьи.",
+        "summary": "Блок «База знаний» для главной",
+        "tags": ["Articles"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Article"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/breeds/": {
+      "get": {
+        "operationId": "v1_breeds_list",
+        "description": "Возвращает список всех пород с краткой информацией и описанием.",
+        "summary": "Список пород",
+        "tags": ["Breeds"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BreedList"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/breeds/{breed_slug}/dogs/": {
+      "get": {
+        "operationId": "v1_breeds_dogs_list",
+        "description": "Возвращает список собак выбранной породы по её slug. Поддерживает фильтрацию по возрастной группе.",
+        "summary": "Список собак по породе",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "age_group",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Возрастная группа собаки. Допустимые значения: `${Dog.AGE_GROUP_PUPPY}` (щенки) или `${Dog.AGE_GROUP_ADULT}` (взрослые)."
+          },
+          {
+            "in": "path",
+            "name": "breed_slug",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Slug породы (например, `shpits`).",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": ["Dogs"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDogByBreedListList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/breeds/{breed_slug}/dogs/{id}/": {
+      "get": {
+        "operationId": "v1_breeds_dogs_retrieve",
+        "description": "Возвращает подробную информацию по одной собаке внутри выбранной породы. Используется путь `/breeds/{breed_slug}/dogs/{id}/`.",
+        "summary": "Карточка собаки выбранной породы",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "breed_slug",
+            "schema": {
+              "type": "string",
+              "pattern": "^[-\\w]+$"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID собаки.",
+            "required": true
+          }
+        ],
+        "tags": ["Dogs"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DogByBreedList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/breeds/{id}/": {
+      "get": {
+        "operationId": "v1_breeds_retrieve",
+        "description": "Возвращает подробную информацию об одной породе, включая описательные блоки.",
+        "summary": "Информация о породе",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this Порода.",
+            "required": true
+          }
+        ],
+        "tags": ["Breeds"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BreedList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/courses/": {
+      "get": {
+        "operationId": "v1_courses_list",
+        "description": "Возвращает список доступных курсов.",
+        "summary": "Список курсов",
+        "tags": ["Courses"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Course"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/courses/{id}/": {
+      "get": {
+        "operationId": "v1_courses_retrieve",
+        "description": "Возвращает полную структуру курса со ступенями, уроками и заданиями.",
+        "summary": "Детали курса",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this course.",
+            "required": true
+          }
+        ],
+        "tags": ["Courses"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/dictionaries/": {
+      "get": {
+        "operationId": "dictionaries_list",
+        "description": "Возвращает список доступных групп словарей (справочников), используемых на фронтенде. Для детальной структуры используйте эндпоинт получения конкретной группы.",
+        "summary": "Список групп словарей",
+        "tags": ["Dictionaries"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/dictionaries/{id}/": {
+      "get": {
+        "operationId": "dictionaries_retrieve",
+        "description": "Возвращает структуру одной группы словарей, включая список словарей и их элементы (`code` / `label`).",
+        "summary": "Детальная структура группы словарей",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Идентификатор группы: числовой ID или строковый ключ группы (например, `dogs_filters`).",
+            "required": true
+          }
+        ],
+        "tags": ["Dictionaries"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "examples": {
+                  "ПримерГруппыСловарей": {
+                    "value": {
+                      "id": 1,
+                      "name": "Фильтры по собакам",
+                      "verboseName": "Фильтры по собакам",
+                      "dictionaries": {
+                        "status": {
+                          "id": 10,
+                          "name": "Статус собаки",
+                          "verboseName": "Статус собаки",
+                          "items": [
+                            {
+                              "code": "available",
+                              "label": "Доступен"
+                            },
+                            {
+                              "code": "reserved",
+                              "label": "Забронирован"
+                            }
+                          ]
+                        },
+                        "sex": {
+                          "id": 11,
+                          "name": "Пол",
+                          "verboseName": "Пол",
+                          "items": [
+                            {
+                              "code": "male",
+                              "label": "Кобель"
+                            },
+                            {
+                              "code": "female",
+                              "label": "Сука"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "summary": "Пример группы словарей",
+                    "description": "Пример структуры группы словарей с несколькими словарями и их элементами."
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/dictionaries/{id}/{dict_identifier}/": {
+      "get": {
+        "operationId": "dictionaries_dictionary",
+        "description": "Возвращает один словарь внутри группы с его элементами (`code` / `label`). Идентификаторы группы и словаря могут быть как числовыми, так и строковыми ключами.",
+        "summary": "Конкретный словарь внутри группы",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "dict_identifier",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Идентификатор конкретного словаря внутри группы (ID или ключ).",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Идентификатор группы словарей (ID или ключ).",
+            "required": true
+          }
+        ],
+        "tags": ["Dictionaries"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "examples": {
+                  "ПримерКонкретногоСловаря": {
+                    "value": {
+                      "id": 10,
+                      "name": "Статус собаки",
+                      "key": "status",
+                      "verboseName": "Статус собаки",
+                      "items": [
+                        {
+                          "code": "available",
+                          "label": "Доступен"
+                        },
+                        {
+                          "code": "reserved",
+                          "label": "Забронирован"
+                        }
+                      ]
+                    },
+                    "summary": "Пример конкретного словаря",
+                    "description": "Пример структуры одного словаря группы с элементами code/label."
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/dogs/": {
+      "get": {
+        "operationId": "v1_dogs_list",
+        "description": "Возвращает список собак (щенки и взрослые) с основными данными, фотографиями, документами и информацией о родителях. Можно отфильтровать по возрастной группе.",
+        "summary": "Список собак",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "age_group",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Возрастная группа собаки. Допустимые значения: `${Dog.AGE_GROUP_PUPPY}` (щенки) или `${Dog.AGE_GROUP_ADULT}` (взрослые)."
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": ["Dogs"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDogListList"
+                },
+                "examples": {
+                  "ПримерСпискаСобак": {
+                    "value": {
+                      "count": 123,
+                      "next": "http://api.example.org/accounts/?offset=400&limit=100",
+                      "previous": "http://api.example.org/accounts/?offset=200&limit=100",
+                      "results": [
+                        [
+                          {
+                            "id": 1,
+                            "name": "Чижик",
+                            "internationalName": "Chizhik",
+                            "birthDate": "2024-01-01",
+                            "color": "черный",
+                            "description": "Дружелюбный активный щенок.",
+                            "breed": {
+                              "slug": "labrador",
+                              "name": "Лабрадор",
+                              "fullName": "Лабрадор ретривер",
+                              "photo": "/media/breeds/labrador.jpg"
+                            },
+                            "status": {
+                              "code": "available",
+                              "label": "Доступен"
+                            },
+                            "sex": {
+                              "code": "male",
+                              "label": "Кобель"
+                            },
+                            "potential": {
+                              "code": "pet",
+                              "label": "Компаньон"
+                            },
+                            "photos": [
+                              {
+                                "id": 10,
+                                "url": "/media/dogs/1/photo1.jpg"
+                              }
+                            ],
+                            "documents": [
+                              {
+                                "id": 5,
+                                "name": "Ветпаспорт"
+                              }
+                            ],
+                            "parents": {
+                              "mother": {
+                                "id": "2",
+                                "name": "Луна"
+                              },
+                              "father": {
+                                "id": "3",
+                                "name": "Марс"
+                              }
+                            }
+                          }
+                        ]
+                      ]
+                    },
+                    "summary": "Пример списка собак",
+                    "description": "Пример ответа при запросе списка доступных щенков."
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/dogs/{id}/": {
+      "get": {
+        "operationId": "v1_dogs_retrieve",
+        "description": "Возвращает подробную информацию по одной собаке, включая породу, фотографии, документы и родителей.",
+        "summary": "Карточка собаки",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this Собака.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID собаки.",
+            "required": true
+          }
+        ],
+        "tags": ["Dogs"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DogList"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/faq/": {
+      "get": {
+        "operationId": "v1_faq_list",
+        "description": "Возвращает список часто задаваемых вопросов. Можно отфильтровать по категории.",
+        "summary": "Список FAQ-элементов",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Категория FAQ (если указана, вернутся только элементы этой категории)."
+          }
+        ],
+        "tags": ["FAQ"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FAQItem"
+                  }
+                },
+                "examples": {
+                  "ПримерСпискаFAQ": {
+                    "value": [
+                      [
+                        {
+                          "id": 1,
+                          "title": "Как забронировать щенка?",
+                          "content": "Оставьте заявку на сайте, и мы свяжемся с вами.",
+                          "category": "requests"
+                        },
+                        {
+                          "id": 2,
+                          "title": "Как подготовиться к приезду щенка?",
+                          "content": "Подготовьте место для сна, миски и игрушки.",
+                          "category": "care"
+                        }
+                      ]
+                    ],
+                    "summary": "Пример списка FAQ",
+                    "description": "Пример ответа с несколькими вопросами и ответами."
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/faq/{id}/": {
+      "get": {
+        "operationId": "v1_faq_retrieve",
+        "description": "Возвращает один элемент FAQ по идентификатору.",
+        "summary": "Детали FAQ-элемента",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this FAQ элемент.",
+            "required": true
+          }
+        ],
+        "tags": ["FAQ"],
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FAQItem"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/requests/": {
+      "get": {
+        "operationId": "v1_requests_list",
+        "description": "Возвращает список заявок текущего пользователя. Администраторы видят все заявки.",
+        "summary": "Список заявок",
+        "tags": ["Requests"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Request"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "v1_requests_create",
+        "description": "Создаёт новую заявку на щенка или обращение. Для аутентифицированного пользователя персональные данные подставляются автоматически из профиля.",
+        "summary": "Создать заявку",
+        "tags": ["Requests"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/requests/{id}/": {
+      "get": {
+        "operationId": "v1_requests_retrieve",
+        "description": "Возвращает подробную информацию по одной заявке.",
+        "summary": "Детали заявки",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pk",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID заявки.",
+            "required": true
+          }
+        ],
+        "tags": ["Requests"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Request"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/admin/users/": {
+      "get": {
+        "operationId": "v1_users_admin_users_list",
+        "description": "Возвращает список пользователей с полями профиля и ролью. Доступно только суперпользователю.",
+        "summary": "Список пользователей (только админ)",
+        "tags": ["Users"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/admin/users/{id}/": {
+      "get": {
+        "operationId": "v1_users_admin_users_retrieve",
+        "description": "GET — данные пользователя; PATCH — смена роли. Доступно только суперпользователю.",
+        "summary": "Профиль пользователя по id (только админ)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": ["Users"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "operationId": "v1_users_admin_users_partial_update",
+        "description": "GET — данные пользователя; PATCH — смена роли. Доступно только суперпользователю.",
+        "summary": "Профиль пользователя по id (только админ)",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true
+          }
+        ],
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserRoleUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserRoleUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserRoleUpdate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/auth/login/": {
+      "post": {
+        "operationId": "v1_users_auth_login_create",
+        "description": "Аутентификация по email и паролю. Access и refresh токены устанавливаются в httpOnly‑cookies. В ответе возвращается профиль пользователя.",
+        "summary": "Логин с установкой JWT в cookies",
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenObtainPair"
+              },
+              "examples": {
+                "УспешныйЛогин": {
+                  "value": {
+                    "request": {
+                      "email": "user@example.com",
+                      "password": "S3curePassw0rd!"
+                    },
+                    "response": {
+                      "id": 1,
+                      "email": "user@example.com",
+                      "first_name": "Иван",
+                      "last_name": "Иванов",
+                      "phone": "+79998887766",
+                      "messenger": "@ivan_ivanov"
+                    }
+                  },
+                  "summary": "Успешный логин"
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenObtainPair"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenObtainPair"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [{}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                },
+                "examples": {
+                  "УспешныйЛогин": {
+                    "value": {
+                      "request": {
+                        "email": "user@example.com",
+                        "password": "S3curePassw0rd!"
+                      },
+                      "response": {
+                        "id": 1,
+                        "email": "user@example.com",
+                        "first_name": "Иван",
+                        "last_name": "Иванов",
+                        "phone": "+79998887766",
+                        "messenger": "@ivan_ivanov"
+                      }
+                    },
+                    "summary": "Успешный логин"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/auth/logout/": {
+      "post": {
+        "operationId": "v1_users_auth_logout_create",
+        "description": "Удаляет httpOnly‑cookies с access и refresh токенами.",
+        "summary": "Логаут (очистка JWT‑cookies)",
+        "tags": ["Auth"],
+        "security": [{}],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/v1/users/auth/refresh/": {
+      "post": {
+        "operationId": "v1_users_auth_refresh_create",
+        "description": "Использует refresh‑токен из httpOnly‑cookie для выдачи нового access‑токена. В ответе тело пустое; новый access‑токен устанавливается в cookie.",
+        "summary": "Обновить access-токен по cookie",
+        "tags": ["Auth"],
+        "security": [{}],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/": {
+      "get": {
+        "operationId": "v1_users_me_retrieve",
+        "description": "Получение, обновление или удаление профиля текущего аутентифицированного пользователя. Требует JWT-токен в заголовке Authorization.",
+        "summary": "Профиль текущего пользователя",
+        "tags": ["Users"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "v1_users_me_update",
+        "description": "Получение, обновление или удаление профиля текущего аутентифицированного пользователя. Требует JWT-токен в заголовке Authorization.",
+        "summary": "Профиль текущего пользователя",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrentUser"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrentUser"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrentUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "operationId": "v1_users_me_partial_update",
+        "description": "Получение, обновление или удаление профиля текущего аутентифицированного пользователя. Требует JWT-токен в заголовке Authorization.",
+        "summary": "Профиль текущего пользователя",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCurrentUser"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCurrentUser"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCurrentUser"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "operationId": "v1_users_me_destroy",
+        "description": "Получение, обновление или удаление профиля текущего аутентифицированного пользователя. Требует JWT-токен в заголовке Authorization.",
+        "summary": "Профиль текущего пользователя",
+        "tags": ["Users"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/change-password/": {
+      "post": {
+        "operationId": "v1_users_me_change_password_create",
+        "description": "Меняет пароль текущего аутентифицированного пользователя. Требует указать старый пароль и дважды новый пароль.",
+        "summary": "Смена пароля текущего пользователя",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassword"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassword"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassword"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        }
+      }
+    },
+    "/api/v1/users/me/courses/": {
+      "get": {
+        "operationId": "v1_users_me_courses_list",
+        "description": "Возвращает список записей пользователя на курсы с информацией о курсе, статусе и прогрессе.",
+        "summary": "Курсы текущего пользователя",
+        "tags": ["Users"],
+        "security": [
+          {
+            "CookieJWT": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CourseEnrollment"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/register/step1/": {
+      "post": {
+        "operationId": "v1_users_register_step1_create",
+        "description": "Первый шаг двухэтапной регистрации. Проверяет валидность email и пароля, но пользователя ещё не создаёт. Возвращает нормализованный email.",
+        "summary": "Регистрация — шаг 1 (email и пароль)",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep1"
+              },
+              "examples": {
+                "УспешныйШаг1": {
+                  "value": {
+                    "request": {
+                      "email": "user@example.com",
+                      "password": "S3curePassw0rd!",
+                      "password2": "S3curePassw0rd!"
+                    },
+                    "response": {
+                      "email": "user@example.com"
+                    }
+                  },
+                  "summary": "Успешный шаг 1"
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep1"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep1"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "examples": {
+                  "УспешныйШаг1": {
+                    "value": {
+                      "request": {
+                        "email": "user@example.com",
+                        "password": "S3curePassw0rd!",
+                        "password2": "S3curePassw0rd!"
+                      },
+                      "response": {
+                        "email": "user@example.com"
+                      }
+                    },
+                    "summary": "Успешный шаг 1"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/register/step2/": {
+      "post": {
+        "operationId": "v1_users_register_step2_create",
+        "description": "Завершает двухэтапную регистрацию: создаёт пользователя на основании email, пароля и персональных данных.",
+        "summary": "Регистрация — шаг 2 (персональные данные)",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep2"
+              },
+              "examples": {
+                "УспешныйШаг2": {
+                  "value": {
+                    "request": {
+                      "email": "user@example.com",
+                      "password": "S3curePassw0rd!",
+                      "password2": "S3curePassw0rd!",
+                      "first_name": "Иван",
+                      "last_name": "Иванов",
+                      "phone": "+79998887766",
+                      "messenger": "@ivan_ivanov"
+                    },
+                    "response": {
+                      "id": 1,
+                      "email": "user@example.com",
+                      "first_name": "Иван",
+                      "last_name": "Иванов",
+                      "phone": "+79998887766",
+                      "messenger": "@ivan_ivanов"
+                    }
+                  },
+                  "summary": "Успешный шаг 2"
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep2"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterStep2"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "CookieJWT": []
+          },
+          {}
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUser"
+                },
+                "examples": {
+                  "УспешныйШаг2": {
+                    "value": {
+                      "request": {
+                        "email": "user@example.com",
+                        "password": "S3curePassw0rd!",
+                        "password2": "S3curePassw0rd!",
+                        "first_name": "Иван",
+                        "last_name": "Иванов",
+                        "phone": "+79998887766",
+                        "messenger": "@ivan_ivanov"
+                      },
+                      "response": {
+                        "id": 1,
+                        "email": "user@example.com",
+                        "first_name": "Иван",
+                        "last_name": "Иванов",
+                        "phone": "+79998887766",
+                        "messenger": "@ivan_ivanов"
+                      }
+                    },
+                    "summary": "Успешный шаг 2"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgeGroupEnum": {
+        "enum": ["puppy", "adult"],
+        "type": "string",
+        "description": "* `puppy` - Щенок\n* `adult` - Собака"
+      },
+      "Article": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePreview": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InfoTag"
+            },
+            "readOnly": true
+          },
+          "contentHtml": {
+            "type": "string",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "contentHtml",
+          "createdAt",
+          "description",
+          "id",
+          "slug",
+          "status",
+          "tags",
+          "title",
+          "updatedAt"
+        ]
+      },
+      "ArticleBrief": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          }
+        },
+        "required": ["id", "slug", "title"]
+      },
+      "ArticleList": {
+        "type": "object",
+        "description": "Минимальный набор полей для списка статей (карточки, ссылки).",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePreview": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InfoTag"
+            },
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "author": {
+            "type": "object",
+            "additionalProperties": {},
+            "readOnly": true
+          }
+        },
+        "required": [
+          "author",
+          "createdAt",
+          "description",
+          "id",
+          "slug",
+          "tags",
+          "title"
+        ]
+      },
+      "BreedBrief": {
+        "type": "object",
+        "description": "Краткое представление породы для списка щенков",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "fullName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "photo": {
+            "type": "string",
+            "format": "uri",
+            "readOnly": true
+          }
+        },
+        "required": ["fullName", "name", "photo", "slug"]
+      },
+      "BreedDescription": {
+        "type": "object",
+        "description": "Описание породы с полями, сгруппированными как на фронте (блоки rating + text).",
+        "properties": {
+          "appearance": {
+            "type": "string"
+          },
+          "character": {
+            "$ref": "#/components/schemas/RatingBlock"
+          },
+          "adaptability": {
+            "$ref": "#/components/schemas/RatingBlock"
+          },
+          "care": {
+            "$ref": "#/components/schemas/RatingBlock"
+          },
+          "activity": {
+            "$ref": "#/components/schemas/RatingBlock"
+          }
+        },
+        "required": [
+          "activity",
+          "adaptability",
+          "appearance",
+          "care",
+          "character"
+        ]
+      },
+      "BreedList": {
+        "type": "object",
+        "description": "Сериализатор для списка пород.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "slug": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "fullName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "photo": {
+            "type": "string",
+            "format": "uri",
+            "readOnly": true
+          },
+          "description": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BreedDescription"
+              }
+            ],
+            "readOnly": true
+          },
+          "articleSlug": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "articleSlug",
+          "description",
+          "fullName",
+          "id",
+          "name",
+          "photo",
+          "slug"
+        ]
+      },
+      "CategoryEnum": {
+        "enum": ["general", "delivery"],
+        "type": "string",
+        "description": "* `general` - Общие вопросы\n* `delivery` - Доставка"
+      },
+      "ChangePassword": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "newPassword": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "newPassword2": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": ["newPassword", "newPassword2", "oldPassword"]
+      },
+      "CodeLabel": {
+        "type": "object",
+        "description": "Универсальный сериализатор для любого справочника code+label.",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": ["code", "label"]
+      },
+      "Course": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePreview": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "actionText": {
+            "type": "string",
+            "maxLength": 26
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/DifficultyEnum"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InfoTag"
+            },
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "actionText",
+          "createdAt",
+          "description",
+          "id",
+          "slug",
+          "status",
+          "tags",
+          "title",
+          "updatedAt"
+        ]
+      },
+      "CourseDetail": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[-a-zA-Z0-9_]+$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "imagePreview": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "actionText": {
+            "type": "string",
+            "maxLength": 26
+          },
+          "difficulty": {
+            "$ref": "#/components/schemas/DifficultyEnum"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InfoTag"
+            },
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseStep"
+            },
+            "readOnly": true
+          }
+        },
+        "required": [
+          "actionText",
+          "createdAt",
+          "description",
+          "id",
+          "slug",
+          "status",
+          "steps",
+          "tags",
+          "title",
+          "updatedAt"
+        ]
+      },
+      "CourseEnrollment": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "course": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Course"
+              }
+            ],
+            "readOnly": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/StatusEnum"
+          },
+          "progress": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0,
+            "nullable": true,
+            "description": "Прогресс прохождения курса в процентах"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": ["course", "id"]
+      },
+      "CourseLesson": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "article": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ArticleBrief"
+              }
+            ],
+            "readOnly": true
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseTask"
+            },
+            "readOnly": true
+          }
+        },
+        "required": ["article", "id", "tasks", "title"]
+      },
+      "CourseStep": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseLesson"
+            },
+            "readOnly": true
+          }
+        },
+        "required": ["id", "lessons", "title"]
+      },
+      "CourseTask": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseTaskQuestion"
+            },
+            "readOnly": true
+          }
+        },
+        "required": ["id", "questions", "title"]
+      },
+      "CourseTaskAnswer": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "isCorrect": {
+            "type": "boolean"
+          }
+        },
+        "required": ["id", "text"]
+      },
+      "CourseTaskQuestion": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseTaskAnswer"
+            },
+            "readOnly": true
+          }
+        },
+        "required": ["answers", "id", "text"]
+      },
+      "CurrentUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 12
+          },
+          "messenger": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "avatarImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ],
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "required": ["email", "firstName", "id", "role"]
+      },
+      "DifficultyEnum": {
+        "enum": ["beginner", "intermediate", "advanced"],
+        "type": "string",
+        "description": "* `beginner` - Начинающий\n* `intermediate` - Средний\n* `advanced` - Продвинутый"
+      },
+      "DogByBreedList": {
+        "type": "object",
+        "description": "Сериализатор для списка щенков по породе.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "breed": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BreedBrief"
+              }
+            ],
+            "readOnly": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "sex": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "potential": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogPhotos"
+            },
+            "readOnly": true
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogDocuments"
+            },
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "color": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "ageGroup": {
+            "$ref": "#/components/schemas/AgeGroupEnum"
+          }
+        },
+        "required": [
+          "birthDate",
+          "breed",
+          "color",
+          "createdAt",
+          "documents",
+          "id",
+          "name",
+          "photos",
+          "potential",
+          "sex",
+          "status",
+          "updatedAt"
+        ]
+      },
+      "DogDocuments": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "DogList": {
+        "type": "object",
+        "description": "Сериализатор для списка щенков",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "internationalName": {
+            "type": "string",
+            "readOnly": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "color": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "breed": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BreedBrief"
+              }
+            ],
+            "readOnly": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "sex": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "potential": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CodeLabel"
+              }
+            ],
+            "readOnly": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogPhotos"
+            },
+            "readOnly": true
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogDocuments"
+            },
+            "readOnly": true
+          },
+          "parents": {
+            "type": "object",
+            "properties": {
+              "mother": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "father": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "readOnly": true
+          }
+        },
+        "required": [
+          "birthDate",
+          "breed",
+          "color",
+          "documents",
+          "id",
+          "internationalName",
+          "name",
+          "parents",
+          "photos",
+          "potential",
+          "sex",
+          "status"
+        ]
+      },
+      "DogPhotos": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "url"]
+      },
+      "FAQItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "content": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryEnum"
+          }
+        },
+        "required": ["content", "id", "title"]
+      },
+      "InfoTag": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "order": {
+            "type": "integer",
+            "maximum": 32767,
+            "minimum": 0
+          }
+        },
+        "required": ["code", "id", "label"]
+      },
+      "PaginatedArticleListList": {
+        "type": "object",
+        "required": ["count", "results"],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArticleList"
+            }
+          }
+        }
+      },
+      "PaginatedDogByBreedListList": {
+        "type": "object",
+        "required": ["count", "results"],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogByBreedList"
+            }
+          }
+        }
+      },
+      "PaginatedDogListList": {
+        "type": "object",
+        "required": ["count", "results"],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DogList"
+            }
+          }
+        }
+      },
+      "PatchedCurrentUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 12
+          },
+          "messenger": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "avatarImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ],
+            "readOnly": true,
+            "nullable": true
+          }
+        }
+      },
+      "PatchedUserRoleUpdate": {
+        "type": "object",
+        "description": "Только смена роли; только для админа.",
+        "properties": {
+          "role": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "RatingBlock": {
+        "type": "object",
+        "description": "Вспомогательный сериализатор для блока rating + text.",
+        "properties": {
+          "rating": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": ["rating", "text"]
+      },
+      "RegisterStep1": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "password2": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": ["email", "password", "password2"]
+      },
+      "RegisterStep2": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "password2": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "messenger": {
+            "type": "string",
+            "maxLength": 255
+          }
+        },
+        "required": ["email", "firstName", "password", "password2"]
+      },
+      "Request": {
+        "type": "object",
+        "description": "Миксин: результат to_representation отдаётся с ключами в camelCase",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "user": {
+            "type": "integer",
+            "readOnly": true,
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "messenger": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "message": {
+            "type": "string"
+          },
+          "dog": {
+            "type": "integer",
+            "nullable": true
+          }
+        },
+        "required": ["firstName", "id", "message", "messenger", "phone", "user"]
+      },
+      "Role": {
+        "type": "object",
+        "description": "Только код и название роли; is_staff/is_superuser в API не отдаём.",
+        "properties": {
+          "code": {
+            "type": "string",
+            "readOnly": true
+          },
+          "label": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": ["code", "label"]
+      },
+      "StatusEnum": {
+        "enum": ["enrolled", "completed", "cancelled"],
+        "type": "string",
+        "description": "* `enrolled` - Записан\n* `completed` - Завершен\n* `cancelled` - Отменен"
+      },
+      "TokenObtainPair": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "access": {
+            "type": "string",
+            "readOnly": true
+          },
+          "refresh": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": ["access", "email", "password", "refresh"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 12
+          },
+          "messenger": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "avatarImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ],
+            "readOnly": true,
+            "nullable": true
+          },
+          "dateJoined": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "dateJoined",
+          "email",
+          "firstName",
+          "id",
+          "isActive",
+          "role"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "CookieJWT": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "access_token",
+        "description": "JWT access token in httpOnly cookie. Optional: Authorization Bearer header."
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Локальный сервер разработки"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Dogs",
+      "description": "Операции с собаками (щенки и взрослые)."
+    },
+    {
+      "name": "Breeds",
+      "description": "Информация о породах и их описания."
+    },
+    {
+      "name": "Dictionaries",
+      "description": "Справочники и словари, используемые на фронтенде."
+    },
+    {
+      "name": "Requests",
+      "description": "Заявки пользователей на щенков и обратную связь."
+    },
+    {
+      "name": "FAQ",
+      "description": "Часто задаваемые вопросы."
+    },
+    {
+      "name": "Users",
+      "description": "Регистрация, профиль и управление пользователями."
+    }
+  ]
+}

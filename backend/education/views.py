@@ -1,7 +1,7 @@
 from django.db.models import Count, Q
 
 from common.pagination import DogPagination
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from education.schema import article_view_schema, course_view_schema, extend_schema_view
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,23 +17,7 @@ from education.serializers import (
 )
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список статей",
-        description="Возвращает список статей с краткой информацией.",
-        tags=["Articles"],
-    ),
-    retrieve=extend_schema(
-        summary="Детали статьи",
-        description="Возвращает полное содержимое одной статьи.",
-        tags=["Articles"],
-    ),
-    home_library=extend_schema(
-        summary="Блок «База знаний» для главной",
-        description="Теги с не менее чем 3 статьями (макс. 4 тега), для каждого — минимум 3 статьи. Только опубликованные статьи.",
-        tags=["Articles"],
-    ),
-)
+@extend_schema_view(**article_view_schema)
 class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """Публичный API для статей."""
 
@@ -86,18 +70,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({"tags": tags_data, "groups": groups})
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список курсов",
-        description="Возвращает список доступных курсов.",
-        tags=["Courses"],
-    ),
-    retrieve=extend_schema(
-        summary="Детали курса",
-        description="Возвращает полную структуру курса со ступенями, уроками и заданиями.",
-        tags=["Courses"],
-    ),
-)
+@extend_schema_view(**course_view_schema)
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
     """Публичный API для курсов."""
 

@@ -3,19 +3,21 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiExample,
-    OpenApiParameter,
-    extend_schema,
-    extend_schema_view,
-)
 
 from common.dictionaries import DICTIONARY_GROUPS
+from common.schema import (
+    breed_view_schema,
+    dictionary_view_schema,
+    dog_by_breed_schema,
+    dog_view_schema,
+    extend_schema_view,
+    request_view_schema,
+)
 from common.models import Breed, Dog, Request as RequestModel
 from common.pagination import DogPagination
 from common.serializers import (
     BreedListSerializer,
+    DictionaryGroupListSerializer,
     DogByBreedListSerializer,
     DogListSerializer,
     RequestSerializer,
@@ -60,72 +62,7 @@ def _find_dictionary_in_group(group_conf, dict_identifier: str):
     return None, None
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список собак",
-        description=(
-            "Возвращает список собак (щенки и взрослые) с основными данными, "
-            "фотографиями, документами и информацией о родителях. "
-            "Можно отфильтровать по возрастной группе."
-        ),
-        tags=["Dogs"],
-        parameters=[
-            OpenApiParameter(
-                name="age_group",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-                description=(
-                    "Возрастная группа собаки. Допустимые значения: "
-                    "`${Dog.AGE_GROUP_PUPPY}` (щенки) или `${Dog.AGE_GROUP_ADULT}` (взрослые)."
-                ),
-            ),
-        ],
-        examples=[
-            OpenApiExample(
-                "Пример списка собак",
-                description="Пример ответа при запросе списка доступных щенков.",
-                value=[
-                    {
-                        "id": 1,
-                        "name": "Чижик",
-                        "internationalName": "Chizhik",
-                        "birthDate": "2024-01-01",
-                        "color": "черный",
-                        "description": "Дружелюбный активный щенок.",
-                        "breed": {
-                            "slug": "labrador",
-                            "name": "Лабрадор",
-                            "fullName": "Лабрадор ретривер",
-                            "photo": "/media/breeds/labrador.jpg",
-                        },
-                        "status": {"code": "available", "label": "Доступен"},
-                        "sex": {"code": "male", "label": "Кобель"},
-                        "potential": {"code": "pet", "label": "Компаньон"},
-                        "photos": [
-                            {"id": 10, "url": "/media/dogs/1/photo1.jpg"},
-                        ],
-                        "documents": [
-                            {"id": 5, "name": "Ветпаспорт"},
-                        ],
-                        "parents": {
-                            "mother": {"id": "2", "name": "Луна"},
-                            "father": {"id": "3", "name": "Марс"},
-                        },
-                    }
-                ],
-            ),
-        ],
-    ),
-    retrieve=extend_schema(
-        summary="Карточка собаки",
-        description=(
-            "Возвращает подробную информацию по одной собаке, включая породу, "
-            "фотографии, документы и родителей."
-        ),
-        tags=["Dogs"],
-    ),
-)
+@extend_schema_view(**dog_view_schema)
 class DogViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак (щенки и взрослые)."""
 
@@ -145,42 +82,7 @@ class DogViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список собак по породе",
-        description=(
-            "Возвращает список собак выбранной породы по её slug. "
-            "Поддерживает фильтрацию по возрастной группе."
-        ),
-        tags=["Dogs"],
-        parameters=[
-            OpenApiParameter(
-                name="breed_slug",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.PATH,
-                description="Slug породы (например, `shpits`).",
-            ),
-            OpenApiParameter(
-                name="age_group",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-                description=(
-                    "Возрастная группа собаки. Допустимые значения: "
-                    "`${Dog.AGE_GROUP_PUPPY}` (щенки) или `${Dog.AGE_GROUP_ADULT}` (взрослые)."
-                ),
-            ),
-        ],
-    ),
-    retrieve=extend_schema(
-        summary="Карточка собаки выбранной породы",
-        description=(
-            "Возвращает подробную информацию по одной собаке внутри выбранной породы. "
-            "Используется путь `/breeds/{breed_slug}/dogs/{id}/`."
-        ),
-        tags=["Dogs"],
-    ),
-)
+@extend_schema_view(**dog_by_breed_schema)
 class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка собак по породе."""
 
@@ -210,18 +112,7 @@ class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
 
         return queryset
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список пород",
-        description="Возвращает список всех пород с краткой информацией и описанием.",
-        tags=["Breeds"],
-    ),
-    retrieve=extend_schema(
-        summary="Информация о породе",
-        description="Возвращает подробную информацию об одной породе, включая описательные блоки.",
-        tags=["Breeds"],
-    ),
-)
+@extend_schema_view(**breed_view_schema)
 class BreedViewSet(viewsets.ReadOnlyModelViewSet):
     """Эндпоинт для получения списка всех пород"""
 
@@ -232,105 +123,7 @@ class BreedViewSet(viewsets.ReadOnlyModelViewSet):
         return Breed.objects.select_related("article").all()
 
 
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список групп словарей",
-        description=(
-            "Возвращает список доступных групп словарей (справочников), "
-            "используемых на фронтенде. Для детальной структуры используйте "
-            "эндпоинт получения конкретной группы."
-        ),
-        tags=["Dictionaries"],
-    ),
-    retrieve=extend_schema(
-        summary="Детальная структура группы словарей",
-        description=(
-            "Возвращает структуру одной группы словарей, включая список словарей "
-            "и их элементы (`code` / `label`)."
-        ),
-        tags=["Dictionaries"],
-        parameters=[
-            OpenApiParameter(
-                name="pk",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.PATH,
-                description=(
-                    "Идентификатор группы: числовой ID или строковый ключ группы "
-                    "(например, `dogs_filters`)."
-                ),
-            ),
-        ],
-        examples=[
-            OpenApiExample(
-                "Пример группы словарей",
-                description="Пример структуры группы словарей с несколькими словарями и их элементами.",
-                value={
-                    "id": 1,
-                    "name": "Фильтры по собакам",
-                    "verboseName": "Фильтры по собакам",
-                    "dictionaries": {
-                        "status": {
-                            "id": 10,
-                            "name": "Статус собаки",
-                            "verboseName": "Статус собаки",
-                            "items": [
-                                {"code": "available", "label": "Доступен"},
-                                {"code": "reserved", "label": "Забронирован"},
-                            ],
-                        },
-                        "sex": {
-                            "id": 11,
-                            "name": "Пол",
-                            "verboseName": "Пол",
-                            "items": [
-                                {"code": "male", "label": "Кобель"},
-                                {"code": "female", "label": "Сука"},
-                            ],
-                        },
-                    },
-                },
-            ),
-        ],
-    ),
-    dictionary=extend_schema(
-        summary="Конкретный словарь внутри группы",
-        description=(
-            "Возвращает один словарь внутри группы с его элементами (`code` / `label`). "
-            "Идентификаторы группы и словаря могут быть как числовыми, так и строковыми ключами."
-        ),
-        tags=["Dictionaries"],
-        parameters=[
-            OpenApiParameter(
-                name="pk",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.PATH,
-                description="Идентификатор группы словарей (ID или ключ).",
-            ),
-            OpenApiParameter(
-                name="dict_identifier",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.PATH,
-                description="Идентификатор конкретного словаря внутри группы (ID или ключ).",
-            ),
-        ],
-        examples=[
-            OpenApiExample(
-                "Пример конкретного словаря",
-                description="Пример структуры одного словаря группы с элементами code/label.",
-                value={
-                    "id": 10,
-                    "name": "Статус собаки",
-                    "key": "status",
-                    "verboseName": "Статус собаки",
-                    "items": [
-                        {"code": "available", "label": "Доступен"},
-                        {"code": "reserved", "label": "Забронирован"},
-                    ],
-                },
-            ),
-        ],
-    ),
-)
+@extend_schema_view(**dictionary_view_schema)
 class DictionaryViewSet(viewsets.ViewSet):
     """Эндпоинт для получения групп словарей и их содержимого.
 
@@ -342,6 +135,7 @@ class DictionaryViewSet(viewsets.ViewSet):
     """
 
     permission_classes = [AllowAny]
+    serializer_class = DictionaryGroupListSerializer
 
     def list(self, request: Request) -> Response:
         """
@@ -436,30 +230,7 @@ class DictionaryViewSet(viewsets.ViewSet):
         return Response(_keys_to_camel_case(payload))
     
     
-@extend_schema_view(
-    list=extend_schema(
-        summary="Список заявок",
-        description=(
-            "Возвращает список заявок текущего пользователя. "
-            "Администраторы видят все заявки."
-        ),
-        tags=["Requests"],
-    ),
-    retrieve=extend_schema(
-        summary="Детали заявки",
-        description="Возвращает подробную информацию по одной заявке.",
-        tags=["Requests"],
-    ),
-    create=extend_schema(
-        summary="Создать заявку",
-        description=(
-            "Создаёт новую заявку на щенка или обращение. "
-            "Для аутентифицированного пользователя персональные данные "
-            "подставляются автоматически из профиля."
-        ),
-        tags=["Requests"],
-    ),
-)
+@extend_schema_view(**request_view_schema)
 class RequestViewSet(viewsets.ModelViewSet):
     serializer_class = RequestSerializer
     http_method_names = ["get", "post", "head", "options"]

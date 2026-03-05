@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
+from common.schema import OpenApiTypes, extend_schema_field
 from common.models import (
     DogStatus,
     DogSex,
@@ -59,6 +60,7 @@ class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer
         model = Breed
         fields = ("slug", "name", "full_name", "photo")
 
+    @extend_schema_field(OpenApiTypes.URI)
     def get_photo(self, obj):
         return obj.photo.url if obj.photo else None
 
@@ -87,6 +89,7 @@ class DogListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Сериализатор для списка щенков"""
 
     breed = BreedBriefSerializer(read_only=True)
+    international_name = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     sex = serializers.SerializerMethodField()
     potential = serializers.SerializerMethodField()
@@ -121,15 +124,31 @@ class DogListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             # На случай старых нестандартных значений оставляем код как есть
             return {"code": value, "label": value}
 
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_international_name(self, obj: Dog):
+        return obj.international_name
+
+    @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Dog):
         return self._build_enum_payload(obj.status, DogStatus)
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_sex(self, obj: Dog):
         return self._build_enum_payload(obj.sex, DogSex)
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_potential(self, obj: Dog):
         return self._build_enum_payload(obj.potential, DogPotential)
 
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "mother": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}},
+                "father": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}}},
+            },
+        }
+    )
     def get_parents(self, obj: Dog):
         """
         Возвращает словарь с информацией о родителях щенка:
@@ -179,12 +198,15 @@ class DogByBreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerial
         except ValueError:
             return {"code": value, "label": value}
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Dog):
         return self._build_enum_payload(obj.status, DogStatus)
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_sex(self, obj: Dog):
         return self._build_enum_payload(obj.sex, DogSex)
 
+    @extend_schema_field(CodeLabelSerializer)
     def get_potential(self, obj: Dog):
         return self._build_enum_payload(obj.potential, DogPotential)
 
@@ -247,9 +269,11 @@ class BreedListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
             "article_slug",
         )
 
+    @extend_schema_field(OpenApiTypes.URI)
     def get_photo(self, obj):
         return obj.photo.url if obj.photo else None
 
+    @extend_schema_field(OpenApiTypes.STR)
     def get_article_slug(self, obj):
         try:
             return obj.article.slug
@@ -306,3 +330,9 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         else:
             data["user"] = None
         return data
+
+
+class DictionaryGroupListSerializer(serializers.Serializer):
+    """Схема ответа списка групп словарей (для drf-spectacular). Реальный ответ — объект с ключами групп."""
+
+    pass  # динамическая структура; используется только для регистрации ViewSet в схеме

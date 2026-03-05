@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
+    "generate:api": "npx @rtk-query/codegen-openapi openapi-codegen.config.mjs",
     "build": "vite build && tsc",
     "preview": "vite preview",
     "test": "vitest run",
@@ -27,6 +28,7 @@
     "sass": "^1.97.2"
   },
   "devDependencies": {
+    "@rtk-query/codegen-openapi": "^2.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@eslint/js": "^9.17.0",
