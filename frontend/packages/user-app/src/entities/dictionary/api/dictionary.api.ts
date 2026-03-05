@@ -1,34 +1,8 @@
+import { baseApi } from '@/shared/api/base-api';
 import { API_CONFIG } from '@/shared/config/api';
-import { baseApi } from './base-api';
+import type { DictionaryGroup, DictionaryMeta, DictionariesIndex } from '../model/types';
 
-export interface DictionaryGroupSummary {
-  id: number;
-  name: string;
-}
-
-export type DictionariesIndex = Record<string, DictionaryGroupSummary>;
-
-export interface DictionaryItem {
-  code: string;
-  label: string;
-}
-
-export interface DictionaryMeta {
-  id: number;
-  name: string;
-  key: string;
-  verboseName: string;
-  items: DictionaryItem[];
-}
-
-export interface DictionaryGroup {
-  id: number;
-  name: string;
-  verboseName: string;
-  dictionaries: Record<string, DictionaryMeta>;
-}
-
-export const dictionariesApi = baseApi.injectEndpoints({
+export const dictionaryApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getDictionariesIndex: build.query<DictionariesIndex, void>({
       query: () => API_CONFIG.ENDPOINTS.DICTIONARIES,
@@ -61,4 +35,4 @@ export const {
   useGetDictionariesIndexQuery,
   useGetDictionaryGroupQuery,
   useGetDictionaryQuery,
-} = dictionariesApi;
+} = dictionaryApi;

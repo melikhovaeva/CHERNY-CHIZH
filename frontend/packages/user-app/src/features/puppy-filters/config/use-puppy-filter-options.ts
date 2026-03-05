@@ -1,4 +1,4 @@
-import { useGetDictionaryGroupQuery } from '@/shared/api/dictionaries-api';
+import { useGetDictionaryGroupQuery } from '@/entities/dictionary';
 import { useMemo } from 'react';
 import { DICTIONARY_GROUP_PUPPY, DICTIONARY_KEYS } from './filter-constants';
 import {
