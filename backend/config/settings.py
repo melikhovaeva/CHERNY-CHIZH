@@ -123,15 +123,11 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Cherniy Chizh API',
     'DESCRIPTION': 'Публичное API платформы «Черный Чиж» для работы с собаками, породами, справочниками и заявками.',
     'VERSION': '1.0.0',
-    # Скрываем служебный эндпоинт /api/schema/ из самой документации
     'SERVE_INCLUDE_SCHEMA': False,
-    'CONTACT': {
-        'name': 'Команда Черный Чиж',
-        'email': 'support@cherniy-chizh.local',
-    },
-    'LICENSE': {
-        'name': 'Proprietary',
-    },
+    'POSTPROCESSING_HOOKS': [
+        'config.schema.camelize_schema',
+        'drf_spectacular.hooks.postprocess_schema_enums',
+    ],
     'SERVERS': [
         {
             'url': 'http://localhost:8000',
@@ -189,14 +185,26 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Minio / S3 storage for media files (e.g. Puppy photos)
 # Path-style URL с именем бакета: http://localhost:9000/cherniy-chizh/puppies/...
-STORAGES = {
-    "default": {
-        "BACKEND": "config.storage_backends.MinioPathStyleStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
+# When SPECTACULAR_SCHEMA_EXPORT=1, use FileSystemStorage so schema export does not require MinIO.
+if os.getenv("SPECTACULAR_SCHEMA_EXPORT") == "1":
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+            "OPTIONS": {"location": "/tmp"},
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "config.storage_backends.MinioPathStyleStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
