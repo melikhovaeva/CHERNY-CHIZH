@@ -1,8 +1,8 @@
 import { getHeaderLinks, getMobileMenuLinks } from '@/app/lib/nav-links';
 import { selectIsAuthenticated, selectSessionStatus } from '@/entities/session';
-import { useAppSelector } from '@/shared/lib/store';
 import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
 import { UserMenu } from '@/features/session';
+import { useAppSelector } from '@/shared/lib/store';
 import { cn } from '@/shared/lib/utils';
 import { Backdrop, Skeleton } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
@@ -10,6 +10,8 @@ import { useMemo, useState } from 'react';
 import styles from './Header.module.scss';
 
 const AVATAR_SIZE = 50;
+
+import { LogoIcon } from '@/shared/ui/assets';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,7 +66,7 @@ export function Header() {
         ])}
       >
         <Link to="/" className={styles.logo}>
-          CHERNIY CHIZH
+          <LogoIcon aria-label="Logo" />
         </Link>
         <ul className={styles.links}>
           {headerLinks.map((link) => (

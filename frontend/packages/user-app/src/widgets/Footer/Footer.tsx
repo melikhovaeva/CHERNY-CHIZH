@@ -1,12 +1,17 @@
-import { CONTACT_DATA, ContactEnum, DOCUMENT_DATA } from '@/entities/contacts'
-import { LogoIcon, SocialIcons } from '@/shared/ui/assets'
-import styles from './Footer.module.scss'
+import { CONTACT_DATA, ContactEnum, DOCUMENT_DATA } from '@/entities/contacts';
+import { LogoBigIcon, SocialIcons } from '@/shared/ui/assets';
+import styles from './Footer.module.scss';
 
-const contacts = CONTACT_DATA.filter((contact) => contact.type === ContactEnum.CONTACT)
-const socials = CONTACT_DATA.filter((contact) => contact.type === ContactEnum.SOCIALS)
-const documents = DOCUMENT_DATA
+const contacts = CONTACT_DATA.filter(
+  (contact) => contact.type === ContactEnum.CONTACT,
+);
+const socials = CONTACT_DATA.filter(
+  (contact) => contact.type === ContactEnum.SOCIALS,
+);
+const documents = DOCUMENT_DATA;
 
-const WARNING_TEXT = '*Instagram, Whatsapp — продукты компании Meta Platforms Inc. признанной экстремистской организацией в РФ'
+const WARNING_TEXT =
+  '*Instagram, Whatsapp — продукты компании Meta Platforms Inc. признанной экстремистской организацией в РФ';
 
 export function Footer() {
   return (
@@ -44,21 +49,25 @@ export function Footer() {
             <span className={styles.title}>Социальные сети</span>
             <ul className={styles.socialsList}>
               {socials.map((social) => {
-                const SocialIcon = SocialIcons[social.name]
+                const SocialIcon = SocialIcons[social.name];
                 return (
                   <li key={social.id} className={styles.social}>
-                    <a className={styles.socialLink} href={social.href} aria-label={social.name}>
+                    <a
+                      className={styles.socialLink}
+                      href={social.href}
+                      aria-label={social.name}
+                    >
                       {SocialIcon ? <SocialIcon aria-hidden /> : null}
                     </a>
                   </li>
-                )
+                );
               })}
             </ul>
             <p className={styles.warning}>{WARNING_TEXT}</p>
           </div>
         </div>
-        <LogoIcon className={styles.logo} aria-label="Logo" />
+        <LogoBigIcon className={styles.logo} aria-label="Logo" />
       </div>
-    </footer >
-  )
+    </footer>
+  );
 }
