@@ -4,7 +4,7 @@ import { routeTree } from './routeTree.gen';
 
 const router = createRouter({
   routeTree,
-  basepath: '/admin',
+  basepath: '/crm',
   defaultPreload: 'intent',
   scrollRestoration: true,
 });

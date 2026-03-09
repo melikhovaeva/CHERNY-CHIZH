@@ -13,8 +13,8 @@ import { Route as UserRouteImport } from './app/routes/user'
 import { Route as PuppiesRouteImport } from './app/routes/puppies'
 import { Route as KnowledgeBaseRouteImport } from './app/routes/knowledge-base'
 import { Route as DogsRouteImport } from './app/routes/dogs'
+import { Route as CrmRouteImport } from './app/routes/crm'
 import { Route as ContactsRouteImport } from './app/routes/contacts'
-import { Route as AdminRouteImport } from './app/routes/admin'
 import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
@@ -46,14 +46,14 @@ const DogsRoute = DogsRouteImport.update({
   path: '/dogs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactsRoute = ContactsRouteImport.update({
   id: '/contacts',
   path: '/contacts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -110,8 +110,8 @@ const DogsBreedIdDogIdRoute = DogsBreedIdDogIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/contacts': typeof ContactsRoute
+  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/puppies': typeof PuppiesRouteWithChildren
@@ -128,8 +128,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/contacts': typeof ContactsRoute
+  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/puppies': typeof PuppiesRouteWithChildren
@@ -145,8 +145,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
   '/contacts': typeof ContactsRoute
+  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/puppies': typeof PuppiesRouteWithChildren
@@ -165,8 +165,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
     | '/contacts'
+    | '/crm'
     | '/dogs'
     | '/knowledge-base'
     | '/puppies'
@@ -183,8 +183,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
     | '/contacts'
+    | '/crm'
     | '/dogs'
     | '/knowledge-base'
     | '/puppies'
@@ -199,8 +199,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
     | '/contacts'
+    | '/crm'
     | '/dogs'
     | '/knowledge-base'
     | '/puppies'
@@ -218,8 +218,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
   ContactsRoute: typeof ContactsRoute
+  CrmRoute: typeof CrmRoute
   DogsRoute: typeof DogsRouteWithChildren
   KnowledgeBaseRoute: typeof KnowledgeBaseRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
@@ -258,18 +258,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contacts': {
       id: '/contacts'
       path: '/contacts'
       fullPath: '/contacts'
       preLoaderRoute: typeof ContactsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -397,8 +397,8 @@ const PuppiesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
   ContactsRoute: ContactsRoute,
+  CrmRoute: CrmRoute,
   DogsRoute: DogsRouteWithChildren,
   KnowledgeBaseRoute: KnowledgeBaseRoute,
   PuppiesRoute: PuppiesRouteWithChildren,

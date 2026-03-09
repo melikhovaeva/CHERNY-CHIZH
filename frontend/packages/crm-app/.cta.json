@@ -1,5 +1,5 @@
 {
-  "projectName": "admin-app",
+  "projectName": "crm-app",
   "mode": "file-router",
   "typescript": true,
   "tailwind": true,

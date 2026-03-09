@@ -6,19 +6,23 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/frontend-app
+      # Keep container's node_modules (musl binaries) instead of host's
+      - /frontend-app/node_modules
     environment:
       - NODE_ENV=development
     command: sh -c "pnpm --filter user-app docker:dev"
-  frontend-admin:
+  frontend-crm:
     platform: linux/amd64
     build:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/frontend-app
+      # Keep container's node_modules (musl binaries) instead of host's
+      - /frontend-app/node_modules
     environment:
       - NODE_ENV=development
-    command: sh -c "pnpm --filter admin-app docker:dev"
+    command: sh -c "pnpm --filter crm-app docker:dev"
   backend:
     build:
       context: ./backend
@@ -71,7 +75,7 @@ services:
     image: nginx:alpine
     depends_on:
       - frontend-user
-      - frontend-admin
+      - frontend-crm
     ports:
       - "3000:80"
     volumes:

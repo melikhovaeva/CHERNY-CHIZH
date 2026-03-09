@@ -1,10 +1,11 @@
 import { UserImage } from '@/features/session';
 import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
-import { AdminButton, ProfileButton } from '@/features/session/user-menu';
+import { ProfileButton } from '@/features/session/user-menu';
 import { cn } from '@/shared/lib/utils';
 import { DropdownMenu } from '@/shared/ui/components';
 import { useNavigate } from '@tanstack/react-router';
 import { useRef, useState } from 'react';
+import { CrmButton } from '../CrmButton';
 import styles from './UserMenu.module.scss';
 
 const AVATAR_SIZE = 50;
@@ -27,9 +28,9 @@ export function UserMenu() {
     navigate({ to: '/user' });
   };
 
-  const handleAdmin = () => {
+  const handleCrm = () => {
     handleClose();
-    navigate({ to: '/admin' });
+    navigate({ to: '/crm' });
   };
 
   return (
@@ -51,7 +52,7 @@ export function UserMenu() {
         className={styles.dropdownMenu}
       >
         <ProfileButton className={cn([styles.item])} onClick={handleProfile} />
-        <AdminButton className={styles.item} onClick={handleAdmin} />
+        <CrmButton className={styles.item} onClick={handleCrm} />
         <LogoutButton className={styles.item} />
       </DropdownMenu>
     </div>
