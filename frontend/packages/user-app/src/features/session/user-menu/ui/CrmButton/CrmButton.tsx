@@ -1,13 +1,13 @@
 import { cn } from '@/shared/lib/utils';
-import styles from './AdminButton.module.scss';
+import styles from './CrmButton.module.scss';
 import DashboardIcon from './assets/dashboard.svg?react';
 
-interface AdminButtonProps {
+interface CrmButtonProps {
   className?: string;
   onClick?: () => void;
 }
 
-export const AdminButton = ({ className, onClick }: AdminButtonProps) => {
+export const CrmButton = ({ className, onClick }: CrmButtonProps) => {
   return (
     <>
       <button

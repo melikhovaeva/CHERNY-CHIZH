@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev:user": "pnpm --filter user-app dev",
-    "dev:admin": "pnpm --filter admin-app dev",
+    "dev:crm": "pnpm --filter crm-app dev",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",

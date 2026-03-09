@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 import viteReact from '@vitejs/plugin-react';
 
 const config = defineConfig({
-  base: '/admin/',
+  base: '/crm/',
   server: {
     host: '0.0.0.0',
     port: 3001,

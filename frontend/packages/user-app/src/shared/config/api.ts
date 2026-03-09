@@ -41,4 +41,4 @@ export const API_CONFIG = {
   } as const,
 } as const;
 
-export const ADMIN_BASE_PATH = '/admin/' as const;
+export const CRM_BASE_PATH = '/crm/' as const;
