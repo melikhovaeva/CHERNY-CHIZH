@@ -30,10 +30,9 @@
 }
 
 .logo {
-  font-family: 'Roboto Condensed';
-  font-weight: 900;
-  font-size: 28px;
-  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .links {
@@ -42,7 +41,6 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
-  font-family: 'Manrope';
 
   @media (max-width: 768px) {
     display: none;
