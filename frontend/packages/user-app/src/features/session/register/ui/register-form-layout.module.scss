@@ -15,27 +15,3 @@
   font-size: 14px;
   line-height: 1.4;
 }
-
-.apiError {
-  margin: 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 14px;
-  line-height: 1.4;
-  color: $input-invalid-border-color;
-}
-
-.consent {
-  font-family: 'Manrope', sans-serif;
-  font-size: 14px;
-  line-height: 1.4;
-  color: $text-color;
-
-  a {
-    color: $urls-color;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}

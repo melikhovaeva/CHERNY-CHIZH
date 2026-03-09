@@ -1,12 +1,7 @@
 import { cn } from '@/shared/lib/utils';
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { LogoIcon } from '../../assets';
 import { Backdrop } from '../Backdrop';
 import ArrowLeftIcon from './assets/arrow-left.svg?react';
 import largeModalImage from './assets/large-modal-image.png';
@@ -125,7 +120,7 @@ export function Modal({
           <div className={cn([styles.panel, styles.large])} ref={panelRef}>
             <div className={styles.content}>
               <div className={styles.leftSide}>
-                <h3 className={styles.logo}>CHERNY CHIZH</h3>
+                <LogoIcon className={styles.logo} aria-label="Logo" />
                 <p className={styles.slug}>Присоединяйся к сообществу</p>
                 <div className={styles.imgGradientOverlay} />
                 <img src={largeModalImage} alt="Modal image" />

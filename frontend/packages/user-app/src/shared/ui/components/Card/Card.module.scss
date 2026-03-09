@@ -79,13 +79,6 @@
     z-index: 1;
     display: flex;
     flex-direction: column;
-
-    &__text {
-      font-family: 'Manrope';
-      font-size: 28px;
-      font-weight: 500;
-      line-height: 120%;
-    }
   }
 
   &__placeholder {

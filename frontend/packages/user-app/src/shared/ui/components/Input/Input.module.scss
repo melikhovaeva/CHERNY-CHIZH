@@ -4,8 +4,7 @@
 }
 
 .label {
-  margin-bottom: 6px;
-  font-family: 'Manrope', sans-serif;
+  margin: 0 0 6px 12px;
   font-size: 14px;
   color: $text-color;
 }
@@ -45,10 +44,8 @@
 }
 
 .error {
-  padding-top: 6px;
-  font-family: 'Manrope', sans-serif;
+  margin: 2px 0 0 12px;
   font-size: 12px;
-  line-height: 1;
   color: $input-invalid-border-color;
   opacity: 0;
   transition: opacity 0.2s ease;
