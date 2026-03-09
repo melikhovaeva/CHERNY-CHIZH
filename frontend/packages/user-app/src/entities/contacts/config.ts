@@ -19,9 +19,9 @@ export const CONTACT_DATA: ContactData[] = [
   {
     id: 3,
     type: ContactEnum.SOCIALS,
-    name: 'instagram',
-    value: '@sharpei.club',
-    href: 'https://www.instagram.com/sharpei.club',
+    name: 'vk',
+    value: 'https://vk.com/sharpei.club',
+    href: 'https://vk.com/sharpei.club',
   },
   {
     id: 4,
@@ -33,16 +33,17 @@ export const CONTACT_DATA: ContactData[] = [
   {
     id: 5,
     type: ContactEnum.SOCIALS,
-    name: 'whatsapp',
-    value: '+7 (926) 232-43-07',
-    href: 'https://wa.me/79262324307',
+    name: 'instagram',
+    value: '@sharpei.club',
+    href: 'https://www.instagram.com/sharpei.club',
   },
+
   {
     id: 6,
     type: ContactEnum.SOCIALS,
-    name: 'vk',
-    value: 'https://vk.com/sharpei.club',
-    href: 'https://vk.com/sharpei.club',
+    name: 'whatsapp',
+    value: '+7 (926) 232-43-07',
+    href: 'https://wa.me/79262324307',
   },
 ];
 

@@ -1,5 +1,6 @@
 import { CONTACT_DATA, ContactEnum, DOCUMENT_DATA } from '@/entities/contacts';
 import { LogoBigIcon, SocialIcons } from '@/shared/ui/assets';
+import { useState } from 'react';
 import styles from './Footer.module.scss';
 
 const contacts = CONTACT_DATA.filter(
@@ -10,10 +11,19 @@ const socials = CONTACT_DATA.filter(
 );
 const documents = DOCUMENT_DATA;
 
-const WARNING_TEXT =
+const META_WARNING_TEXT =
   '*Instagram, Whatsapp — продукты компании Meta Platforms Inc. признанной экстремистской организацией в РФ';
 
+const TELEGRAM_WARNING_TEXT =
+  '*Мессенджер Telegram официально запрещён на территории РФ.';
+
 export function Footer() {
+  const [expandedSocialId, setExpandedSocialId] = useState<number | null>(null);
+
+  const handleSocialClick = (socialId: number) => {
+    setExpandedSocialId((current) => (current === socialId ? null : socialId));
+  };
+
   return (
     <footer className={styles.root}>
       <div className={styles.container}>
@@ -50,20 +60,46 @@ export function Footer() {
             <ul className={styles.socialsList}>
               {socials.map((social) => {
                 const SocialIcon = SocialIcons[social.name];
+                const isVk = social.name === 'vk';
+                const isExpanded = expandedSocialId === social.id;
                 return (
                   <li key={social.id} className={styles.social}>
-                    <a
-                      className={styles.socialLink}
-                      href={social.href}
+                    <button
+                      type="button"
+                      className={styles.socialTextBlock}
+                      onClick={() => handleSocialClick(social.id)}
                       aria-label={social.name}
+                      aria-expanded={isExpanded}
                     >
                       {SocialIcon ? <SocialIcon aria-hidden /> : null}
-                    </a>
+                      <span
+                        className={`${styles.socialExpandable} ${isExpanded ? styles.socialExpandableExpanded : ''}`}
+                      >
+                        {isVk ? (
+                          <a
+                            href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.socialLinkText}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            ссылка
+                          </a>
+                        ) : (
+                          <span className={styles.socialValue}>
+                            {social.value}
+                          </span>
+                        )}
+                      </span>
+                    </button>
                   </li>
                 );
               })}
             </ul>
-            <p className={styles.warning}>{WARNING_TEXT}</p>
+            <div className={styles.warnings}>
+              <p className={styles.warning}>{META_WARNING_TEXT}</p>
+              <p className={styles.warning}>{TELEGRAM_WARNING_TEXT}</p>
+            </div>
           </div>
         </div>
         <LogoBigIcon className={styles.logo} aria-label="Logo" />
