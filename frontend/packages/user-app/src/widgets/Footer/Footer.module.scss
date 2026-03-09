@@ -41,10 +41,16 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 420px;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 
   &List {
     display: flex;
     gap: 12px;
+    width: calc(100% + 32px);
+    box-sizing: border-box;
   }
 }
 
@@ -62,8 +68,56 @@
   height: 100%;
 }
 
+.socialTextBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0px 9px 9px;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.socialExpandable {
+  display: block;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-width 0.3s ease-out,
+    opacity 0.25s ease-out;
+
+  &.socialExpandableExpanded {
+    max-width: 220px;
+    opacity: 1;
+  }
+}
+
+.socialValue {
+  padding-right: 9px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.socialLinkText {
+  padding-right: 9px;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: underline;
+  @include text-color($footer-text-color);
+}
+
+.warnings {
+  display: flex;
+  width: 100%;
+}
+
 .warning {
   font-size: 12px;
   @include text-color($footer-text-color);
-  max-width: 240px;
+  max-width: 220px;
 }
