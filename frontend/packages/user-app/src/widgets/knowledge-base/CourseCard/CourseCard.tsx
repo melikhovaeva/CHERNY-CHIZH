@@ -1,8 +1,8 @@
 import type { CourseRead } from '@/entities/course';
 import { API_CONFIG } from '@/shared/config/api';
 import { Placeholder } from '@/shared/ui/components';
-import { DifficultyBadge } from 'common';
 import { Link } from '@tanstack/react-router';
+import { DifficultyBadge } from 'common';
 import styles from './CourseCard.module.scss';
 
 function getImageUrl(path: string | null | undefined): string | undefined {
@@ -96,13 +96,15 @@ export function CourseCard({
             ))}
           </div>
         )}
-        <h3 className={styles.title}>{course.title}</h3>
+        <h4 className={styles.title}>{course.title}</h4>
         {course.description && (
           <p
             className={[
               styles.description,
               styles.descriptionClamp,
-              isHorizontal ? styles.descriptionClamp4 : styles.descriptionClamp2,
+              isHorizontal
+                ? styles.descriptionClamp4
+                : styles.descriptionClamp2,
             ].join(' ')}
           >
             {course.description}
