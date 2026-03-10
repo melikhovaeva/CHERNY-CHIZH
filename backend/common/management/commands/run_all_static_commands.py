@@ -3,9 +3,9 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 STATIC_COMMANDS = [
+    "fill_static_breed_descriptions",
     "fill_static_animal_dictionaries",
     "fill_static_faq",
-    "fill_static_breed_descriptions",
 ]
 
 

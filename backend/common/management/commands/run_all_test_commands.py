@@ -4,10 +4,10 @@ from django.core.management.base import BaseCommand, CommandError
 
 TEST_COMMANDS = [
     "fill_test_breed_descriptions",
-    "fill_test_breed_articles",
-    "fill_standalone_articles",
     "fill_test_dogs",
     "fill_test_puppies",
+    "fill_standalone_articles",
+    "fill_test_breed_articles",
 ]
 
 
