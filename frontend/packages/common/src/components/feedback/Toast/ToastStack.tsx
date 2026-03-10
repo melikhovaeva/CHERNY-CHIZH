@@ -1,5 +1,5 @@
 import { Toast } from './Toast';
-import styles from './Toast.module.css';
+import styles from './Toast.module.scss';
 import type { ToastItem, ToastPosition } from './ToastContext';
 
 const positionClass: Record<ToastPosition, string> = {

@@ -1,11 +1,13 @@
+@use '../../../styles/abstracts/variables' as vars;
+
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
   border-radius: 100px;
-  background-color: #334e3a;
-  color: #fff;
+  background-color: vars.$accent-primary-active-color;
+  color: vars.$text-inverted-color;
   font-family: 'Manrope', sans-serif;
   font-size: 13px;
   font-weight: 500;

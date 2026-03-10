@@ -1,5 +1,5 @@
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from './icons';
-import styles from './Toast.module.css';
+import styles from './Toast.module.scss';
 import type { ToastType } from './ToastContext';
 
 interface ToastProps {

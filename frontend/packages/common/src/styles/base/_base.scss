@@ -1,0 +1,21 @@
+@use '../abstracts/mixins' as *;
+@use '../abstracts/variables' as *;
+
+:root {
+  @include export-css-variables;
+}
+
+body {
+  margin: 0;
+  letter-spacing: 0;
+  text-transform: unset;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: 0.3s ease;
+  @include text-color($text-color);
+  @include bg-color($background-primary-color);
+}
+
+main {
+  min-height: calc(55vh - 148px);
+}

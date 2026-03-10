@@ -1,21 +1,16 @@
 import { getHeaderLinks, getMobileMenuLinks } from '@/app/lib/nav-links';
 import { selectIsAuthenticated, selectSessionStatus } from '@/entities/session';
-import { BurgerMenu, BurgerMenuList, LoginButton } from '@/features';
+import { LoginButton } from '@/features';
 import { UserMenu } from '@/features/session';
 import { useAppSelector } from '@/shared/lib/store';
-import { cn } from '@/shared/lib/utils';
-import { Backdrop, Skeleton } from '@/shared/ui/components';
+import { Skeleton } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
-import styles from './Header.module.scss';
+import { AppLogo, Header as CommonHeader } from 'common';
+import { useMemo } from 'react';
 
 const AVATAR_SIZE = 50;
 
-import { LogoIcon } from '@/shared/ui/assets';
-
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const sessionStatus = useAppSelector(selectSessionStatus);
 
@@ -25,23 +20,14 @@ export function Header() {
   const isAuthUnknown = sessionStatus === 'idle' || sessionStatus === 'loading';
 
   const renderSkeletonAuthControl = () => (
-    <div className={styles.userMenu} aria-hidden>
-      <Skeleton
-        variant="avatar"
-        width={AVATAR_SIZE}
-        height={AVATAR_SIZE}
-        className={styles.avatarSkeleton}
-      />
+    <div aria-hidden>
+      <Skeleton variant="avatar" width={AVATAR_SIZE} height={AVATAR_SIZE} />
     </div>
   );
 
   const renderLoginControl = () => <LoginButton />;
 
-  const renderUserControl = () => (
-    <div className={styles.userMenu}>
-      <UserMenu />
-    </div>
-  );
+  const renderUserControl = () => <UserMenu />;
 
   const authControlDesktop = isAuthUnknown
     ? renderSkeletonAuthControl()
@@ -54,51 +40,23 @@ export function Header() {
     : isAuthenticated
       ? renderUserControl()
       : renderLoginControl();
+
   return (
-    <header className={styles.container}>
-      {isMenuOpen && (
-        <Backdrop onClick={() => setIsMenuOpen(false)} aria-hidden />
-      )}
-      <div
-        className={cn([
-          styles.content,
-          isMenuOpen ? styles.content_menuOpen : '',
-        ])}
-      >
-        <Link to="/" className={styles.logo}>
-          <LogoIcon aria-label="Logo" />
+    <CommonHeader
+      logo={
+        <Link to="/">
+          <AppLogo aria-label="Logo" />
         </Link>
-        <ul className={styles.links}>
-          {headerLinks.map((link) => (
-            <li key={link.to}>
-              <Link to={link.to} className={styles.link}>
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <div className={styles.burgerWrap}>
-          <BurgerMenu
-            isOpen={isMenuOpen}
-            onClose={() => setIsMenuOpen(false)}
-            onOpen={() => setIsMenuOpen(true)}
-          />
-        </div>
-        <div className={styles.desktopActions}>{authControlDesktop}</div>
-      </div>
-      <div
-        className={cn([
-          styles.menuPanel,
-          isMenuOpen ? styles.menuPanel_open : '',
-        ])}
-        aria-hidden={!isMenuOpen}
-      >
-        <BurgerMenuList
-          links={mobileMenuLinks}
-          loginButton={authControlMobile}
-          onLinkClick={() => setIsMenuOpen(false)}
-        />
-      </div>
-    </header>
+      }
+      links={headerLinks}
+      mobileLinks={mobileMenuLinks}
+      renderLink={(link, onClick) => (
+        <Link to={link.to} onClick={onClick}>
+          {link.label}
+        </Link>
+      )}
+      desktopActions={authControlDesktop}
+      mobileActions={authControlMobile}
+    />
   );
 }
