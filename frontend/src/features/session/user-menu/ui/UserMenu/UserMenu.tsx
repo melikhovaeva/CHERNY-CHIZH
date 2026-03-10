@@ -1,7 +1,8 @@
+import { UserDropdownMenu } from '@/entities/user';
 import { selectCurrentUser, useLogoutMutation } from '@/entities/session';
 import { useAppSelector } from '@/app/store';
+import { useError } from '@/shared/ui/components';
 import { useNavigate } from '@tanstack/react-router';
-import { useError, UserDropdownMenu } from '@/shared/common';
 import DashboardIcon from '../CrmButton/assets/dashboard.svg?react';
 import LogoutIcon from '../../../logout/ui/assets/logout.svg?react';
 import ProfileIcon from '../ProfileButton/assets/profile.svg?react';

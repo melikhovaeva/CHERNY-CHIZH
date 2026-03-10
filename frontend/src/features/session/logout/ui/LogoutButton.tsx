@@ -1,6 +1,6 @@
 import { useLogoutMutation } from '@/entities/session';
 import { cn } from '@/shared/lib/utils';
-import { useError } from '@/shared/common';
+import { useError } from '@/shared/ui/components';
 import { useCallback } from 'react';
 import styles from './LogoutButton.module.scss';
 import LogoutIcon from './assets/logout.svg?react';

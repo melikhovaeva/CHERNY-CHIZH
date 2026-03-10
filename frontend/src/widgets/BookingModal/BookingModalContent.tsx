@@ -7,7 +7,7 @@ import {
   useSubmitBookingMutation,
 } from '@/entities/booking';
 import { getFirstApiErrorMessage } from '@/shared';
-import { useError, useSuccess } from '@/shared/common';
+import { useError, useSuccess } from '@/shared/ui/components';
 import { type SubmitHandler } from 'react-hook-form';
 
 interface BookingModalContentProps {

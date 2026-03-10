@@ -36,7 +36,7 @@ export default defineConfig({
       '@entities': fileURLToPath(new URL('./src/entities', import.meta.url)),
       '@shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
       '@common-styles': fileURLToPath(
-        new URL('./src/shared/common/styles', import.meta.url),
+        new URL('./src/shared/ui/styles', import.meta.url),
       ),
     },
   },

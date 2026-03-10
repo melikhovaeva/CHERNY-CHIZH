@@ -1,5 +1,5 @@
 import { Button, Form, Input } from '@/shared/ui/components';
-import { useError } from '@/shared/common';
+import { useError } from '@/shared/ui/components';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import formImage from '../assets/form-image.webp';
 import type { BookingFormFields } from '../model';

@@ -8,7 +8,7 @@ import { ProtectedRoute } from '@/features/session';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { API_CONFIG } from '@/shared/config/api';
 import { getFirstApiErrorMessage } from '@/shared';
-import { useError, useSuccess } from '@/shared/common';
+import { useError, useSuccess } from '@/shared/ui/components';
 import { useState } from 'react';
 import { ProfileMyCourses, ProfileSettings } from '@/widgets';
 import { USER_PROFILE_TABS, type UserProfileTabId } from './model/tabs';

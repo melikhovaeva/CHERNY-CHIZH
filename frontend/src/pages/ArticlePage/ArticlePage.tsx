@@ -1,8 +1,7 @@
 import { useGetArticleBySlugQuery } from '@/entities/article';
-import { SafeHtmlContent } from '@/shared/common';
 import { useParams } from '@tanstack/react-router';
 import { API_CONFIG } from '@/shared/config/api';
-import { Placeholder } from '@/shared/ui/components';
+import { Placeholder, SafeHtmlContent } from '@/shared/ui/components';
 import styles from './ArticlePage.module.scss';
 
 export const ArticlePage = () => {

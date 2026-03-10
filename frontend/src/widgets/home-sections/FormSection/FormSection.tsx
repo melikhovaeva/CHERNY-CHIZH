@@ -5,7 +5,7 @@ import {
   type SubmitBookingRequest,
   useSubmitBookingMutation,
 } from '@/entities/booking';
-import { useError, useSuccess } from '@/shared/common';
+import { useError, useSuccess } from '@/shared/ui/components';
 import { type SubmitHandler } from 'react-hook-form';
 import styles from './FormSection.module.scss';
 
