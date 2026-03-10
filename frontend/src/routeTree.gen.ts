@@ -9,11 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/routes/__root'
-import { Route as UserRouteImport } from './app/routes/user'
 import { Route as PuppiesRouteImport } from './app/routes/puppies'
+import { Route as ProfileRouteImport } from './app/routes/profile'
 import { Route as KnowledgeBaseRouteImport } from './app/routes/knowledge-base'
 import { Route as DogsRouteImport } from './app/routes/dogs'
-import { Route as CrmRouteImport } from './app/routes/crm'
 import { Route as ContactsRouteImport } from './app/routes/contacts'
 import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
@@ -26,14 +25,14 @@ import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs.$breedId
 import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies.$breedId.$puppyId'
 import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs.$breedId.$dogId'
 
-const UserRoute = UserRouteImport.update({
-  id: '/user',
-  path: '/user',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
   path: '/puppies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgeBaseRoute = KnowledgeBaseRouteImport.update({
@@ -44,11 +43,6 @@ const KnowledgeBaseRoute = KnowledgeBaseRouteImport.update({
 const DogsRoute = DogsRouteImport.update({
   id: '/dogs',
   path: '/dogs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CrmRoute = CrmRouteImport.update({
-  id: '/crm',
-  path: '/crm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactsRoute = ContactsRouteImport.update({
@@ -111,11 +105,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
+  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
-  '/user': typeof UserRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
@@ -129,11 +122,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
+  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
-  '/user': typeof UserRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -146,11 +138,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contacts': typeof ContactsRoute
-  '/crm': typeof CrmRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
+  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
-  '/user': typeof UserRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
@@ -166,11 +157,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contacts'
-    | '/crm'
     | '/dogs'
     | '/knowledge-base'
+    | '/profile'
     | '/puppies'
-    | '/user'
     | '/articles/$slug'
     | '/courses/$slug'
     | '/dogs/$breedId'
@@ -184,11 +174,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contacts'
-    | '/crm'
     | '/dogs'
     | '/knowledge-base'
+    | '/profile'
     | '/puppies'
-    | '/user'
     | '/articles/$slug'
     | '/courses/$slug'
     | '/dogs/$breedId/$dogId'
@@ -200,11 +189,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contacts'
-    | '/crm'
     | '/dogs'
     | '/knowledge-base'
+    | '/profile'
     | '/puppies'
-    | '/user'
     | '/articles/$slug'
     | '/courses/$slug'
     | '/dogs/$breedId'
@@ -219,29 +207,28 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactsRoute: typeof ContactsRoute
-  CrmRoute: typeof CrmRoute
   DogsRoute: typeof DogsRouteWithChildren
   KnowledgeBaseRoute: typeof KnowledgeBaseRoute
+  ProfileRoute: typeof ProfileRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
-  UserRoute: typeof UserRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/user': {
-      id: '/user'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof UserRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/puppies': {
       id: '/puppies'
       path: '/puppies'
       fullPath: '/puppies'
       preLoaderRoute: typeof PuppiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge-base': {
@@ -256,13 +243,6 @@ declare module '@tanstack/react-router' {
       path: '/dogs'
       fullPath: '/dogs'
       preLoaderRoute: typeof DogsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/crm': {
-      id: '/crm'
-      path: '/crm'
-      fullPath: '/crm'
-      preLoaderRoute: typeof CrmRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contacts': {
@@ -398,11 +378,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactsRoute: ContactsRoute,
-  CrmRoute: CrmRoute,
   DogsRoute: DogsRouteWithChildren,
   KnowledgeBaseRoute: KnowledgeBaseRoute,
+  ProfileRoute: ProfileRoute,
   PuppiesRoute: PuppiesRouteWithChildren,
-  UserRoute: UserRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
   CoursesSlugRoute: CoursesSlugRoute,
 }
