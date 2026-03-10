@@ -9,72 +9,69 @@ $background-primary-color: #f9f4f0;
 $background-secondary-color: #efe9e3;
 $background-tertiary-color: #ffffff;
 
-// Button
 $button-border: 1px solid;
-
 $button-primary-background-color: #0c0d0d;
 $button-primary-text-color: $text-inverted-color;
 $button-primary-border: $button-border transparent;
-
 $button-secondary-background-color: transparent;
 $button-secondary-text-color: #000;
 $button-secondary-border: $button-border #000;
 
-// Filled sections
 $filled-section-max-width: 1400px;
 $filled-section-border-radius: 36px;
-
 $filled-section-text-color: $text-inverted-color;
-
 $filled-section-primary-bg-color: $accent-primary-color;
-
 $filled-section-secondary-bg-color: $accent-secondary-color;
 
-// Tabs
 $tabs-padding: 8px 20px;
 $tabs-border-radius: 100px;
-
 $tabs-hover-background-color: $accent-primary-hover-color;
 $tabs-active-background-color: $accent-primary-active-color;
 $tabs-inactive-background-color: transparent;
-
 $tabs-text-color: $text-inverted-color;
 
-// Footer
 $footer-content-max-width: 1200px;
 $footer-content-padding: 64px 0 36px;
-
 $footer-background-color: #19191b;
 $footer-title-text-color: #b0b2b6;
 $footer-text-color: #fff;
 $footer-socials-background-color: #313235;
 
-// Backdrop
 $backdrop-fade-duration: 0.25s;
 $backdrop-overlay-color: rgba(0, 0, 0, 0.5);
 
-// Burger menu
 $burger-transition-duration: 0.25s;
-
-// Header (menu panel)
 $menu-transition-duration: 0.25s;
 $menu-panel-max-height: 500px;
 
-// Abstract Colors
 $error-color: #ff6272;
 $success-color: #5ef381;
 $warning-color: #ffd967;
 
-// Form validation
 $input-invalid-border-color: #dc3545;
 $input-invalid-focus-color: #dc3545;
 $input-invalid-background-color: #fff3f4;
 
-// Input / Search
 $input-border-color: #e0e0e0;
 $input-background-color: #ffffff;
-
-// Knowledge base (cards)
 $card-dark-bg-color: #19191b;
-
 $urls-color: #2012ea;
+
+$breakpoint-desktop-md: 992px;
+$breakpoint-mobile-lg: 768px;
+$breakpoint-mobile-sm: 576px;
+
+@mixin export-css-variables {
+  --text-color: #{$text-color};
+  --text-inverted-color: #{$text-inverted-color};
+  --accent-primary-color: #{$accent-primary-color};
+  --accent-primary-hover-color: #{$accent-primary-hover-color};
+  --accent-primary-active-color: #{$accent-primary-active-color};
+  --accent-secondary-color: #{$accent-secondary-color};
+  --background-primary-color: #{$background-primary-color};
+  --background-secondary-color: #{$background-secondary-color};
+  --background-tertiary-color: #{$background-tertiary-color};
+  --error-color: #{$error-color};
+  --success-color: #{$success-color};
+  --warning-color: #{$warning-color};
+}

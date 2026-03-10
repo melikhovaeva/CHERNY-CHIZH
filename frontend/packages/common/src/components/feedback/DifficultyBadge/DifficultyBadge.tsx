@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import styles from './DifficultyBadge.module.css';
+import styles from './DifficultyBadge.module.scss';
 
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
 

@@ -114,6 +114,7 @@
     opacity: 0;
     transform: translateY(8px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -125,6 +126,7 @@
     opacity: 0;
     transform: translateY(16px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -136,6 +138,7 @@
     opacity: 0;
     transform: translateY(-16px) scale(0.96);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -196,6 +199,7 @@
   from {
     transform: scaleX(1);
   }
+
   to {
     transform: scaleX(0);
   }
@@ -208,6 +212,7 @@
 .error .message {
   color: var(--toast-error-color, #ef4444);
 }
+
 .error .progressBar {
   background-color: var(--toast-error-color, #ef4444);
 }
@@ -217,6 +222,7 @@
 .success .message {
   color: var(--toast-success-color, #22c55e);
 }
+
 .success .progressBar {
   background-color: var(--toast-success-color, #22c55e);
 }
@@ -226,6 +232,7 @@
 .warning .message {
   color: var(--toast-warning-color, #eab308);
 }
+
 .warning .progressBar {
   background-color: var(--toast-warning-color, #eab308);
 }
@@ -235,6 +242,7 @@
 .info .message {
   color: var(--toast-info-color, #3b82f6);
 }
+
 .info .progressBar {
   background-color: var(--toast-info-color, #3b82f6);
 }

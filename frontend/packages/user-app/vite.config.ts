@@ -10,8 +10,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@styles/abstracts/variables" as *; 
-        @use "@styles/abstracts/mixins" as *;`,
+        additionalData: `@use "@common-styles/abstracts/variables" as *; 
+        @use "@common-styles/abstracts/mixins" as *;`,
       },
     },
   },
@@ -39,8 +39,9 @@ export default defineConfig({
         new URL('./src/app/entities', import.meta.url),
       ),
       '@shared': fileURLToPath(new URL('./src/app/shared', import.meta.url)),
-
-      '@styles': fileURLToPath(new URL('./src/app/styles', import.meta.url)),
+      '@common-styles': fileURLToPath(
+        new URL('../common/src/styles', import.meta.url),
+      ),
     },
   },
 });

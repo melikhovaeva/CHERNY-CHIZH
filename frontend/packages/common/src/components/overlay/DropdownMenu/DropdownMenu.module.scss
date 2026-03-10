@@ -1,0 +1,39 @@
+@use '../../../styles/abstracts/variables' as vars;
+
+.menu {
+  position: absolute;
+  top: calc(100% + 15px);
+  right: 0;
+  min-width: 160px;
+  padding: 10px 0 0;
+  border-radius: 0 0 12px 12px;
+  background: vars.$background-tertiary-color;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    max-height 0.2s ease;
+}
+
+.menuOpen {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 400px;
+}
+
+@media (max-width: vars.$breakpoint-mobile-lg) {
+  .menu {
+    position: static;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 8px;
+    border-radius: 12px;
+  }
+}

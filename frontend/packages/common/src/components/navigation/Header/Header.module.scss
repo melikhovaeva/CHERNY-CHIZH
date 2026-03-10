@@ -1,0 +1,168 @@
+@use '../../../styles/abstracts/variables' as vars;
+
+.container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.content {
+  position: relative;
+  box-sizing: border-box;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: 12px;
+  min-height: 80px;
+  border-radius: 12px;
+  background: vars.$background-tertiary-color;
+}
+
+.content_menuOpen {
+  margin-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  @media (max-width: vars.$breakpoint-mobile-lg) {
+    display: none;
+  }
+}
+
+.link :global(a) {
+  text-decoration: none;
+  color: inherit;
+}
+
+.burgerWrap {
+  display: none;
+
+  @media (max-width: vars.$breakpoint-mobile-lg) {
+    display: block;
+  }
+}
+
+.burger {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.burger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: vars.$text-color;
+  border-radius: 1px;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.burgerOpen span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.burgerOpen span:nth-child(2) {
+  opacity: 0;
+}
+
+.burgerOpen span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.menuPanel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 12px;
+  max-height: 0;
+  overflow: hidden;
+  border-radius: 0 0 12px 12px;
+  background: vars.$background-tertiary-color;
+  transition: max-height 0.2s ease;
+
+  @media (min-width: vars.$breakpoint-mobile-lg + 1px) {
+    display: none;
+  }
+}
+
+.menuPanel_open {
+  max-height: 600px;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0 24px 24px;
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobileLink :global(a) {
+  display: block;
+  padding: 12px 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.desktopActions {
+  @media (max-width: vars.$breakpoint-mobile-lg) {
+    display: none;
+  }
+}
+
+.mobileActions {
+  padding-top: 16px;
+  border-top: 1px solid vars.$background-secondary-color;
+}

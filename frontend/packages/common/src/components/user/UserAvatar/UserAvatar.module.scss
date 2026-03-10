@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.initials {
+  color: #ffffff;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}

@@ -1,60 +1,67 @@
-import { UserImage } from '@/features/session';
-import { LogoutButton } from '@/features/session/logout/ui/LogoutButton';
-import { ProfileButton } from '@/features/session/user-menu';
-import { cn } from '@/shared/lib/utils';
-import { DropdownMenu } from '@/shared/ui/components';
+import { selectCurrentUser, useLogoutMutation } from '@/entities/session';
+import { useAppSelector } from '@/shared/lib/store';
 import { useNavigate } from '@tanstack/react-router';
-import { useRef, useState } from 'react';
-import { CrmButton } from '../CrmButton';
-import styles from './UserMenu.module.scss';
+import { useError, UserDropdownMenu } from 'common';
+import DashboardIcon from '../CrmButton/assets/dashboard.svg?react';
+import LogoutIcon from '../../../logout/ui/assets/logout.svg?react';
+import ProfileIcon from '../ProfileButton/assets/profile.svg?react';
 
 const AVATAR_SIZE = 50;
 
 export function UserMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const navigate = useNavigate();
-
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
+  const user = useAppSelector(selectCurrentUser);
+  const [logout, { isLoading }] = useLogoutMutation();
+  const addError = useError();
 
   const handleProfile = () => {
-    handleClose();
     navigate({ to: '/user' });
   };
 
   const handleCrm = () => {
-    handleClose();
     navigate({ to: '/crm' });
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } catch (error) {
+      console.error(error, 'Failed to logout');
+      addError('Не удалось выйти');
+    }
+  };
+
+  const items = [
+    {
+      id: 'profile',
+      label: 'Профиль',
+      icon: <ProfileIcon width={16} height={16} />,
+      onClick: handleProfile,
+    },
+    {
+      id: 'crm',
+      label: 'Админка',
+      icon: <DashboardIcon width={16} height={16} />,
+      onClick: handleCrm,
+    },
+    {
+      id: 'logout',
+      label: 'Выйти',
+      icon: <LogoutIcon width={16} height={16} />,
+      onClick: () => {
+        void handleLogout();
+      },
+      disabled: isLoading,
+      tone: 'danger' as const,
+    },
+  ];
+
   return (
-    <div className={styles.userMenu}>
-      <button
-        type="button"
-        ref={triggerRef}
-        className={styles.userMenuTrigger}
-        onClick={handleToggle}
-        aria-haspopup="menu"
-        aria-expanded={isOpen}
-      >
-        <UserImage size={AVATAR_SIZE} />
-      </button>
-      <DropdownMenu
-        isOpen={isOpen}
-        onClose={handleClose}
-        anchorRef={triggerRef}
-        className={styles.dropdownMenu}
-      >
-        <ProfileButton className={cn([styles.item])} onClick={handleProfile} />
-        <CrmButton className={styles.item} onClick={handleCrm} />
-        <LogoutButton className={styles.item} />
-      </DropdownMenu>
-    </div>
+    <UserDropdownMenu
+      avatarSrc={user?.avatarImage}
+      avatarAlt={user?.firstName || user?.email || 'Пользователь'}
+      avatarSize={AVATAR_SIZE}
+      items={items}
+    />
   );
 }
