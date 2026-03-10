@@ -75,3 +75,75 @@ $breakpoint-mobile-sm: 576px;
   --success-color: #{$success-color};
   --warning-color: #{$warning-color};
 }
+
+// New variables
+
+// === Fonts ===
+$abstract-font-family-roboto-flex: 'Roboto Flex', sans-serif;
+$abstract-font-family-manrope: 'Manrope', sans-serif;
+
+$font-family-header: $abstract-font-family-roboto-flex;
+$font-family-body: $abstract-font-family-manrope;
+
+// H1
+$font-weight-header-1: 700;
+$line-height-header-1: 100%;
+
+$font-size-header-1-desktop: 68px;
+$font-size-header-1-tablet: 68px;
+$font-size-header-1-mobile: 32px;
+
+// H2
+$font-weight-header-2: 700;
+$line-height-header-2: 110%;
+
+$font-size-header-2-desktop: 64px;
+$font-size-header-2-tablet: 64px;
+$font-size-header-2-mobile: 32px;
+
+// H3
+$font-weight-header-3: 600;
+$line-height-header-3: 110%;
+
+$font-size-header-3-desktop: 44px;
+$font-size-header-3-tablet: 44px;
+$font-size-header-3-mobile: 28px;
+
+// H4
+$font-weight-header-4: 600;
+$line-height-header-4: 120%;
+
+$font-size-header-4-desktop: 28px;
+$font-size-header-4-tablet: 32px;
+$font-size-header-4-mobile: 24px;
+
+// Text L
+$font-weight-text-l: 400;
+$line-height-text-l: 140%;
+$font-size-text-l: 20px;
+
+// Text L Semibold
+$font-weight-text-l-semibold: 600;
+$line-height-text-l-semibold: 140%;
+$font-size-text-l-semibold: 20px;
+
+// Text M
+$font-weight-text-m: 400;
+$line-height-text-m: 140%;
+$font-size-text-m: 16px;
+
+// Text M Semibold
+$font-weight-text-m-semibold: 600;
+$line-height-text-m-semibold: 140%;
+$font-size-text-m-semibold: 16px;
+
+// Text S
+$font-weight-text-s: 400;
+$line-height-text-s: 140%;
+$font-size-text-s: 12px;
+
+// Text XS
+$font-weight-text-xs: 400;
+$line-height-text-xs: 140%;
+
+$font-size-text-xs: 10px;

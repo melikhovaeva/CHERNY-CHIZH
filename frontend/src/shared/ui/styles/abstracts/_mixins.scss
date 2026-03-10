@@ -1,7 +1,135 @@
+@use './variables' as *;
+
 @mixin text-color($color) {
   color: $color;
 }
 
 @mixin bg-color($color) {
   background-color: $color;
+}
+
+@mixin typography-base($font-family, $font-size, $font-weight, $line-height) {
+  font-family: $font-family;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  line-height: $line-height;
+}
+
+@mixin typography-header(
+  $desktop-size,
+  $tablet-size,
+  $mobile-size,
+  $font-weight,
+  $line-height
+) {
+  @include typography-base(
+    $font-family-header,
+    $desktop-size,
+    $font-weight,
+    $line-height
+  );
+
+  @media (max-width: $breakpoint-desktop-md) {
+    font-size: $tablet-size;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    font-size: $mobile-size;
+  }
+}
+
+@mixin typography-h1 {
+  @include typography-header(
+    $font-size-header-1-desktop,
+    $font-size-header-1-tablet,
+    $font-size-header-1-mobile,
+    $font-weight-header-1,
+    $line-height-header-1
+  );
+  text-transform: uppercase;
+}
+
+@mixin typography-h2 {
+  @include typography-header(
+    $font-size-header-2-desktop,
+    $font-size-header-2-tablet,
+    $font-size-header-2-mobile,
+    $font-weight-header-2,
+    $line-height-header-2
+  );
+  text-transform: uppercase;
+}
+
+@mixin typography-h3 {
+  @include typography-header(
+    $font-size-header-3-desktop,
+    $font-size-header-3-tablet,
+    $font-size-header-3-mobile,
+    $font-weight-header-3,
+    $line-height-header-3
+  );
+}
+
+@mixin typography-h4 {
+  @include typography-header(
+    $font-size-header-4-desktop,
+    $font-size-header-4-tablet,
+    $font-size-header-4-mobile,
+    $font-weight-header-4,
+    $line-height-header-4
+  );
+}
+
+@mixin typography-text-l {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-l,
+    $font-weight-text-l,
+    $line-height-text-l
+  );
+}
+
+@mixin typography-text-l-semibold {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-l-semibold,
+    $font-weight-text-l-semibold,
+    $line-height-text-l-semibold
+  );
+}
+
+@mixin typography-text-m {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-m,
+    $font-weight-text-m,
+    $line-height-text-m
+  );
+}
+
+@mixin typography-text-m-semibold {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-m-semibold,
+    $font-weight-text-m-semibold,
+    $line-height-text-m-semibold
+  );
+}
+
+@mixin typography-text-s {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-s,
+    $font-weight-text-s,
+    $line-height-text-s
+  );
+}
+
+@mixin typography-text-xs {
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-xs,
+    $font-weight-text-xs,
+    $line-height-text-xs
+  );
 }
