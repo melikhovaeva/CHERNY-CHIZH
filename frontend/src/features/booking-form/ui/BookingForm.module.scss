@@ -40,7 +40,7 @@
 }
 
 .consent {
-  font-size: 12px;
+  @include typography-text-s;
   text-align: left;
   a {
     color: $accent-primary-color;

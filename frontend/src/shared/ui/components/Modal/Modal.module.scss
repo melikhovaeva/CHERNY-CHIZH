@@ -110,20 +110,9 @@
     }
 
     .slug {
-      font-family: 'Roboto Flex';
-      font-weight: 700;
+      @include typography-header(64px, 48px, 36px, 700, 100%);
       text-transform: uppercase;
-      line-height: 100%;
-      font-size: 64px;
       letter-spacing: 0;
-
-      @media (max-width: 1200px) {
-        font-size: 48px;
-      }
-
-      @media (max-width: 992px) {
-        font-size: 36px;
-      }
     }
     img {
       position: absolute;
@@ -160,12 +149,8 @@
     }
 
     h2 {
-      font-family: 'Roboto Flex';
-      font-weight: 600;
+      @include typography-h3;
       text-transform: unset;
-      line-height: 100%;
-      font-size: 44px;
-      letter-spacing: 0;
       margin-bottom: 4px;
     }
   }

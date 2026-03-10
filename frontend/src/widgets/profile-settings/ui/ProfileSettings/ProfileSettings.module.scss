@@ -87,8 +87,12 @@
 }
 
 .avatarOverlayText {
-  font-size: 16px;
-  font-weight: 700;
+  @include typography-base(
+    $font-family-body,
+    $font-size-text-m,
+    $font-weight-header-2,
+    $line-height-text-m
+  );
 }
 
 .avatarFileInput {
@@ -96,7 +100,7 @@
 }
 
 .avatarError {
-  font-size: 12px;
+  @include typography-text-s;
   color: #b91c1c;
 }
 

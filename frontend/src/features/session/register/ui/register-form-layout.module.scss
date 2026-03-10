@@ -12,6 +12,5 @@
 
 .apiErrorSlot {
   min-height: 1.4em;
-  font-size: 14px;
-  line-height: 1.4;
+  @include typography-text-m;
 }

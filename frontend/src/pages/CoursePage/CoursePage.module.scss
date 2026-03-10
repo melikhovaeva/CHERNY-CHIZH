@@ -10,14 +10,12 @@
 
 .title {
   margin-bottom: 1.5rem;
-  font-size: 2rem;
-  font-weight: 700;
 }
 
 .description {
   margin-bottom: 1.5rem;
   color: var(--color-text-secondary, #666);
-  line-height: 1.6;
+  @include typography-text-m;
 }
 
 .skeletonTitle,

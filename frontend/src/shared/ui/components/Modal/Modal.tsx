@@ -134,7 +134,7 @@ export function Modal({
                 >
                   <ArrowLeftIcon width={24} height={24} aria-hidden />
                 </button>
-                {currentTitle && currentTitle}
+                {currentTitle && currentTitle.toString()}
                 <div className={styles.body}>{children}</div>
               </div>
             </div>

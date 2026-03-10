@@ -23,7 +23,7 @@
   justify-content: space-between;
   max-width: $footer-content-max-width;
   padding: 64px 32px 36px;
-  font-size: 20px;
+  @include typography-text-l;
 
   @media (max-width: 768px) {
     padding: 64px 20px 36px;
@@ -33,7 +33,7 @@
 }
 
 .title {
-  font-size: 16px;
+  @include typography-text-m;
   @include text-color($footer-title-text-color);
 }
 
@@ -99,13 +99,13 @@
 
 .socialValue {
   padding-right: 9px;
-  font-size: 14px;
+  @include typography-text-m;
   white-space: nowrap;
 }
 
 .socialLinkText {
   padding-right: 9px;
-  font-size: 14px;
+  @include typography-text-m;
   white-space: nowrap;
   text-decoration: underline;
   @include text-color($footer-text-color);
@@ -117,7 +117,7 @@
 }
 
 .warning {
-  font-size: 12px;
+  @include typography-text-s;
   @include text-color($footer-text-color);
   max-width: 220px;
 }

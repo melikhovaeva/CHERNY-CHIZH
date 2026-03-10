@@ -27,7 +27,7 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
-  font-size: 14px;
+  @include typography-text-m;
   color: $text-color;
   border-radius: 8px;
   transition: background-color 0.15s ease;
