@@ -12,10 +12,7 @@
   white-space: nowrap;
   display: inline-block;
   padding: 10px 36px 10px 16px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
+  @include typography-text-m-semibold;
   pointer-events: none;
 }
 
@@ -33,10 +30,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 10px 16px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
+  @include typography-text-m-semibold;
   color: $text-inverted-color;
   background-color: $accent-primary-color;
   border: 1px solid $text-inverted-color;
@@ -119,10 +113,7 @@
   display: block;
   width: 100%;
   padding: 10px 16px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
+  @include typography-text-m-semibold;
   color: $text-inverted-color;
   background: transparent;
   border: none;

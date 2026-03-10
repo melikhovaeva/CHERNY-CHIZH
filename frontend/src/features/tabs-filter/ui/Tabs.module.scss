@@ -29,10 +29,7 @@
 
 .button {
   padding: $tabs-padding;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.4;
+  @include typography-text-m-semibold;
   color: $tabs-text-color;
   background-color: $tabs-inactive-background-color;
   border-radius: $tabs-border-radius;

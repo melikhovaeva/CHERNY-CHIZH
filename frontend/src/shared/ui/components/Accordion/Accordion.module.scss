@@ -29,10 +29,7 @@
   width: 100%;
   min-width: 0;
   padding: 20px 24px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 1.4;
+  @include typography-text-m-semibold;
   color: $text-color;
   background: none;
   border: none;
@@ -91,6 +88,5 @@
   min-height: 0;
   overflow: hidden;
   padding: 0 20px 20px;
-
-  font-size: 18px;
+  @include typography-text-m;
 }

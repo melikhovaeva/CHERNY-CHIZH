@@ -55,7 +55,6 @@
 
 .description {
   margin: 0 0 12px;
-  font-size: 16px;
   color: $text-inverted-color;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -71,7 +70,7 @@
 }
 
 .date {
-  font-size: 12px;
+  @include typography-text-s;
   color: $text-inverted-color;
 }
 
@@ -90,6 +89,6 @@
 }
 
 .authorName {
-  font-size: 12px;
+  @include typography-text-s;
   color: $text-inverted-color;
 }

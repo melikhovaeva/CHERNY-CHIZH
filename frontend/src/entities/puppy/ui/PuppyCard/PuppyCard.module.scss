@@ -43,16 +43,11 @@
   }
 
   &__title {
-    @media (max-width: 768px) {
-      font-size: 24px;
-    }
   }
 
   &__subtitle {
     color: $accent-secondary-color;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 140%;
+    @include typography-text-l-semibold;
   }
 
   &__buttonContainer {

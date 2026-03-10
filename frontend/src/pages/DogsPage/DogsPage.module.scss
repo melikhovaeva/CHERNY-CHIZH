@@ -74,5 +74,5 @@
 
 .breedDescription {
   max-width: 600px;
-  font-size: 20px;
+  @include typography-text-l;
 }

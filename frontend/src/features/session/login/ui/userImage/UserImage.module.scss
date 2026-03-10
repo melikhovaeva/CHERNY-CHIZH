@@ -10,7 +10,6 @@
 
 .initials {
   color: #fff;
-  font-weight: 600;
-  line-height: 1;
+  @include typography-text-m-semibold;
   letter-spacing: 0.02em;
 }

@@ -112,7 +112,6 @@
 
 .description {
   margin: 0 0 12px;
-  font-size: 16px;
   color: $text-inverted-color;
 }
 
@@ -146,12 +145,12 @@
 }
 
 .date {
-  font-size: 12px;
+  @include typography-text-s;
   color: $text-inverted-color;
 }
 
 .status {
-  font-size: 12px;
+  @include typography-text-s;
   color: #7eb8a0;
 }
 
@@ -163,8 +162,7 @@
   border-radius: 12px;
   background-color: $accent-primary-color;
   color: $text-inverted-color;
-  font-size: 16px;
-  font-weight: 600;
+  @include typography-text-m-semibold;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -184,8 +182,7 @@
 .tag {
   padding: 4px 12px;
   border-radius: 100px;
-  font-size: 12px;
-  font-weight: 500;
+  @include typography-text-s;
   background-color: rgba(255, 255, 255, 0.2);
   color: $text-inverted-color;
 }
