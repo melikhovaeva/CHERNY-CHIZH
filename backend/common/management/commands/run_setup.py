@@ -30,3 +30,10 @@ class Command(BaseCommand):
                 first_name="admin",
                 last_name="admin",
             )
+        if not User.objects.filter(email="user@user.com").exists():
+            User.objects.create_user(
+                email="user@user.com",
+                password="user",
+                first_name="user",
+                last_name="user",
+            )
