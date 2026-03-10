@@ -3,7 +3,7 @@
   top: calc(100% + 2px);
   right: -12px;
   min-width: 160px;
-  padding: 10px 0 0 0;
+  padding: 10px 0 0;
   border-radius: 0 0 12px 12px;
   @include bg-color($background-tertiary-color);
   z-index: 2;
@@ -22,7 +22,7 @@
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
-  max-height: 400px;
+  max-height: 900px;
 }
 
 .item {
