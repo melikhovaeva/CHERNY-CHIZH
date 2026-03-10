@@ -15,7 +15,7 @@ export const ProfileButton = ({ className, onClick }: ProfileButtonProps) => {
       onClick={onClick}
     >
       <ProfileIcon width={16} height={16} />
-      Профиль
+      Личный кабинет
     </button>
   );
 };

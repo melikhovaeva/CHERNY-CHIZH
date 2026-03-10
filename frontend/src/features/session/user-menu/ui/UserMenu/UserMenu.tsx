@@ -1,9 +1,8 @@
-import { UserDropdownMenu } from '@/entities/user';
-import { selectCurrentUser, useLogoutMutation } from '@/entities/session';
 import { useAppSelector } from '@/app/store';
+import { selectCurrentUser, useLogoutMutation } from '@/entities/session';
+import { UserDropdownMenu } from '@/entities/user';
 import { useError } from '@/shared/ui/components';
 import { useNavigate } from '@tanstack/react-router';
-import DashboardIcon from '../CrmButton/assets/dashboard.svg?react';
 import LogoutIcon from '../../../logout/ui/assets/logout.svg?react';
 import ProfileIcon from '../ProfileButton/assets/profile.svg?react';
 
@@ -19,10 +18,6 @@ export function UserMenu() {
     navigate({ to: '/user' });
   };
 
-  const handleCrm = () => {
-    navigate({ to: '/crm' });
-  };
-
   const handleLogout = async () => {
     try {
       await logout().unwrap();
@@ -35,15 +30,9 @@ export function UserMenu() {
   const items = [
     {
       id: 'profile',
-      label: 'Профиль',
+      label: 'ЛК',
       icon: <ProfileIcon width={16} height={16} />,
       onClick: handleProfile,
-    },
-    {
-      id: 'crm',
-      label: 'Админка',
-      icon: <DashboardIcon width={16} height={16} />,
-      onClick: handleCrm,
     },
     {
       id: 'logout',

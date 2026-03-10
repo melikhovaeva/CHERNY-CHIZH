@@ -135,7 +135,7 @@ export function UserProfilePage() {
   return (
     <ProtectedRoute>
       <section className={styles.container}>
-        <h2>Профиль</h2>
+        <h2>Личный кабинет</h2>
 
         <Tabs
           variant="secondary"
