@@ -1,5 +1,5 @@
 import { useAuth } from '@/entities/session';
-import { ToastProvider } from '@/shared/common';
+import { ToastProvider } from '@/shared/ui/components';
 import { ModalHost } from './ModalHost';
 import { StoreProvider } from './store/StoreProvider';
 

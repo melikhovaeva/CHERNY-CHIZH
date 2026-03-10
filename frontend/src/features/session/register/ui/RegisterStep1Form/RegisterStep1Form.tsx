@@ -1,7 +1,7 @@
 import { useRegisterStep1Mutation } from '@/entities/session';
 import { getFirstApiErrorMessage } from '@/shared';
+import { useError } from '@/shared/ui/components';
 import { Button, Checkbox, Form, Input } from '@/shared/ui/components';
-import { useError } from '@/shared/common';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styles from '../register-form-layout.module.scss';

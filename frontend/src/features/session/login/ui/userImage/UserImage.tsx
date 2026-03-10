@@ -1,6 +1,6 @@
 import { selectCurrentUser } from '@/entities/session';
+import { UserAvatar } from '@/entities/user';
 import { useAppSelector } from '@/app/store';
-import { UserAvatar } from '@/shared/common';
 import styles from './UserImage.module.scss';
 
 interface UserImageProps {
