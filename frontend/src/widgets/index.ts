@@ -7,18 +7,6 @@ export { FilterableGallery } from './FilterableGallery';
 export { Footer } from './Footer';
 export { Header } from './Header';
 export {
-  ArticleCard,
-  CourseCard,
-  KnowledgeBaseFilters,
-  KnowledgeBaseList,
-  KnowledgeBaseSearch,
-  KNOWLEDGE_BASE_CATEGORY_ALL,
-  KNOWLEDGE_BASE_CATEGORY_ARTICLES,
-  KNOWLEDGE_BASE_CATEGORY_COURSES,
-  KNOWLEDGE_BASE_TABS,
-} from './knowledge-base';
-export type { KnowledgeBaseCategory } from './knowledge-base';
-export {
   AdvantagesSection,
   BreedAboutSection,
   FAQSection,
@@ -27,8 +15,21 @@ export {
   KnowledgeBaseSection,
   PuppiesSection,
 } from './home-sections';
-export { ProfileMyCourses } from './profile-my-courses';
-export { ProfileSettings } from './profile-settings';
+export {
+  ArticleCard,
+  CourseCard,
+  KNOWLEDGE_BASE_CATEGORY_ALL,
+  KNOWLEDGE_BASE_CATEGORY_ARTICLES,
+  KNOWLEDGE_BASE_CATEGORY_COURSES,
+  KNOWLEDGE_BASE_TABS,
+  KnowledgeBaseFilters,
+  KnowledgeBaseList,
+  KnowledgeBaseSearch,
+} from './knowledge-base';
+export type { KnowledgeBaseCategory } from './knowledge-base';
+export { ProfileCourses } from './profile/ProfileCourses';
+export { ProfileMyCourses } from './profile/ProfileMyCourses';
+export { ProfileSettings } from './profile/ProfileSettings';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';

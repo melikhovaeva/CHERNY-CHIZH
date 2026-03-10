@@ -1,5 +1,11 @@
-import type { User as SessionUser } from '@/entities/session';
+import {
+  useChangePasswordMutation,
+  useMeQuery,
+  useUpdateProfileMutation,
+} from '@/entities/session';
 import { UserImage } from '@/features/session';
+import { getFirstApiErrorMessage } from '@/shared';
+import { API_CONFIG } from '@/shared/config/api';
 import { cn } from '@/shared/lib/utils';
 import {
   Button,
@@ -8,39 +14,33 @@ import {
   Input,
   Modal,
 } from '@/shared/ui/components';
+import { useError, useSuccess } from '@/shared/ui/components';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import type { ProfileForm, ProfilePasswordForm } from '../../model/types';
+import type { ProfileForm, ProfilePasswordForm } from '../model/types';
 import UploadIcon from './assets/image.svg?react';
 import styles from './ProfileSettings.module.scss';
 
-interface ProfileSettingsProps {
-  user: SessionUser;
-  isLoading: boolean;
-  isUploadingAvatar: boolean;
-  onAvatarChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onUpdateProfile: (
-    payload: Partial<{
-      email: string;
-      first_name: string;
-      last_name: string | null;
-      phone: string | null;
-      messenger: string | null;
-    }>,
-  ) => Promise<void>;
-  isChangingPassword: boolean;
-  onChangePassword: (payload: ProfilePasswordForm) => Promise<void>;
-}
+const PROFILE_ERROR_FIELDS = ['email', 'first_name', 'last_name', 'detail'];
+const PASSWORD_ERROR_FIELDS = [
+  'old_password',
+  'new_password',
+  'new_password2',
+  'detail',
+];
 
-export function ProfileSettings({
-  user,
-  isLoading,
-  isUploadingAvatar,
-  onAvatarChange,
-  onUpdateProfile,
-  isChangingPassword,
-  onChangePassword,
-}: ProfileSettingsProps) {
+export function ProfileSettings() {
+  const addError = useError();
+  const addSuccess = useSuccess();
+
+  const { data: user, isLoading: isUserLoading, refetch } = useMeQuery();
+
+  const [updateProfile] = useUpdateProfileMutation();
+  const [changePassword, { isLoading: isChangingPassword }] =
+    useChangePasswordMutation();
+
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
   const {
     control,
     setValue,
@@ -77,9 +77,73 @@ export function ProfileSettings({
     }
   }, [user, reset]);
 
-  if (isLoading || !user) {
+  if (isUserLoading || !user) {
     return <div>Загружаем профиль…</div>;
   }
+
+  const handleAvatarFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAvatar(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('avatar_image', file);
+
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ME}`,
+        {
+          method: 'PATCH',
+          body: formData,
+          credentials: 'include',
+        },
+      );
+
+      if (!response.ok) {
+        addError('Не удалось обновить аватар');
+        return;
+      }
+
+      await refetch();
+      addSuccess('Аватар обновлён');
+    } catch {
+      addError('Не удалось обновить аватар');
+    } finally {
+      setIsUploadingAvatar(false);
+      event.target.value = '';
+    }
+  };
+
+  const handleUpdateProfile = async (
+    payload: Parameters<typeof updateProfile>[0],
+  ) => {
+    try {
+      await updateProfile(payload).unwrap();
+      addSuccess('Профиль обновлён');
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err, PROFILE_ERROR_FIELDS) ??
+        'Не удалось обновить профиль';
+      addError(message);
+      throw err;
+    }
+  };
+
+  const handleChangePassword = async (payload: ProfilePasswordForm) => {
+    try {
+      await changePassword(payload).unwrap();
+      addSuccess('Пароль изменён');
+    } catch (err) {
+      const message =
+        getFirstApiErrorMessage(err, PASSWORD_ERROR_FIELDS) ??
+        'Не удалось изменить пароль';
+      addError(message);
+      throw err;
+    }
+  };
 
   const handleChangePasswordField = (
     field: keyof ProfilePasswordForm,
@@ -90,7 +154,7 @@ export function ProfileSettings({
 
   const handleSubmitPassword = async (event: React.FormEvent) => {
     event.preventDefault();
-    await onChangePassword(passwordForm);
+    await handleChangePassword(passwordForm);
     setPasswordForm({
       oldPassword: '',
       newPassword: '',
@@ -123,7 +187,7 @@ export function ProfileSettings({
               type="file"
               accept="image/*"
               className={styles.avatarFileInput}
-              onChange={onAvatarChange}
+              onChange={handleAvatarFileChange}
               disabled={isUploadingAvatar}
             />
           </label>
@@ -149,7 +213,7 @@ export function ProfileSettings({
                 const email = raw.trim();
                 setValue('email', email);
                 const valid = await trigger('email');
-                if (valid) await onUpdateProfile({ email });
+                if (valid) await handleUpdateProfile({ email });
               }}
               error={errors.email?.message}
             />
@@ -169,7 +233,7 @@ export function ProfileSettings({
                 const first_name = raw.trim();
                 setValue('firstName', first_name);
                 const valid = await trigger('firstName');
-                if (valid) await onUpdateProfile({ first_name });
+                if (valid) await handleUpdateProfile({ first_name });
               }}
               error={errors.firstName?.message}
             />
@@ -188,7 +252,7 @@ export function ProfileSettings({
                 const trimmed = raw.trim();
                 const last_name = trimmed || null;
                 field.onChange(trimmed);
-                await onUpdateProfile({ last_name });
+                await handleUpdateProfile({ last_name });
               }}
             />
           )}
@@ -207,7 +271,7 @@ export function ProfileSettings({
                 const trimmed = raw.trim();
                 const phone = trimmed || null;
                 field.onChange(trimmed);
-                await onUpdateProfile({ phone });
+                await handleUpdateProfile({ phone });
               }}
             />
           )}
@@ -225,7 +289,7 @@ export function ProfileSettings({
                 const trimmed = raw.trim();
                 const messenger = trimmed || null;
                 field.onChange(trimmed);
-                await onUpdateProfile({ messenger });
+                await handleUpdateProfile({ messenger });
               }}
             />
           )}
