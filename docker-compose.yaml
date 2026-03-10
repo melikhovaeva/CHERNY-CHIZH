@@ -1,5 +1,5 @@
 services:
-  frontend-user:
+  frontend:
     platform: linux/amd64
     build:
       context: ./frontend
@@ -10,19 +10,9 @@ services:
       - /frontend-app/node_modules
     environment:
       - NODE_ENV=development
-    command: sh -c "pnpm --filter user-app docker:dev"
-  frontend-crm:
-    platform: linux/amd64
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ./frontend:/frontend-app
-      # Keep container's node_modules (musl binaries) instead of host's
-      - /frontend-app/node_modules
-    environment:
-      - NODE_ENV=development
-    command: sh -c "pnpm --filter crm-app docker:dev"
+    command: sh -c "pnpm docker:dev"
+    ports:
+      - 3000:3000
   backend:
     build:
       context: ./backend
@@ -69,15 +59,4 @@ services:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9090"
-    restart: unless-stopped
-
-  nginx:
-    image: nginx:alpine
-    depends_on:
-      - frontend-user
-      - frontend-crm
-    ports:
-      - "3000:80"
-    volumes:
-      - ./infra/nginx/dev.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
