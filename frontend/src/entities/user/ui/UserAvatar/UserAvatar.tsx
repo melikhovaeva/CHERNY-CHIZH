@@ -32,7 +32,10 @@ export function UserAvatar({
       style={{ width: size, height: size, backgroundColor: '#e5e7eb' }}
       aria-hidden
     >
-      <span className={styles.initials} style={{ fontSize: Math.round(size * 0.4) }}>
+      <span
+        className={styles.initials}
+        style={{ fontSize: Math.round(size * 0.4) }}
+      >
         {fallbackText}
       </span>
     </div>
