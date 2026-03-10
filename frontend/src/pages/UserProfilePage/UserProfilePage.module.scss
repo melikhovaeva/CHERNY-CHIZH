@@ -9,10 +9,16 @@
   align-items: center;
 }
 
-.tabs,
-.tabContent {
+.tabs {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.tabContent {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 }
