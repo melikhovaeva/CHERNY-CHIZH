@@ -8,6 +8,7 @@ export {
   Form,
   Modal,
   SafeHtmlContent,
+  SearchInput,
   Select,
   Skeleton,
   ToastProvider,
