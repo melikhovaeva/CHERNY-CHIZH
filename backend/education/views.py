@@ -33,6 +33,8 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             .prefetch_related("tags")
             .order_by("-created_at")
         )
+        if getattr(self, "action", None) == "list":
+            qs = qs.filter(breed__isnull=True)
         search = self.request.query_params.get("search", "").strip()
         if search:
             qs = qs.filter(
@@ -47,11 +49,17 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, url_path="home-library")
     def home_library(self, request):
-        published = Article.objects.filter(status=InfoStatus.PUBLISHED)
+        published = Article.objects.filter(
+            status=InfoStatus.PUBLISHED, breed__isnull=True
+        )
         tag_ids_qs = (
             InfoTag.objects.annotate(
                 article_count=Count(
-                    "articles", filter=Q(articles__status=InfoStatus.PUBLISHED)
+                    "articles",
+                    filter=Q(
+                        articles__status=InfoStatus.PUBLISHED,
+                        articles__breed__isnull=True,
+                    ),
                 )
             )
             .filter(article_count__gte=3)
