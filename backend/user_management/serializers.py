@@ -1,11 +1,11 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from common.serializers import CamelCaseSerializerMixin
+from common.serializers import CamelCaseSerializerMixin, strip_empty_values
 from user_management.models import Role, User
 
 
-class RoleSerializer(serializers.ModelSerializer):
+class RoleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Только код и название роли; is_staff/is_superuser в API не отдаём."""
 
     class Meta:
@@ -14,7 +14,7 @@ class RoleSerializer(serializers.ModelSerializer):
         read_only_fields = ("code", "label")
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     role = RoleSerializer(read_only=True, allow_null=True)
 
     class Meta:
@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "date_joined", "is_active", "role")
 
 
-class UserRoleUpdateSerializer(serializers.ModelSerializer):
+class UserRoleUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Только смена роли; только для админа."""
 
     class Meta:
