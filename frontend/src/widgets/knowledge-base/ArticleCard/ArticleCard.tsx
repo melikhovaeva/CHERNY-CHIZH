@@ -1,4 +1,5 @@
 import type { ArticleListItem } from '@/entities/article';
+import { formatDate } from '@/shared';
 import { API_CONFIG } from '@/shared/config/api';
 import { Placeholder } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
@@ -9,19 +10,6 @@ function getImageUrl(path: string | null | undefined): string | undefined {
   if (path.startsWith('http')) return path;
   const base = API_CONFIG.BASE_URL?.replace(/\/$/, '') ?? '';
   return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
-}
-
-function formatDate(isoDate: string): string {
-  try {
-    const d = new Date(isoDate);
-    return d.toLocaleDateString('ru-RU', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  } catch {
-    return '';
-  }
 }
 
 function formatDescription(description: string): string {
