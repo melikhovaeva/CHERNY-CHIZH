@@ -1,15 +1,14 @@
+import { collectNavLinksFromTree } from '@/app/lib/nav-links';
 import { ProtectedRoute } from '@/features/session';
 import { Tabs, type Tab } from '@/features/tabs-filter';
-import { CabinetCourses, CabinetMyCourses, CabinetSettings } from '@/widgets';
-import { useEffect, useState } from 'react';
-import { USER_PROFILE_TABS, type UserProfileTabId } from './model/tabs';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useRouter,
+} from '@tanstack/react-router';
+import { useEffect, useMemo } from 'react';
 import styles from './UserCabinetPage.module.scss';
-
-const profileTabs: Tab[] = USER_PROFILE_TABS.map((tab) => ({
-  id: tab.id,
-  label: tab.label,
-  value: tab.id,
-}));
 
 export function UserCabinetPage() {
   useEffect(() => {
@@ -18,20 +17,27 @@ export function UserCabinetPage() {
       document.body.classList.remove(styles.styledBody);
     };
   }, []);
-  const [activeTab, setActiveTab] = useState<UserProfileTabId>('my-courses');
 
-  const renderActiveTab = () => {
-    switch (activeTab) {
-      case 'courses':
-        return <CabinetCourses />;
-      case 'my-courses':
-        return <CabinetMyCourses />;
-      case 'settings':
-        return <CabinetSettings />;
-      default:
-        return null;
-    }
-  };
+  const router = useRouter();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const tabs: Tab[] = useMemo(() => {
+    const cabinetRoute = router.routesById['/cabinet'];
+    return collectNavLinksFromTree(cabinetRoute).map((link) => ({
+      id: link.to,
+      label: link.label,
+      value: link.to,
+    }));
+  }, [router.routesById]);
+
+  const activeTab = useMemo(
+    () =>
+      tabs.find((tab) => location.pathname.startsWith(tab.value))?.value ??
+      tabs[0]?.value ??
+      '',
+    [location.pathname, tabs],
+  );
 
   return (
     <ProtectedRoute>
@@ -40,15 +46,16 @@ export function UserCabinetPage() {
 
         <Tabs
           variant="secondary"
-          tabs={profileTabs}
+          tabs={tabs}
           activeTab={activeTab}
-          onTabChange={(value) => setActiveTab(value as UserProfileTabId)}
+          onTabChange={(path) => navigate({ to: path })}
           className={styles.tabs}
         />
 
-        <div className={styles.tabContent}>{renderActiveTab()}</div>
+        <div className={styles.tabContent}>
+          <Outlet />
+        </div>
       </section>
     </ProtectedRoute>
   );
 }
-
