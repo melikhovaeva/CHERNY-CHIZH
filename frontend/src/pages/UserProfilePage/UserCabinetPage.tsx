@@ -1,9 +1,9 @@
 import { ProtectedRoute } from '@/features/session';
 import { Tabs, type Tab } from '@/features/tabs-filter';
-import { ProfileCourses, ProfileMyCourses, ProfileSettings } from '@/widgets';
+import { CabinetCourses, CabinetMyCourses, CabinetSettings } from '@/widgets';
 import { useEffect, useState } from 'react';
 import { USER_PROFILE_TABS, type UserProfileTabId } from './model/tabs';
-import styles from './UserProfilePage.module.scss';
+import styles from './UserCabinetPage.module.scss';
 
 const profileTabs: Tab[] = USER_PROFILE_TABS.map((tab) => ({
   id: tab.id,
@@ -11,7 +11,7 @@ const profileTabs: Tab[] = USER_PROFILE_TABS.map((tab) => ({
   value: tab.id,
 }));
 
-export function UserProfilePage() {
+export function UserCabinetPage() {
   useEffect(() => {
     document.body.classList.add(styles.styledBody);
     return () => {
@@ -23,11 +23,11 @@ export function UserProfilePage() {
   const renderActiveTab = () => {
     switch (activeTab) {
       case 'courses':
-        return <ProfileCourses />;
+        return <CabinetCourses />;
       case 'my-courses':
-        return <ProfileMyCourses />;
+        return <CabinetMyCourses />;
       case 'settings':
-        return <ProfileSettings />;
+        return <CabinetSettings />;
       default:
         return null;
     }
@@ -51,3 +51,4 @@ export function UserProfilePage() {
     </ProtectedRoute>
   );
 }
+

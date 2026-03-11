@@ -1,13 +1,13 @@
 import { cn } from '@/shared/lib/utils';
 import ProfileIcon from './assets/profile.svg?react';
-import styles from './ProfileButton.module.scss';
+import styles from './CabinetButton.module.scss';
 
-interface ProfileButtonProps {
+interface CabinetButtonProps {
   className?: string;
   onClick?: () => void;
 }
 
-export const ProfileButton = ({ className, onClick }: ProfileButtonProps) => {
+export const CabinetButton = ({ className, onClick }: CabinetButtonProps) => {
   return (
     <button
       type="button"
@@ -19,3 +19,4 @@ export const ProfileButton = ({ className, onClick }: ProfileButtonProps) => {
     </button>
   );
 };
+

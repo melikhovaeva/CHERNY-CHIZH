@@ -15,7 +15,7 @@ export function UserMenu() {
   const addError = useError();
 
   const handleProfile = () => {
-    navigate({ to: '/profile' });
+    navigate({ to: '/cabinet' });
   };
 
   const handleLogout = async () => {

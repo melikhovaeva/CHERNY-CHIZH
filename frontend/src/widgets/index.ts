@@ -27,9 +27,9 @@ export {
   KnowledgeBaseSearch,
 } from './knowledge-base';
 export type { KnowledgeBaseCategory } from './knowledge-base';
-export { ProfileCourses } from './profile/ProfileCourses';
-export { ProfileMyCourses } from './profile/ProfileMyCourses';
-export { ProfileSettings } from './profile/ProfileSettings';
+export { CabinetCourses } from './profile/ProfileCourses';
+export { CabinetMyCourses } from './profile/ProfileMyCourses';
+export { CabinetSettings } from './profile/ProfileSettings';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';

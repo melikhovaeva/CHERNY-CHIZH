@@ -1,13 +1,13 @@
 import { useGetMyCoursesQuery } from '@/entities/course';
 import { CourseListTemplate } from '@/features/course-list';
 import { Button } from '@/shared/ui/components';
-import styles from './ProfileMyCourses.module.scss';
+import styles from './CabinetMyCourses.module.scss';
 
-interface ProfileMyCoursesProps {
+interface CabinetMyCoursesProps {
   onGoToCourses?: () => void;
 }
 
-export function ProfileMyCourses({ onGoToCourses }: ProfileMyCoursesProps) {
+export function CabinetMyCourses({ onGoToCourses }: CabinetMyCoursesProps) {
   const { data: myCourses, isLoading } = useGetMyCoursesQuery();
 
   return (
@@ -26,3 +26,4 @@ export function ProfileMyCourses({ onGoToCourses }: ProfileMyCoursesProps) {
     />
   );
 }
+

@@ -1,2 +1,2 @@
 export * as profileMyCoursesModel from './model/types';
-export { ProfileMyCourses } from './ui/ProfileMyCourses';
+export { CabinetMyCourses } from './ui/CabinetMyCourses';
