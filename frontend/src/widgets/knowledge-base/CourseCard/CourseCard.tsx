@@ -1,29 +1,9 @@
 import type { CourseRead } from '@/entities/course';
-import { API_CONFIG } from '@/shared/config/api';
+import { formatDate, getImageUrl } from '@/shared';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { Link } from '@tanstack/react-router';
 import styles from './CourseCard.module.scss';
-
-function getImageUrl(path: string | null | undefined): string | undefined {
-  if (!path) return undefined;
-  if (path.startsWith('http')) return path;
-  const base = API_CONFIG.BASE_URL?.replace(/\/$/, '') ?? '';
-  return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
-}
-
-function formatDate(isoDate: string): string {
-  try {
-    const d = new Date(isoDate);
-    return d.toLocaleDateString('ru-RU', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  } catch {
-    return '';
-  }
-}
 
 interface CourseCardProps {
   course: CourseRead;
