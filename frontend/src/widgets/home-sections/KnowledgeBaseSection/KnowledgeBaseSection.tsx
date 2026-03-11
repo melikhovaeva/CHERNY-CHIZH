@@ -7,7 +7,7 @@ import { API_CONFIG } from '@/shared/config/api';
 import { cn } from '@/shared/lib/utils';
 import { Button, Card, Skeleton } from '@/shared/ui/components';
 import { FilterableGallery } from '@/widgets/FilterableGallery';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import styles from './KnowledgeBaseSection.module.scss';
 
@@ -26,6 +26,7 @@ export interface KnowledgeBaseSectionItem extends ArticleMinimal {
 
 export function KnowledgeBaseSection() {
   const { data, isLoading } = useGetHomeLibraryQuery();
+  const navigate = useNavigate();
 
   const tabs: Tab[] = useMemo(
     () =>
@@ -113,9 +114,9 @@ export function KnowledgeBaseSection() {
           className={styles.gallery}
         />
         <div className={styles.buttonContainer}>
-          <Link to="/knowledge-base" className={styles.buttonLink}>
+          <Button onClick={() => navigate({ to: '/knowledge-base' })}>
             Смотреть все
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

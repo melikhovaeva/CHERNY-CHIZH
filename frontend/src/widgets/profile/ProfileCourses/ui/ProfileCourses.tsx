@@ -1,6 +1,6 @@
-import { useGetCoursesQuery } from '@/entities/course'
-import { CourseListTemplate } from '@/features/course-list'
-import styles from './ProfileCourses.module.scss'
+import { useGetCoursesQuery } from '@/entities/course';
+import { CourseListTemplate } from '@/features/course-list';
+import styles from './ProfileCourses.module.scss';
 
 export function ProfileCourses() {
   const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery();

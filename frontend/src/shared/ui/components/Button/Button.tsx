@@ -1,19 +1,36 @@
-import { cn } from '@/shared/lib/utils'
-import styles from './Button.module.scss'
+import { cn } from '@/shared/lib/utils';
+import styles from './Button.module.scss';
 
 interface ButtonProps {
-  children?: React.ReactNode
-  onClick?: () => void
-  className?: string
-  variant?: 'primary' | 'secondary'
-  disabled?: boolean
-  type?: 'button' | 'submit'
+  children?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  variant?: 'primary' | 'secondary' | 'crm';
+  disabled?: boolean;
+  type?: 'button' | 'submit';
 }
 
-export const Button = ({ children, onClick, disabled, className, variant = 'primary', type = 'button' }: ButtonProps) => {
+export const Button = ({
+  children,
+  onClick,
+  disabled,
+  className,
+  variant = 'primary',
+  type = 'button',
+}: ButtonProps) => {
   return (
-    <button type={type} className={cn([styles.button, styles[`variant-${variant}`], className || ''])} onClick={onClick} disabled={disabled} aria-disabled={disabled}>
+    <button
+      type={type}
+      className={cn([
+        styles.button,
+        styles[`variant-${variant}`],
+        className || '',
+      ])}
+      onClick={onClick}
+      disabled={disabled}
+      aria-disabled={disabled}
+    >
       {children}
     </button>
-  )
-}
+  );
+};

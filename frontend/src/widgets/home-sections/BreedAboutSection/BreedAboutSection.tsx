@@ -1,8 +1,12 @@
-import type { Breed, BreedDescription, BreedDescriptionBlock } from '@/entities/breed/model/types';
+import type {
+  Breed,
+  BreedDescription,
+  BreedDescriptionBlock,
+} from '@/entities/breed/model/types';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { cn } from '@/shared/lib/utils';
 import { Button, Placeholder, Skeleton } from '@/shared/ui/components';
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import styles from './BreedAboutSection.module.scss';
 import { BreedAboutBlockKey, CARD_LABELS } from './model/enums';
@@ -31,6 +35,8 @@ export function BreedAboutSection({
     [breeds],
   );
   const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!activeTab && tabs.length > 0) {
@@ -151,13 +157,13 @@ export function BreedAboutSection({
         {isSectionLoading ? (
           <Skeleton className={styles.skeletonButton} />
         ) : articleSlug ? (
-          <Link
-            to="/articles/$slug"
-            params={{ slug: articleSlug }}
-            className={styles.detailLink}
+          <Button
+            onClick={() =>
+              navigate({ to: '/articles/$slug', params: { slug: articleSlug } })
+            }
           >
             Узнать подробнее
-          </Link>
+          </Button>
         ) : (
           <Button disabled>Подробнее</Button>
         )}

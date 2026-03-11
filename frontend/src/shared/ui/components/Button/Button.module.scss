@@ -1,5 +1,5 @@
 .button {
-  padding: 16px 32px;
+  padding: 12px 32px;
   width: 100%;
   cursor: pointer;
   border-radius: 11px;
@@ -9,10 +9,6 @@
 
   @media (max-width: 768px) {
     padding: 12px 24px;
-  }
-
-  @media (max-width: 576px) {
-    padding: 6px 12px;
   }
 
   &:disabled {
@@ -41,5 +37,11 @@
     background-color: $button-secondary-background-color;
     color: $button-secondary-text-color;
     border: $button-secondary-border;
+  }
+
+  &-crm {
+    background-color: $button-tertiary-background-color;
+    color: $button-tertiary-text-color;
+    border: $button-tertiary-border;
   }
 }
