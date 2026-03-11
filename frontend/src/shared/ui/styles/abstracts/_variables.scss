@@ -151,3 +151,154 @@ $font-weight-text-xs: 400;
 $line-height-text-xs: 140%;
 
 $font-size-text-xs: 10px;
+
+// Colors
+
+// === Neutral ===
+// Base
+$c-neutral-0: #ffffff;
+$c-neutral-50: #f9f9f9;
+$c-neutral-100: #f3f3f4;
+$c-neutral-150: #d7d8da;
+$c-neutral-200: #cacbce;
+$c-neutral-300: #b0b2b6;
+$c-neutral-400: #96989e;
+$c-neutral-500: #7c7e85;
+$c-neutral-600: #63656b;
+$c-neutral-700: #4a4c50;
+$c-neutral-800: #313235;
+$c-neutral-850: #252628;
+$c-neutral-900: #19191b;
+$c-neutral-950: #0c0d0d;
+
+// Derivable
+// 0
+$c-neutral-d-0-0: rgba($c-neutral-0, 0.01);
+$c-neutral-d-0-20: rgba($c-neutral-0, 0.2);
+$c-neutral-d-0-32: rgba($c-neutral-0, 0.32);
+$c-neutral-d-0-48: rgba($c-neutral-0, 0.48);
+$c-neutral-d-0-52: rgba($c-neutral-0, 0.52);
+$c-neutral-d-0-72: rgba($c-neutral-0, 0.72);
+$c-neutral-d-0-80: rgba($c-neutral-0, 0.8);
+
+// 600
+$c-neutral-d-600-0: rgba($c-neutral-600, 0.01);
+$c-neutral-d-600-4: rgba($c-neutral-600, 0.04);
+$c-neutral-d-600-8: rgba($c-neutral-600, 0.08);
+$c-neutral-d-600-12: rgba($c-neutral-600, 0.12);
+$c-neutral-d-600-16: rgba($c-neutral-600, 0.16);
+$c-neutral-d-600-20: rgba($c-neutral-600, 0.2);
+$c-neutral-d-600-24: rgba($c-neutral-600, 0.24);
+$c-neutral-d-600-32: rgba($c-neutral-600, 0.32);
+$c-neutral-d-600-36: rgba($c-neutral-600, 0.36);
+$c-neutral-d-600-40: rgba($c-neutral-600, 0.4);
+$c-neutral-d-600-44: rgba($c-neutral-600, 0.44);
+
+// 800
+$c-neutral-d-800-32: rgba($c-neutral-800, 0.32);
+$c-neutral-d-800-52: rgba($c-neutral-800, 0.52);
+$c-neutral-d-800-72: rgba($c-neutral-800, 0.72);
+
+// === Brand ===
+// - Green
+$c-b-green-50: #f3f7f3;
+$c-b-green-100: #e1ece2;
+$c-b-green-200: #c5d7c8;
+$c-b-green-300: #9fbba4;
+$c-b-green-400: #749a7c;
+$c-b-green-500: #557c5e;
+$c-b-green-600: #41634a;
+$c-b-green-700: #334e3a;
+$c-b-green-800: #2a3f30;
+$c-b-green-900: #233429;
+$c-b-green-950: #131d16;
+
+// - Beige
+$c-b-beige-50: #f8f6f3;
+$c-b-beige-100: #eae5db;
+$c-b-beige-200: #d4c8b3;
+$c-b-beige-300: #bda88b;
+$c-b-beige-400: #ad9371;
+$c-b-beige-500: #a68467;
+$c-b-beige-600: #8c6750;
+$c-b-beige-700: #755345;
+$c-b-beige-800: #61443c;
+$c-b-beige-900: #513a34;
+$c-b-beige-950: #2d1d1a;
+
+// - CRM
+$c-b-crm-0: #f3f3f6;
+$c-b-crm-50: #e9e7fd;
+$c-b-crm-100: #d2d0fb;
+$c-b-crm-200: #bcb8f9;
+$c-b-crm-300: #a6a0f7;
+$c-b-crm-400: #4d41ee;
+$c-b-crm-500: #2012ea;
+$c-b-crm-600: #1a0ebb;
+$c-b-crm-700: #130b8c;
+$c-b-crm-800: #0d075e;
+$c-b-crm-850: #0a0546;
+$c-b-crm-900: #06042f;
+$c-b-crm-950: #030217;
+
+// Derivable
+$c-b-crm-d-500-2: rgba($c-b-crm-500, 0.02);
+$c-b-crm-d-500-4: rgba($c-b-crm-500, 0.04);
+$c-b-crm-d-500-8: rgba($c-b-crm-500, 0.08);
+$c-b-crm-d-500-12: rgba($c-b-crm-500, 0.12);
+$c-b-crm-d-500-20: rgba($c-b-crm-500, 0.2);
+$c-b-crm-d-500-32: rgba($c-b-crm-500, 0.32);
+$c-b-crm-d-500-52: rgba($c-b-crm-500, 0.52);
+$c-b-crm-d-500-72: rgba($c-b-crm-500, 0.72);
+$c-b-crm-d-500-80: rgba($c-b-crm-500, 0.8);
+
+// === Status ===
+$c-status-red: #ff3b30;
+$c-status-orange: #ffa100;
+$c-status-yellow: #ffd000;
+$c-status-green: #57b69b;
+
+// Derivable
+// Red
+$c-status-red-d-2: rgba($c-status-red, 0.01);
+$c-status-red-d-4: rgba($c-status-red, 0.04);
+$c-status-red-d-8: rgba($c-status-red, 0.08);
+$c-status-red-d-12: rgba($c-status-red, 0.12);
+$c-status-red-d-20: rgba($c-status-red, 0.2);
+$c-status-red-d-32: rgba($c-status-red, 0.32);
+$c-status-red-d-52: rgba($c-status-red, 0.52);
+$c-status-red-d-72: rgba($c-status-red, 0.72);
+$c-status-red-d-80: rgba($c-status-red, 0.8);
+
+// Orange
+$c-status-orange-d-2: rgba($c-status-orange, 0.02);
+$c-status-orange-d-4: rgba($c-status-orange, 0.04);
+$c-status-orange-d-8: rgba($c-status-orange, 0.08);
+$c-status-orange-d-12: rgba($c-status-orange, 0.12);
+$c-status-orange-d-20: rgba($c-status-orange, 0.2);
+$c-status-orange-d-32: rgba($c-status-orange, 0.32);
+$c-status-orange-d-52: rgba($c-status-orange, 0.52);
+$c-status-orange-d-72: rgba($c-status-orange, 0.72);
+$c-status-orange-d-80: rgba($c-status-orange, 0.8);
+
+// Yellow
+$c-status-yellow-d-2: rgba($c-status-yellow, 0.02);
+$c-status-yellow-d-4: rgba($c-status-yellow, 0.04);
+$c-status-yellow-d-8: rgba($c-status-yellow, 0.08);
+$c-status-yellow-d-12: rgba($c-status-yellow, 0.12);
+$c-status-yellow-d-20: rgba($c-status-yellow, 0.2);
+$c-status-yellow-d-32: rgba($c-status-yellow, 0.32);
+$c-status-yellow-d-52: rgba($c-status-yellow, 0.52);
+$c-status-yellow-d-72: rgba($c-status-yellow, 0.72);
+$c-status-yellow-d-80: rgba($c-status-yellow, 0.8);
+
+// Green
+$c-status-green-d-2: rgba($c-status-green, 0.02);
+$c-status-green-d-4: rgba($c-status-green, 0.04);
+$c-status-green-d-8: rgba($c-status-green, 0.08);
+$c-status-green-d-12: rgba($c-status-green, 0.12);
+$c-status-green-d-20: rgba($c-status-green, 0.2);
+$c-status-green-d-32: rgba($c-status-green, 0.32);
+$c-status-green-d-52: rgba($c-status-green, 0.52);
+$c-status-green-d-72: rgba($c-status-green, 0.72);
+$c-status-green-d-80: rgba($c-status-green, 0.8);
