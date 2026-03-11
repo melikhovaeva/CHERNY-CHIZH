@@ -22,21 +22,43 @@ def _to_camel_case(snake_str: str) -> str:
     return parts[0].lower() + "".join(p.capitalize() for p in parts[1:])
 
 
-def _keys_to_camel_case(data):
-    """Рекурсивно преобразует все ключи словарей в camelCase"""
+def strip_empty_values(data):
+    """
+    Рекурсивно удаляет ключи со значениями None и пустой строкой.
+    Не изменяет другие типы значений.
+    """
     if isinstance(data, dict):
-        return {_to_camel_case(k): _keys_to_camel_case(v) for k, v in data.items()}
+        cleaned = {}
+        for key, value in data.items():
+            cleaned_value = strip_empty_values(value)
+            if cleaned_value is None or cleaned_value == "":
+                continue
+            cleaned[key] = cleaned_value
+        return cleaned
+    if isinstance(data, list):
+        return [strip_empty_values(item) for item in data]
+    return data
+
+
+def _keys_to_camel_case(data):
+    """Рекурсивно преобразует все ключи словарей в camelCase и убирает пустые значения."""
+    if isinstance(data, dict):
+        camelized = {
+            _to_camel_case(k): _keys_to_camel_case(v) for k, v in data.items()
+        }
+        return strip_empty_values(camelized)
     if isinstance(data, list):
         return [_keys_to_camel_case(item) for item in data]
     return data
 
 
 class CamelCaseSerializerMixin:
-    """Миксин: результат to_representation отдаётся с ключами в camelCase"""
+    """Миксин: результат to_representation отдаётся с ключами в camelCase без null и пустых строк."""
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        return _keys_to_camel_case(data)
+        data = _keys_to_camel_case(data)
+        return strip_empty_values(data)
 
 
 class CodeLabelSerializer(CamelCaseSerializerMixin, serializers.Serializer):
