@@ -1,7 +1,7 @@
 import { ProtectedRoute } from '@/features/session';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { ProfileCourses, ProfileMyCourses, ProfileSettings } from '@/widgets';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { USER_PROFILE_TABS, type UserProfileTabId } from './model/tabs';
 import styles from './UserProfilePage.module.scss';
 
@@ -12,6 +12,12 @@ const profileTabs: Tab[] = USER_PROFILE_TABS.map((tab) => ({
 }));
 
 export function UserProfilePage() {
+  useEffect(() => {
+    document.body.classList.add(styles.styledBody);
+    return () => {
+      document.body.classList.remove(styles.styledBody);
+    };
+  }, []);
   const [activeTab, setActiveTab] = useState<UserProfileTabId>('my-courses');
 
   const renderActiveTab = () => {
