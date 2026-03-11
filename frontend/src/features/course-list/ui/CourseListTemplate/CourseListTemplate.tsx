@@ -1,5 +1,6 @@
 import type { CourseRead } from '@/entities/course';
 import { Tabs, type Tab } from '@/features/tabs-filter';
+import { Button } from '@/shared';
 import { cn } from '@/shared/lib/utils';
 import { CourseCard } from '@/widgets/knowledge-base/CourseCard/CourseCard';
 import { useMemo, useState } from 'react';
@@ -110,6 +111,9 @@ export function CourseListTemplate<TItem>({
           />
         </div>
       )}
+      <Button className={styles.createCourseButton} variant="crm">
+        Создать курс
+      </Button>
     </div>
   );
 

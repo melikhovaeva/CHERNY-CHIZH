@@ -8,6 +8,26 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(376px, 1fr));
   gap: 12px;
+
+  .createCourseButton {
+    text-wrap: nowrap;
+    grid-column: 3;
+
+    @media (max-width: 992px) {
+      grid-column: 2;
+      width: 50%;
+      justify-self: flex-end;
+    }
+
+    @media (max-width: 800px) {
+      width: 100%;
+      grid-column: 2;
+    }
+    @media (max-width: 576px) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
 }
 
 .searchRow {
