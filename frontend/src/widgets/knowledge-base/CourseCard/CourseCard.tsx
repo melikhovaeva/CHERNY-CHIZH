@@ -1,7 +1,6 @@
 import type { CourseRead } from '@/entities/course';
 import { API_CONFIG } from '@/shared/config/api';
-import { DifficultyBadge } from '@/shared/ui/components';
-import { Placeholder } from '@/shared/ui/components';
+import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Link } from '@tanstack/react-router';
 import styles from './CourseCard.module.scss';
 

@@ -4,7 +4,6 @@
   color: inherit;
   border-radius: 24px;
   overflow: hidden;
-  background-color: $filled-section-primary-bg-color;
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -22,6 +21,11 @@
   flex-direction: column;
   min-height: 0;
 
+  .panel {
+    color: $text-inverted-color;
+    background-color: $card-dark-bg-color;
+  }
+
   @media (min-width: 640px) {
     flex-direction: row;
     min-height: 200px;
@@ -31,6 +35,11 @@
 .cardVertical {
   flex-direction: column;
   height: 100%;
+
+  .panel {
+    color: $text-color;
+    background-color: $card-light-bg-color;
+  }
 }
 
 .imageWrap {
@@ -84,8 +93,6 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  background-color: $card-dark-bg-color;
-  color: $text-inverted-color;
 }
 
 .panelHorizontal {
@@ -107,12 +114,10 @@
 
 .title {
   margin: 0 0 8px;
-  color: $text-inverted-color;
 }
 
 .description {
   margin: 0 0 12px;
-  color: $text-inverted-color;
 }
 
 .descriptionClamp {
@@ -146,7 +151,6 @@
 
 .date {
   @include typography-text-s;
-  color: $text-inverted-color;
 }
 
 .status {
