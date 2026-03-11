@@ -80,7 +80,7 @@ $breakpoint-mobile-sm: 576px;
   --warning-color: #{$warning-color};
 }
 
-// New variables
+// ================== New variables ================== //
 
 // === Fonts ===
 $abstract-font-family-roboto-flex: 'Roboto Flex', sans-serif;
@@ -170,6 +170,7 @@ $c-neutral-800: #313235;
 $c-neutral-850: #252628;
 $c-neutral-900: #19191b;
 $c-neutral-950: #0c0d0d;
+$c-neutral-1000: #000000;
 
 // Derivable
 // 0
@@ -302,3 +303,44 @@ $c-status-green-d-32: rgba($c-status-green, 0.32);
 $c-status-green-d-52: rgba($c-status-green, 0.52);
 $c-status-green-d-72: rgba($c-status-green, 0.72);
 $c-status-green-d-80: rgba($c-status-green, 0.8);
+///
+
+// === UI ===
+// Main Page
+$c-mp-accent-primary: $c-b-green-600;
+$c-mp-accent-secondary: $c-b-beige-700;
+
+// Text
+$c-mp-text-headers: $c-neutral-900;
+$c-mp-text-body: $c-neutral-800;
+$c-mp-text-headers-inverted: $c-neutral-0;
+$c-mp-text-body-inverted: $c-neutral-0;
+
+$c-mp-text-placeholder: $c-neutral-500;
+$c-mp-text-urls: $c-b-crm-500;
+
+// Background
+$c-mp-bg-body: $c-b-beige-50;
+
+$c-mp-bg-card-light: $c-neutral-0;
+$c-mp-bg-card-dark: $c-neutral-900;
+$c-mp-bg-card-accent: $c-mp-accent-primary;
+
+$c-mp-bg-section-primary: $c-mp-accent-primary;
+$c-mp-bg-section-secondary: $c-mp-accent-secondary;
+
+$c-mp-bg-actions-primary: $c-neutral-900;
+$c-mp-bg-actions-secondary: $c-neutral-950;
+$c-mp-bg-actions-accent: $c-mp-accent-primary;
+
+// === Components ===
+// Tags
+$c-tag-color: $c-neutral-1000;
+$c-tag-bg-1: $c-b-green-100;
+$c-tag-bg-2: $c-b-green-200;
+$c-tag-bg-3: $c-b-crm-100;
+$c-tag-bg-4: $c-b-crm-200;
+$c-tag-bg-5: $c-b-beige-100;
+$c-tag-bg-6: $c-b-beige-200;
+$c-tag-bg-7: $c-neutral-100;
+$c-tag-bg-8: $c-neutral-200;
