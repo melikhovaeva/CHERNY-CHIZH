@@ -1,6 +1,7 @@
 import type { CourseRead } from '@/entities/course';
 import { API_CONFIG } from '@/shared/config/api';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
+import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { Link } from '@tanstack/react-router';
 import styles from './CourseCard.module.scss';
 
@@ -23,8 +24,6 @@ function formatDate(isoDate: string): string {
     return '';
   }
 }
-
-const TAG_STYLE_MAP = [styles.tagGreen, '', styles.tagPurple] as const;
 
 interface CourseCardProps {
   course: CourseRead;
@@ -82,16 +81,8 @@ export function CourseCard({
       <div className={panelClass}>
         {!isHorizontal && course.tags.length > 0 && (
           <div className={styles.tagsRow}>
-            {course.tags.map((tag, i) => (
-              <span
-                key={tag.id}
-                className={[
-                  styles.tag,
-                  TAG_STYLE_MAP[i % TAG_STYLE_MAP.length] || '',
-                ].join(' ')}
-              >
-                {tag.label}
-              </span>
+            {course.tags.map((tag) => (
+              <Tag key={tag.id} tag={tag} />
             ))}
           </div>
         )}

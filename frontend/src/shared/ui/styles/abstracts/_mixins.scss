@@ -133,3 +133,35 @@
     $line-height-text-xs
   );
 }
+
+@mixin tag {
+  @include typography-text-s;
+  padding: 4px 12px;
+  border-radius: 100px;
+  @include bg-color($c-tag-bg-1);
+  color: $c-tag-color;
+  &[data-bg-color='1'] {
+    @include bg-color($c-tag-bg-1);
+  }
+  &[data-bg-color='2'] {
+    @include bg-color($c-tag-bg-2);
+  }
+  &[data-bg-color='3'] {
+    @include bg-color($c-tag-bg-3);
+  }
+  &[data-bg-color='4'] {
+    @include bg-color($c-tag-bg-4);
+  }
+  &[data-bg-color='5'] {
+    @include bg-color($c-tag-bg-5);
+  }
+  &[data-bg-color='6'] {
+    @include bg-color($c-tag-bg-6);
+  }
+  &[data-bg-color='7'] {
+    @include bg-color($c-tag-bg-7);
+  }
+  &[data-bg-color='8'] {
+    @include bg-color($c-tag-bg-8);
+  }
+}
