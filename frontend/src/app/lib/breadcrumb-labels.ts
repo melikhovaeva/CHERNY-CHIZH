@@ -13,6 +13,9 @@ const SEGMENT_LABELS: Record<string, string> = {
   articles: 'Статьи',
   user: 'Личный кабинет',
   cabinet: 'Личный кабинет',
+  courses: 'Курсы',
+  'my-courses': 'Мои курсы',
+  settings: 'Настройки',
 };
 
 export function getSegmentLabelStatic(segment: string): string {
@@ -28,8 +31,7 @@ export function useSegmentLabel(): (
 
   const isPuppiesRoute = segments[0] === 'puppies';
   const isDogsRoute = segments[0] === 'dogs';
-  const breedSlug =
-    (isPuppiesRoute || isDogsRoute) ? segments[1] : undefined;
+  const breedSlug = isPuppiesRoute || isDogsRoute ? segments[1] : undefined;
   const puppyId =
     (isPuppiesRoute || isDogsRoute) && segments[2]
       ? Number(segments[2])
