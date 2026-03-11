@@ -1,8 +1,8 @@
 import { useGetCoursesQuery } from '@/entities/course';
 import { CourseListTemplate } from '@/features/course-list';
-import styles from './ProfileCourses.module.scss';
+import styles from './CabinetCourses.module.scss';
 
-export function ProfileCourses() {
+export function CabinetCourses() {
   const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery();
 
   return (
@@ -16,3 +16,4 @@ export function ProfileCourses() {
     />
   );
 }
+

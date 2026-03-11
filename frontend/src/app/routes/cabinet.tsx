@@ -1,9 +1,9 @@
 import { store } from '@/app/store';
 import { sessionApi } from '@/entities/session/api/session.api';
-import { UserProfilePage } from '@/pages/UserProfilePage/UserProfilePage';
+import { UserCabinetPage } from '@/pages/UserProfilePage/UserCabinetPage';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/profile')({
+export const Route = createFileRoute('/cabinet')({
   loader: async () => {
     const mePromise = store.dispatch(
       sessionApi.endpoints.v1UsersMeRetrieve.initiate(),
@@ -21,5 +21,6 @@ export const Route = createFileRoute('/profile')({
 
     return null;
   },
-  component: UserProfilePage,
+  component: UserCabinetPage,
 });
+

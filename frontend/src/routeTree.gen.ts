@@ -10,10 +10,10 @@
 
 import { Route as rootRouteImport } from './app/routes/__root'
 import { Route as PuppiesRouteImport } from './app/routes/puppies'
-import { Route as ProfileRouteImport } from './app/routes/profile'
 import { Route as KnowledgeBaseRouteImport } from './app/routes/knowledge-base'
 import { Route as DogsRouteImport } from './app/routes/dogs'
 import { Route as ContactsRouteImport } from './app/routes/contacts'
+import { Route as CabinetRouteImport } from './app/routes/cabinet'
 import { Route as AboutRouteImport } from './app/routes/about'
 import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
@@ -30,11 +30,6 @@ const PuppiesRoute = PuppiesRouteImport.update({
   path: '/puppies',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const KnowledgeBaseRoute = KnowledgeBaseRouteImport.update({
   id: '/knowledge-base',
   path: '/knowledge-base',
@@ -48,6 +43,11 @@ const DogsRoute = DogsRouteImport.update({
 const ContactsRoute = ContactsRouteImport.update({
   id: '/contacts',
   path: '/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CabinetRoute = CabinetRouteImport.update({
+  id: '/cabinet',
+  path: '/cabinet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -104,10 +104,10 @@ const DogsBreedIdDogIdRoute = DogsBreedIdDogIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cabinet': typeof CabinetRoute
   '/contacts': typeof ContactsRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
-  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -121,10 +121,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cabinet': typeof CabinetRoute
   '/contacts': typeof ContactsRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
-  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -137,10 +137,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cabinet': typeof CabinetRoute
   '/contacts': typeof ContactsRoute
   '/dogs': typeof DogsRouteWithChildren
   '/knowledge-base': typeof KnowledgeBaseRoute
-  '/profile': typeof ProfileRoute
   '/puppies': typeof PuppiesRouteWithChildren
   '/articles/$slug': typeof ArticlesSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -156,10 +156,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/cabinet'
     | '/contacts'
     | '/dogs'
     | '/knowledge-base'
-    | '/profile'
     | '/puppies'
     | '/articles/$slug'
     | '/courses/$slug'
@@ -173,10 +173,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/cabinet'
     | '/contacts'
     | '/dogs'
     | '/knowledge-base'
-    | '/profile'
     | '/puppies'
     | '/articles/$slug'
     | '/courses/$slug'
@@ -188,10 +188,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/cabinet'
     | '/contacts'
     | '/dogs'
     | '/knowledge-base'
-    | '/profile'
     | '/puppies'
     | '/articles/$slug'
     | '/courses/$slug'
@@ -206,10 +206,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CabinetRoute: typeof CabinetRoute
   ContactsRoute: typeof ContactsRoute
   DogsRoute: typeof DogsRouteWithChildren
   KnowledgeBaseRoute: typeof KnowledgeBaseRoute
-  ProfileRoute: typeof ProfileRoute
   PuppiesRoute: typeof PuppiesRouteWithChildren
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
@@ -222,13 +222,6 @@ declare module '@tanstack/react-router' {
       path: '/puppies'
       fullPath: '/puppies'
       preLoaderRoute: typeof PuppiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge-base': {
@@ -250,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: '/contacts'
       fullPath: '/contacts'
       preLoaderRoute: typeof ContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cabinet': {
+      id: '/cabinet'
+      path: '/cabinet'
+      fullPath: '/cabinet'
+      preLoaderRoute: typeof CabinetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -377,10 +377,10 @@ const PuppiesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CabinetRoute: CabinetRoute,
   ContactsRoute: ContactsRoute,
   DogsRoute: DogsRouteWithChildren,
   KnowledgeBaseRoute: KnowledgeBaseRoute,
-  ProfileRoute: ProfileRoute,
   PuppiesRoute: PuppiesRouteWithChildren,
   ArticlesSlugRoute: ArticlesSlugRoute,
   CoursesSlugRoute: CoursesSlugRoute,

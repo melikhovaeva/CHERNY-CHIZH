@@ -1,2 +1,2 @@
 export * as profileSettingsModel from './model/types';
-export { ProfileSettings } from './ui/ProfileSettings';
+export { CabinetSettings } from './ui/CabinetSettings';

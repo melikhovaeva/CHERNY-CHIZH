@@ -5,6 +5,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   contacts: 'Контакты',
   'knowledge-base': 'База знаний',
   articles: 'Статьи',
+  cabinet: 'Личный кабинет',
 };
 
 export function getSegmentLabelStatic(segment: string): string {

@@ -1,2 +1,2 @@
-export { ProfileButton } from './ProfileButton';
+export { CabinetButton } from './CabinetButton';
 

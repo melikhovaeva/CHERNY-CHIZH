@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { ProfileForm, ProfilePasswordForm } from '../model/types';
 import UploadIcon from './assets/image.svg?react';
-import styles from './ProfileSettings.module.scss';
+import styles from './CabinetSettings.module.scss';
 
 const PROFILE_ERROR_FIELDS = ['email', 'first_name', 'last_name', 'detail'];
 const PASSWORD_ERROR_FIELDS = [
@@ -29,7 +29,7 @@ const PASSWORD_ERROR_FIELDS = [
   'detail',
 ];
 
-export function ProfileSettings() {
+export function CabinetSettings() {
   const addError = useError();
   const addSuccess = useSuccess();
 
@@ -353,3 +353,4 @@ export function ProfileSettings() {
     </div>
   );
 }
+
