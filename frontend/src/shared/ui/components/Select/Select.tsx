@@ -111,6 +111,7 @@ export const Select = ({
         styles.root,
         isOpen || isClosing ? styles.root_open : '',
         className || '',
+        styles[`variant_${variant}`],
       ])}
       ref={containerRef}
     >
