@@ -1,3 +1,25 @@
 .tag {
   @include tag;
 }
+
+.tag_removable {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.removeButton {
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $c-neutral-700;
+
+  &:hover {
+    color: $c-neutral-900;
+  }
+}
+

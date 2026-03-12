@@ -1,0 +1,6 @@
+export const TAG_INPUT_DEFAULT_DEBOUNCE_MS = 350;
+
+export const TAG_INPUT_DEFAULT_PAGE_SIZE = 5;
+
+export const TAG_INPUT_MIN_SEARCH_LENGTH = 1;
+

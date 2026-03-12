@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import ChevronDownIcon from './assets/chevron-down.svg?react';
+import { ChevronDownIcon } from '@/shared/ui/icons/ChevronDownIcon';
 import styles from './Select.module.scss';
 
 export interface SelectOption {

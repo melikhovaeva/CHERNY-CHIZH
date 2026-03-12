@@ -16,6 +16,7 @@ export { EditSaveButton } from './EditSaveButton';
 export { Form } from './Form';
 export { Input, type InputType } from './Input';
 export { Modal, useModalTitle, type ModalTitleContextValue } from './Modal';
+export { TagInput, type TagInputProps, type TagInputValue } from './TagInput';
 export { Placeholder } from './Placeholder';
 export { SafeHtmlContent, type SafeHtmlContentProps } from './SafeHtmlContent';
 export { SearchInput } from './SearchInput';

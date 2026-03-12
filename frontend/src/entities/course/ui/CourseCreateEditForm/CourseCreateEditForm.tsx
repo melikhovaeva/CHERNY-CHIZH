@@ -1,12 +1,19 @@
 import { Form } from '@/shared';
-import type { Course } from '@/shared/api/generated/courses.generated';
-import { Button, Input, Select } from '@/shared/ui/components';
+import type {
+  Course,
+  InfoTagRead,
+} from '@/shared/api/generated/courses.generated';
+import { Button, Input, Select, TagInput } from '@/shared/ui/components';
 import { Controller, useForm } from 'react-hook-form';
 import {
   difficultyOptions,
   formFields,
   type CourseCreateEditFormProps,
 } from './model';
+
+type CourseFormValues = Course & {
+  tags: InfoTagRead[];
+};
 
 export const CourseCreateEditForm = ({
   data,
@@ -17,11 +24,11 @@ export const CourseCreateEditForm = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<Course>({
+  } = useForm<CourseFormValues>({
     defaultValues: data,
   });
 
-  const onFormSubmit = (values: Course) => {
+  const onFormSubmit = (values: CourseFormValues) => {
     onSubmit?.(values);
   };
 
@@ -76,7 +83,25 @@ export const CourseCreateEditForm = ({
       />
 
       {/* TODO: Загрузка изображения (imagePreview) */}
-      {/* TODO: Теги (tags) */}
+
+      <Controller
+        control={control}
+        name={formFields.tags.name}
+        render={({ field, fieldState }) => (
+          <TagInput
+            label={formFields.tags.label}
+            value={{
+              existing: field.value ?? [],
+              created: [],
+            }}
+            onChange={(next) => {
+              field.onChange(next.existing);
+            }}
+            placeholder="Введите тег и нажмите Enter"
+            error={fieldState.error?.message}
+          />
+        )}
+      />
       <Button type="submit">Сохранить</Button>
     </Form>
   );
