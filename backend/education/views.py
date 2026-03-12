@@ -129,6 +129,72 @@ class EducationTagViewSet(
     serializer_class = InfoTagSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        raw_query = request.query_params.get("q", "").strip()
+        tags = queryset
+
+        if raw_query:
+            query = raw_query.lower()
+            tags = tags.filter(
+                Q(label__icontains=query) | Q(code__icontains=query)
+            )
+            tags_list = list(tags)
+
+            def get_match_position(tag: InfoTag) -> int | None:
+                label = (tag.label or "").lower()
+                code = (tag.code or "").lower()
+                label_pos = label.find(query)
+                code_pos = code.find(query)
+                positions = [
+                    pos for pos in (label_pos, code_pos) if pos != -1
+                ]
+                if not positions:
+                    return None
+                return min(positions)
+
+            scored_tags: list[tuple[int, int, int, InfoTag]] = []
+            for tag in tags_list:
+                match_pos = get_match_position(tag)
+                if match_pos is None:
+                    continue
+                scored_tags.append(
+                    (match_pos, tag.order, tag.id, tag)
+                )
+
+            scored_tags.sort(key=lambda item: (item[0], item[1], item[2]))
+            ordered_tags = [item[3] for item in scored_tags]
+        else:
+            ordered_tags = list(tags)
+
+        offset_param = request.query_params.get("offset")
+        limit_param = request.query_params.get("limit")
+
+        start_index = 0
+        if offset_param is not None:
+            try:
+                start_index = max(int(offset_param), 0)
+            except (TypeError, ValueError):
+                start_index = 0
+
+        end_index = None
+        if limit_param is not None:
+            try:
+                limit_value = int(limit_param)
+                if limit_value >= 0:
+                    end_index = start_index + limit_value
+            except (TypeError, ValueError):
+                end_index = None
+
+        if end_index is not None:
+            sliced_tags = ordered_tags[start_index:end_index]
+        else:
+            sliced_tags = ordered_tags[start_index:]
+
+        serializer = self.get_serializer(sliced_tags, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request, *args, **kwargs):
         is_many = isinstance(request.data, list)
         serializer = self.get_serializer(data=request.data, many=is_many)
