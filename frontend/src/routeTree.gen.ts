@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './app/routes/index'
 import { Route as CabinetIndexRouteImport } from './app/routes/cabinet.index'
 import { Route as PuppiesBreedIdRouteImport } from './app/routes/puppies.$breedId'
 import { Route as DogsBreedIdRouteImport } from './app/routes/dogs.$breedId'
+import { Route as CoursesNewRouteImport } from './app/routes/courses.new'
 import { Route as CoursesSlugRouteImport } from './app/routes/courses.$slug'
 import { Route as CabinetSettingsRouteImport } from './app/routes/cabinet.settings'
 import { Route as CabinetMyCoursesRouteImport } from './app/routes/cabinet.my-courses'
@@ -28,6 +29,7 @@ import { Route as PuppiesBreedIdIndexRouteImport } from './app/routes/puppies.$b
 import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs.$breedId.index'
 import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies.$breedId.$puppyId'
 import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs.$breedId.$dogId'
+import { Route as CoursesCourseIdEditRouteImport } from './app/routes/courses.$courseId.edit'
 
 const PuppiesRoute = PuppiesRouteImport.update({
   id: '/puppies',
@@ -79,6 +81,11 @@ const DogsBreedIdRoute = DogsBreedIdRouteImport.update({
   path: '/$breedId',
   getParentRoute: () => DogsRoute,
 } as any)
+const CoursesNewRoute = CoursesNewRouteImport.update({
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/courses/$slug',
   path: '/courses/$slug',
@@ -124,6 +131,11 @@ const DogsBreedIdDogIdRoute = DogsBreedIdDogIdRouteImport.update({
   path: '/$dogId',
   getParentRoute: () => DogsBreedIdRoute,
 } as any)
+const CoursesCourseIdEditRoute = CoursesCourseIdEditRouteImport.update({
+  id: '/courses/$courseId/edit',
+  path: '/courses/$courseId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,9 +150,11 @@ export interface FileRoutesByFullPath {
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/new': typeof CoursesNewRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
+  '/courses/$courseId/edit': typeof CoursesCourseIdEditRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
@@ -158,7 +172,9 @@ export interface FileRoutesByTo {
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/new': typeof CoursesNewRoute
   '/cabinet': typeof CabinetIndexRoute
+  '/courses/$courseId/edit': typeof CoursesCourseIdEditRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId': typeof DogsBreedIdIndexRoute
@@ -178,9 +194,11 @@ export interface FileRoutesById {
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/new': typeof CoursesNewRoute
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
+  '/courses/$courseId/edit': typeof CoursesCourseIdEditRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
@@ -201,9 +219,11 @@ export interface FileRouteTypes {
     | '/cabinet/my-courses'
     | '/cabinet/settings'
     | '/courses/$slug'
+    | '/courses/new'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/cabinet/'
+    | '/courses/$courseId/edit'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId/'
@@ -221,7 +241,9 @@ export interface FileRouteTypes {
     | '/cabinet/my-courses'
     | '/cabinet/settings'
     | '/courses/$slug'
+    | '/courses/new'
     | '/cabinet'
+    | '/courses/$courseId/edit'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId'
@@ -240,9 +262,11 @@ export interface FileRouteTypes {
     | '/cabinet/my-courses'
     | '/cabinet/settings'
     | '/courses/$slug'
+    | '/courses/new'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/cabinet/'
+    | '/courses/$courseId/edit'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId/'
@@ -259,6 +283,8 @@ export interface RootRouteChildren {
   PuppiesRoute: typeof PuppiesRouteWithChildren
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
+  CoursesNewRoute: typeof CoursesNewRoute
+  CoursesCourseIdEditRoute: typeof CoursesCourseIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -333,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DogsBreedIdRouteImport
       parentRoute: typeof DogsRoute
     }
+    '/courses/new': {
+      id: '/courses/new'
+      path: '/courses/new'
+      fullPath: '/courses/new'
+      preLoaderRoute: typeof CoursesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/courses/$slug': {
       id: '/courses/$slug'
       path: '/courses/$slug'
@@ -395,6 +428,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dogs/$breedId/$dogId'
       preLoaderRoute: typeof DogsBreedIdDogIdRouteImport
       parentRoute: typeof DogsBreedIdRoute
+    }
+    '/courses/$courseId/edit': {
+      id: '/courses/$courseId/edit'
+      path: '/courses/$courseId/edit'
+      fullPath: '/courses/$courseId/edit'
+      preLoaderRoute: typeof CoursesCourseIdEditRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -475,6 +515,8 @@ const rootRouteChildren: RootRouteChildren = {
   PuppiesRoute: PuppiesRouteWithChildren,
   ArticlesSlugRoute: ArticlesSlugRoute,
   CoursesSlugRoute: CoursesSlugRoute,
+  CoursesNewRoute: CoursesNewRoute,
+  CoursesCourseIdEditRoute: CoursesCourseIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

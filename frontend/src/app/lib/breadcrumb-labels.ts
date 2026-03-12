@@ -16,6 +16,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   courses: 'Курсы',
   'my-courses': 'Мои курсы',
   settings: 'Настройки',
+  new: 'Создание курса',
 };
 
 export function getSegmentLabelStatic(segment: string): string {

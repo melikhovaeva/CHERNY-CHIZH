@@ -61,6 +61,7 @@ export function CourseListTemplate<TItem>({
   emptyState,
   filterOptions,
   filterValue = null,
+  onGoToCreateCourse,
   onFilterChange,
   searchPlaceholder = 'Поиск',
   className,
@@ -111,9 +112,15 @@ export function CourseListTemplate<TItem>({
           />
         </div>
       )}
-      <Button className={styles.createCourseButton} variant="crm">
-        Создать курс
-      </Button>
+      {onGoToCreateCourse && (
+        <Button
+          className={styles.createCourseButton}
+          variant="crm"
+          onClick={onGoToCreateCourse}
+        >
+          Создать курс
+        </Button>
+      )}
     </div>
   );
 
