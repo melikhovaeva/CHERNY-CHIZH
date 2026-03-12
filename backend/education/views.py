@@ -1,7 +1,13 @@
 from django.db.models import Count, Q
 
 from common.pagination import DogPagination
-from education.schema import article_view_schema, course_view_schema, extend_schema_view
+from education.schema import (
+    article_view_schema,
+    course_view_schema,
+    education_article_view_schema,
+    education_course_view_schema,
+    extend_schema_view,
+)
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -94,4 +100,18 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == "retrieve":
             return CourseDetailSerializer
         return CourseSerializer
+
+
+@extend_schema_view(**education_article_view_schema)
+class EducationArticleViewSet(ArticleViewSet):
+    """Публичный API для статей под префиксом /education."""
+
+    pass
+
+
+@extend_schema_view(**education_course_view_schema)
+class EducationCourseViewSet(CourseViewSet):
+    """Публичный API для курсов под префиксом /education."""
+
+    pass
 
