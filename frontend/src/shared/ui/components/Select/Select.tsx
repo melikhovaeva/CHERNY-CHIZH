@@ -21,6 +21,8 @@ interface SelectProps {
   value?: string;
   onChange?: (value: string) => void;
   className?: string;
+  placeholder?: string;
+  error?: string;
 }
 
 export const Select = ({
@@ -30,6 +32,8 @@ export const Select = ({
   variant = 'default',
   onChange,
   className,
+  placeholder,
+  error,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -38,8 +42,14 @@ export const Select = ({
   const listRef = useRef<HTMLUListElement>(null);
 
   const selectedOption = options.find((o) => o.value === value);
-  const isInitialOrAll = !value || options[0]?.value === value;
-  const displayText = isInitialOrAll ? label : (selectedOption?.label ?? label);
+  const isInitialOrAllDefault =
+    !value || (variant === 'default' && options[0]?.value === value);
+  const displayTextDefault = isInitialOrAllDefault
+    ? label
+    : selectedOption?.label ?? label;
+
+  const isInputVariant = variant === 'input';
+  const displayTextInput = selectedOption?.label ?? placeholder ?? '';
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
@@ -105,16 +115,17 @@ export const Select = ({
       )
     : label;
 
-  return (
-    <div
-      className={cn([
-        styles.root,
-        isOpen || isClosing ? styles.root_open : '',
-        className || '',
-        styles[`variant_${variant}`],
-      ])}
-      ref={containerRef}
-    >
+  const triggerContent =
+    isInputVariant && !value ? (
+      <span className={styles.triggerPlaceholder}>{displayTextInput}</span>
+    ) : (
+      <span className={styles.triggerText}>
+        {isInputVariant ? displayTextInput : displayTextDefault}
+      </span>
+    );
+
+  const selectCore = (
+    <>
       <span className={styles.sizer} aria-hidden>
         {longestLabel}
       </span>
@@ -126,7 +137,7 @@ export const Select = ({
         aria-haspopup="listbox"
         aria-label={label}
       >
-        <span className={styles.triggerText}>{displayText}</span>
+        {triggerContent}
         <span
           className={cn([styles.chevron, isOpen ? styles.chevron_open : ''])}
         >
@@ -167,6 +178,48 @@ export const Select = ({
           </ul>
         </div>
       )}
+    </>
+  );
+
+  if (isInputVariant) {
+    const hasError = !!error;
+
+    return (
+      <div className={styles.field}>
+        <span className={styles.label}>{label}</span>
+        <div
+          className={cn([
+            styles.root,
+            isOpen || isClosing ? styles.root_open : '',
+            className || '',
+            styles.variant_input,
+            hasError ? styles.variant_inputInvalid : '',
+          ])}
+          ref={containerRef}
+        >
+          {selectCore}
+        </div>
+        <span
+          className={cn([styles.error, hasError ? styles.error_visible : ''])}
+          role={hasError ? 'alert' : undefined}
+        >
+          {error || '\u00A0'}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn([
+        styles.root,
+        isOpen || isClosing ? styles.root_open : '',
+        className || '',
+        styles[`variant_${variant}`],
+      ])}
+      ref={containerRef}
+    >
+      {selectCore}
     </div>
   );
 };

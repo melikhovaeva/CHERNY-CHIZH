@@ -48,11 +48,13 @@ export const CourseCreateEditForm = ({
       <Controller
         control={control}
         name={formFields.difficulty.name}
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <Select
             label={formFields.difficulty.label}
             options={difficultyOptions}
             value={field.value ?? ''}
+            placeholder="Выберите уровень"
+            error={fieldState.error?.message}
             onChange={(value) => field.onChange(value as Course['difficulty'])}
             variant="input"
           />
