@@ -1,4 +1,4 @@
-import styles from './InfoCreateEditTemplate.module.scss';
+import styles from './InfoSettingsTemplate.module.scss';
 
 interface InfoCreateEditTemplateProps {
   children: React.ReactNode;

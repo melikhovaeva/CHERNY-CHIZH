@@ -12,9 +12,9 @@ export interface CourseListTemplateProps<TItem> {
   isLoading?: boolean;
   emptyState?: React.ReactNode;
   filterValue?: string | null;
+  onGoToCreateCourse?: () => void;
   onFilterChange?: (value: string | null) => void;
   filterOptions?: CourseListFilterOption[];
   searchPlaceholder?: string;
   className?: string;
 }
-

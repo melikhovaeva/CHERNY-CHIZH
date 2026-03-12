@@ -23,4 +23,3 @@ export const Route = createFileRoute('/cabinet')({
   },
   component: UserCabinetPage,
 });
-
