@@ -48,6 +48,7 @@ export const CourseCreateEditForm = ({
       <Controller
         control={control}
         name={formFields.difficulty.name}
+        rules={formFields.difficulty.validation}
         render={({ field, fieldState }) => (
           <Select
             label={formFields.difficulty.label}

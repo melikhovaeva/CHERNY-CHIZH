@@ -53,6 +53,9 @@ export const formFields = {
   [CourseCreateEditFormFieldsEnum.DIFFICULTY]: {
     label: 'Уровень',
     name: CourseCreateEditFormFieldsEnum.DIFFICULTY,
+    validation: {
+      required: 'Обязательное поле',
+    } satisfies CourseFieldRegisterOptions,
   },
   [CourseCreateEditFormFieldsEnum.IMAGE_PREVIEW]: {
     label: 'Изображение',
