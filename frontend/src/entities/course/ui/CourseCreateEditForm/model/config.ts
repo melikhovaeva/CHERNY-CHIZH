@@ -19,6 +19,7 @@ export const formFields = {
   [CourseCreateEditFormFieldsEnum.TITLE]: {
     label: 'Название курса',
     name: CourseCreateEditFormFieldsEnum.TITLE,
+    placeholder: 'Введите название',
     validation: {
       required: 'Обязательное поле',
       maxLength: {
@@ -30,6 +31,7 @@ export const formFields = {
   [CourseCreateEditFormFieldsEnum.DESCRIPTION]: {
     label: 'Описание курса',
     name: CourseCreateEditFormFieldsEnum.DESCRIPTION,
+    placeholder: 'Введите описание курса',
     validation: {
       required: 'Обязательное поле',
       maxLength: {
@@ -41,6 +43,7 @@ export const formFields = {
   [CourseCreateEditFormFieldsEnum.ACTION_TEXT]: {
     label: 'Текст на кнопке',
     name: CourseCreateEditFormFieldsEnum.ACTION_TEXT,
+    placeholder: 'Введите текст',
     validation: {
       required: 'Обязательное поле',
       maxLength: {
@@ -53,6 +56,7 @@ export const formFields = {
   [CourseCreateEditFormFieldsEnum.DIFFICULTY]: {
     label: 'Уровень',
     name: CourseCreateEditFormFieldsEnum.DIFFICULTY,
+    placeholder: 'Выберите уровень',
     validation: {
       required: 'Обязательное поле',
     } satisfies CourseFieldRegisterOptions,
