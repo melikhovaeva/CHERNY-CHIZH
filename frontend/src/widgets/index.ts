@@ -35,3 +35,5 @@ export { PuppiesFilters } from './PuppiesFilters';
 export { PuppiesList } from './PuppiesList';
 export { PuppyTabsSection } from './PuppyTabsSection';
 export { RelatedPuppies } from './RelatedPuppies';
+
+export { InfoSettingsTemplate } from './info';
