@@ -141,6 +141,7 @@ SPECTACULAR_SETTINGS = {
         {'name': 'Requests', 'description': 'Заявки пользователей на щенков и обратную связь.'},
         {'name': 'FAQ', 'description': 'Часто задаваемые вопросы.'},
         {'name': 'Users', 'description': 'Регистрация, профиль и управление пользователями.'},
+        {'name': 'Education', 'description': 'Образовательный раздел: статьи и курсы.'},
     ],
 }
 

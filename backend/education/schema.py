@@ -2,9 +2,7 @@
 OpenAPI (drf-spectacular) схема для приложения education.
 Описания эндпоинтов и типы для сериализаторов.
 """
-from drf_spectacular.utils import extend_schema, extend_schema_view
-
-from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.utils import extend_schema, extend_schema_view, extend_schema_field
 
 __all__ = [
     "extend_schema",
@@ -12,6 +10,8 @@ __all__ = [
     "extend_schema_field",
     "article_view_schema",
     "course_view_schema",
+    "education_article_view_schema",
+    "education_course_view_schema",
 ]
 
 # --- ArticleViewSet ---
@@ -47,5 +47,40 @@ course_view_schema = {
         summary="Детали курса",
         description="Возвращает полную структуру курса со ступенями, уроками и заданиями.",
         tags=["Courses"],
+    ),
+}
+
+# --- Education*ViewSet (префикс /education) ---
+education_article_view_schema = {
+    "list": extend_schema(
+        summary="Список статей (education)",
+        description="Возвращает список статей с краткой информацией (education-префикс).",
+        tags=["Education"],
+    ),
+    "retrieve": extend_schema(
+        summary="Детали статьи (education)",
+        description="Возвращает полное содержимое одной статьи (education-префикс).",
+        tags=["Education"],
+    ),
+    "home_library": extend_schema(
+        summary="Блок «База знаний» для главной (education)",
+        description=(
+            "Теги с не менее чем 3 статьями (макс. 4 тега), для каждого — минимум 3 статьи. "
+            "Только опубликованные статьи. (education-префикс)"
+        ),
+        tags=["Education"],
+    ),
+}
+
+education_course_view_schema = {
+    "list": extend_schema(
+        summary="Список курсов (education)",
+        description="Возвращает список доступных курсов (education-префикс).",
+        tags=["Education"],
+    ),
+    "retrieve": extend_schema(
+        summary="Детали курса (education)",
+        description="Возвращает полную структуру курса со ступенями, уроками и заданиями (education-префикс).",
+        tags=["Education"],
     ),
 }
