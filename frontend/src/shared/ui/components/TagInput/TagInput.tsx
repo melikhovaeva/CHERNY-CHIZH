@@ -261,60 +261,60 @@ export const TagInput = ({
         >
           <ChevronDownIcon width={16} height={16} aria-hidden />
         </button>
-      </div>
-      {isDropdownOpen && (
-        <div className={styles.dropdown}>
-          <div className={styles.dropdownList}>
-            {isFetching && availableTags.length === 0 && (
-              <button
-                type="button"
-                className={[styles.dropdownItem, styles.dropdownItem_disabled]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                Загрузка тегов...
-              </button>
-            )}
-            {isError && (
-              <button
-                type="button"
-                className={styles.dropdownItem}
-                onClick={() => refetch()}
-              >
-                Не удалось загрузить теги, повторить попытку
-              </button>
-            )}
-            {!isFetching &&
-              !isError &&
-              availableTags.map((tag, index) => (
+        {isDropdownOpen && (
+          <div className={styles.dropdown}>
+            <div className={styles.dropdownList}>
+              {isFetching && availableTags.length === 0 && (
                 <button
-                  key={tag.id}
                   type="button"
-                  className={[
-                    styles.dropdownItem,
-                    selectedIndex === index ? styles.dropdownItem_active : '',
-                  ]
+                  className={[styles.dropdownItem, styles.dropdownItem_disabled]
                     .filter(Boolean)
                     .join(' ')}
-                  onClick={() => handleAddExisting(tag)}
-                  onMouseEnter={() => setSelectedIndex(index)}
                 >
-                  {tag.label}
+                  Загрузка тегов...
                 </button>
-              ))}
-            {!isFetching && !isError && availableTags.length === 0 && (
-              <button
-                type="button"
-                className={[styles.dropdownItem, styles.dropdownItem_disabled]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
-                Теги не найдены
-              </button>
-            )}
+              )}
+              {isError && (
+                <button
+                  type="button"
+                  className={styles.dropdownItem}
+                  onClick={() => refetch()}
+                >
+                  Не удалось загрузить теги, повторить попытку
+                </button>
+              )}
+              {!isFetching &&
+                !isError &&
+                availableTags.map((tag, index) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    className={[
+                      styles.dropdownItem,
+                      selectedIndex === index ? styles.dropdownItem_active : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    onClick={() => handleAddExisting(tag)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                  >
+                    {tag.label}
+                  </button>
+                ))}
+              {!isFetching && !isError && availableTags.length === 0 && (
+                <button
+                  type="button"
+                  className={[styles.dropdownItem, styles.dropdownItem_disabled]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  Теги не найдены
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <span className={styles.error}>{error}</span>
     </div>
   );
