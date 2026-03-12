@@ -50,7 +50,6 @@ export const TagInput = ({
   const [inputValue, setInputValue] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loadedTags, setLoadedTags] = useState<TagsListItem[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -94,12 +93,6 @@ export const TagInput = ({
 
   useEffect(() => {
     if (!data) return;
-
-    if (!Array.isArray(data)) {
-      setHasMore(Boolean(data.next));
-    } else {
-      setHasMore(false);
-    }
 
     setLoadedTags((prev) => {
       const nextResults = extractResults(data);
@@ -210,11 +203,6 @@ export const TagInput = ({
 
       return next;
     });
-  };
-
-  const handleLoadMore = () => {
-    if (!hasMore || isFetching) return;
-    setOffset((prev) => prev + pageSize);
   };
 
   const rootClassName = [styles.root, className].filter(Boolean).join(' ');
