@@ -75,12 +75,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  color: $c-neutral-600;
+  cursor: default;
+  color: $c-neutral-800;
+  transition: transform 0.2s ease;
+}
 
-  &:hover {
-    background-color: $c-neutral-d-600-8;
-  }
+.dropdownToggle_open {
+  transform: rotate(180deg);
 }
 
 .dropdownToggle_disabled {
@@ -90,7 +91,7 @@
 
 .dropdown {
   position: absolute;
-  top: calc(100% - 4px);
+  top: calc(100%);
   left: 0;
   right: 0;
   height: 224px;
@@ -100,7 +101,7 @@
 
 .dropdownList {
   position: absolute;
-  top: 4px;
+  top: 0;
   left: 0;
   right: 0;
   max-height: 220px;

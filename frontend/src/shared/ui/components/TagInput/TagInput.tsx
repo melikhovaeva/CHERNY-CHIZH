@@ -55,6 +55,7 @@ export const TagInput = ({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loadedTags, setLoadedTags] = useState<TagsListItem[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const [createTags] = useV1EducationTagsCreateMutation();
 
@@ -186,6 +187,20 @@ export const TagInput = ({
     });
   };
 
+  const handleFieldMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (disabled || isMaxReached) return;
+
+    const target = event.target as HTMLElement;
+    const tagName = target.tagName.toLowerCase();
+
+    if (tagName === 'input' || tagName === 'button') {
+      return;
+    }
+
+    event.preventDefault();
+    inputRef.current?.focus();
+  };
+
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape' && isDropdownOpen && !isClosing) {
       event.preventDefault();
@@ -251,15 +266,6 @@ export const TagInput = ({
 
   const handleInputFocus = () => {
     handleOpen();
-  };
-
-  const handleToggleDropdown = () => {
-    if (disabled) return;
-    if (isDropdownOpen) {
-      handleClose();
-    } else {
-      handleOpen();
-    }
   };
 
   const handleListTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
@@ -337,6 +343,7 @@ export const TagInput = ({
         ]
           .filter(Boolean)
           .join(' ')}
+        onMouseDown={handleFieldMouseDown}
       >
         <div className={styles.tags}>
           {value.existing.map((tag) => (
@@ -360,6 +367,7 @@ export const TagInput = ({
           className={[styles.input, disabled ? styles.input_disabled : '']
             .filter(Boolean)
             .join(' ')}
+          ref={inputRef}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleInputKeyDown}
@@ -367,19 +375,17 @@ export const TagInput = ({
           placeholder={placeholder}
           disabled={disabled || isMaxReached}
         />
-        <button
-          type="button"
+        <div
           className={[
             styles.dropdownToggle,
+            isDropdownOpen ? styles.dropdownToggle_open : '',
             disabled ? styles.dropdownToggle_disabled : '',
           ]
             .filter(Boolean)
             .join(' ')}
-          onClick={handleToggleDropdown}
-          aria-label="Открыть список тегов"
         >
           <ChevronDownIcon width={16} height={16} aria-hidden />
-        </button>
+        </div>
         {(isDropdownOpen || isClosing) && (
           <div className={styles.dropdown}>
             <div
