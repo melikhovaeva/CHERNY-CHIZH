@@ -22,6 +22,10 @@ export function UserCabinetPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const isFullPageCourseRoute =
+    location.pathname.startsWith('/cabinet/courses/') &&
+    (location.pathname.endsWith('/new') || location.pathname.endsWith('/edit'));
+
   const tabs: Tab[] = useMemo(() => {
     const cabinetRoute = router.routesById['/cabinet'];
     return collectNavLinksFromTree(cabinetRoute).map((link) => ({
@@ -38,6 +42,16 @@ export function UserCabinetPage() {
       '',
     [location.pathname, tabs],
   );
+
+  if (isFullPageCourseRoute) {
+    return (
+      <ProtectedRoute>
+        <section className={styles.container}>
+          <Outlet />
+        </section>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>

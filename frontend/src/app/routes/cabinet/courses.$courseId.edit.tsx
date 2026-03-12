@@ -1,10 +1,9 @@
 import { store } from '@/app/store';
 import { CourseCreateEditPage } from '@/pages/CourseCreationPage/CourseCreateEditPage';
 import { coursesApi } from '@/entities/course';
-import { ProtectedRoute } from '@/features/session';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/courses/$courseId/edit')({
+export const Route = createFileRoute('/cabinet/courses/$courseId/edit')({
   loader: async ({ params: { courseId } }) => {
     const id = Number(courseId);
 
@@ -24,10 +23,6 @@ export const Route = createFileRoute('/courses/$courseId/edit')({
 
     return null;
   },
-  component: () => (
-    <ProtectedRoute>
-      <CourseCreateEditPage />
-    </ProtectedRoute>
-  ),
+  component: CourseCreateEditPage,
 });
 
