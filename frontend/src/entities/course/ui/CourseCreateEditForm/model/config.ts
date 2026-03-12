@@ -1,4 +1,7 @@
-import type { Course } from '@/shared/api/generated/courses.generated';
+import type {
+  Course,
+  DifficultyEnum,
+} from '@/shared/api/generated/courses.generated';
 import type { RegisterOptions } from 'react-hook-form';
 
 type CourseFieldRegisterOptions = RegisterOptions<Course>;
@@ -60,3 +63,9 @@ export const formFields = {
     name: CourseCreateEditFormFieldsEnum.TAGS,
   },
 } as const;
+
+export const difficultyOptions: { value: DifficultyEnum; label: string }[] = [
+  { value: 'beginner', label: 'Начинающий' },
+  { value: 'intermediate', label: 'Средний' },
+  { value: 'advanced', label: 'Продвинутый' },
+];

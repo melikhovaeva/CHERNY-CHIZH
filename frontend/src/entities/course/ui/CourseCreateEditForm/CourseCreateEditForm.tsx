@@ -1,8 +1,12 @@
 import { Form } from '@/shared';
 import type { Course } from '@/shared/api/generated/courses.generated';
-import { Button, Input } from '@/shared/ui/components';
-import { useForm } from 'react-hook-form';
-import { formFields, type CourseCreateEditFormProps } from './model';
+import { Button, Input, Select } from '@/shared/ui/components';
+import { Controller, useForm } from 'react-hook-form';
+import {
+  difficultyOptions,
+  formFields,
+  type CourseCreateEditFormProps,
+} from './model';
 
 export const CourseCreateEditForm = ({
   data,
@@ -11,6 +15,7 @@ export const CourseCreateEditForm = ({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<Course>({
     defaultValues: data,
@@ -40,6 +45,19 @@ export const CourseCreateEditForm = ({
         )}
       />
 
+      <Controller
+        control={control}
+        name={formFields.difficulty.name}
+        render={({ field }) => (
+          <Select
+            label={formFields.difficulty.label}
+            options={difficultyOptions}
+            value={field.value ?? ''}
+            onChange={(value) => field.onChange(value as Course['difficulty'])}
+            variant="input"
+          />
+        )}
+      />
       <Input
         label={formFields.actionText.label}
         maxLength={formFields.actionText.validation.maxLength?.value}
@@ -50,10 +68,8 @@ export const CourseCreateEditForm = ({
         )}
       />
 
-      {/* TODO: Уровень сложности (difficulty) */}
       {/* TODO: Загрузка изображения (imagePreview) */}
       {/* TODO: Теги (tags) */}
-
       <Button type="submit">Сохранить</Button>
     </Form>
   );
