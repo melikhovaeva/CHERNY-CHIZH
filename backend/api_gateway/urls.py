@@ -16,6 +16,7 @@ from education.views import (
     CourseViewSet,
     EducationArticleViewSet,
     EducationCourseViewSet,
+    EducationTagViewSet,
 )
 from user_management.views import ProfileView
 
@@ -41,6 +42,11 @@ router.register(
     r"education/courses",
     EducationCourseViewSet,
     basename="education-course",
+)
+router.register(
+    r"education/tags",
+    EducationTagViewSet,
+    basename="education-tag",
 )
 
 router.APIRootView.permission_classes = [permissions.AllowAny]
