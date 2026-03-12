@@ -1,6 +1,6 @@
 import { store } from '@/app/store';
 import { sessionApi } from '@/entities/session/api/session.api';
-import { UserCabinetPage } from '@/pages/UserProfilePage/UserCabinetPage';
+import { UserCabinetPage } from '@/pages/UserCabinetPage/UserCabinetPage';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/cabinet')({
@@ -23,4 +23,3 @@ export const Route = createFileRoute('/cabinet')({
   },
   component: UserCabinetPage,
 });
-
