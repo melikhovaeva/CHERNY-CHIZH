@@ -187,10 +187,61 @@ export const TagInput = ({
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape' && isDropdownOpen && !isClosing) {
+      event.preventDefault();
+      handleClose();
+      return;
+    }
+
+    if (event.key === 'ArrowDown' && isDropdownOpen && !isClosing) {
+      event.preventDefault();
+      setSelectedIndex((prevIndex) => {
+        if (availableTags.length === 0) return null;
+
+        if (
+          prevIndex === null ||
+          prevIndex < 0 ||
+          prevIndex >= availableTags.length
+        ) {
+          return 0;
+        }
+
+        if (prevIndex < availableTags.length - 1) {
+          return prevIndex + 1;
+        }
+
+        return prevIndex;
+      });
+      return;
+    }
+
+    if (event.key === 'ArrowUp' && isDropdownOpen && !isClosing) {
+      event.preventDefault();
+      setSelectedIndex((prevIndex) => {
+        if (availableTags.length === 0) return null;
+
+        if (
+          prevIndex === null ||
+          prevIndex <= 0 ||
+          prevIndex >= availableTags.length
+        ) {
+          return 0;
+        }
+
+        return prevIndex - 1;
+      });
+      return;
+    }
+
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (availableTags[0]) {
-        handleAddExisting(availableTags[0]);
+      if (
+        isDropdownOpen &&
+        !isClosing &&
+        selectedIndex !== null &&
+        availableTags[selectedIndex]
+      ) {
+        handleAddExisting(availableTags[selectedIndex]);
         return;
       }
 
@@ -225,6 +276,49 @@ export const TagInput = ({
       return () => cancelAnimationFrame(id);
     }
   }, [isDropdownOpen, isClosing]);
+
+  useEffect(() => {
+    if (!isDropdownOpen || isClosing) {
+      return;
+    }
+
+    if (availableTags.length === 0) {
+      setSelectedIndex(null);
+      return;
+    }
+
+    setSelectedIndex((prevIndex) => {
+      if (
+        prevIndex === null ||
+        prevIndex < 0 ||
+        prevIndex >= availableTags.length
+      ) {
+        return 0;
+      }
+
+      return prevIndex;
+    });
+  }, [isDropdownOpen, isClosing, availableTags]);
+
+  useEffect(() => {
+    if (!isDropdownOpen || isClosing) {
+      return;
+    }
+
+    const handleDocumentMouseDown = (event: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      if (!containerRef.current.contains(event.target as Node)) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleDocumentMouseDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentMouseDown);
+    };
+  }, [isDropdownOpen, isClosing, handleClose]);
 
   useEffect(() => {
     if (!isDropdownOpen) setIsListVisible(false);
