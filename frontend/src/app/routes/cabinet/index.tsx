@@ -5,3 +5,4 @@ export const Route = createFileRoute('/cabinet/')({
     throw redirect({ to: '/cabinet/settings' });
   },
 });
+

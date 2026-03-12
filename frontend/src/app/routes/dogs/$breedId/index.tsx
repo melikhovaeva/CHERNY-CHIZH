@@ -32,3 +32,4 @@ export const Route = createFileRoute('/dogs/$breedId/')({
   },
   component: DogsPage,
 })
+

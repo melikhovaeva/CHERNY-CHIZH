@@ -5,3 +5,4 @@ export const Route = createFileRoute('/cabinet/settings')({
   component: CabinetSettings,
   staticData: { navLabel: 'Настройки', navOrder: 2 },
 });
+
