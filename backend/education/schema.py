@@ -90,7 +90,9 @@ education_course_view_schema = {
 education_tag_view_schema = {
     "list": extend_schema(
         summary="Список тегов (education)",
-        description="Возвращает полный список возможных тегов для статей и курсов.",
+        description=(
+            "Возвращает список возможных тегов для статей и курсов. "
+        ),
         tags=["Education"],
     ),
     "create": extend_schema(
