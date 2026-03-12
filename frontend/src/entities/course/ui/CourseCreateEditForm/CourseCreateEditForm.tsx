@@ -29,6 +29,7 @@ export const CourseCreateEditForm = ({
     <Form onSubmit={handleSubmit(onFormSubmit)}>
       <Input
         label={formFields.title.label}
+        placeholder={formFields.title.placeholder}
         maxLength={formFields.title.validation.maxLength?.value}
         error={errors.title?.message}
         {...register(formFields.title.name, formFields.title.validation)}
@@ -37,11 +38,23 @@ export const CourseCreateEditForm = ({
       <Input
         label={formFields.description.label}
         multiline
+        placeholder={formFields.description.placeholder}
         maxLength={formFields.description.validation.maxLength?.value}
         error={errors.description?.message}
         {...register(
           formFields.description.name,
           formFields.description.validation,
+        )}
+      />
+
+      <Input
+        label={formFields.actionText.label}
+        placeholder={formFields.actionText.placeholder}
+        maxLength={formFields.actionText.validation.maxLength?.value}
+        error={errors.actionText?.message}
+        {...register(
+          formFields.actionText.name,
+          formFields.actionText.validation,
         )}
       />
 
@@ -54,20 +67,11 @@ export const CourseCreateEditForm = ({
             label={formFields.difficulty.label}
             options={difficultyOptions}
             value={field.value ?? ''}
-            placeholder="Выберите уровень"
+            placeholder={formFields.difficulty.placeholder}
             error={fieldState.error?.message}
             onChange={(value) => field.onChange(value as Course['difficulty'])}
             variant="input"
           />
-        )}
-      />
-      <Input
-        label={formFields.actionText.label}
-        maxLength={formFields.actionText.validation.maxLength?.value}
-        error={errors.actionText?.message}
-        {...register(
-          formFields.actionText.name,
-          formFields.actionText.validation,
         )}
       />
 
