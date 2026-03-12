@@ -6,7 +6,7 @@ import {
 } from '@/shared/api/tags.ts';
 import { useDebouncedValue } from '@/shared/lib/hooks/useDebounce';
 import { ChevronDownIcon } from '@/shared/ui/icons/ChevronDownIcon';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Tag } from '../Tag/Tag';
 import styles from './TagInput.module.scss';
 import {
@@ -49,10 +49,13 @@ export const TagInput = ({
 }: TagInputProps) => {
   const [inputValue, setInputValue] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isListVisible, setIsListVisible] = useState(false);
   const [offset, setOffset] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loadedTags, setLoadedTags] = useState<TagsListItem[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
   const [createTags] = useV1EducationTagsCreateMutation();
 
   const debouncedQuery = useDebouncedValue(inputValue, debounceMs);
@@ -123,6 +126,20 @@ export const TagInput = ({
   const totalSelected = value.existing.length + value.created.length;
   const isMaxReached = typeof maxTags === 'number' && totalSelected >= maxTags;
 
+  const handleClose = () => {
+    setIsClosing(true);
+    setSelectedIndex(null);
+  };
+
+  const handleOpen = () => {
+    if (disabled) return;
+    setIsDropdownOpen(true);
+    setIsClosing(false);
+    if (availableTags.length > 0) {
+      setSelectedIndex(0);
+    }
+  };
+
   const handleChangeValue = (next: TagInputValue) => {
     if (
       isMaxReached &&
@@ -182,28 +199,36 @@ export const TagInput = ({
   };
 
   const handleInputFocus = () => {
-    if (!disabled) {
-      setIsDropdownOpen(true);
-      if (availableTags.length > 0) {
-        setSelectedIndex(0);
-      }
-    }
+    handleOpen();
   };
 
   const handleToggleDropdown = () => {
     if (disabled) return;
-    setIsDropdownOpen((prev) => {
-      const next = !prev;
-
-      if (!next) {
-        setSelectedIndex(null);
-      } else if (availableTags.length > 0) {
-        setSelectedIndex(0);
-      }
-
-      return next;
-    });
+    if (isDropdownOpen) {
+      handleClose();
+    } else {
+      handleOpen();
+    }
   };
+
+  const handleListTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
+    if (e.target !== listRef.current || e.propertyName !== 'transform') return;
+    if (isClosing) {
+      setIsDropdownOpen(false);
+      setIsClosing(false);
+    }
+  };
+
+  useLayoutEffect(() => {
+    if (isDropdownOpen && !isClosing) {
+      const id = requestAnimationFrame(() => setIsListVisible(true));
+      return () => cancelAnimationFrame(id);
+    }
+  }, [isDropdownOpen, isClosing]);
+
+  useEffect(() => {
+    if (!isDropdownOpen) setIsListVisible(false);
+  }, [isDropdownOpen]);
 
   const rootClassName = [styles.root, className].filter(Boolean).join(' ');
 
@@ -261,9 +286,19 @@ export const TagInput = ({
         >
           <ChevronDownIcon width={16} height={16} aria-hidden />
         </button>
-        {isDropdownOpen && (
+        {(isDropdownOpen || isClosing) && (
           <div className={styles.dropdown}>
-            <div className={styles.dropdownList}>
+            <div
+              ref={listRef}
+              className={[
+                styles.dropdownList,
+                isListVisible && !isClosing ? styles.dropdownList_visible : '',
+                isClosing ? styles.dropdownList_closing : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              onTransitionEnd={handleListTransitionEnd}
+            >
               {isFetching && availableTags.length === 0 && (
                 <button
                   type="button"
