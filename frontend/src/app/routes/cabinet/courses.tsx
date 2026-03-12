@@ -5,3 +5,4 @@ export const Route = createFileRoute('/cabinet/courses')({
   component: CabinetCourses,
   staticData: { navLabel: 'Курсы', navOrder: 0 },
 });
+

@@ -1,11 +1,11 @@
-import { PuppyDetailsPage } from '@/pages'
+import { DogDetailsPage } from '@/pages'
 import { createFileRoute } from '@tanstack/react-router'
 import { store } from '@/app/store'
 import { puppyApi } from '@/entities/puppy/api/puppy.api'
 
-export const Route = createFileRoute('/puppies/$breedId/$puppyId')({
-  loader: async ({ params: { puppyId } }) => {
-    const id = Number(puppyId)
+export const Route = createFileRoute('/dogs/$breedId/$dogId')({
+  loader: async ({ params: { dogId } }) => {
+    const id = Number(dogId)
 
     if (Number.isNaN(id)) {
       return null
@@ -23,5 +23,6 @@ export const Route = createFileRoute('/puppies/$breedId/$puppyId')({
 
     return null
   },
-  component: PuppyDetailsPage,
+  component: DogDetailsPage,
 })
+
