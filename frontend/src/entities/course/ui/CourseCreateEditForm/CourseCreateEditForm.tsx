@@ -97,7 +97,7 @@ export const CourseCreateEditForm = ({
             onChange={(next) => {
               field.onChange(next.existing);
             }}
-            placeholder="Введите тег и нажмите Enter"
+            placeholder="Введите теги"
             error={fieldState.error?.message}
           />
         )}
