@@ -104,8 +104,9 @@
   top: 0;
   left: 0;
   right: 0;
-  max-height: 220px;
-  overflow-y: auto;
+  /* Высота под 5 видимых пунктов: padding 8*2 + line-height ~22px ≈ 38px на пункт */
+  max-height: 200px;
+  overflow: hidden;
   border-radius: 0 0 16px 16px;
   background-color: $background-tertiary-color;
   border: 1px solid $background-secondary-color;

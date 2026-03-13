@@ -41,6 +41,7 @@ export const tagsApi = baseApi.injectEndpoints({
 
 export const {
   useV1EducationTagsListQuery,
+  useLazyV1EducationTagsListQuery,
   useV1EducationTagsCreateMutation,
 } = tagsApi;
 

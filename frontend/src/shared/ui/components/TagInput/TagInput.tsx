@@ -1,5 +1,6 @@
 import type { InfoTagRead } from '@/shared/api/generated/articles.generated';
 import {
+  useLazyV1EducationTagsListQuery,
   useV1EducationTagsCreateMutation,
   useV1EducationTagsListQuery,
   type TagsListResponse,
@@ -11,8 +12,10 @@ import { Tag } from '../Tag/Tag';
 import styles from './TagInput.module.scss';
 import {
   TAG_INPUT_DEFAULT_DEBOUNCE_MS,
-  TAG_INPUT_DEFAULT_PAGE_SIZE,
+  TAG_INPUT_INITIAL_PAGE_SIZE,
+  TAG_INPUT_LOAD_MORE_PAGE_SIZE,
   TAG_INPUT_MIN_SEARCH_LENGTH,
+  TAG_INPUT_VISIBLE_ITEMS,
 } from './config';
 
 export type TagInputValue = {
@@ -45,13 +48,15 @@ export const TagInput = ({
   className,
   maxTags,
   debounceMs = TAG_INPUT_DEFAULT_DEBOUNCE_MS,
-  pageSize = TAG_INPUT_DEFAULT_PAGE_SIZE,
+  pageSize,
 }: TagInputProps) => {
   const [inputValue, setInputValue] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isListVisible, setIsListVisible] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [nextOffset, setNextOffset] = useState(0);
+  const [selectionsFromDropdown, setSelectionsFromDropdown] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loadedTags, setLoadedTags] = useState<TagsListItem[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -61,29 +66,27 @@ export const TagInput = ({
 
   const debouncedQuery = useDebouncedValue(inputValue, debounceMs);
 
-  useEffect(() => {
-    setOffset(0);
-    setLoadedTags([]);
-  }, [debouncedQuery]);
-
-  const queryParams = useMemo(
+  const initialQueryParams = useMemo(
     () => ({
       q:
         debouncedQuery.length >= TAG_INPUT_MIN_SEARCH_LENGTH
           ? debouncedQuery
           : undefined,
-      limit: pageSize,
-      offset,
+      limit: pageSize ?? TAG_INPUT_INITIAL_PAGE_SIZE,
+      offset: 0,
     }),
-    [debouncedQuery, pageSize, offset],
+    [debouncedQuery, pageSize],
   );
 
   const { data, isFetching, isError, refetch } = useV1EducationTagsListQuery(
-    queryParams,
+    initialQueryParams,
     {
       skip: disabled || !isDropdownOpen,
     },
   );
+
+  const [fetchNextPage, { isFetching: isLoadMoreFetching }] =
+    useLazyV1EducationTagsListQuery();
 
   const extractResults = (response?: TagsListResponse): TagsListItem[] => {
     if (!response) return [];
@@ -98,31 +101,24 @@ export const TagInput = ({
   useEffect(() => {
     if (!data) return;
 
-    setLoadedTags((prev) => {
-      const nextResults = extractResults(data);
+    const nextResults = extractResults(data);
+    const limitUsed = pageSize ?? TAG_INPUT_INITIAL_PAGE_SIZE;
 
-      if (offset === 0) {
-        return nextResults;
-      }
-
-      const existingIds = new Set(prev.map((t) => t.id));
-      const merged = [...prev];
-
-      nextResults.forEach((tag) => {
-        if (!existingIds.has(tag.id)) {
-          merged.push(tag);
-        }
-      });
-
-      return merged;
-    });
-  }, [data, offset]);
+    setLoadedTags(nextResults);
+    setHasMore(nextResults.length === limitUsed);
+    setNextOffset(nextResults.length);
+  }, [data, pageSize]);
 
   const availableTags = useMemo(() => {
     const existingIds = new Set(value.existing.map((t) => t.id));
 
     return loadedTags.filter((tag) => !existingIds.has(tag.id));
   }, [loadedTags, value.existing]);
+
+  const visibleTags = useMemo(
+    () => availableTags.slice(0, TAG_INPUT_VISIBLE_ITEMS),
+    [availableTags],
+  );
 
   const totalSelected = value.existing.length + value.created.length;
   const isMaxReached = typeof maxTags === 'number' && totalSelected >= maxTags;
@@ -158,6 +154,39 @@ export const TagInput = ({
     });
     setInputValue('');
     setSelectedIndex(null);
+
+    const nextSelections = selectionsFromDropdown + 1;
+    setSelectionsFromDropdown(nextSelections);
+    if (
+      nextSelections >= TAG_INPUT_VISIBLE_ITEMS &&
+      hasMore &&
+      !isLoadMoreFetching
+    ) {
+      setSelectionsFromDropdown(0);
+      fetchNextPage({
+        q:
+          debouncedQuery.length >= TAG_INPUT_MIN_SEARCH_LENGTH
+            ? debouncedQuery
+            : undefined,
+        limit: TAG_INPUT_LOAD_MORE_PAGE_SIZE,
+        offset: nextOffset,
+      })
+        .unwrap()
+        .then((response) => {
+          const nextResults = extractResults(response);
+          setLoadedTags((prev) => {
+            const existingIds = new Set(prev.map((t) => t.id));
+            const merged = [...prev];
+            nextResults.forEach((tag) => {
+              if (!existingIds.has(tag.id)) merged.push(tag);
+            });
+            return merged;
+          });
+          setHasMore(nextResults.length === TAG_INPUT_LOAD_MORE_PAGE_SIZE);
+          setNextOffset((prev) => prev + nextResults.length);
+        })
+        .catch(() => {});
+    }
   };
 
   const handleAddCreated = () => {
@@ -211,17 +240,17 @@ export const TagInput = ({
     if (event.key === 'ArrowDown' && isDropdownOpen && !isClosing) {
       event.preventDefault();
       setSelectedIndex((prevIndex) => {
-        if (availableTags.length === 0) return null;
+        if (visibleTags.length === 0) return null;
 
         if (
           prevIndex === null ||
           prevIndex < 0 ||
-          prevIndex >= availableTags.length
+          prevIndex >= visibleTags.length
         ) {
           return 0;
         }
 
-        if (prevIndex < availableTags.length - 1) {
+        if (prevIndex < visibleTags.length - 1) {
           return prevIndex + 1;
         }
 
@@ -233,12 +262,12 @@ export const TagInput = ({
     if (event.key === 'ArrowUp' && isDropdownOpen && !isClosing) {
       event.preventDefault();
       setSelectedIndex((prevIndex) => {
-        if (availableTags.length === 0) return null;
+        if (visibleTags.length === 0) return null;
 
         if (
           prevIndex === null ||
           prevIndex <= 0 ||
-          prevIndex >= availableTags.length
+          prevIndex >= visibleTags.length
         ) {
           return 0;
         }
@@ -254,9 +283,9 @@ export const TagInput = ({
         isDropdownOpen &&
         !isClosing &&
         selectedIndex !== null &&
-        availableTags[selectedIndex]
+        visibleTags[selectedIndex]
       ) {
-        handleAddExisting(availableTags[selectedIndex]);
+        handleAddExisting(visibleTags[selectedIndex]);
         return;
       }
 
@@ -288,7 +317,7 @@ export const TagInput = ({
       return;
     }
 
-    if (availableTags.length === 0) {
+    if (visibleTags.length === 0) {
       setSelectedIndex(null);
       return;
     }
@@ -297,14 +326,14 @@ export const TagInput = ({
       if (
         prevIndex === null ||
         prevIndex < 0 ||
-        prevIndex >= availableTags.length
+        prevIndex >= visibleTags.length
       ) {
         return 0;
       }
 
       return prevIndex;
     });
-  }, [isDropdownOpen, isClosing, availableTags]);
+  }, [isDropdownOpen, isClosing, visibleTags]);
 
   useEffect(() => {
     if (!isDropdownOpen || isClosing) {
@@ -399,7 +428,7 @@ export const TagInput = ({
                 .join(' ')}
               onTransitionEnd={handleListTransitionEnd}
             >
-              {isFetching && availableTags.length === 0 && (
+              {isFetching && visibleTags.length === 0 && (
                 <button
                   type="button"
                   className={[styles.dropdownItem, styles.dropdownItem_disabled]
@@ -420,7 +449,7 @@ export const TagInput = ({
               )}
               {!isFetching &&
                 !isError &&
-                availableTags.map((tag, index) => (
+                visibleTags.map((tag, index) => (
                   <button
                     key={tag.id}
                     type="button"
@@ -436,7 +465,7 @@ export const TagInput = ({
                     {tag.label}
                   </button>
                 ))}
-              {!isFetching && !isError && availableTags.length === 0 && (
+              {!isFetching && !isError && visibleTags.length === 0 && (
                 <button
                   type="button"
                   className={[styles.dropdownItem, styles.dropdownItem_disabled]
