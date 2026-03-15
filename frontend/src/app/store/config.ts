@@ -5,6 +5,7 @@ import { sessionSlice } from '@/entities/session';
 import { authModalUiSlice } from '@/features/auth-modal';
 import { bookingModalUiSlice } from '@/features/booking-modal';
 import { selectedBreedSlice } from '@/features/selected-breed';
+import { infoSettingsUiSlice } from '@/features/info-settings';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     [bookingModalUiSlice.name]: bookingModalUiSlice.reducer,
     [selectedBreedSlice.name]: selectedBreedSlice.reducer,
     [sessionSlice.name]: sessionSlice.reducer,
+    [infoSettingsUiSlice.name]: infoSettingsUiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

@@ -14,3 +14,10 @@ export {
   RegisterFlow,
   UserImage as UserMenu,
 } from './session';
+
+export {
+  infoSettingsUiSlice,
+  selectInfoSettingsActiveSection,
+  setActiveSection,
+  type InfoSettingsSection,
+} from './info-settings';

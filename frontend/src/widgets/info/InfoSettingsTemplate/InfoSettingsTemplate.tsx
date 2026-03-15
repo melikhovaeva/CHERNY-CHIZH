@@ -1,5 +1,13 @@
+import { useAppDispatch, useAppSelector } from '@/app/store';
+import {
+  selectInfoSettingsActiveSection,
+  setActiveSection,
+} from '@/features/info-settings';
 import type { EntityType } from '@/shared/ui';
-import { InfoSettingsLeftBar, type InfoSettingsSection } from '../InfoSettingsLeftBar';
+import {
+  InfoSettingsLeftBar,
+  type InfoSettingsSection,
+} from '../InfoSettingsLeftBar';
 import styles from './InfoSettingsTemplate.module.scss';
 
 export interface InfoSettingsTemplateProps {
@@ -7,8 +15,6 @@ export interface InfoSettingsTemplateProps {
   backUrl: string;
   title: string;
   entityType: EntityType;
-  activeSection?: InfoSettingsSection;
-  onSectionChange?: (section: InfoSettingsSection) => void;
 }
 
 export const InfoSettingsTemplate = ({
@@ -16,9 +22,14 @@ export const InfoSettingsTemplate = ({
   backUrl,
   title,
   entityType,
-  activeSection,
-  onSectionChange,
 }: InfoSettingsTemplateProps) => {
+  const dispatch = useAppDispatch();
+  const activeSection = useAppSelector(selectInfoSettingsActiveSection);
+
+  const handleSectionChange = (section: InfoSettingsSection) => {
+    dispatch(setActiveSection(section));
+  };
+
   return (
     <div className={styles.root}>
       <InfoSettingsLeftBar
@@ -26,7 +37,7 @@ export const InfoSettingsTemplate = ({
         title={title}
         entityType={entityType}
         activeSection={activeSection}
-        onSectionChange={onSectionChange}
+        onSectionChange={handleSectionChange}
       />
       <div className={styles.content}>{children}</div>
     </div>
