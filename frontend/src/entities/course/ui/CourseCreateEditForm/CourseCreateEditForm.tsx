@@ -3,8 +3,15 @@ import type {
   Course,
   InfoTagRead,
 } from '@/shared/api/generated/courses.generated';
-import { Button, Input, Select, TagInput, TextArea } from '@/shared/ui/components';
+import {
+  Button,
+  Input,
+  Select,
+  TagInput,
+  TextArea,
+} from '@/shared/ui/components';
 import { Controller, useForm } from 'react-hook-form';
+import styles from './CourseCreateEditForm.module.scss';
 import {
   difficultyOptions,
   formFields,
@@ -34,11 +41,13 @@ export const CourseCreateEditForm = ({
 
   return (
     <Form onSubmit={handleSubmit(onFormSubmit)}>
+      <h4 className={styles.infoTitle}>Информация</h4>
       <Input
         label={formFields.title.label}
         placeholder={formFields.title.placeholder}
         maxLength={formFields.title.validation.maxLength?.value}
         error={errors.title?.message}
+        required={!!formFields.title.validation?.required}
         {...register(formFields.title.name, formFields.title.validation)}
       />
 
@@ -53,6 +62,7 @@ export const CourseCreateEditForm = ({
             placeholder={formFields.description.placeholder}
             maxLength={formFields.description.validation.maxLength?.value}
             error={fieldState.error?.message}
+            required={!!formFields.description.validation?.required}
             value={field.value ?? ''}
             onChange={(e) => field.onChange(e.target.value)}
             onBlur={field.onBlur}
@@ -66,6 +76,7 @@ export const CourseCreateEditForm = ({
         placeholder={formFields.actionText.placeholder}
         maxLength={formFields.actionText.validation.maxLength?.value}
         error={errors.actionText?.message}
+        required={!!formFields.actionText.validation?.required}
         {...register(
           formFields.actionText.name,
           formFields.actionText.validation,
@@ -83,6 +94,7 @@ export const CourseCreateEditForm = ({
             value={field.value ?? ''}
             placeholder={formFields.difficulty.placeholder}
             error={fieldState.error?.message}
+            required={!!formFields.difficulty.validation?.required}
             onChange={(value) => field.onChange(value as Course['difficulty'])}
             variant="input"
           />
