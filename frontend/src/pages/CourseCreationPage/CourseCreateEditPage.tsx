@@ -1,6 +1,6 @@
 import { CourseCreateEditForm } from '@/entities/course';
-import { InfoSettingsTemplate } from '@/widgets';
 import type { Course } from '@/shared/api/generated/courses.generated';
+import { InfoSettingsTemplate } from '@/widgets';
 
 export const CourseCreateEditPage = () => {
   // TODO: Fetch data (if course exists) fill form with data, and control infoTemplate data (left pane active tab, left pane text, )
@@ -11,7 +11,12 @@ export const CourseCreateEditPage = () => {
   };
 
   return (
-    <InfoSettingsTemplate>
+    <InfoSettingsTemplate
+      backUrl="/cabinet/courses"
+      title=""
+      entityType="course"
+      activeSection="info"
+    >
       <CourseCreateEditForm onSubmit={handleSubmit} />
     </InfoSettingsTemplate>
   );

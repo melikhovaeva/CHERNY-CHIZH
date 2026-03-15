@@ -1,6 +1,20 @@
 .root {
-  background-color: $c-mp-bg-card-light;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: $content-with-left-bar-gap-desktop;
   width: 100%;
-  padding: 28px;
-  border-radius: 20px;
+
+  @media (max-width: $breakpoint-desktop-md) {
+    grid-template-columns: 1fr;
+
+    gap: $content-with-left-bar-gap-mobile;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  background-color: $c-mp-bg-card-light;
+  padding: $left-bar-padding;
+  border-radius: $left-bar-border-radius;
 }
