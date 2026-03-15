@@ -4,9 +4,9 @@
 }
 
 .label {
-  margin: 0 0 6px 12px;
-  @include typography-text-m;
-  color: $text-color;
+  margin: 0 0 6px 0px;
+  @include typography-text-s;
+  color: $c-neutral-500;
 }
 
 .required {

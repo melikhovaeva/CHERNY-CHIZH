@@ -15,6 +15,7 @@ export interface SelectProps {
   placeholder?: string;
   error?: string;
   disabled?: boolean;
+  required?: boolean;
 }
 
 export const Select = ({
@@ -26,6 +27,7 @@ export const Select = ({
   placeholder,
   error,
   disabled,
+  required,
 }: SelectProps) => {
   const isControlled = valueProp !== undefined;
   const [internalValue, setInternalValue] = useState('');
@@ -47,6 +49,7 @@ export const Select = ({
       error={error}
       className={className}
       disabled={disabled}
+      required={required}
     />
   );
 };
