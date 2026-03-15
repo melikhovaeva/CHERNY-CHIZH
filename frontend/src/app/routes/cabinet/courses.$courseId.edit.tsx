@@ -1,6 +1,8 @@
 import { store } from '@/app/store';
 import { CourseCreateEditPage } from '@/pages/CourseCreationPage/CourseCreateEditPage';
+import { ROLE_CODES } from '@/entities/session';
 import { coursesApi } from '@/entities/course';
+import { RoleGuard } from '@/features/session';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/cabinet/courses/$courseId/edit')({
@@ -23,6 +25,10 @@ export const Route = createFileRoute('/cabinet/courses/$courseId/edit')({
 
     return null;
   },
-  component: CourseCreateEditPage,
+  component: () => (
+    <RoleGuard allowedRoles={[ROLE_CODES.ADMIN]}>
+      <CourseCreateEditPage />
+    </RoleGuard>
+  ),
 });
 

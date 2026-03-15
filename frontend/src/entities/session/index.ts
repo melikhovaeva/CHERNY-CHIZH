@@ -30,6 +30,11 @@ export {
   selectIsAuthenticated,
   selectSessionStatus,
   selectSessionError,
+  selectCurrentUserRole,
+  selectIsAdmin,
   SessionStatusEnum,
 } from './model/sessionSlice';
+
+export { ROLE_CODES } from './model/roleCodes';
+export type { RoleCode } from './model/roleCodes';
 

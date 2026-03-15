@@ -1,4 +1,6 @@
 import { useGetCoursesQuery } from '@/entities/course';
+import { selectIsAdmin } from '@/entities/session';
+import { useAppSelector } from '@/app/store';
 import { CourseListTemplate } from '@/features/course-list';
 import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import styles from './CabinetCourses.module.scss';
@@ -7,6 +9,7 @@ export function CabinetCourses() {
   const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery();
   const navigate = useNavigate();
   const location = useLocation();
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   const isNestedRoute =
     location.pathname.startsWith('/cabinet/courses/') &&
@@ -21,7 +24,7 @@ export function CabinetCourses() {
       items={courses ?? []}
       mapToCourse={(course) => course}
       isLoading={isCoursesLoading}
-      onGoToCreateCourse={() => navigate({ to: '/cabinet/courses/new' })}
+      onGoToCreateCourse={isAdmin ? () => navigate({ to: '/cabinet/courses/new' }) : undefined}
       emptyState={
         <div className={styles.emptyState}>Пока курсов нет, но скоро будут</div>
       }
