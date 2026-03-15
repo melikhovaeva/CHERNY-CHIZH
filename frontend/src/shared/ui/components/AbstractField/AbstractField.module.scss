@@ -21,6 +21,21 @@
   width: 100%;
 }
 
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 2px 0 0 12px;
+  min-height: 1em;
+}
+
+.charCounter {
+  flex-shrink: 0;
+  @include typography-text-s;
+  color: $c-neutral-400;
+}
+
 .input,
 .textarea {
   width: 100%;
@@ -336,12 +351,12 @@
 // --- Error / Helper ---
 
 .error {
-  margin: 2px 0 0 12px;
+  flex: 1;
+  min-width: 0;
   @include typography-text-s;
   color: $input-invalid-border-color;
   opacity: 0;
   transition: opacity 0.2s ease;
-  min-height: 1em;
 
   &_visible {
     opacity: 1;

@@ -580,13 +580,54 @@ export const AbstractField = forwardRef<
   const fieldId = props.id ?? generatedId;
   const hasError = !!props.error;
 
+  const showCharCounter =
+    (props.variant === ABSTRACT_FIELD_VARIANT.INPUT ||
+      props.variant === ABSTRACT_FIELD_VARIANT.TEXT_AREA) &&
+    props.maxLength != null;
+
+  const isControlledWithCounter = showCharCounter && props.value !== undefined;
+  const [uncontrolledLength, setUncontrolledLength] = useState(0);
+
+  const handleChangeWithCounter = useCallback(
+    (value: string) => {
+      if (
+        props.variant === ABSTRACT_FIELD_VARIANT.INPUT ||
+        props.variant === ABSTRACT_FIELD_VARIANT.TEXT_AREA
+      ) {
+        (
+          props as AbstractFieldInputProps | AbstractFieldTextAreaProps
+        ).onChange?.(value);
+      }
+      if (showCharCounter && props.value === undefined) {
+        setUncontrolledLength((value ?? '').length);
+      }
+    },
+    [props, showCharCounter],
+  );
+
+  const currentLength = showCharCounter
+    ? isControlledWithCounter
+      ? (props.value ?? '').length
+      : uncontrolledLength
+    : 0;
+  const maxLengthValue = showCharCounter ? props.maxLength! : 0;
+
   let control: React.ReactNode;
+
+  const needUncontrolledCounter =
+    showCharCounter &&
+    (props.variant === ABSTRACT_FIELD_VARIANT.INPUT ||
+      props.variant === ABSTRACT_FIELD_VARIANT.TEXT_AREA) &&
+    props.value === undefined;
 
   switch (props.variant) {
     case ABSTRACT_FIELD_VARIANT.INPUT:
       control = (
         <InputCore
           {...props}
+          {...(needUncontrolledCounter && {
+            onChange: handleChangeWithCounter,
+          })}
           id={fieldId}
           hasError={hasError}
           ref={ref as React.Ref<HTMLInputElement>}
@@ -597,6 +638,9 @@ export const AbstractField = forwardRef<
       control = (
         <TextAreaCore
           {...props}
+          {...(needUncontrolledCounter && {
+            onChange: handleChangeWithCounter,
+          })}
           id={fieldId}
           hasError={hasError}
           ref={ref as React.Ref<HTMLTextAreaElement>}
@@ -611,6 +655,12 @@ export const AbstractField = forwardRef<
       break;
   }
 
+  const charCounterNode = showCharCounter ? (
+    <span className={styles.charCounter} aria-live="polite">
+      {currentLength} / {maxLengthValue}
+    </span>
+  ) : undefined;
+
   return (
     <FieldLayout
       label={props.label}
@@ -619,6 +669,7 @@ export const AbstractField = forwardRef<
       required={props.required}
       id={fieldId}
       className={props.className}
+      charCounter={charCounterNode}
     >
       {control}
     </FieldLayout>
