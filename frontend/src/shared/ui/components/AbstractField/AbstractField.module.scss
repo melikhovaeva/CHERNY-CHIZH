@@ -180,6 +180,10 @@
   &_selected {
     background-color: $background-secondary-color;
   }
+
+  &_highlighted {
+    background-color: $background-secondary-color;
+  }
 }
 
 // --- InputSelect variant ---
