@@ -64,7 +64,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       : undefined;
 
   const onChange = (newValue: string) => {
-    console.log('onChange', newValue);
     if (typeof onChangeProp === 'function') {
       const synthetic = {
         target: { value: newValue },
