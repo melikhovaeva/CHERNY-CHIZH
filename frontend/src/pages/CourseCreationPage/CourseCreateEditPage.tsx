@@ -13,11 +13,14 @@ export const CourseCreateEditPage = () => {
     void values;
   };
 
-  const renderSettingsSection = () => {
+  const renderSettingsSection = (): React.ReactNode => {
     if (activeSettingsSection === INFO_SETTINGS_SECTION.INFO) {
       return <CourseCreateEditForm onSubmit={handleSubmit} />;
     }
-    return <div>Actions test</div>;
+    if (activeSettingsSection === INFO_SETTINGS_SECTION.ACTIONS) {
+      return <div>Actions test</div>;
+    }
+    return null;
   };
 
   return (
