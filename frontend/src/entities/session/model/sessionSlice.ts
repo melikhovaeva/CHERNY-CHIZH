@@ -1,6 +1,7 @@
 import { sessionApi } from '@/entities/session/api/session.api';
 import type { User } from '@/entities/session/api/types';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { ROLE_CODES } from './roleCodes';
 
 export enum SessionStatusEnum {
   IDLE = 'idle',
@@ -124,4 +125,10 @@ export const selectSessionStatus = (state: { session: SessionState }) =>
 
 export const selectSessionError = (state: { session: SessionState }) =>
   state.session.error;
+
+export const selectCurrentUserRole = (state: { session: SessionState }) =>
+  state.session.user?.role ?? null;
+
+export const selectIsAdmin = (state: { session: SessionState }) =>
+  state.session.user?.role?.code === ROLE_CODES.ADMIN;
 
