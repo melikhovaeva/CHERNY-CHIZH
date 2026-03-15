@@ -6,10 +6,6 @@
 }
 
 .title {
-  font-family: $font-family-body;
-  font-weight: $font-weight-header-4;
-  font-size: $font-size-header-4-desktop;
-  line-height: $line-height-header-4;
   color: $c-mp-text-headers;
 
   @media (max-width: $breakpoint-mobile-lg) {
