@@ -50,9 +50,13 @@ export const CourseActionsSection = ({
             {isPublished ? 'Снять с публикации' : 'Опубликовать'}
           </Button>
 
-          {!isPublished && (
+          {!isPublished ? (
             <p className={styles.publishHint}>
               Курс станет доступным для прохождения
+            </p>
+          ) : (
+            <p className={styles.publishHint}>
+              Все ученики потеряют доступ к курсу
             </p>
           )}
         </div>
