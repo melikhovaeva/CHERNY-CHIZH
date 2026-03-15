@@ -1,3 +1,9 @@
+export {
+  AbstractField,
+  type AbstractFieldProps,
+  type AbstractFieldVariant,
+  type SelectOption as AbstractFieldSelectOption,
+} from './AbstractField';
 export { Accordion, type AccordionItem } from './Accordion';
 export { AppLogo } from './AppLogo';
 export { Backdrop } from './Backdrop';
