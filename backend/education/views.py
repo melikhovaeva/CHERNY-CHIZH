@@ -12,12 +12,14 @@ from education.schema import (
 from rest_framework import permissions, status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from user_management.permissions import IsAdmin
 
 from education.models import Article, Course, InfoStatus, InfoTag
 from education.serializers import (
     ArticleListSerializer,
     ArticleMinimalSerializer,
     ArticleSerializer,
+    CourseCreateUpdateSerializer,
     CourseDetailSerializer,
     CourseSerializer,
     InfoTagSerializer,
@@ -111,10 +113,45 @@ class EducationArticleViewSet(ArticleViewSet):
 
 
 @extend_schema_view(**education_course_view_schema)
-class EducationCourseViewSet(CourseViewSet):
-    """Публичный API для курсов под префиксом /education."""
+class EducationCourseViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    CourseViewSet,
+):
+    """
+    API курсов под префиксом /education.
+    Чтение (list, retrieve) — для всех; создание, обновление, удаление и смена статуса — только для администраторов.
+    """
 
-    pass
+    def get_permissions(self):
+        if self.action in ("create", "update", "partial_update", "destroy"):
+            return [IsAdmin()]
+        return [permissions.AllowAny()]
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return CourseCreateUpdateSerializer
+        return super().get_serializer_class()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(
+            CourseSerializer(instance, context=self.get_serializer_context()).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(
+            CourseSerializer(instance, context=self.get_serializer_context()).data,
+        )
 
 
 @extend_schema_view(**education_tag_view_schema)

@@ -195,6 +195,43 @@ class CourseDetailSerializer(CourseSerializer):
         fields = CourseSerializer.Meta.fields + ("steps",)
 
 
+class CourseCreateUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор для создания и обновления курса (админ). Поля: название, описание, текст кнопки, изображение, уровень, теги, статус."""
+
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=InfoTag.objects.all(),
+        many=True,
+        required=False,
+        allow_empty=True,
+    )
+
+    class Meta:
+        model = Course
+        fields = (
+            "id",
+            "title",
+            "slug",
+            "description",
+            "action_text",
+            "image_preview",
+            "difficulty",
+            "status",
+            "tags",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "slug", "created_at", "updated_at")
+        extra_kwargs = {
+            "title": {"required": True},
+            "description": {"required": True},
+            "action_text": {"required": True},
+            "image_preview": {"required": False, "allow_null": True},
+            "difficulty": {"required": False},
+            "status": {"required": False},
+            "tags": {"required": False},
+        }
+
+
 class CourseEnrollmentSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     course = CourseSerializer(read_only=True)
 

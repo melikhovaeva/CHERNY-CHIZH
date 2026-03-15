@@ -84,6 +84,26 @@ education_course_view_schema = {
         description="Возвращает полную структуру курса со ступенями, уроками и заданиями (education-префикс).",
         tags=["Education"],
     ),
+    "create": extend_schema(
+        summary="Создать курс (только администратор)",
+        description="Поля: название, описание, текст на кнопке, изображение, уровень (необязательно), теги (необязательно).",
+        tags=["Education"],
+    ),
+    "update": extend_schema(
+        summary="Обновить курс (только администратор)",
+        description="Полное обновление курса, включая смену статуса (опубликован/не опубликован).",
+        tags=["Education"],
+    ),
+    "partial_update": extend_schema(
+        summary="Частично обновить курс (только администратор)",
+        description="Частичное обновление, в т.ч. только смена статуса.",
+        tags=["Education"],
+    ),
+    "destroy": extend_schema(
+        summary="Удалить курс (только администратор)",
+        description="Безвозвратное удаление курса.",
+        tags=["Education"],
+    ),
 }
 
 
