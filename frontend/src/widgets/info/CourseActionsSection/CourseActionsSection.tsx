@@ -35,7 +35,7 @@ export const CourseActionsSection = ({
 
   return (
     <section className={styles.root}>
-      <h2 className={styles.title}>Действия</h2>
+      <h4>Действия</h4>
 
       <div className={styles.body}>
         <div className={styles.publishBlock}>
