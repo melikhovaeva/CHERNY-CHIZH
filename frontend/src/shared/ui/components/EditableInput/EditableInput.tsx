@@ -1,4 +1,3 @@
-import { cn } from '@/shared/lib/utils';
 import type React from 'react';
 import { useState } from 'react';
 import { EditSaveButton } from '../EditSaveButton';
@@ -51,9 +50,6 @@ export function EditableInput({
   };
 
   const readOnly = readOnlyWhenNotEditing && !isEditing;
-  const inputClassName = cn([styles.input], {
-    [styles.readonlyInput]: readOnly,
-  });
 
   return (
     <div className={styles.row}>
@@ -64,7 +60,6 @@ export function EditableInput({
         onChange={onChange}
         placeholder={placeholder}
         readOnly={readOnly}
-        className={inputClassName}
         error={error}
         actionButton={
           <EditSaveButton

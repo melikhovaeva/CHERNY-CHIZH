@@ -1,4 +1,4 @@
-import { Button, Form, Input } from '@/shared/ui/components';
+import { Button, Form, Input, TextArea } from '@/shared/ui/components';
 import { useError } from '@/shared/ui/components';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import formImage from '../assets/form-image.webp';
@@ -62,10 +62,9 @@ export const BookingForm = ({ onSubmit, mode = 'guest' }: BookingFormProps) => {
           {!isGuest && (
             null
           )}
-          <Input
-            multiline
+          <TextArea
             placeholder="Введите ваш вопрос"
-            invalid={!!errors.message}
+            error={errors.message?.message}
             {...register(BookingFormFieldsEnum.MESSAGE, {
               required: true,
             })}

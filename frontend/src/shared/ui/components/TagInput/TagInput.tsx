@@ -7,7 +7,8 @@ import {
 } from '@/shared/api/tags.ts';
 import { useDebouncedValue } from '@/shared/lib/hooks/useDebounce';
 import { ChevronDownIcon } from '@/shared/ui/icons/ChevronDownIcon';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FieldLayout, useDropdownState } from '@/shared/ui/components/AbstractField';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Tag } from '../Tag/Tag';
 import styles from './TagInput.module.scss';
 import {
@@ -51,17 +52,13 @@ export const TagInput = ({
   pageSize,
 }: TagInputProps) => {
   const [inputValue, setInputValue] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [isListVisible, setIsListVisible] = useState(false);
+  const dropdown = useDropdownState(disabled);
   const [hasMore, setHasMore] = useState(true);
   const [nextOffset, setNextOffset] = useState(0);
   const [selectionsFromDropdown, setSelectionsFromDropdown] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loadedTags, setLoadedTags] = useState<TagsListItem[]>([]);
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const listRef = useRef<HTMLDivElement | null>(null);
   const [createTags] = useV1EducationTagsCreateMutation();
 
   const debouncedQuery = useDebouncedValue(inputValue, debounceMs);
@@ -81,7 +78,7 @@ export const TagInput = ({
   const { data, isFetching, isError, refetch } = useV1EducationTagsListQuery(
     initialQueryParams,
     {
-      skip: disabled || !isDropdownOpen,
+      skip: disabled || !dropdown.isOpen,
     },
   );
 
@@ -124,14 +121,13 @@ export const TagInput = ({
   const isMaxReached = typeof maxTags === 'number' && totalSelected >= maxTags;
 
   const handleClose = () => {
-    setIsClosing(true);
     setSelectedIndex(null);
+    dropdown.close();
   };
 
   const handleOpen = () => {
     if (disabled) return;
-    setIsDropdownOpen(true);
-    setIsClosing(false);
+    dropdown.open();
     if (availableTags.length > 0) {
       setSelectedIndex(0);
     }
@@ -231,13 +227,14 @@ export const TagInput = ({
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Escape' && isDropdownOpen && !isClosing) {
+    if (event.key === 'Escape' && dropdown.isOpen && !dropdown.isClosing) {
       event.preventDefault();
       handleClose();
+      inputRef.current?.blur();
       return;
     }
 
-    if (event.key === 'ArrowDown' && isDropdownOpen && !isClosing) {
+    if (event.key === 'ArrowDown' && dropdown.isOpen && !dropdown.isClosing) {
       event.preventDefault();
       setSelectedIndex((prevIndex) => {
         if (visibleTags.length === 0) return null;
@@ -259,7 +256,7 @@ export const TagInput = ({
       return;
     }
 
-    if (event.key === 'ArrowUp' && isDropdownOpen && !isClosing) {
+    if (event.key === 'ArrowUp' && dropdown.isOpen && !dropdown.isClosing) {
       event.preventDefault();
       setSelectedIndex((prevIndex) => {
         if (visibleTags.length === 0) return null;
@@ -280,8 +277,8 @@ export const TagInput = ({
     if (event.key === 'Enter') {
       event.preventDefault();
       if (
-        isDropdownOpen &&
-        !isClosing &&
+        dropdown.isOpen &&
+        !dropdown.isClosing &&
         selectedIndex !== null &&
         visibleTags[selectedIndex]
       ) {
@@ -297,23 +294,8 @@ export const TagInput = ({
     handleOpen();
   };
 
-  const handleListTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
-    if (e.target !== listRef.current || e.propertyName !== 'transform') return;
-    if (isClosing) {
-      setIsDropdownOpen(false);
-      setIsClosing(false);
-    }
-  };
-
-  useLayoutEffect(() => {
-    if (isDropdownOpen && !isClosing) {
-      const id = requestAnimationFrame(() => setIsListVisible(true));
-      return () => cancelAnimationFrame(id);
-    }
-  }, [isDropdownOpen, isClosing]);
-
   useEffect(() => {
-    if (!isDropdownOpen || isClosing) {
+    if (!dropdown.isOpen || dropdown.isClosing) {
       return;
     }
 
@@ -333,41 +315,17 @@ export const TagInput = ({
 
       return prevIndex;
     });
-  }, [isDropdownOpen, isClosing, visibleTags]);
-
-  useEffect(() => {
-    if (!isDropdownOpen || isClosing) {
-      return;
-    }
-
-    const handleDocumentMouseDown = (event: MouseEvent) => {
-      if (!containerRef.current) return;
-
-      if (!containerRef.current.contains(event.target as Node)) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleDocumentMouseDown);
-
-    return () => {
-      document.removeEventListener('mousedown', handleDocumentMouseDown);
-    };
-  }, [isDropdownOpen, isClosing, handleClose]);
-
-  useEffect(() => {
-    if (!isDropdownOpen) setIsListVisible(false);
-  }, [isDropdownOpen]);
+  }, [dropdown.isOpen, dropdown.isClosing, visibleTags]);
 
   const rootClassName = [styles.root, className].filter(Boolean).join(' ');
 
   return (
-    <div className={rootClassName} ref={containerRef}>
-      {label && <span className={styles.label}>{label}</span>}
+    <FieldLayout label={label} error={error} className={rootClassName}>
       <div
+        ref={dropdown.containerRef as React.RefObject<HTMLDivElement>}
         className={[
           styles.field,
-          isDropdownOpen ? styles.field_focused : '',
+          dropdown.isOpen ? styles.field_focused : '',
           disabled ? styles.field_disabled : '',
         ]
           .filter(Boolean)
@@ -407,7 +365,7 @@ export const TagInput = ({
         <div
           className={[
             styles.dropdownToggle,
-            isDropdownOpen ? styles.dropdownToggle_open : '',
+            dropdown.isOpen ? styles.dropdownToggle_open : '',
             disabled ? styles.dropdownToggle_disabled : '',
           ]
             .filter(Boolean)
@@ -415,18 +373,20 @@ export const TagInput = ({
         >
           <ChevronDownIcon width={16} height={16} aria-hidden />
         </div>
-        {(isDropdownOpen || isClosing) && (
+        {(dropdown.isOpen || dropdown.isClosing) && (
           <div className={styles.dropdown}>
             <div
-              ref={listRef}
+              ref={dropdown.listRef as React.RefObject<HTMLDivElement>}
               className={[
                 styles.dropdownList,
-                isListVisible && !isClosing ? styles.dropdownList_visible : '',
-                isClosing ? styles.dropdownList_closing : '',
+                dropdown.isListVisible && !dropdown.isClosing
+                  ? styles.dropdownList_visible
+                  : '',
+                dropdown.isClosing ? styles.dropdownList_closing : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
-              onTransitionEnd={handleListTransitionEnd}
+              onTransitionEnd={dropdown.handleListTransitionEnd}
             >
               {isFetching && visibleTags.length === 0 && (
                 <button
@@ -479,7 +439,6 @@ export const TagInput = ({
           </div>
         )}
       </div>
-      <span className={styles.error}>{error}</span>
-    </div>
+    </FieldLayout>
   );
 };

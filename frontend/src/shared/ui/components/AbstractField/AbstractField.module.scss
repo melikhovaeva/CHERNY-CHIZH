@@ -34,8 +34,23 @@
     border-color 0.3s ease,
     background-color 0.3s ease;
 
+  &_iconLeft {
+    padding-left: 32px;
+  }
+
+  &_iconRight {
+    padding-right: 32px;
+  }
+
   &::placeholder {
     color: $c-mp-text-placeholder;
+  }
+
+  &_readOnly {
+    background-color: $c-mp-bg-input-readOnly;
+    opacity: 0.7;
+    cursor: not-allowed;
+    user-select: none;
   }
 
   &_invalid {
@@ -49,8 +64,56 @@
   }
 }
 
+.iconLeft,
+.iconRight {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+}
+
+.iconLeft {
+  left: 10px;
+}
+
+.iconRight {
+  right: 10px;
+}
+
 .input {
   height: 50px;
+
+  &.withToggle {
+    padding-right: 44px;
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.togglePassword {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  color: $text-color;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .textarea {
