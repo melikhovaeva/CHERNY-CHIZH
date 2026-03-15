@@ -21,6 +21,7 @@ export { LeftBar, type LeftBarProps, type EntityType } from './LeftBar';
 export { EditableInput } from './EditableInput';
 export { EditSaveButton } from './EditSaveButton';
 export { Form } from './Form';
+export { ImageUpload, type ImageUploadProps } from './ImageUpload';
 export { Input, type InputProps, type InputType } from './Input';
 export { TextArea, type TextAreaProps } from './TextArea';
 export { Modal, useModalTitle, type ModalTitleContextValue } from './Modal';

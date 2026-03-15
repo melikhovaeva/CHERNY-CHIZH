@@ -1,0 +1,93 @@
+.preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+
+  &_hasImage {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-color: transparent;
+  }
+
+  &_error {
+    box-shadow: 0 0 0 2px $input-invalid-border-color;
+  }
+}
+
+.placeholder {
+  border: unset;
+  border-radius: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.actions {
+  position: absolute;
+  padding: 8px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 8px;
+  @include typography-text-s;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &_upload {
+    background-color: $c-neutral-d-0-72;
+    backdrop-filter: blur(4px);
+    color: $c-mp-text-body;
+    border: 1px solid transparent;
+  }
+
+  &_delete {
+    background-color: $c-status-red-d-72;
+    backdrop-filter: blur(4px);
+    color: $c-neutral-0;
+    border: 1px solid transparent;
+  }
+}
+
+.actionIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.fileInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
