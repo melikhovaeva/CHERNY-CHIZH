@@ -4,6 +4,21 @@ from django.db import models
 from .avatar import generate_default_avatar
 
 
+class RolePermission(models.Model):
+    """Атомарное разрешение, которое может быть назначено роли."""
+
+    codename = models.CharField(max_length=64, unique=True, verbose_name="Код")
+    description = models.CharField(max_length=255, verbose_name="Описание")
+
+    class Meta:
+        verbose_name = "Разрешение"
+        verbose_name_plural = "Разрешения"
+        ordering = ["codename"]
+
+    def __str__(self):
+        return self.description
+
+
 class Role(models.Model):
     """Роль пользователя: пользователь, персонал, админ."""
 
@@ -11,8 +26,14 @@ class Role(models.Model):
     CODE_STAFF = "staff"
     CODE_ADMIN = "admin"
 
-    code = models.CharField(max_length=32, unique=True)
-    label = models.CharField(max_length=255)
+    code = models.CharField(max_length=32, unique=True, verbose_name="Код")
+    label = models.CharField(max_length=255, verbose_name="Название")
+    permissions = models.ManyToManyField(
+        RolePermission,
+        blank=True,
+        related_name="roles",
+        verbose_name="Разрешения",
+    )
 
     class Meta:
         verbose_name = "Роль"
@@ -21,6 +42,9 @@ class Role(models.Model):
 
     def __str__(self):
         return self.label
+
+    def has_permission(self, codename: str) -> bool:
+        return self.permissions.filter(codename=codename).exists()
 
 
 class UserManager(BaseUserManager):

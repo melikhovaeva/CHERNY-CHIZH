@@ -3,13 +3,36 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from .forms import UserCreationForm
-from .models import Role, User
+from .models import Role, RolePermission, User
+
+PROTECTED_ROLE_CODES = {Role.CODE_ADMIN, Role.CODE_USER}
+
+
+@admin.register(RolePermission)
+class RolePermissionAdmin(admin.ModelAdmin):
+    list_display = ("codename", "description")
+    search_fields = ("codename", "description")
+    ordering = ("codename",)
 
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ("code", "label")
+    list_display = ("code", "label", "permissions_list")
     ordering = ("code",)
+    filter_horizontal = ("permissions",)
+
+    def permissions_list(self, obj):
+        perms = obj.permissions.all()
+        if not perms:
+            return "—"
+        return ", ".join(p.description for p in perms)
+
+    permissions_list.short_description = "Разрешения"
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.code in PROTECTED_ROLE_CODES:
+            return ("code",)
+        return ()
 
 
 @admin.register(User)
