@@ -44,4 +44,10 @@
     color: $button-tertiary-text-color;
     border: $button-tertiary-border;
   }
+
+  &-destructive {
+    background-color: $c-status-red-d-12;
+    color: $c-status-red;
+    border: $button-border transparent;
+  }
 }

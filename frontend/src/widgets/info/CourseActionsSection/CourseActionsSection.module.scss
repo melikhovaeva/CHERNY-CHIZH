@@ -1,0 +1,75 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: $left-bar-padding;
+  height: 330px;
+}
+
+.title {
+  font-family: $font-family-body;
+  font-weight: $font-weight-header-4;
+  font-size: $font-size-header-4-desktop;
+  line-height: $line-height-header-4;
+  color: $c-mp-text-headers;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    font-size: $font-size-header-4-mobile;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  min-height: 0;
+}
+
+.publishBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.statusRow {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+  font-family: $font-family-body;
+  font-weight: $font-weight-text-l-semibold;
+  font-size: $font-size-text-l-semibold;
+  line-height: $line-height-text-l-semibold;
+  white-space: nowrap;
+}
+
+.statusLabel {
+  color: $c-neutral-900;
+}
+
+.statusValue {
+  color: $c-status-red-d-72;
+
+  &[data-published='true'] {
+    color: $c-status-green;
+  }
+}
+
+.actionButton {
+  width: 320px;
+  max-width: 100%;
+}
+
+.publishHint {
+  font-family: $font-family-body;
+  font-weight: $font-weight-text-s;
+  font-size: $font-size-text-s;
+  line-height: $line-height-text-s;
+  color: $c-neutral-800;
+}
+
+.deleteBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}

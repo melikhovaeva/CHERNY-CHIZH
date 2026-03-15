@@ -3,7 +3,7 @@ import { CourseCreateEditForm } from '@/entities/course';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
 import type { Course } from '@/shared/api/generated/courses.generated';
-import { InfoSettingsTemplate } from '@/widgets';
+import { CourseActionsSection, InfoSettingsTemplate } from '@/widgets';
 
 export const CourseCreateEditPage = () => {
   const activeSettingsSection = useAppSelector(selectInfoSettingsActiveSection);
@@ -18,7 +18,7 @@ export const CourseCreateEditPage = () => {
       return <CourseCreateEditForm onSubmit={handleSubmit} />;
     }
     if (activeSettingsSection === INFO_SETTINGS_SECTION.ACTIONS) {
-      return <div>Actions test</div>;
+      return <CourseActionsSection />;
     }
     return null;
   };
