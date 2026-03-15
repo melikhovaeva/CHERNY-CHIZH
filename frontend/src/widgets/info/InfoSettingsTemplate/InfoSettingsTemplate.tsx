@@ -2,12 +2,10 @@ import { useAppDispatch, useAppSelector } from '@/app/store';
 import {
   selectInfoSettingsActiveSection,
   setActiveSection,
+  type InfoSettingsSection,
 } from '@/features/info-settings';
 import type { EntityType } from '@/shared/ui';
-import {
-  InfoSettingsLeftBar,
-  type InfoSettingsSection,
-} from '../InfoSettingsLeftBar';
+import { InfoSettingsLeftBar } from '../InfoSettingsLeftBar';
 import styles from './InfoSettingsTemplate.module.scss';
 
 export interface InfoSettingsTemplateProps {
