@@ -29,9 +29,15 @@ export interface AbstractFieldInputProps extends AbstractFieldBaseProps {
   value?: string;
   onChange?: (value: string) => void;
   placeholder?: string;
-  type?: 'text' | 'tel' | 'email' | 'url';
+  type?: 'text' | 'tel' | 'email' | 'url' | 'password';
   maxLength?: number;
   autoComplete?: string;
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  showPasswordToggle?: boolean;
+  actionButton?: React.ReactNode;
+  name?: string;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }
 
 export interface AbstractFieldTextAreaProps extends AbstractFieldBaseProps {
@@ -41,6 +47,8 @@ export interface AbstractFieldTextAreaProps extends AbstractFieldBaseProps {
   placeholder?: string;
   rows?: number;
   maxLength?: number;
+  name?: string;
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 }
 
 export interface AbstractFieldSelectProps extends AbstractFieldBaseProps {

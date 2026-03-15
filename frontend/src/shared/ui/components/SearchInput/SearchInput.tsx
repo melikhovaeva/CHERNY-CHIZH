@@ -40,15 +40,13 @@ export function SearchInput({
 
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')}>
-      <span className={styles.icon} aria-hidden>
-        <SearchIcon width={16} height={16} />
-      </span>
       <Input
         type="text"
         value={localValue}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setLocalValue(e.target.value)
         }
+        iconLeft={<SearchIcon width={16} height={16} className={styles.icon} />}
         placeholder={placeholder}
         className={styles.input}
         aria-label={ariaLabel}
@@ -56,4 +54,3 @@ export function SearchInput({
     </div>
   );
 }
-

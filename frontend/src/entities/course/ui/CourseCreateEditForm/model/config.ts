@@ -16,6 +16,24 @@ export enum CourseCreateEditFormFieldsEnum {
 }
 
 export const formFields = {
+  password: {
+    label: 'Пароль',
+    name: 'password',
+    placeholder: 'Введите пароль',
+    validation: { required: 'Введите пароль' },
+  },
+  email: {
+    label: 'Почта',
+    name: 'email',
+    placeholder: 'Введите почту',
+    validation: { required: 'Введите почту' },
+  },
+  confirmPassword: {
+    label: 'Повторите пароль',
+    name: 'confirmPassword',
+    placeholder: 'Повторите пароль',
+    validation: { required: 'Повторите пароль' },
+  },
   [CourseCreateEditFormFieldsEnum.TITLE]: {
     label: 'Название курса',
     name: CourseCreateEditFormFieldsEnum.TITLE,

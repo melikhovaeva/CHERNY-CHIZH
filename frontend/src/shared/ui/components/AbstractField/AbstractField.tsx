@@ -1,6 +1,9 @@
 import { cn } from '@/shared/lib/utils';
+import EyeOffIcon from '@/shared/ui/components/Input/assets/eye-off.svg?react';
+import EyeIcon from '@/shared/ui/components/Input/assets/eye.svg?react';
 import { ChevronDownIcon } from '@/shared/ui/icons/ChevronDownIcon';
 import {
+  forwardRef,
   useCallback,
   useEffect,
   useId,
@@ -9,6 +12,7 @@ import {
   useState,
 } from 'react';
 import styles from './AbstractField.module.scss';
+import { FieldLayout } from './FieldLayout';
 import { useDropdownState } from './hooks/useDropdownState';
 import {
   ABSTRACT_FIELD_VARIANT,
@@ -22,59 +26,164 @@ import {
 
 // ────────────────── Input core ──────────────────
 
-function InputCore({
-  value,
-  onChange,
-  placeholder,
-  type = 'text',
-  maxLength,
-  autoComplete,
-  disabled,
-  readOnly,
-  id,
-  hasError,
-}: AbstractFieldInputProps & { hasError: boolean }) {
-  return (
-    <input
-      id={id}
-      type={type}
-      className={cn([styles.input], {
-        [styles.input_invalid]: hasError,
-        [styles.input_disabled]: disabled,
-      })}
-      value={value ?? ''}
-      onChange={(e) => onChange?.(e.target.value)}
-      placeholder={placeholder}
-      maxLength={maxLength}
-      autoComplete={autoComplete}
-      disabled={disabled}
-      readOnly={readOnly}
-    />
+const InputCore = forwardRef<
+  HTMLInputElement,
+  AbstractFieldInputProps & { hasError: boolean }
+>(function InputCore(
+  {
+    value,
+    onChange,
+    placeholder,
+    type = 'text',
+    iconLeft,
+    iconRight,
+    maxLength,
+    autoComplete,
+    disabled,
+    readOnly,
+    id,
+    hasError,
+    showPasswordToggle,
+    actionButton,
+    name,
+    onBlur,
+  },
+  ref,
+) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isUncontrolled = value === undefined;
+  const isPassword = type === 'password';
+  const hasToggle = showPasswordToggle ?? isPassword;
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const resolvedType =
+    isPassword && hasToggle && passwordVisible ? 'text' : type;
+
+  const setRefs = useCallback(
+    (el: HTMLInputElement | null) => {
+      (inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
+        el;
+      if (typeof ref === 'function') ref(el);
+      else if (ref)
+        (ref as React.MutableRefObject<HTMLInputElement | null>).current = el;
+    },
+    [ref],
   );
-}
+
+  useEffect(() => {
+    if (!isUncontrolled || !onChange) return;
+    const el = inputRef.current;
+    if (!el) return;
+    const syncValue = () => onChange(el.value);
+    el.addEventListener('change', syncValue);
+    el.addEventListener('input', syncValue);
+    return () => {
+      el.removeEventListener('change', syncValue);
+      el.removeEventListener('input', syncValue);
+    };
+  }, [isUncontrolled, onChange]);
+
+  const handleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      if (isUncontrolled && onChange && e.target.value !== undefined) {
+        onChange(e.target.value);
+      }
+      onBlur?.(e);
+    },
+    [isUncontrolled, onChange, onBlur],
+  );
+
+  const inputEl = (
+    <div className={styles.inputWrapper}>
+      {iconLeft && <span className={styles.iconLeft}>{iconLeft}</span>}
+      <input
+        ref={setRefs}
+        id={id}
+        name={name}
+        type={resolvedType}
+        className={cn([styles.input], {
+          [styles.input_invalid]: hasError,
+          [styles.input_disabled]: disabled,
+          [styles.input_readOnly]: readOnly,
+          [styles.withToggle]: hasToggle && !actionButton,
+          [styles.input_iconLeft]: !!iconLeft,
+          [styles.input_iconRight]: !!iconRight,
+        })}
+        {...(value !== undefined && { value: value ?? '' })}
+        onChange={(e) => onChange?.(e.target.value)}
+        onBlur={handleBlur}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
+        disabled={disabled}
+        readOnly={readOnly}
+      />
+      {iconRight && <span className={styles.iconRight}>{iconRight}</span>}
+    </div>
+  );
+
+  if (hasToggle && !actionButton) {
+    return (
+      <div className={styles.inputWrapper}>
+        {inputEl}
+        <button
+          type="button"
+          className={styles.togglePassword}
+          onClick={() => setPasswordVisible((v) => !v)}
+          tabIndex={-1}
+          aria-label={passwordVisible ? 'Скрыть пароль' : 'Показать пароль'}
+        >
+          {passwordVisible ? <EyeOffIcon /> : <EyeIcon />}
+        </button>
+      </div>
+    );
+  }
+
+  if (actionButton) {
+    return (
+      <div className={styles.inputWrapper}>
+        {inputEl}
+        {actionButton}
+      </div>
+    );
+  }
+
+  return inputEl;
+});
 
 // ────────────────── TextArea core ──────────────────
 
-function TextAreaCore({
-  value,
-  onChange,
-  placeholder,
-  rows,
-  maxLength,
-  disabled,
-  readOnly,
-  id,
-  hasError,
-}: AbstractFieldTextAreaProps & { hasError: boolean }) {
+const TextAreaCore = forwardRef<
+  HTMLTextAreaElement,
+  AbstractFieldTextAreaProps & { hasError: boolean }
+>(function TextAreaCore(
+  {
+    value,
+    onChange,
+    placeholder,
+    rows,
+    maxLength,
+    disabled,
+    readOnly,
+    id,
+    hasError,
+    name,
+    onBlur,
+  },
+  ref,
+) {
   return (
     <textarea
+      ref={ref}
       id={id}
+      name={name}
       className={cn([styles.textarea], {
         [styles.textarea_invalid]: hasError,
         [styles.textarea_disabled]: disabled,
+        [styles.textarea_readOnly]: readOnly,
       })}
-      value={value ?? ''}
+      {...(value !== undefined && { value: value ?? '' })}
       onChange={(e) => onChange?.(e.target.value)}
+      onBlur={onBlur}
       placeholder={placeholder}
       rows={rows}
       maxLength={maxLength}
@@ -82,7 +191,7 @@ function TextAreaCore({
       readOnly={readOnly}
     />
   );
-}
+});
 
 // ────────────────── Select core ──────────────────
 
@@ -178,12 +287,7 @@ function SelectCore({
         }
       }
     },
-    [
-      dropdown,
-      options,
-      highlightedIndex,
-      handleSelect,
-    ],
+    [dropdown, options, highlightedIndex, handleSelect],
   );
 
   const triggerContent = selectedOption ? (
@@ -405,9 +509,7 @@ function InputSelectCore({
           aria-label={label}
           aria-expanded={dropdown.isOpen}
           aria-haspopup="listbox"
-          aria-activedescendant={
-            dropdown.isOpen ? activeOptionId : undefined
-          }
+          aria-activedescendant={dropdown.isOpen ? activeOptionId : undefined}
         />
         <span
           className={cn([styles.inputSelectChevron], {
@@ -470,7 +572,10 @@ function InputSelectCore({
 
 // ────────────────── AbstractField ──────────────────
 
-export const AbstractField = (props: AbstractFieldProps) => {
+export const AbstractField = forwardRef<
+  HTMLInputElement | HTMLTextAreaElement,
+  AbstractFieldProps
+>(function AbstractField(props, ref) {
   const generatedId = useId();
   const fieldId = props.id ?? generatedId;
   const hasError = !!props.error;
@@ -479,10 +584,24 @@ export const AbstractField = (props: AbstractFieldProps) => {
 
   switch (props.variant) {
     case ABSTRACT_FIELD_VARIANT.INPUT:
-      control = <InputCore {...props} id={fieldId} hasError={hasError} />;
+      control = (
+        <InputCore
+          {...props}
+          id={fieldId}
+          hasError={hasError}
+          ref={ref as React.Ref<HTMLInputElement>}
+        />
+      );
       break;
     case ABSTRACT_FIELD_VARIANT.TEXT_AREA:
-      control = <TextAreaCore {...props} id={fieldId} hasError={hasError} />;
+      control = (
+        <TextAreaCore
+          {...props}
+          id={fieldId}
+          hasError={hasError}
+          ref={ref as React.Ref<HTMLTextAreaElement>}
+        />
+      );
       break;
     case ABSTRACT_FIELD_VARIANT.SELECT:
       control = <SelectCore {...props} hasError={hasError} />;
@@ -493,28 +612,15 @@ export const AbstractField = (props: AbstractFieldProps) => {
   }
 
   return (
-    <div className={cn([styles.root, props.className ?? ''])}>
-      {props.label && (
-        <label className={styles.label} htmlFor={fieldId}>
-          {props.label}
-          {props.required && <span className={styles.required}>*</span>}
-        </label>
-      )}
-
-      <div className={styles.control}>{control}</div>
-
-      {props.helperText && !hasError && (
-        <span className={styles.helperText}>{props.helperText}</span>
-      )}
-
-      <span
-        className={cn([styles.error], {
-          [styles.error_visible]: hasError,
-        })}
-        role={hasError ? 'alert' : undefined}
-      >
-        {props.error || '\u00A0'}
-      </span>
-    </div>
+    <FieldLayout
+      label={props.label}
+      error={props.error}
+      helperText={props.helperText}
+      required={props.required}
+      id={fieldId}
+      className={props.className}
+    >
+      {control}
+    </FieldLayout>
   );
-};
+});

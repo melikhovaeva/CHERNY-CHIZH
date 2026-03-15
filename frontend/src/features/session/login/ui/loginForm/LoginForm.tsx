@@ -1,13 +1,17 @@
-import { closeAuthModal } from '@/features/auth-modal';
 import { useAppDispatch } from '@/app/store';
+import { formFields } from '@/entities/course/ui/CourseCreateEditForm/model/config';
 import { useLoginMutation } from '@/entities/session';
+import { closeAuthModal } from '@/features/auth-modal';
 import { getFirstApiErrorMessage } from '@/shared';
-import { useError, useSuccess } from '@/shared/ui/components';
-import { Button, Form, Input } from '@/shared/ui/components';
-import { useForm } from 'react-hook-form';
+import {
+  Button,
+  Form,
+  Input,
+  useError,
+  useSuccess,
+} from '@/shared/ui/components';
+import { Controller, useForm } from 'react-hook-form';
 import styles from './LoginForm.module.scss';
-
-const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 interface LoginFormFields {
   email: string;
@@ -20,11 +24,12 @@ export const LoginForm = () => {
   const addError = useError();
   const addSuccess = useSuccess();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormFields>();
+  const { handleSubmit, control } = useForm<LoginFormFields>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   const onSubmit = async (data: LoginFormFields) => {
     try {
@@ -48,28 +53,42 @@ export const LoginForm = () => {
     >
       <div className={styles.root}>
         <div className={styles.fields}>
-          <Input
-            label="Почта"
-            placeholder="Введите почту"
-            type="email"
-            error={errors.email?.message}
-            {...register('email', {
-              required: 'Введите почту',
-              pattern: {
-                value: EMAIL_PATTERN,
-                message: 'Некорректный адрес почты',
-              },
-            })}
+          <Controller
+            control={control}
+            name={formFields.email.name}
+            rules={formFields.email.validation}
+            render={({ field, fieldState }) => (
+              <Input
+                label={formFields.email.label}
+                placeholder={formFields.email.placeholder}
+                type="email"
+                error={fieldState.error?.message}
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                ref={field.ref}
+              />
+            )}
           />
           <div>
-            <Input
-              label="Пароль"
-              placeholder="Введите пароль"
-              type="password"
-              error={errors.password?.message}
-              {...register('password', {
-                required: 'Введите пароль',
-              })}
+            <Controller
+              control={control}
+              name={formFields.password.name}
+              rules={formFields.password.validation}
+              render={({ field, fieldState }) => (
+                <Input
+                  label={formFields.password.label}
+                  placeholder={formFields.password.placeholder}
+                  type="password"
+                  error={fieldState.error?.message}
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  ref={field.ref}
+                />
+              )}
             />
             <a href="#" className={styles.forgotPassword}>
               Забыли пароль?

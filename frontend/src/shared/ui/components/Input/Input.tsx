@@ -1,8 +1,6 @@
-import { cn } from '@/shared/lib/utils';
-import { forwardRef, useId, useState } from 'react';
-import EyeOffIcon from './assets/eye-off.svg?react';
-import EyeIcon from './assets/eye.svg?react';
-import styles from './Input.module.scss';
+import { AbstractField } from '@/shared/ui/components/AbstractField';
+import { ABSTRACT_FIELD_VARIANT } from '@/shared/ui/components/AbstractField/model/types';
+import { forwardRef } from 'react';
 
 export type InputType = 'text' | 'tel' | 'email' | 'password' | 'url';
 
@@ -10,22 +8,17 @@ type BaseInputProps = {
   invalid?: boolean;
   error?: string;
   className?: string;
-  multiline?: boolean;
   type?: InputType;
   placeholder?: string;
   label?: string;
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
   showPasswordToggle?: boolean;
   actionButton?: React.ReactElement;
 };
 
-type InputProps = BaseInputProps &
+export type InputProps = BaseInputProps &
   Omit<React.InputHTMLAttributes<HTMLInputElement>, keyof BaseInputProps>;
-
-type TextareaProps = BaseInputProps &
-  Omit<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    keyof BaseInputProps | 'type'
-  >;
 
 function getAutoComplete(type: InputType): string | undefined {
   switch (type) {
@@ -42,120 +35,69 @@ function getAutoComplete(type: InputType): string | undefined {
   }
 }
 
-function getInputMode(
-  type: InputType,
-): React.HTMLAttributes<HTMLInputElement>['inputMode'] {
-  if (type === 'tel') return 'tel';
-  return undefined;
-}
-
-export const Input = forwardRef<
-  HTMLInputElement | HTMLTextAreaElement,
-  InputProps | TextareaProps
->(function Input(
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {
     invalid = false,
     error,
     className,
-    multiline = false,
     type = 'text',
     placeholder,
     label,
     showPasswordToggle,
     actionButton,
+    iconLeft,
+    iconRight,
+    value: valueProp,
+    onChange: onChangeProp,
+    name,
+    onBlur,
     ...rest
   },
   ref,
 ) {
-  const isInvalid = invalid || !!error;
-  const generatedId = useId();
-  const inputId =
-    ((rest as Record<string, unknown>).id as string | undefined) ?? generatedId;
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const isControlled = valueProp !== undefined;
+  const resolvedValue =
+    isControlled && valueProp != null
+      ? typeof valueProp === 'string'
+        ? valueProp
+        : String(valueProp)
+      : undefined;
 
-  const isPassword = type === 'password';
-  const hasToggle = showPasswordToggle ?? isPassword;
-  const resolvedType = isPassword && passwordVisible ? 'text' : type;
-
-  const inputClassName = cn([multiline ? styles.textarea : styles.input], {
-    [styles.invalid]: isInvalid,
-    [styles.withToggle]: hasToggle,
-  });
-  const resolvedClassName = className
-    ? `${inputClassName} ${className}`
-    : inputClassName;
-
-  let element: React.ReactNode;
-
-  if (multiline) {
-    const textareaRest = rest as Omit<TextareaProps, keyof BaseInputProps>;
-    element = (
-      <textarea
-        id={inputId}
-        ref={ref as React.Ref<HTMLTextAreaElement>}
-        className={resolvedClassName}
-        placeholder={placeholder}
-        {...textareaRest}
-      />
-    );
-  } else {
-    const inputRest = rest as Omit<InputProps, keyof BaseInputProps>;
-    const inputElement = (
-      <input
-        id={inputId}
-        ref={ref as React.Ref<HTMLInputElement>}
-        type={resolvedType}
-        className={resolvedClassName}
-        placeholder={placeholder}
-        autoComplete={getAutoComplete(type)}
-        inputMode={getInputMode(type)}
-        {...inputRest}
-      />
-    );
-
-    if (hasToggle) {
-      element = (
-        <div className={styles.inputWrapper}>
-          {inputElement}
-          <button
-            type="button"
-            className={styles.togglePassword}
-            onClick={() => setPasswordVisible((v) => !v)}
-            tabIndex={-1}
-            aria-label={passwordVisible ? 'Скрыть пароль' : 'Показать пароль'}
-          >
-            {passwordVisible ? <EyeOffIcon /> : <EyeIcon />}
-          </button>
-        </div>
-      );
-    } else {
-      element = (
-        <div className={styles.inputWrapper}>
-          {inputElement}
-          {actionButton}
-        </div>
-      );
+  const onChange = (newValue: string) => {
+    console.log('onChange', newValue);
+    if (typeof onChangeProp === 'function') {
+      const synthetic = {
+        target: { value: newValue },
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChangeProp(synthetic);
     }
-  }
+  };
 
-  if (label || error) {
-    return (
-      <div className={styles.field}>
-        {label && (
-          <label className={styles.label} htmlFor={inputId}>
-            {label}
-          </label>
-        )}
-        {element}
-        <span
-          className={cn([styles.error], { [styles.error_visible]: !!error })}
-          role={error ? 'alert' : undefined}
-        >
-          {error || '\u00A0'}
-        </span>
-      </div>
-    );
-  }
+  const resolvedError = error || (invalid ? '\u00A0' : undefined);
 
-  return element;
+  return (
+    <AbstractField
+      ref={ref as React.Ref<HTMLInputElement>}
+      variant={ABSTRACT_FIELD_VARIANT.INPUT}
+      label={label}
+      error={resolvedError}
+      placeholder={placeholder}
+      type={type}
+      value={resolvedValue}
+      onChange={onChange}
+      name={name}
+      onBlur={onBlur}
+      className={className}
+      id={rest.id as string | undefined}
+      maxLength={rest.maxLength}
+      autoComplete={getAutoComplete(type)}
+      disabled={rest.disabled}
+      iconLeft={iconLeft}
+      iconRight={iconRight}
+      readOnly={rest.readOnly}
+      required={rest.required}
+      showPasswordToggle={showPasswordToggle}
+      actionButton={actionButton}
+    />
+  );
 });

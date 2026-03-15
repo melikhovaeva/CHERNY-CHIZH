@@ -3,9 +3,7 @@ import type {
   Course,
   InfoTagRead,
 } from '@/shared/api/generated/courses.generated';
-import { AbstractField } from '@/shared/ui/components/AbstractField/AbstractField';
-import { Button, Input, Select, TagInput } from '@/shared/ui/components';
-import { useState } from 'react';
+import { Button, Input, Select, TagInput, TextArea } from '@/shared/ui/components';
 import { Controller, useForm } from 'react-hook-form';
 import {
   difficultyOptions,
@@ -16,13 +14,6 @@ import {
 type CourseFormValues = Course & {
   tags: InfoTagRead[];
 };
-
-const DEMO_SELECT_OPTIONS = [
-  { value: 'option1', label: 'Первый вариант' },
-  { value: 'option2', label: 'Второй вариант' },
-  { value: 'option3', label: 'Третий вариант' },
-  { value: 'option4', label: 'Четвёртый вариант' },
-];
 
 export const CourseCreateEditForm = ({
   data,
@@ -36,11 +27,6 @@ export const CourseCreateEditForm = ({
   } = useForm<CourseFormValues>({
     defaultValues: data,
   });
-
-  const [demoInput, setDemoInput] = useState('');
-  const [demoTextArea, setDemoTextArea] = useState('');
-  const [demoSelect, setDemoSelect] = useState('');
-  const [demoInputSelect, setDemoInputSelect] = useState('');
 
   const onFormSubmit = (values: CourseFormValues) => {
     onSubmit?.(values);
@@ -56,15 +42,22 @@ export const CourseCreateEditForm = ({
         {...register(formFields.title.name, formFields.title.validation)}
       />
 
-      <Input
-        label={formFields.description.label}
-        multiline
-        placeholder={formFields.description.placeholder}
-        maxLength={formFields.description.validation.maxLength?.value}
-        error={errors.description?.message}
-        {...register(
-          formFields.description.name,
-          formFields.description.validation,
+      <Controller
+        control={control}
+        name={formFields.description.name}
+        rules={formFields.description.validation}
+        render={({ field, fieldState }) => (
+          <TextArea
+            ref={field.ref}
+            label={formFields.description.label}
+            placeholder={formFields.description.placeholder}
+            maxLength={formFields.description.validation.maxLength?.value}
+            error={fieldState.error?.message}
+            value={field.value ?? ''}
+            onChange={(e) => field.onChange(e.target.value)}
+            onBlur={field.onBlur}
+            name={field.name}
+          />
         )}
       />
 
@@ -117,50 +110,6 @@ export const CourseCreateEditForm = ({
         )}
       />
       <Button type="submit">Сохранить</Button>
-
-      {/* ──── Тест AbstractField (все варианты) ──── */}
-
-      <AbstractField
-        variant="input"
-        label="Тест Input"
-        placeholder="Введите текст..."
-        value={demoInput}
-        onChange={setDemoInput}
-        required
-        helperText="Вспомогательный текст для input"
-        error={demoInput.length > 20 ? 'Максимум 20 символов' : undefined}
-      />
-
-      <AbstractField
-        variant="text-area"
-        label="Тест TextArea"
-        placeholder="Введите развёрнутый текст..."
-        value={demoTextArea}
-        onChange={setDemoTextArea}
-        rows={4}
-        error={
-          demoTextArea.length > 100 ? 'Максимум 100 символов' : undefined
-        }
-      />
-
-      <AbstractField
-        variant="select"
-        label="Тест Select"
-        placeholder="Выберите вариант"
-        options={DEMO_SELECT_OPTIONS}
-        value={demoSelect}
-        onChange={setDemoSelect}
-        required
-      />
-
-      <AbstractField
-        variant="input-select"
-        label="Тест InputSelect"
-        placeholder="Введите или выберите..."
-        options={DEMO_SELECT_OPTIONS}
-        value={demoInputSelect}
-        onChange={setDemoInputSelect}
-      />
     </Form>
   );
 };
