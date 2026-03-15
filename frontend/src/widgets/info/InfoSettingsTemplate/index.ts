@@ -1,1 +1,1 @@
-export { InfoSettingsTemplate } from './InfoSettingsTemplate';
+export { InfoSettingsTemplate, type InfoSettingsTemplateProps } from './InfoSettingsTemplate';

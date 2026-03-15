@@ -1,5 +1,5 @@
 import type { EntityType } from '@/shared/ui';
-import { InfoSettingsLeftBar, type InfoSettingsSection } from '../InfoSettingsLeftBar';
+import { InfoSettingsLeftBar, type InfoSettingsSection } from '@/widgets/info/InfoSettingsLeftBar';
 import styles from './InfoSettingsTemplate.module.scss';
 
 export interface InfoSettingsTemplateProps {
