@@ -1,7 +1,7 @@
 import { useAppSelector } from '@/app/store';
 import type { CourseRead } from '@/entities/course';
 import { selectIsAdmin } from '@/entities/session';
-import { formatDate, getImageUrl } from '@/shared';
+import { Button, formatDate, getImageUrl } from '@/shared';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { Link } from '@tanstack/react-router';
@@ -82,13 +82,7 @@ export function CourseCard({
         <h4 className={styles.title}>{course.title}</h4>
         {course.description && (
           <p
-            className={[
-              styles.description,
-              styles.descriptionClamp,
-              isHorizontal
-                ? styles.descriptionClamp4
-                : styles.descriptionClamp2,
-            ].join(' ')}
+            className={[styles.description, styles.descriptionClamp].join(' ')}
           >
             {course.description}
           </p>
@@ -105,6 +99,7 @@ export function CourseCard({
                 <span className={statusClassName}>{course.status.label}</span>
               )}
               <span className={styles.date}>{dateStr}</span>
+              <Button variant="primary">{course.actionText}</Button>
             </>
           )}
         </div>

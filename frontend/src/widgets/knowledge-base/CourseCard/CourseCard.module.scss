@@ -124,20 +124,8 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.descriptionClamp2 {
-  line-clamp: 2;
-}
-
-.descriptionClamp4 {
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-
-  @media (min-width: 640px) {
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-  }
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 
 .footer {
@@ -146,7 +134,7 @@
   align-items: center;
   margin-top: auto;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
 }
 
 .date {
