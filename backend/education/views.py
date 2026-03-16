@@ -100,10 +100,16 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        return Course.objects.prefetch_related(
+        qs = Course.objects.prefetch_related(
             "tags",
             "steps__lessons__tasks__questions__answers",
         ).order_by("id")
+
+        user = getattr(self, "request", None) and getattr(self.request, "user", None)
+        if user is not None and getattr(user, "is_superuser", False):
+            return qs
+
+        return qs.filter(status=InfoStatus.PUBLISHED)
 
     def get_serializer_class(self):
         if self.action == "retrieve":
