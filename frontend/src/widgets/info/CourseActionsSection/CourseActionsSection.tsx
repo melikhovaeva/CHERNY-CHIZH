@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/components';
+import { Button, ChoiceDialog, type ChoiceDialogOption } from '@/shared/ui/components';
 import { useState } from 'react';
 import styles from './CourseActionsSection.module.scss';
 import {
@@ -8,8 +8,8 @@ import {
 } from './model/constants';
 
 export interface CourseActionsSectionProps {
-  initialStatus?: CoursePublishStatus;
-  onPublish?: () => void;
+  initialStatus: CoursePublishStatus;
+  onPublish?: (nextStatus: CoursePublishStatus) => void;
   onDelete?: () => void;
 }
 
@@ -20,18 +20,43 @@ export const CourseActionsSection = ({
 }: CourseActionsSectionProps) => {
   const [publishStatus, setPublishStatus] =
     useState<CoursePublishStatus>(initialStatus);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // TODO: вынести в store
   const isPublished = publishStatus === COURSE_PUBLISH_STATUS.PUBLISHED;
 
   const handlePublishClick = () => {
-    setPublishStatus(
-      isPublished
-        ? COURSE_PUBLISH_STATUS.UNPUBLISHED
-        : COURSE_PUBLISH_STATUS.PUBLISHED,
-    );
-    onPublish?.();
+    setIsDialogOpen(true);
   };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleConfirm = () => {
+    const nextStatus = isPublished
+      ? COURSE_PUBLISH_STATUS.UNPUBLISHED
+      : COURSE_PUBLISH_STATUS.PUBLISHED;
+
+    setPublishStatus(nextStatus);
+    onPublish?.(nextStatus);
+    setIsDialogOpen(false);
+  };
+
+  const dialogOptions: ChoiceDialogOption[] = [
+    {
+      id: 'confirm',
+      label: isPublished ? 'Снять с публикации' : 'Опубликовать',
+      variant: isPublished ? 'destructive' : 'primary',
+      onClick: handleConfirm,
+    },
+    {
+      id: 'cancel',
+      label: 'Отменить',
+      variant: 'secondary',
+      onClick: handleDialogClose,
+    },
+  ];
 
   return (
     <section className={styles.root}>
@@ -71,6 +96,20 @@ export const CourseActionsSection = ({
           </Button>
         </div>
       </div>
+
+      <ChoiceDialog
+        isOpen={isDialogOpen}
+        onClose={handleDialogClose}
+        title={
+          isPublished ? 'Снять курс с публикации?' : 'Опубликовать курс?'
+        }
+        description={
+          isPublished
+            ? 'После снятия с публикации ученики потеряют доступ к курсу.'
+            : 'После публикации курс станет доступным для прохождения.'
+        }
+        options={dialogOptions}
+      />
     </section>
   );
 };

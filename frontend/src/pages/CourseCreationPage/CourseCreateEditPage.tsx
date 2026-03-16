@@ -4,6 +4,7 @@ import {
   useUpdateCourseMutation,
   useUploadCourseImageMutation,
 } from '@/entities/course';
+import { usePatchCourseStatusMutation } from '@/entities/course/api/courseStatus.api';
 import { useAppSelector } from '@/app/store';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
@@ -48,6 +49,7 @@ export const CourseCreateEditPage = () => {
   const [createCourse] = useCreateCourseMutation();
   const [updateCourse] = useUpdateCourseMutation();
   const [uploadCourseImage] = useUploadCourseImageMutation();
+  const [patchCourseStatus] = usePatchCourseStatusMutation();
 
   const handleSubmit = async (values: CourseFormData) => {
     const payload = toCreateUpdatePayload(values);
@@ -97,7 +99,34 @@ export const CourseCreateEditPage = () => {
       );
     }
     if (activeSettingsSection === INFO_SETTINGS_SECTION.ACTIONS) {
-      return <CourseActionsSection />;
+      if (!course || !courseIdNum) return null;
+
+      const handlePublishToggle = async (
+        nextStatus: 'published' | 'unpublished',
+      ) => {
+        try {
+          await patchCourseStatus({
+            id: courseIdNum,
+            status: nextStatus,
+          }).unwrap();
+          showSuccess(
+            nextStatus === 'published'
+              ? 'Курс опубликован'
+              : 'Курс снят с публикации',
+          );
+        } catch {
+          showError('Не удалось изменить статус курса');
+        }
+      };
+
+      return (
+        <CourseActionsSection
+          initialStatus={
+            course.status?.code === 'published' ? 'published' : 'unpublished'
+          }
+          onPublish={handlePublishToggle}
+        />
+      );
     }
     return null;
   };
