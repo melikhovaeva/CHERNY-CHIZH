@@ -135,8 +135,21 @@ class EducationCourseViewSet(
             return CourseCreateUpdateSerializer
         return super().get_serializer_class()
 
-    def create(self, request, *args, **kwargs):
+    def _course_request_data(self, request):
         data = keys_to_snake_case(dict(request.data))
+        if hasattr(request.data, "getlist"):
+            tags_raw = request.data.getlist("tags")
+            if tags_raw:
+                data["tags"] = [int(t) for t in tags_raw if str(t).isdigit()]
+        image_file = request.FILES.get("imagePreview") or request.FILES.get(
+            "image_preview"
+        )
+        if image_file:
+            data["image_preview"] = image_file
+        return data
+
+    def create(self, request, *args, **kwargs):
+        data = self._course_request_data(request)
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
@@ -148,7 +161,7 @@ class EducationCourseViewSet(
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-        data = keys_to_snake_case(dict(request.data))
+        data = self._course_request_data(request)
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
