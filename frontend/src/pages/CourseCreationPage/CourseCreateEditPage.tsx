@@ -79,9 +79,10 @@ export const CourseCreateEditPage = () => {
       }
 
       if (!isEdit) {
-        navigate({ to: '/cabinet/courses/$courseId/edit', params: { courseId: String(courseId) } });
-      } else {
-        navigate({ to: '/cabinet/courses' });
+        navigate({
+          to: '/cabinet/courses/$courseId/edit',
+          params: { courseId: String(courseId) },
+        });
       }
     } catch {
       showError(isEdit ? 'Не удалось обновить курс' : 'Не удалось создать курс');
@@ -143,6 +144,9 @@ export const CourseCreateEditPage = () => {
       backUrl="/cabinet/courses"
       title={infoTitle}
       entityType="course"
+      availableSections={
+        isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]
+      }
     >
       {renderSettingsSection()}
     </InfoSettingsTemplate>
