@@ -14,6 +14,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from user_management.permissions import IsAdmin
 
+from common.serializers import keys_to_snake_case
 from education.models import Article, Course, InfoStatus, InfoTag
 from education.serializers import (
     ArticleListSerializer,
@@ -135,7 +136,8 @@ class EducationCourseViewSet(
         return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = keys_to_snake_case(dict(request.data))
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(
@@ -146,7 +148,8 @@ class EducationCourseViewSet(
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        data = keys_to_snake_case(dict(request.data))
+        serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(
