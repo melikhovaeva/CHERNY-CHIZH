@@ -25,6 +25,15 @@ export function CabinetCourses() {
       mapToCourse={(course) => course}
       isLoading={isCoursesLoading}
       onGoToCreateCourse={isAdmin ? () => navigate({ to: '/cabinet/courses/new' }) : undefined}
+      onEditCourse={
+        isAdmin
+          ? (course) =>
+              navigate({
+                to: '/cabinet/courses/$courseId/edit',
+                params: { courseId: String(course.id) },
+              })
+          : undefined
+      }
       emptyState={
         <div className={styles.emptyState}>Пока курсов нет, но скоро будут</div>
       }
