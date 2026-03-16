@@ -49,11 +49,8 @@
 }
 
 .title {
+  @include typography-text-l-semibold;
   margin: 0;
-  font-family: $font-family-body;
-  font-size: $font-size-header-4-desktop;
-  font-weight: $font-weight-header-4;
-  line-height: $line-height-header-4;
   color: $c-mp-text-headers;
 }
 

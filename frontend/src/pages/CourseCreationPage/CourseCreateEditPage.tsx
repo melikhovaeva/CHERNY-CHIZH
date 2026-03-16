@@ -135,10 +135,14 @@ export const CourseCreateEditPage = () => {
     return null;
   }
 
+  const infoTitle = isEdit
+    ? course?.title ?? 'Курс'
+    : 'Создание курса';
+
   return (
     <InfoSettingsTemplate
       backUrl="/cabinet/courses"
-      title=""
+      title={infoTitle}
       entityType="course"
     >
       {renderSettingsSection()}
