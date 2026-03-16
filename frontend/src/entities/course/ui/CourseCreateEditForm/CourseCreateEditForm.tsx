@@ -42,6 +42,7 @@ export const CourseCreateEditForm = ({
     data?.imagePreview ?? null,
   );
   const objectUrlRef = useRef<string | null>(null);
+  const imageFileRef = useRef<File | null>(null);
 
   const handleImageChange = useCallback(
     (file: File | null) => {
@@ -49,6 +50,7 @@ export const CourseCreateEditForm = ({
         URL.revokeObjectURL(objectUrlRef.current);
         objectUrlRef.current = null;
       }
+      imageFileRef.current = file;
       if (file) {
         const url = URL.createObjectURL(file);
         objectUrlRef.current = url;
@@ -63,7 +65,7 @@ export const CourseCreateEditForm = ({
   );
 
   const onFormSubmit = (values: CourseFormValues) => {
-    onSubmit?.(values);
+    onSubmit?.({ ...values, imageFile: imageFileRef.current ?? undefined });
   };
 
   return (

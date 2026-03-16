@@ -2,6 +2,7 @@
 OpenAPI (drf-spectacular) схема для приложения education.
 Описания эндпоинтов и типы для сериализаторов.
 """
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, extend_schema_view, extend_schema_field
 
 __all__ = [
@@ -86,7 +87,7 @@ education_course_view_schema = {
     ),
     "create": extend_schema(
         summary="Создать курс (только администратор)",
-        description="Поля: название, описание, текст на кнопке, изображение, уровень (необязательно), теги (необязательно).",
+        description="Поля: название, описание, текст на кнопке, уровень (необязательно), теги (необязательно). Изображение загружается отдельно через upload-image.",
         tags=["Education"],
     ),
     "update": extend_schema(
@@ -102,6 +103,28 @@ education_course_view_schema = {
     "destroy": extend_schema(
         summary="Удалить курс (только администратор)",
         description="Безвозвратное удаление курса.",
+        tags=["Education"],
+    ),
+    "upload_image": extend_schema(
+        summary="Загрузить изображение курса (только администратор)",
+        description=(
+            "Принимает multipart/form-data с полем «image» (файл изображения). "
+            "Изображение сохраняется в хранилище (S3) и записывается в курс."
+        ),
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "image": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Файл изображения (JPEG, PNG, GIF, WebP, макс. 5 МБ)",
+                    },
+                },
+                "required": ["image"],
+            },
+        },
+        responses={200: OpenApiTypes.OBJECT},
         tags=["Education"],
     ),
 }

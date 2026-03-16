@@ -2,6 +2,7 @@ import {
   useCreateCourseMutation,
   useGetCourseQuery,
   useUpdateCourseMutation,
+  useUploadCourseImageMutation,
 } from '@/entities/course';
 import { useAppSelector } from '@/app/store';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
@@ -46,26 +47,41 @@ export const CourseCreateEditPage = () => {
 
   const [createCourse] = useCreateCourseMutation();
   const [updateCourse] = useUpdateCourseMutation();
+  const [uploadCourseImage] = useUploadCourseImageMutation();
 
   const handleSubmit = async (values: CourseFormData) => {
     const payload = toCreateUpdatePayload(values);
 
     try {
+      let courseId: number;
       if (isEdit && courseIdNum) {
         await updateCourse({
           id: courseIdNum,
           courseCreateUpdate: payload,
         }).unwrap();
+        courseId = courseIdNum;
         showSuccess('Курс обновлён');
       } else {
         const created = await createCourse({
           courseCreateUpdate: payload,
         }).unwrap();
+        courseId = created.id;
         showSuccess('Курс создан');
-        navigate({ to: '/cabinet/courses/$courseId/edit', params: { courseId: String(created.id) } });
-        return;
       }
-      navigate({ to: '/cabinet/courses' });
+
+      if (values.imageFile) {
+        try {
+          await uploadCourseImage({ id: courseId, file: values.imageFile }).unwrap();
+        } catch {
+          showError('Не удалось загрузить изображение курса');
+        }
+      }
+
+      if (!isEdit) {
+        navigate({ to: '/cabinet/courses/$courseId/edit', params: { courseId: String(courseId) } });
+      } else {
+        navigate({ to: '/cabinet/courses' });
+      }
     } catch {
       showError(isEdit ? 'Не удалось обновить курс' : 'Не удалось создать курс');
     }

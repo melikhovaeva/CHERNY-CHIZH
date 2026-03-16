@@ -3,6 +3,7 @@ import type {
   DifficultyEnum,
 } from '@/shared/api/generated/courses.generated';
 import type { RegisterOptions } from 'react-hook-form';
+import type { FieldValidationLike } from './types';
 
 type CourseFieldRegisterOptions = RegisterOptions<Course>;
 
@@ -70,12 +71,12 @@ export const formFields = {
       },
     } satisfies CourseFieldRegisterOptions,
   },
-  // Поля ниже пока не имеют UI-реализации, зарезервированы для будущих задач
+
   [CourseCreateEditFormFieldsEnum.DIFFICULTY]: {
     label: 'Уровень',
     name: CourseCreateEditFormFieldsEnum.DIFFICULTY,
     placeholder: 'Выберите уровень',
-    validation: {},
+    validation: {} as FieldValidationLike,
   },
   [CourseCreateEditFormFieldsEnum.IMAGE_PREVIEW]: {
     label: 'Изображение',
