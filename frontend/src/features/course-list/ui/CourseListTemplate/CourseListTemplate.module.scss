@@ -52,3 +52,21 @@
   grid-template-columns: repeat(auto-fill, minmax(376px, 1fr));
   gap: 20px;
 }
+
+.cardWrapper {
+  position: relative;
+}
+
+.editCourseButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: $text-inverted-color;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+}

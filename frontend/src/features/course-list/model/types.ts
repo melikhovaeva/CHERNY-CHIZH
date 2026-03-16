@@ -13,6 +13,7 @@ export interface CourseListTemplateProps<TItem> {
   emptyState?: React.ReactNode;
   filterValue?: string | null;
   onGoToCreateCourse?: () => void;
+  onEditCourse?: (course: CourseRead) => void;
   onFilterChange?: (value: string | null) => void;
   filterOptions?: CourseListFilterOption[];
   searchPlaceholder?: string;

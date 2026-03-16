@@ -2,11 +2,13 @@ import type { CourseRead } from '@/entities/course';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { Button } from '@/shared';
 import { cn } from '@/shared/lib/utils';
+import { EditIcon } from '@/shared/ui/assets';
 import { CourseCard } from '@/widgets/knowledge-base/CourseCard/CourseCard';
 import { useMemo, useState } from 'react';
-import type {
-  CourseListFilterOption,
-  CourseListTemplateProps,
+import {
+  COURSE_LIST_LABELS,
+  type CourseListFilterOption,
+  type CourseListTemplateProps,
 } from '../../model';
 import { CourseListSearch } from '../CourseListSearch';
 import styles from './CourseListTemplate.module.scss';
@@ -62,6 +64,7 @@ export function CourseListTemplate<TItem>({
   filterOptions,
   filterValue = null,
   onGoToCreateCourse,
+  onEditCourse,
   onFilterChange,
   searchPlaceholder = 'Поиск',
   className,
@@ -141,9 +144,24 @@ export function CourseListTemplate<TItem>({
         contentEmpty
       ) : (
         <div className={cn([styles.list, className || ''])}>
-          {filteredCourses.map((course) => (
-            <CourseCard key={course.id} course={course} variant="vertical" />
-          ))}
+          {filteredCourses.map((course) =>
+            onEditCourse ? (
+              <div key={course.id} className={styles.cardWrapper}>
+                <CourseCard course={course} variant="vertical" />
+                <Button
+                  type="button"
+                  variant="crm"
+                  className={styles.editCourseButton}
+                  onClick={() => onEditCourse(course)}
+                  aria-label={COURSE_LIST_LABELS.EDIT_COURSE}
+                >
+                  <EditIcon aria-hidden />
+                </Button>
+              </div>
+            ) : (
+              <CourseCard key={course.id} course={course} variant="vertical" />
+            ),
+          )}
         </div>
       )}
     </div>
