@@ -1,5 +1,5 @@
 import { baseApi as api } from "../base-api";
-export const addTagTypes = ["Courses"] as const;
+export const addTagTypes = ["Courses", "Education"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -19,6 +19,65 @@ const injectedRtkApi = api
         query: (queryArg) => ({ url: `/api/v1/courses/${queryArg.id}/` }),
         providesTags: ["Courses"],
       }),
+      v1EducationCoursesList: build.query<
+        V1EducationCoursesListApiResponse,
+        V1EducationCoursesListApiArg
+      >({
+        query: () => ({ url: `/api/v1/education/courses/` }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesCreate: build.mutation<
+        V1EducationCoursesCreateApiResponse,
+        V1EducationCoursesCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/`,
+          method: "POST",
+          body: queryArg.courseCreateUpdate,
+        }),
+        invalidatesTags: ["Education", "Courses"],
+      }),
+      v1EducationCoursesRetrieve: build.query<
+        V1EducationCoursesRetrieveApiResponse,
+        V1EducationCoursesRetrieveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.id}/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesUpdate: build.mutation<
+        V1EducationCoursesUpdateApiResponse,
+        V1EducationCoursesUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.id}/`,
+          method: "PUT",
+          body: queryArg.courseCreateUpdate,
+        }),
+        invalidatesTags: ["Education", "Courses"],
+      }),
+      v1EducationCoursesPartialUpdate: build.mutation<
+        V1EducationCoursesPartialUpdateApiResponse,
+        V1EducationCoursesPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.id}/`,
+          method: "PATCH",
+          body: queryArg.patchedCourseCreateUpdate,
+        }),
+        invalidatesTags: ["Education", "Courses"],
+      }),
+      v1EducationCoursesDestroy: build.mutation<
+        V1EducationCoursesDestroyApiResponse,
+        V1EducationCoursesDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.id}/`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Education", "Courses"],
+      }),
     }),
     overrideExisting: false,
   });
@@ -27,6 +86,38 @@ export type V1CoursesListApiResponse = /** status 200  */ CourseRead[];
 export type V1CoursesListApiArg = void;
 export type V1CoursesRetrieveApiResponse = /** status 200  */ CourseDetailRead;
 export type V1CoursesRetrieveApiArg = {
+  /** A unique integer value identifying this course. */
+  id: number;
+};
+export type V1EducationCoursesListApiResponse = /** status 200  */ CourseRead[];
+export type V1EducationCoursesListApiArg = void;
+export type V1EducationCoursesCreateApiResponse =
+  /** status 201  */ CourseCreateUpdateRead;
+export type V1EducationCoursesCreateApiArg = {
+  courseCreateUpdate: CourseCreateUpdate;
+};
+export type V1EducationCoursesRetrieveApiResponse =
+  /** status 200  */ CourseDetailRead;
+export type V1EducationCoursesRetrieveApiArg = {
+  /** A unique integer value identifying this course. */
+  id: number;
+};
+export type V1EducationCoursesUpdateApiResponse =
+  /** status 200  */ CourseCreateUpdateRead;
+export type V1EducationCoursesUpdateApiArg = {
+  /** A unique integer value identifying this course. */
+  id: number;
+  courseCreateUpdate: CourseCreateUpdate;
+};
+export type V1EducationCoursesPartialUpdateApiResponse =
+  /** status 200  */ CourseCreateUpdateRead;
+export type V1EducationCoursesPartialUpdateApiArg = {
+  /** A unique integer value identifying this course. */
+  id: number;
+  patchedCourseCreateUpdate: PatchedCourseCreateUpdate;
+};
+export type V1EducationCoursesDestroyApiResponse = unknown;
+export type V1EducationCoursesDestroyApiArg = {
   /** A unique integer value identifying this course. */
   id: number;
 };
@@ -152,5 +243,58 @@ export type CourseDetailRead = {
   updatedAt: string;
   steps: CourseStepRead[];
 };
-export const { useV1CoursesListQuery, useV1CoursesRetrieveQuery } =
-  injectedRtkApi;
+export type CourseCreateUpdateStatusEnum = "published" | "unpublished";
+export type CourseCreateUpdate = {
+  title: string;
+  description: string;
+  actionText: string;
+  imagePreview?: string | null;
+  difficulty?: DifficultyEnum;
+  status?: CourseCreateUpdateStatusEnum;
+  tags?: number[];
+};
+export type CourseCreateUpdateRead = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  actionText: string;
+  imagePreview?: string | null;
+  difficulty?: DifficultyEnum;
+  status?: CourseCreateUpdateStatusEnum;
+  tags?: number[];
+  createdAt: string;
+  updatedAt: string;
+};
+export type PatchedCourseCreateUpdate = {
+  title?: string;
+  description?: string;
+  actionText?: string;
+  imagePreview?: string | null;
+  difficulty?: DifficultyEnum;
+  status?: CourseCreateUpdateStatusEnum;
+  tags?: number[];
+};
+export type PatchedCourseCreateUpdateRead = {
+  id?: number;
+  title?: string;
+  slug?: string;
+  description?: string;
+  actionText?: string;
+  imagePreview?: string | null;
+  difficulty?: DifficultyEnum;
+  status?: CourseCreateUpdateStatusEnum;
+  tags?: number[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+export const {
+  useV1CoursesListQuery,
+  useV1CoursesRetrieveQuery,
+  useV1EducationCoursesListQuery,
+  useV1EducationCoursesCreateMutation,
+  useV1EducationCoursesRetrieveQuery,
+  useV1EducationCoursesUpdateMutation,
+  useV1EducationCoursesPartialUpdateMutation,
+  useV1EducationCoursesDestroyMutation,
+} = injectedRtkApi;
