@@ -7,12 +7,14 @@ import {
 import type { EntityType } from '@/shared/ui';
 import { InfoSettingsLeftBar } from '../InfoSettingsLeftBar';
 import styles from './InfoSettingsTemplate.module.scss';
+import { useEffect } from 'react';
 
 export interface InfoSettingsTemplateProps {
   children: React.ReactNode;
   backUrl: string;
   title: string;
   entityType: EntityType;
+  availableSections?: InfoSettingsSection[];
 }
 
 export const InfoSettingsTemplate = ({
@@ -20,9 +22,20 @@ export const InfoSettingsTemplate = ({
   backUrl,
   title,
   entityType,
+  availableSections,
 }: InfoSettingsTemplateProps) => {
   const dispatch = useAppDispatch();
   const activeSection = useAppSelector(selectInfoSettingsActiveSection);
+
+  useEffect(() => {
+    if (
+      availableSections &&
+      availableSections.length > 0 &&
+      !availableSections.includes(activeSection)
+    ) {
+      dispatch(setActiveSection(availableSections[0]));
+    }
+  }, [activeSection, availableSections, dispatch]);
 
   const handleSectionChange = (section: InfoSettingsSection) => {
     dispatch(setActiveSection(section));
@@ -36,6 +49,7 @@ export const InfoSettingsTemplate = ({
         entityType={entityType}
         activeSection={activeSection}
         onSectionChange={handleSectionChange}
+        availableSections={availableSections}
       />
       <div className={styles.content}>{children}</div>
     </div>

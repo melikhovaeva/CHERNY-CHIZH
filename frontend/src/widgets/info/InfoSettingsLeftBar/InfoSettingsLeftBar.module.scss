@@ -29,6 +29,11 @@
     color: $c-b-crm-500;
     outline-offset: 2px;
   }
+
+  &:disabled {
+    color: $c-neutral-200;
+    cursor: not-allowed;
+  }
 }
 
 .menuItemActive {

@@ -10,6 +10,7 @@ export interface InfoSettingsLeftBarProps {
   entityType: EntityType;
   activeSection?: InfoSettingsSection;
   onSectionChange?: (section: InfoSettingsSection) => void;
+  availableSections?: InfoSettingsSection[];
 }
 
 export const InfoSettingsLeftBar = ({
@@ -18,6 +19,7 @@ export const InfoSettingsLeftBar = ({
   entityType,
   activeSection,
   onSectionChange,
+  availableSections,
 }: InfoSettingsLeftBarProps) => {
   const sections = Object.entries(INFO_SETTINGS_SECTION_LABELS).map(
     ([id, label]) => ({
@@ -25,10 +27,16 @@ export const InfoSettingsLeftBar = ({
       label,
     }),
   );
+
   return (
     <LeftBar backUrl={backUrl} title={title} entityType={entityType}>
       <nav className={styles.menu} aria-label="Настройки">
         {sections.map(({ id, label }) => {
+          const isDisabled =
+            availableSections != null &&
+            availableSections.length > 0 &&
+            !availableSections.includes(id);
+
           return (
             <button
               key={id}
@@ -36,7 +44,10 @@ export const InfoSettingsLeftBar = ({
               className={cn([styles.menuItem], {
                 [styles.menuItemActive]: activeSection === id,
               })}
-              onClick={() => onSectionChange?.(id)}
+              disabled={isDisabled}
+              onClick={
+                isDisabled ? undefined : () => onSectionChange?.(id)
+              }
               aria-current={activeSection === id ? 'page' : undefined}
             >
               {label}
