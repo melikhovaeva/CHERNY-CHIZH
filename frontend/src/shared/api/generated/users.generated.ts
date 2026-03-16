@@ -224,7 +224,6 @@ export type CurrentUser = {
   lastName?: string | null;
   phone?: string | null;
   messenger?: string | null;
-  avatarImage?: string | null;
 };
 export type CurrentUserRead = {
   id: number;
@@ -233,7 +232,7 @@ export type CurrentUserRead = {
   lastName?: string | null;
   phone?: string | null;
   messenger?: string | null;
-  avatarImage?: string | null;
+  avatarImage: string;
   role: RoleRead | null;
 };
 export type TokenObtainPair = {};
@@ -251,7 +250,6 @@ export type PatchedCurrentUser = {
   lastName?: string | null;
   phone?: string | null;
   messenger?: string | null;
-  avatarImage?: string | null;
 };
 export type PatchedCurrentUserRead = {
   id?: number;
@@ -260,7 +258,7 @@ export type PatchedCurrentUserRead = {
   lastName?: string | null;
   phone?: string | null;
   messenger?: string | null;
-  avatarImage?: string | null;
+  avatarImage?: string;
   role?: RoleRead | null;
 };
 export type ChangePassword = {};
@@ -269,9 +267,9 @@ export type ChangePasswordWrite = {
   newPassword: string;
   newPassword2: string;
 };
-export type StatusEnum = "enrolled" | "completed" | "cancelled";
+export type CourseEnrollmentStatusEnum = "enrolled" | "completed" | "cancelled";
 export type CourseEnrollment = {
-  status?: StatusEnum;
+  status?: CourseEnrollmentStatusEnum;
   /** Прогресс прохождения курса в процентах */
   progress?: number | null;
   startedAt?: string | null;
@@ -317,7 +315,7 @@ export type CourseRead = {
 export type CourseEnrollmentRead = {
   id: number;
   course: CourseRead;
-  status?: StatusEnum;
+  status?: CourseEnrollmentStatusEnum;
   /** Прогресс прохождения курса в процентах */
   progress?: number | null;
   startedAt?: string | null;
