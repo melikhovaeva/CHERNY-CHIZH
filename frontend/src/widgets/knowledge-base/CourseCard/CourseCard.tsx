@@ -1,9 +1,16 @@
+import { useAppSelector } from '@/app/store';
 import type { CourseRead } from '@/entities/course';
+import { selectIsAdmin } from '@/entities/session';
 import { formatDate, getImageUrl } from '@/shared';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { Link } from '@tanstack/react-router';
 import styles from './CourseCard.module.scss';
+
+const COURSE_STATUS = {
+  PUBLISHED: 'published',
+  UNPUBLISHED: 'unpublished',
+} as const;
 
 interface CourseCardProps {
   course: CourseRead;
@@ -19,6 +26,7 @@ export function CourseCard({
   const imageUrl = getImageUrl(course.imagePreview ?? null);
   const dateStr = formatDate(course.updatedAt ?? course.createdAt);
   const isHorizontal = variant === 'horizontal';
+  const isAdmin = useAppSelector(selectIsAdmin);
 
   const cardClass = [
     styles.card,
@@ -37,6 +45,11 @@ export function CourseCard({
     styles.panel,
     isHorizontal ? styles.panelHorizontal : styles.panelVertical,
   ].join(' ');
+
+  const statusClassName =
+    course.status?.code === COURSE_STATUS.PUBLISHED
+      ? `${styles.status} ${styles.statusPublished}`
+      : `${styles.status} ${styles.statusUnpublished}`;
 
   return (
     <Link
@@ -88,8 +101,8 @@ export function CourseCard({
             </>
           ) : (
             <>
-              {course.status && (
-                <span className={styles.status}>{course.status.label}</span>
+              {isAdmin && course.status && (
+                <span className={statusClassName}>{course.status.label}</span>
               )}
               <span className={styles.date}>{dateStr}</span>
             </>

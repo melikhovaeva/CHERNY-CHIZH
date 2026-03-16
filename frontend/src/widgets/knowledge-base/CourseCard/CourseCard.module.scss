@@ -155,7 +155,14 @@
 
 .status {
   @include typography-text-s;
-  color: #7eb8a0;
+}
+
+.statusPublished {
+  color: $c-status-green;
+}
+
+.statusUnpublished {
+  color: $c-status-red;
 }
 
 .actionButton {
