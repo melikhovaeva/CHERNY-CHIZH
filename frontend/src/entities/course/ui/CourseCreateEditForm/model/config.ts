@@ -42,8 +42,8 @@ export const formFields = {
     validation: {
       required: 'Обязательное поле',
       maxLength: {
-        value: 100,
-        message: 'Максимум 100 символов',
+        value: 26,
+        message: 'Максимум 26 символов',
       },
     } satisfies CourseFieldRegisterOptions,
   },

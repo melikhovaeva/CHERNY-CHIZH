@@ -25,7 +25,7 @@ export const LeftBar = ({
         <Link to={backUrl} className={styles.backLink} aria-label="Назад">
           <ArrowLeftIcon className={styles.backIcon} aria-hidden />
         </Link>
-        <h2 className={styles.title}>{displayTitle}</h2>
+        <h4 className={styles.title}>{displayTitle}</h4>
       </div>
       {children != null ? (
         <div className={styles.content}>{children}</div>
