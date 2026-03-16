@@ -35,7 +35,7 @@ const injectedRtkApi = api
           method: "POST",
           body: queryArg.courseCreateUpdate,
         }),
-        invalidatesTags: ["Education", "Courses"],
+        invalidatesTags: ["Education"],
       }),
       v1EducationCoursesRetrieve: build.query<
         V1EducationCoursesRetrieveApiResponse,
@@ -55,7 +55,7 @@ const injectedRtkApi = api
           method: "PUT",
           body: queryArg.courseCreateUpdate,
         }),
-        invalidatesTags: ["Education", "Courses"],
+        invalidatesTags: ["Education"],
       }),
       v1EducationCoursesPartialUpdate: build.mutation<
         V1EducationCoursesPartialUpdateApiResponse,
@@ -66,7 +66,7 @@ const injectedRtkApi = api
           method: "PATCH",
           body: queryArg.patchedCourseCreateUpdate,
         }),
-        invalidatesTags: ["Education", "Courses"],
+        invalidatesTags: ["Education"],
       }),
       v1EducationCoursesDestroy: build.mutation<
         V1EducationCoursesDestroyApiResponse,
@@ -76,7 +76,18 @@ const injectedRtkApi = api
           url: `/api/v1/education/courses/${queryArg.id}/`,
           method: "DELETE",
         }),
-        invalidatesTags: ["Education", "Courses"],
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesUploadImageCreate: build.mutation<
+        V1EducationCoursesUploadImageCreateApiResponse,
+        V1EducationCoursesUploadImageCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.id}/upload-image/`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Education"],
       }),
     }),
     overrideExisting: false,
@@ -120,6 +131,16 @@ export type V1EducationCoursesDestroyApiResponse = unknown;
 export type V1EducationCoursesDestroyApiArg = {
   /** A unique integer value identifying this course. */
   id: number;
+};
+export type V1EducationCoursesUploadImageCreateApiResponse =
+  /** status 200  */ CourseCreateUpdateRead;
+export type V1EducationCoursesUploadImageCreateApiArg = {
+  /** A unique integer value identifying this course. */
+  id: number;
+  body: {
+    /** Файл изображения (JPEG, PNG, GIF, WebP, макс. 5 МБ) */
+    image: Blob;
+  };
 };
 export type DifficultyEnum = "beginner" | "intermediate" | "advanced";
 export type Course = {
@@ -297,4 +318,5 @@ export const {
   useV1EducationCoursesUpdateMutation,
   useV1EducationCoursesPartialUpdateMutation,
   useV1EducationCoursesDestroyMutation,
+  useV1EducationCoursesUploadImageCreateMutation,
 } = injectedRtkApi;

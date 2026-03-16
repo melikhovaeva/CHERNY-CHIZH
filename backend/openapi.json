@@ -1117,6 +1117,65 @@
                 }
             }
         },
+        "/api/v1/education/courses/{id}/upload-image/": {
+            "post": {
+                "operationId": "v1_education_courses_upload_image_create",
+                "description": "Принимает multipart/form-data с полем «image» (файл изображения). Изображение сохраняется в хранилище (S3) и записывается в курс.",
+                "summary": "Загрузить изображение курса (только администратор)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this course.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Файл изображения (JPEG, PNG, GIF, WebP, макс. 5 МБ)"
+                                    }
+                                },
+                                "required": ["image"]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseCreateUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Файл не передан или не прошёл валидацию"
+                    }
+                }
+            }
+        },
         "/api/v1/education/tags/": {
             "get": {
                 "operationId": "v1_education_tags_list",

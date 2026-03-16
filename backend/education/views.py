@@ -15,6 +15,11 @@ from rest_framework.response import Response
 from user_management.permissions import IsAdmin
 
 from common.serializers import keys_to_snake_case
+from education.constants import (
+    COURSE_IMAGE_ALLOWED_CONTENT_TYPES,
+    COURSE_IMAGE_MAX_SIZE_BYTES,
+    COURSE_IMAGE_UPLOAD_FIELD_NAME,
+)
 from education.models import Article, Course, InfoStatus, InfoTag
 from education.serializers import (
     ArticleListSerializer,
@@ -126,7 +131,13 @@ class EducationCourseViewSet(
     """
 
     def get_permissions(self):
-        if self.action in ("create", "update", "partial_update", "destroy"):
+        if self.action in (
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "upload_image",
+        ):
             return [IsAdmin()]
         return [permissions.AllowAny()]
 
@@ -141,11 +152,6 @@ class EducationCourseViewSet(
             tags_raw = request.data.getlist("tags")
             if tags_raw:
                 data["tags"] = [int(t) for t in tags_raw if str(t).isdigit()]
-        image_file = request.FILES.get("imagePreview") or request.FILES.get(
-            "image_preview"
-        )
-        if image_file:
-            data["image_preview"] = image_file
         return data
 
     def create(self, request, *args, **kwargs):
@@ -167,6 +173,36 @@ class EducationCourseViewSet(
         instance = serializer.save()
         return Response(
             CourseSerializer(instance, context=self.get_serializer_context()).data,
+        )
+
+    @action(detail=True, methods=["post"], url_path="upload-image")
+    def upload_image(self, request, pk=None):
+        course = self.get_object()
+        image_file = request.FILES.get(COURSE_IMAGE_UPLOAD_FIELD_NAME)
+        if not image_file:
+            return Response(
+                {"detail": "Файл изображения не передан."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        content_type = getattr(image_file, "content_type", "") or ""
+        if content_type not in COURSE_IMAGE_ALLOWED_CONTENT_TYPES:
+            return Response(
+                {
+                    "detail": f"Недопустимый тип файла. Разрешены: {', '.join(COURSE_IMAGE_ALLOWED_CONTENT_TYPES)}."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if image_file.size > COURSE_IMAGE_MAX_SIZE_BYTES:
+            return Response(
+                {
+                    "detail": f"Размер файла превышает {COURSE_IMAGE_MAX_SIZE_BYTES // (1024 * 1024)} МБ."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        course.image_preview = image_file
+        course.save(update_fields=["image_preview"])
+        return Response(
+            CourseSerializer(course, context=self.get_serializer_context()).data,
         )
 
 
