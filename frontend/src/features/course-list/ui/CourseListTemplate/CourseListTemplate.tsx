@@ -1,4 +1,4 @@
-import type { CourseRead } from '@/entities/course';
+import { isCourseAccessible, type CourseRead, type CourseEnrollmentRead, useGetMyCoursesQuery } from '@/entities/course';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { Button } from '@/shared';
 import { cn } from '@/shared/lib/utils';
@@ -69,6 +69,7 @@ export function CourseListTemplate<TItem>({
   searchPlaceholder = 'Поиск',
   className,
 }: CourseListTemplateProps<TItem>) {
+  const { data: myCourses } = useGetMyCoursesQuery();
   const [searchQuery, setSearchQuery] = useState('');
 
   const hasFilters =
@@ -144,10 +145,20 @@ export function CourseListTemplate<TItem>({
         contentEmpty
       ) : (
         <div className={cn([styles.list, className || ''])}>
-          {filteredCourses.map((course) =>
-            onEditCourse ? (
+          {filteredCourses.map((course) => {
+            const isAccessible = isCourseAccessible({
+              slug: course.slug,
+              enrollments: (myCourses as CourseEnrollmentRead[] | undefined) ?? undefined,
+              isAdmin: false,
+            });
+
+            return onEditCourse ? (
               <div key={course.id} className={styles.cardWrapper}>
-                <CourseCard course={course} variant="vertical" />
+                <CourseCard
+                  course={course}
+                  variant="vertical"
+                  isAccessible={isAccessible}
+                />
                 <Button
                   type="button"
                   variant="crm"
@@ -159,9 +170,14 @@ export function CourseListTemplate<TItem>({
                 </Button>
               </div>
             ) : (
-              <CourseCard key={course.id} course={course} variant="vertical" />
-            ),
-          )}
+              <CourseCard
+                key={course.id}
+                course={course}
+                variant="vertical"
+                isAccessible={isAccessible}
+              />
+            );
+          })}
         </div>
       )}
     </div>

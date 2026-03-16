@@ -2,8 +2,8 @@ import {
   useGetArticlesListQuery,
   type ArticleListItem,
 } from '@/entities/article';
-import type { CourseRead } from '@/entities/course';
-import { useGetCoursesQuery } from '@/entities/course';
+import type { CourseRead, CourseEnrollmentRead } from '@/entities/course';
+import { isCourseAccessible, useGetCoursesQuery, useGetMyCoursesQuery } from '@/entities/course';
 import { Skeleton } from '@/shared/ui/components';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ArticleCard } from '../ArticleCard';
@@ -56,9 +56,14 @@ export function KnowledgeBaseList({
     { skip: isCoursesOnly },
   );
 
-  const { data: coursesData, isLoading: coursesLoading } = useGetCoursesQuery(undefined, {
-    skip: isArticlesOnly,
-  });
+  const { data: coursesData, isLoading: coursesLoading } = useGetCoursesQuery(
+    undefined,
+    {
+      skip: isArticlesOnly,
+    },
+  );
+
+  const { data: myCourses } = useGetMyCoursesQuery();
 
   const courses = coursesData ?? [];
   const articlesResponse = articlesData;
@@ -217,7 +222,15 @@ export function KnowledgeBaseList({
         {mergedItems.map((item) =>
           item.type === 'course' ? (
             <div key={`course-${item.data.id}`} className={styles.courseCardFullRow}>
-              <CourseCard course={item.data} variant="horizontal" />
+              <CourseCard
+                course={item.data}
+                variant="horizontal"
+                isAccessible={isCourseAccessible({
+                  slug: item.data.slug,
+                  enrollments: (myCourses as CourseEnrollmentRead[] | undefined) ?? undefined,
+                  isAdmin: false,
+                })}
+              />
             </div>
           ) : (
             <ArticleCard key={`article-${item.data.id}`} article={item.data} />

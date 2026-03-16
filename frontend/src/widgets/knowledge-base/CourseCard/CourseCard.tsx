@@ -16,12 +16,14 @@ interface CourseCardProps {
   course: CourseRead;
   variant?: 'horizontal' | 'vertical';
   className?: string;
+  isAccessible?: boolean;
 }
 
 export function CourseCard({
   course,
   variant = 'horizontal',
   className,
+  isAccessible = false,
 }: CourseCardProps) {
   const imageUrl = getImageUrl(course.imagePreview ?? null);
   const dateStr = formatDate(course.updatedAt ?? course.createdAt);
@@ -51,12 +53,8 @@ export function CourseCard({
       ? `${styles.status} ${styles.statusPublished}`
       : `${styles.status} ${styles.statusUnpublished}`;
 
-  return (
-    <Link
-      to="/courses/$slug"
-      params={{ slug: course.slug }}
-      className={cardClass}
-    >
+  const content = (
+    <>
       <div className={imageWrapClass}>
         {imageUrl ? (
           <img src={imageUrl} alt="" className={styles.image} />
@@ -104,6 +102,20 @@ export function CourseCard({
           )}
         </div>
       </div>
-    </Link>
+    </>
   );
+
+  if (isAdmin || isAccessible) {
+    return (
+      <Link
+        to="/courses/$slug"
+        params={{ slug: course.slug }}
+        className={cardClass}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={cardClass}>{content}</div>;
 }
