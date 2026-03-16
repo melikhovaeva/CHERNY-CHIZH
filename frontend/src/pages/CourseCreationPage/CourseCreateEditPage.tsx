@@ -1,27 +1,94 @@
+import {
+  useCreateCourseMutation,
+  useGetCourseQuery,
+  useUpdateCourseMutation,
+} from '@/entities/course';
 import { useAppSelector } from '@/app/store';
-import { CourseCreateEditForm } from '@/entities/course';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
-import type { Course } from '@/shared/api/generated/courses.generated';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
+import type {
+  CourseCreateUpdate,
+  InfoTagRead,
+} from '@/shared/api/generated/courses.generated';
+import { useNavigate, useParams } from '@tanstack/react-router';
+import {
+  CourseCreateEditForm,
+  type CourseFormData,
+} from '@/entities/course';
 import { CourseActionsSection, InfoSettingsTemplate } from '@/widgets';
+
+function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
+  return {
+    title: values.title,
+    description: values.description,
+    actionText: values.actionText,
+    imagePreview: null,
+    difficulty: values.difficulty ?? undefined,
+    tags: values.tags?.map((t: InfoTagRead) => t.id) ?? [],
+  };
+}
 
 export const CourseCreateEditPage = () => {
   const activeSettingsSection = useAppSelector(selectInfoSettingsActiveSection);
+  const { courseId } = useParams({ strict: false });
+  const navigate = useNavigate();
+  const showSuccess = useSuccess();
+  const showError = useError();
 
-  const handleSubmit = (values: Course) => {
-    // TODO: вызвать API создания/редактирования курса и показать toast об успехе
-    void values;
+  const isEdit = Boolean(courseId);
+  const courseIdNum = courseId ? Number(courseId) : null;
+
+  const { data: course, isLoading: isCourseLoading } = useGetCourseQuery(
+    { id: courseIdNum! },
+    { skip: !courseIdNum },
+  );
+
+  const [createCourse] = useCreateCourseMutation();
+  const [updateCourse] = useUpdateCourseMutation();
+
+  const handleSubmit = async (values: CourseFormData) => {
+    const payload = toCreateUpdatePayload(values);
+
+    try {
+      if (isEdit && courseIdNum) {
+        await updateCourse({
+          id: courseIdNum,
+          courseCreateUpdate: payload,
+        }).unwrap();
+        showSuccess('Курс обновлён');
+      } else {
+        const created = await createCourse({
+          courseCreateUpdate: payload,
+        }).unwrap();
+        showSuccess('Курс создан');
+        navigate({ to: '/cabinet/courses/$courseId/edit', params: { courseId: String(created.id) } });
+        return;
+      }
+      navigate({ to: '/cabinet/courses' });
+    } catch {
+      showError(isEdit ? 'Не удалось обновить курс' : 'Не удалось создать курс');
+    }
   };
 
   const renderSettingsSection = (): React.ReactNode => {
     if (activeSettingsSection === INFO_SETTINGS_SECTION.INFO) {
-      return <CourseCreateEditForm onSubmit={handleSubmit} />;
+      return (
+        <CourseCreateEditForm
+          data={course}
+          onSubmit={handleSubmit}
+        />
+      );
     }
     if (activeSettingsSection === INFO_SETTINGS_SECTION.ACTIONS) {
       return <CourseActionsSection />;
     }
     return null;
   };
+
+  if (isEdit && courseIdNum && isCourseLoading) {
+    return null;
+  }
 
   return (
     <InfoSettingsTemplate

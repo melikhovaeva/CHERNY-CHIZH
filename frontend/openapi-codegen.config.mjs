@@ -20,7 +20,7 @@ export default {
       filterEndpoints: [/^v1Dogs/, /^v1BreedsDogs/],
     },
     './src/shared/api/generated/courses.generated.ts': {
-      filterEndpoints: [/^v1Courses/],
+      filterEndpoints: [/^v1Courses/, /^v1EducationCourses/],
     },
     './src/shared/api/generated/dictionaries.generated.ts': {
       filterEndpoints: [/^dictionaries/],
