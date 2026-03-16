@@ -22,6 +22,23 @@ def _to_camel_case(snake_str: str) -> str:
     return parts[0].lower() + "".join(p.capitalize() for p in parts[1:])
 
 
+def _to_snake_case(camel_str: str) -> str:
+    """Преобразует camelCase в snake_case."""
+    result = [camel_str[0].lower()] if camel_str else []
+    for c in camel_str[1:]:
+        result.append("_" + c.lower() if c.isupper() else c)
+    return "".join(result)
+
+
+def keys_to_snake_case(data):
+    """Рекурсивно преобразует ключи словаря из camelCase в snake_case (для входящих данных от фронта)."""
+    if isinstance(data, dict):
+        return {_to_snake_case(k): keys_to_snake_case(v) for k, v in data.items()}
+    if isinstance(data, list):
+        return [keys_to_snake_case(item) for item in data]
+    return data
+
+
 def strip_empty_values(data):
     """
     Рекурсивно удаляет ключи со значениями None и пустой строкой.
