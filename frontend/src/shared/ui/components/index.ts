@@ -9,6 +9,11 @@ export { AppLogo } from './AppLogo';
 export { Backdrop } from './Backdrop';
 export { Breadcrumb, type BreadcrumbItem } from './Breadcrumb';
 export { Button } from './Button';
+export {
+  ChoiceDialog,
+  type ChoiceDialogOption,
+  type ChoiceDialogOptionVariant,
+} from './ChoiceDialog/ChoiceDialog';
 export { Card } from './Card';
 export { Checkbox } from './Checkbox';
 export {
