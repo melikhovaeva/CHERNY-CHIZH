@@ -25,7 +25,6 @@ function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
     title: values.title,
     description: values.description,
     actionText: values.actionText,
-    imagePreview: null,
     difficulty: values.difficulty ?? undefined,
     tags: values.tags?.map((t: InfoTagRead) => t.id) ?? [],
   };

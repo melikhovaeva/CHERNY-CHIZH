@@ -29,6 +29,12 @@ export function useUploadCourseImageMutation() {
 
 coursesApi.enhanceEndpoints({
   endpoints: {
+    v1EducationCoursesCreate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesUpdate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
     v1EducationCoursesUploadImageCreate: {
       invalidatesTags: ['Education', 'Courses'],
     },
