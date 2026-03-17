@@ -1,4 +1,5 @@
 import { useGetArticleBySlugQuery } from '@/entities/article';
+import { useGetCoursesQuery } from '@/entities/course';
 import { useGetBreedsQuery } from '@/entities/breed';
 import { useGetPuppyQuery } from '@/entities/puppy';
 import { useLocation } from '@tanstack/react-router';
@@ -47,6 +48,15 @@ export function useSegmentLabel(): (
       ? pathSegmentsForArticle[1]
       : undefined;
 
+  const isCabinetCoursesRoute =
+    segments[0] === 'cabinet' && segments[1] === 'courses';
+  const courseSlug =
+    isCabinetCoursesRoute && segments[2] && segments[2] !== 'new'
+      ? segments[2]
+      : undefined;
+
+  const shouldLoadCourses = Boolean(courseSlug);
+
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
   });
@@ -59,6 +69,10 @@ export function useSegmentLabel(): (
     skip: !articleSlug,
   });
 
+  const { data: courses } = useGetCoursesQuery(undefined, {
+    skip: !shouldLoadCourses,
+  });
+
   return useCallback(
     (segment: string, pathname?: string) => {
       const staticLabel = SEGMENT_LABELS[segment];
@@ -69,6 +83,7 @@ export function useSegmentLabel(): (
 
       if (pathname) {
         const pathSegments = pathname.split('/').filter(Boolean);
+
         const isPuppyOrDogSegment =
           (pathSegments[0] === 'puppies' || pathSegments[0] === 'dogs') &&
           pathSegments[2] &&
@@ -85,6 +100,18 @@ export function useSegmentLabel(): (
         if (isArticleSlugSegment) {
           return article.title;
         }
+
+        const isCabinetCoursesSlugSegment =
+          pathSegments[0] === 'cabinet' &&
+          pathSegments[1] === 'courses' &&
+          pathSegments[2] === segment &&
+          courses;
+        if (isCabinetCoursesSlugSegment) {
+          const course = courses.find((c) => c.slug === segment);
+          if (course) {
+            return course.title;
+          }
+        }
       }
 
       if (pathname) {
@@ -93,6 +120,6 @@ export function useSegmentLabel(): (
 
       return segment;
     },
-    [breeds, puppy, article],
+    [breeds, puppy, article, courses],
   );
 }

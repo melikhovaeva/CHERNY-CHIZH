@@ -29,8 +29,8 @@ export function CabinetCourses() {
         isAdmin
           ? (course) =>
               navigate({
-                to: '/cabinet/courses/$courseId/edit',
-                params: { courseId: String(course.id) },
+                to: '/cabinet/courses/$courseSlug',
+                params: { courseSlug: course.slug },
               })
           : undefined
       }
