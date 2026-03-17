@@ -171,6 +171,11 @@
   }
 }
 
+.actionButtonWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
 .tagsRow {
   display: flex;
   flex-wrap: wrap;

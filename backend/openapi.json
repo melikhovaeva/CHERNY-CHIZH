@@ -235,9 +235,8 @@
                         "in": "path",
                         "name": "id",
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "A unique integer value identifying this Собака.",
                         "required": true
                     },
                     {
@@ -894,7 +893,7 @@
             },
             "post": {
                 "operationId": "v1_education_courses_create",
-                "description": "Поля: название, описание, текст на кнопке, изображение, уровень (необязательно), теги (необязательно).",
+                "description": "Поля: название, описание, текст на кнопке, уровень (необязательно), теги (необязательно). Изображение загружается отдельно через upload-image.",
                 "summary": "Создать курс (только администратор)",
                 "tags": [
                     "Education"
@@ -1148,11 +1147,12 @@
                                         "description": "Файл изображения (JPEG, PNG, GIF, WebP, макс. 5 МБ)"
                                     }
                                 },
-                                "required": ["image"]
+                                "required": [
+                                    "image"
+                                ]
                             }
                         }
-                    },
-                    "required": true
+                    }
                 },
                 "security": [
                     {
@@ -1164,14 +1164,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CourseCreateUpdate"
+                                    "type": "object",
+                                    "additionalProperties": {}
                                 }
                             }
                         },
                         "description": ""
-                    },
-                    "400": {
-                        "description": "Файл не передан или не прошёл валидацию"
                     }
                 }
             }
@@ -1925,6 +1923,51 @@
                         "description": ""
                     }
                 }
+            },
+            "post": {
+                "operationId": "v1_users_me_courses_create",
+                "description": "Создаёт или возвращает существующую запись пользователя на курс по идентификатору курса.",
+                "summary": "Записаться на курс",
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseEnrollmentCreate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseEnrollmentCreate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseEnrollmentCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseEnrollment"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
             }
         },
         "/api/v1/users/register/step1/": {
@@ -2665,6 +2708,23 @@
                 },
                 "required": [
                     "course",
+                    "id"
+                ]
+            },
+            "CourseEnrollmentCreate": {
+                "type": "object",
+                "description": "Сериализатор для создания/регистрации пользователя на курс по идентификатору курса.\n\nОжидает от фронта поле courseId (camelCase), которое преобразуется в course_id\nи маппится на поле course модели.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "courseId": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "courseId",
                     "id"
                 ]
             },

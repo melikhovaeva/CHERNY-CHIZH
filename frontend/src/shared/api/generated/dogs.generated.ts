@@ -67,8 +67,7 @@ export type V1BreedsDogsRetrieveApiResponse =
   /** status 200  */ DogByBreedListRead;
 export type V1BreedsDogsRetrieveApiArg = {
   breedSlug: string;
-  /** A unique integer value identifying this Собака. */
-  id: number;
+  id: string;
   /** ID собаки. */
   pk: number;
 };

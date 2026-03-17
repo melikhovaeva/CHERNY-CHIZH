@@ -11,7 +11,7 @@ from rest_framework_simplejwt.serializers import (
     TokenRefreshSerializer,
 )
 
-from education.serializers import CourseEnrollmentSerializer
+from education.serializers import CourseEnrollmentCreateSerializer, CourseEnrollmentSerializer
 from user_management.serializers import (
     ChangePasswordSerializer,
     CurrentUserSerializer,
@@ -116,6 +116,16 @@ MY_COURSES_VIEW_SCHEMA = dict(
         "Возвращает список записей пользователя на курсы с информацией о курсе, статусе и прогрессе."
     ),
     responses={200: CourseEnrollmentSerializer(many=True)},
+)
+
+MY_COURSE_ENROLL_SCHEMA = dict(
+    tags=["Users"],
+    summary="Записаться на курс",
+    description=(
+        "Создаёт или возвращает существующую запись пользователя на курс по идентификатору курса."
+    ),
+    request=CourseEnrollmentCreateSerializer,
+    responses={201: CourseEnrollmentSerializer},
 )
 
 CHANGE_PASSWORD_SCHEMA = dict(

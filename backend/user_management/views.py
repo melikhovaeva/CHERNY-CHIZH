@@ -8,23 +8,24 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from drf_spectacular.utils import extend_schema
 
 from education.models import CourseEnrollment
-from education.serializers import CourseEnrollmentSerializer
+from education.serializers import CourseEnrollmentCreateSerializer, CourseEnrollmentSerializer
 from user_management.jwt_serializers import CookieTokenObtainPairSerializer, make_session_binding
 from user_management.models import User
 from user_management.permissions import IsAdmin
 from user_management.schema import (
-    CHANGE_PASSWORD_SCHEMA,
-    COOKIE_LOGIN_SCHEMA,
-    COOKIE_LOGOUT_SCHEMA,
-    COOKIE_REFRESH_SCHEMA,
-    JWT_OBTAIN_PAIR_SCHEMA,
-    JWT_REFRESH_SCHEMA,
-    MY_COURSES_VIEW_SCHEMA,
-    PROFILE_VIEW_SCHEMA,
-    REGISTER_STEP1_SCHEMA,
-    REGISTER_STEP2_SCHEMA,
-    USER_ADMIN_DETAIL_SCHEMA,
-    USER_LIST_ADMIN_SCHEMA,
+  CHANGE_PASSWORD_SCHEMA,
+  COOKIE_LOGIN_SCHEMA,
+  COOKIE_LOGOUT_SCHEMA,
+  COOKIE_REFRESH_SCHEMA,
+  JWT_OBTAIN_PAIR_SCHEMA,
+  JWT_REFRESH_SCHEMA,
+  MY_COURSE_ENROLL_SCHEMA,
+  MY_COURSES_VIEW_SCHEMA,
+  PROFILE_VIEW_SCHEMA,
+  REGISTER_STEP1_SCHEMA,
+  REGISTER_STEP2_SCHEMA,
+  USER_ADMIN_DETAIL_SCHEMA,
+  USER_LIST_ADMIN_SCHEMA,
 )
 from user_management.serializers import (
     ChangePasswordSerializer,
@@ -143,6 +144,24 @@ class MyCoursesView(generics.ListAPIView):
       .select_related("course")
       .order_by("created_at")
     )
+
+  @extend_schema(**MY_COURSE_ENROLL_SCHEMA)
+  def post(self, request):
+    raw_payload = request.data.get("courseEnrollmentCreate", request.data)
+    payload = _keys_to_snake_case(dict(raw_payload))
+
+    serializer = CourseEnrollmentCreateSerializer(
+      data=payload,
+      context={"request": request},
+    )
+    serializer.is_valid(raise_exception=True)
+    enrollment = serializer.save()
+
+    output_serializer = CourseEnrollmentSerializer(
+      enrollment,
+      context={"request": request},
+    )
+    return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @extend_schema(**CHANGE_PASSWORD_SCHEMA)

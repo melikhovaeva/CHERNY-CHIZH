@@ -133,7 +133,9 @@ export type V1EducationCoursesDestroyApiArg = {
   id: number;
 };
 export type V1EducationCoursesUploadImageCreateApiResponse =
-  /** status 200  */ CourseCreateUpdateRead;
+  /** status 200  */ {
+    [key: string]: any;
+  };
 export type V1EducationCoursesUploadImageCreateApiArg = {
   /** A unique integer value identifying this course. */
   id: number;
