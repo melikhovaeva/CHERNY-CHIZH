@@ -1,6 +1,6 @@
 import {
   useCreateCourseMutation,
-  useGetCourseQuery,
+  useGetCoursesQuery,
   useUpdateCourseMutation,
   useUploadCourseImageMutation,
 } from '@/entities/course';
@@ -32,18 +32,22 @@ function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
 
 export const CourseCreateEditPage = () => {
   const activeSettingsSection = useAppSelector(selectInfoSettingsActiveSection);
-  const { courseId } = useParams({ strict: false });
+  const { courseSlug } = useParams({ strict: false });
   const navigate = useNavigate();
   const showSuccess = useSuccess();
   const showError = useError();
 
-  const isEdit = Boolean(courseId);
-  const courseIdNum = courseId ? Number(courseId) : null;
+  const isEdit = Boolean(courseSlug);
 
-  const { data: course, isLoading: isCourseLoading } = useGetCourseQuery(
-    { id: courseIdNum! },
-    { skip: !courseIdNum },
-  );
+  const {
+    data: courses,
+    isLoading: isCoursesLoading,
+  } = useGetCoursesQuery(undefined, {
+    skip: !isEdit,
+  });
+
+  const course = courses?.find((c) => c.slug === courseSlug) ?? null;
+  const courseId = course?.id ?? null;
 
   const [createCourse] = useCreateCourseMutation();
   const [updateCourse] = useUpdateCourseMutation();
@@ -54,34 +58,41 @@ export const CourseCreateEditPage = () => {
     const payload = toCreateUpdatePayload(values);
 
     try {
-      let courseId: number;
-      if (isEdit && courseIdNum) {
+      let targetCourseId: number;
+      let targetCourseSlug: string | null = null;
+
+      if (isEdit && courseId) {
         await updateCourse({
-          id: courseIdNum,
+          id: courseId,
           courseCreateUpdate: payload,
         }).unwrap();
-        courseId = courseIdNum;
+        targetCourseId = courseId;
+        targetCourseSlug = courseSlug ?? null;
         showSuccess('Курс обновлён');
       } else {
         const created = await createCourse({
           courseCreateUpdate: payload,
         }).unwrap();
-        courseId = created.id;
+        targetCourseId = created.id;
+        targetCourseSlug = created.slug;
         showSuccess('Курс создан');
       }
 
       if (values.imageFile) {
         try {
-          await uploadCourseImage({ id: courseId, file: values.imageFile }).unwrap();
+          await uploadCourseImage({
+            id: targetCourseId,
+            file: values.imageFile,
+          }).unwrap();
         } catch {
           showError('Не удалось загрузить изображение курса');
         }
       }
 
-      if (!isEdit) {
+      if (!isEdit && targetCourseSlug) {
         navigate({
-          to: '/cabinet/courses/$courseId/edit',
-          params: { courseId: String(courseId) },
+          to: '/cabinet/courses/$courseSlug',
+          params: { courseSlug: targetCourseSlug },
         });
       }
     } catch {
@@ -93,20 +104,20 @@ export const CourseCreateEditPage = () => {
     if (activeSettingsSection === INFO_SETTINGS_SECTION.INFO) {
       return (
         <CourseCreateEditForm
-          data={course}
+          data={course ?? undefined}
           onSubmit={handleSubmit}
         />
       );
     }
     if (activeSettingsSection === INFO_SETTINGS_SECTION.ACTIONS) {
-      if (!course || !courseIdNum) return null;
+      if (!course || !courseId) return null;
 
       const handlePublishToggle = async (
         nextStatus: 'published' | 'unpublished',
       ) => {
         try {
           await patchCourseStatus({
-            id: courseIdNum,
+            id: courseId,
             status: nextStatus,
           }).unwrap();
           showSuccess(
@@ -131,7 +142,7 @@ export const CourseCreateEditPage = () => {
     return null;
   };
 
-  if (isEdit && courseIdNum && isCourseLoading) {
+  if (isEdit && isCoursesLoading && !course) {
     return null;
   }
 
