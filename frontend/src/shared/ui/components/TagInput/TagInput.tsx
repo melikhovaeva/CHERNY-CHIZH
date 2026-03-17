@@ -226,7 +226,30 @@ export const TagInput = ({
     inputRef.current?.focus();
   };
 
+  const handleRemoveLastTag = () => {
+    if (value.created.length > 0) {
+      const nextCreated = value.created.slice(0, -1);
+      handleChangeValue({
+        existing: value.existing,
+        created: nextCreated,
+      });
+      return;
+    }
+
+    if (value.existing.length > 0) {
+      const nextExisting = value.existing.slice(0, -1);
+      handleChangeValue({
+        existing: nextExisting,
+        created: value.created,
+      });
+    }
+  };
+
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace' && inputValue === '') {
+      handleRemoveLastTag();
+    }
+
     if (event.key === 'Escape' && dropdown.isOpen && !dropdown.isClosing) {
       event.preventDefault();
       handleClose();
