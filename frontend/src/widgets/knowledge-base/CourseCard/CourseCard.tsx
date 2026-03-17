@@ -1,15 +1,25 @@
 import { useAppSelector } from '@/app/store';
-import type { CourseRead } from '@/entities/course';
+import { useEnrollToCourseMutation, type CourseRead } from '@/entities/course';
 import { selectIsAdmin } from '@/entities/session';
 import { Button, formatDate, getImageUrl } from '@/shared';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Tag } from '@/shared/ui/components/Tag/Tag';
-import { Link } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
+import { useCallback, useEffect, useState } from 'react';
 import styles from './CourseCard.module.scss';
 
 const COURSE_STATUS = {
   PUBLISHED: 'published',
   UNPUBLISHED: 'unpublished',
+} as const;
+
+const COURSE_CARD_LABELS = {
+  ENROLL: 'Записаться на курс',
+  ENROLLING: 'Записываем…',
+  GO_TO: 'Перейти на курс',
+  ENROLL_SUCCESS: 'Вы успешно записались на курс',
+  ENROLL_ERROR: 'Не удалось записаться на курс',
 } as const;
 
 interface CourseCardProps {
@@ -25,10 +35,38 @@ export function CourseCard({
   className,
   isAccessible = false,
 }: CourseCardProps) {
+  const router = useRouter();
   const imageUrl = getImageUrl(course.imagePreview ?? null);
   const dateStr = formatDate(course.updatedAt ?? course.createdAt);
   const isHorizontal = variant === 'horizontal';
   const isAdmin = useAppSelector(selectIsAdmin);
+  const [enrollToCourse, { isLoading: isEnrollLoading }] =
+    useEnrollToCourseMutation();
+
+  const toastSuccess = useSuccess();
+  const toastError = useError();
+
+  const [localAccessible, setLocalAccessible] = useState(isAccessible);
+
+  useEffect(() => {
+    setLocalAccessible(isAccessible);
+  }, [isAccessible]);
+
+  const canAccessCourse = isAdmin || localAccessible;
+
+  const handleGoToCourse = useCallback(() => {
+    router.navigate({ to: '/courses/$slug', params: { slug: course.slug } });
+  }, [router, course.slug]);
+
+  const handleEnroll = useCallback(async () => {
+    try {
+      await enrollToCourse({ courseEnrollmentCreate: { courseId: course.id } }).unwrap();
+      toastSuccess(COURSE_CARD_LABELS.ENROLL_SUCCESS);
+      setLocalAccessible(true);
+    } catch {
+      toastError(COURSE_CARD_LABELS.ENROLL_ERROR);
+    }
+  }, [enrollToCourse, course.id, toastSuccess, toastError]);
 
   const cardClass = [
     styles.card,
@@ -52,6 +90,24 @@ export function CourseCard({
     course.status?.code === COURSE_STATUS.PUBLISHED
       ? `${styles.status} ${styles.statusPublished}`
       : `${styles.status} ${styles.statusUnpublished}`;
+
+  const actionButton = canAccessCourse ? (
+    <Button
+      variant="primary"
+      onClick={handleGoToCourse}
+      disabled={isEnrollLoading}
+    >
+      {COURSE_CARD_LABELS.GO_TO}
+    </Button>
+  ) : (
+    <Button
+      variant="primary"
+      onClick={handleEnroll}
+      disabled={isEnrollLoading}
+    >
+      {isEnrollLoading ? COURSE_CARD_LABELS.ENROLLING : COURSE_CARD_LABELS.ENROLL}
+    </Button>
+  );
 
   const content = (
     <>
@@ -89,7 +145,7 @@ export function CourseCard({
           {isHorizontal ? (
             <>
               <span className={styles.date}>{dateStr}</span>
-              <span className={styles.actionButton}>{course.actionText}</span>
+              <span className={styles.actionButtonWrap}>{actionButton}</span>
             </>
           ) : (
             <>
@@ -97,25 +153,13 @@ export function CourseCard({
                 <span className={statusClassName}>{course.status.label}</span>
               )}
               <span className={styles.date}>{dateStr}</span>
-              <Button variant="primary">{course.actionText}</Button>
+              {actionButton}
             </>
           )}
         </div>
       </div>
     </>
   );
-
-  if (isAdmin || isAccessible) {
-    return (
-      <Link
-        to="/courses/$slug"
-        params={{ slug: course.slug }}
-        className={cardClass}
-      >
-        {content}
-      </Link>
-    );
-  }
 
   return <div className={cardClass}>{content}</div>;
 }

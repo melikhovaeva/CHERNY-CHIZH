@@ -112,6 +112,17 @@ const injectedRtkApi = api
         query: () => ({ url: `/api/v1/users/me/courses/` }),
         providesTags: ["Users"],
       }),
+      v1UsersMeCoursesCreate: build.mutation<
+        V1UsersMeCoursesCreateApiResponse,
+        V1UsersMeCoursesCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/users/me/courses/`,
+          method: "POST",
+          body: queryArg.courseEnrollmentCreate,
+        }),
+        invalidatesTags: ["Users"],
+      }),
       v1UsersRegisterStep1Create: build.mutation<
         V1UsersRegisterStep1CreateApiResponse,
         V1UsersRegisterStep1CreateApiArg
@@ -179,6 +190,11 @@ export type V1UsersMeChangePasswordCreateApiArg = {
 export type V1UsersMeCoursesListApiResponse =
   /** status 200  */ CourseEnrollmentRead[];
 export type V1UsersMeCoursesListApiArg = void;
+export type V1UsersMeCoursesCreateApiResponse =
+  /** status 201  */ CourseEnrollmentRead;
+export type V1UsersMeCoursesCreateApiArg = {
+  courseEnrollmentCreate: CourseEnrollmentCreate;
+};
 export type V1UsersRegisterStep1CreateApiResponse = /** status 200  */ {
   [key: string]: any;
 };
@@ -321,6 +337,13 @@ export type CourseEnrollmentRead = {
   startedAt?: string | null;
   completedAt?: string | null;
 };
+export type CourseEnrollmentCreate = {
+  courseId: number;
+};
+export type CourseEnrollmentCreateRead = {
+  id: number;
+  courseId: number;
+};
 export type RegisterStep1 = {
   email: string;
 };
@@ -358,6 +381,7 @@ export const {
   useV1UsersMeDestroyMutation,
   useV1UsersMeChangePasswordCreateMutation,
   useV1UsersMeCoursesListQuery,
+  useV1UsersMeCoursesCreateMutation,
   useV1UsersRegisterStep1CreateMutation,
   useV1UsersRegisterStep2CreateMutation,
 } = injectedRtkApi;

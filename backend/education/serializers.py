@@ -1,19 +1,20 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from common.serializers import CamelCaseSerializerMixin, CodeLabelSerializer
 from education.schema import extend_schema_field
 from education.markdown_utils import markdown_to_safe_html
 from education.models import (
-    Article,
-    Course,
-    CourseEnrollment,
-    CourseLesson,
-    CourseStep,
-    CourseTask,
-    CourseTaskAnswer,
-    CourseTaskQuestion,
-    InfoStatus,
-    InfoTag,
+  Article,
+  Course,
+  CourseEnrollment,
+  CourseLesson,
+  CourseStep,
+  CourseTask,
+  CourseTaskAnswer,
+  CourseTaskQuestion,
+  InfoStatus,
+  InfoTag,
 )
 
 
@@ -233,16 +234,53 @@ class CourseCreateUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSe
 
 
 class CourseEnrollmentSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
-    course = CourseSerializer(read_only=True)
+  course = CourseSerializer(read_only=True)
 
-    class Meta:
-        model = CourseEnrollment
-        fields = (
-            "id",
-            "course",
-            "status",
-            "progress",
-            "started_at",
-            "completed_at",
-        )
+  class Meta:
+    model = CourseEnrollment
+    fields = (
+      "id",
+      "course",
+      "status",
+      "progress",
+      "started_at",
+      "completed_at",
+    )
+
+
+class CourseEnrollmentCreateSerializer(
+  CamelCaseSerializerMixin,
+  serializers.ModelSerializer,
+):
+  """
+  Сериализатор для создания/регистрации пользователя на курс по идентификатору курса.
+
+  Ожидает от фронта поле courseId (camelCase), которое преобразуется в course_id
+  и маппится на поле course модели.
+  """
+
+  course_id = serializers.PrimaryKeyRelatedField(
+    source="course",
+    queryset=Course.objects.all(),
+  )
+
+  class Meta:
+    model = CourseEnrollment
+    fields = ("id", "course_id")
+    read_only_fields = ("id",)
+
+  def create(self, validated_data):
+    user = self.context["request"].user
+    course = validated_data["course"]
+
+    enrollment, _created = CourseEnrollment.objects.get_or_create(
+      user=user,
+      course=course,
+      defaults={
+        "status": "enrolled",
+        "started_at": timezone.now(),
+      },
+    )
+
+    return enrollment
 

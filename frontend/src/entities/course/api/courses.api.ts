@@ -6,7 +6,10 @@ import {
   useV1EducationCoursesUpdateMutation,
   useV1EducationCoursesUploadImageCreateMutation,
 } from '@/shared/api/generated/courses.generated';
-import { useV1UsersMeCoursesListQuery } from '@/shared/api/generated/users.generated';
+import {
+  useV1UsersMeCoursesCreateMutation,
+  useV1UsersMeCoursesListQuery,
+} from '@/shared/api/generated/users.generated';
 
 export const coursesApi = enhancedApi;
 
@@ -15,6 +18,8 @@ export const useGetCourseQuery = useV1CoursesRetrieveQuery;
 export const useGetMyCoursesQuery = useV1UsersMeCoursesListQuery;
 export const useCreateCourseMutation = useV1EducationCoursesCreateMutation;
 export const useUpdateCourseMutation = useV1EducationCoursesUpdateMutation;
+
+export const useEnrollToCourseMutation = useV1UsersMeCoursesCreateMutation;
 
 /** Загрузка изображения курса (multipart/form-data). */
 export function useUploadCourseImageMutation() {
@@ -37,6 +42,9 @@ coursesApi.enhanceEndpoints({
     },
     v1EducationCoursesUploadImageCreate: {
       invalidatesTags: ['Education', 'Courses'],
+    },
+    v1UsersMeCoursesCreate: {
+      invalidatesTags: ['Users', 'Courses'],
     },
   },
 });
