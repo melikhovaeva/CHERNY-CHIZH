@@ -52,6 +52,30 @@
   @include typography-text-l-semibold;
   margin: 0;
   color: $c-mp-text-headers;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleTruncated {
+  cursor: help;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      $c-mp-bg-card-light 50%
+    );
+  }
 }
 
 .content {
