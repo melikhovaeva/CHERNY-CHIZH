@@ -22,9 +22,13 @@ export function UserCabinetPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+
   const isFullPageCourseRoute =
-    location.pathname.startsWith('/cabinet/courses/') &&
-    (location.pathname.endsWith('/new') || location.pathname.endsWith('/edit'));
+    pathSegments[0] === 'cabinet' &&
+    pathSegments[1] === 'courses' &&
+    (pathSegments[2] === 'new' ||
+      (Boolean(pathSegments[2]) && pathSegments.length === 3));
 
   const tabs: Tab[] = useMemo(() => {
     const cabinetRoute = router.routesById['/cabinet'];
