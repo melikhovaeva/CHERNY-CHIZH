@@ -4,16 +4,16 @@ import {
   setActiveSection,
   type InfoSettingsSection,
 } from '@/features/info-settings';
-import type { EntityType } from '@/shared/ui';
+import { type InfoType } from '@/shared/config/info';
+import { useEffect } from 'react';
 import { InfoSettingsLeftBar } from '../InfoSettingsLeftBar';
 import styles from './InfoSettingsTemplate.module.scss';
-import { useEffect } from 'react';
 
 export interface InfoSettingsTemplateProps {
   children: React.ReactNode;
   backUrl: string;
   title: string;
-  entityType: EntityType;
+  infoType: InfoType;
   availableSections?: InfoSettingsSection[];
 }
 
@@ -21,7 +21,7 @@ export const InfoSettingsTemplate = ({
   children,
   backUrl,
   title,
-  entityType,
+  infoType,
   availableSections,
 }: InfoSettingsTemplateProps) => {
   const dispatch = useAppDispatch();
@@ -46,7 +46,7 @@ export const InfoSettingsTemplate = ({
       <InfoSettingsLeftBar
         backUrl={backUrl}
         title={title}
-        entityType={entityType}
+        infoType={infoType}
         activeSection={activeSection}
         onSectionChange={handleSectionChange}
         availableSections={availableSections}

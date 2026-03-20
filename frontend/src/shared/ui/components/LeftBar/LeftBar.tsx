@@ -1,5 +1,3 @@
-import type { EntityType } from '@/shared/config/entityLeftBar';
-import { getEntityDisplayTitle } from '@/shared/config/entityLeftBar';
 import { cn } from '@/shared/lib/utils';
 import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import { Link } from '@tanstack/react-router';
@@ -8,22 +6,15 @@ import styles from './LeftBar.module.scss';
 export interface LeftBarProps {
   backUrl: string;
   title: string;
-  entityType: EntityType;
   children?: React.ReactNode;
 }
 
-export const LeftBar = ({
-  backUrl,
-  title,
-  entityType,
-  children,
-}: LeftBarProps) => {
-  const displayTitle = getEntityDisplayTitle(title, entityType);
+export const LeftBar = ({ backUrl, title, children }: LeftBarProps) => {
   const MAX_TITLE_LENGTH = 16;
-  const isTruncated = displayTitle.length > MAX_TITLE_LENGTH;
+  const isTruncated = title.length > MAX_TITLE_LENGTH;
   const truncatedTitle = isTruncated
-    ? `${displayTitle.slice(0, MAX_TITLE_LENGTH).trimEnd()}`
-    : displayTitle;
+    ? `${title.slice(0, MAX_TITLE_LENGTH).trimEnd()}`
+    : title;
 
   return (
     <aside className={styles.root}>
@@ -35,7 +26,7 @@ export const LeftBar = ({
           className={cn([styles.title], {
             [styles.titleTruncated]: isTruncated,
           })}
-          title={displayTitle}
+          title={title}
         >
           {truncatedTitle}
         </h4>

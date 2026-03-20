@@ -1,13 +1,14 @@
 import type { InfoSettingsSection } from '@/features';
 import { INFO_SETTINGS_SECTION_LABELS } from '@/features/info-settings';
+import { getInfoDisplayTitle, type InfoType } from '@/shared/config/info';
 import { cn } from '@/shared/lib/utils';
-import { LeftBar, type EntityType } from '@/shared/ui';
+import { LeftBar } from '@/shared/ui';
 import styles from './InfoSettingsLeftBar.module.scss';
 
 export interface InfoSettingsLeftBarProps {
   backUrl: string;
   title: string;
-  entityType: EntityType;
+  infoType: InfoType;
   activeSection?: InfoSettingsSection;
   onSectionChange?: (section: InfoSettingsSection) => void;
   availableSections?: InfoSettingsSection[];
@@ -16,7 +17,7 @@ export interface InfoSettingsLeftBarProps {
 export const InfoSettingsLeftBar = ({
   backUrl,
   title,
-  entityType,
+  infoType,
   activeSection,
   onSectionChange,
   availableSections,
@@ -28,8 +29,10 @@ export const InfoSettingsLeftBar = ({
     }),
   );
 
+  const displayTitle = getInfoDisplayTitle(title, infoType);
+
   return (
-    <LeftBar backUrl={backUrl} title={title} entityType={entityType}>
+    <LeftBar backUrl={backUrl} title={displayTitle}>
       <nav className={styles.menu} aria-label="Настройки">
         {sections.map(({ id, label }) => {
           const isDisabled =
@@ -45,9 +48,7 @@ export const InfoSettingsLeftBar = ({
                 [styles.menuItemActive]: activeSection === id,
               })}
               disabled={isDisabled}
-              onClick={
-                isDisabled ? undefined : () => onSectionChange?.(id)
-              }
+              onClick={isDisabled ? undefined : () => onSectionChange?.(id)}
               aria-current={activeSection === id ? 'page' : undefined}
             >
               {label}
