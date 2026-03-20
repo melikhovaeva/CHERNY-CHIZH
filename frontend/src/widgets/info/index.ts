@@ -1,7 +1,7 @@
 export {
-  CourseActionsSection,
-  type CourseActionsSectionProps,
-} from './CourseActionsSection';
+  InfoActionsSection,
+  type InfoActionsSectionProps,
+} from './InfoActionsSection';
 export {
   InfoSettingsLeftBar,
   type InfoSettingsLeftBarProps,

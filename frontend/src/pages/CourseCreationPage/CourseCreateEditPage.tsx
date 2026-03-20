@@ -1,24 +1,23 @@
+import { useAppSelector } from '@/app/store';
 import {
+  CourseCreateEditForm,
   useCreateCourseMutation,
   useGetCoursesQuery,
   useUpdateCourseMutation,
   useUploadCourseImageMutation,
+  type CourseFormData,
 } from '@/entities/course';
 import { usePatchCourseStatusMutation } from '@/entities/course/api/courseStatus.api';
-import { useAppSelector } from '@/app/store';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
-import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import type {
   CourseCreateUpdate,
   InfoTagRead,
 } from '@/shared/api/generated/courses.generated';
+import { INFO_TYPE } from '@/shared/config/info';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
+import { InfoActionsSection, InfoSettingsTemplate } from '@/widgets';
 import { useNavigate, useParams } from '@tanstack/react-router';
-import {
-  CourseCreateEditForm,
-  type CourseFormData,
-} from '@/entities/course';
-import { CourseActionsSection, InfoSettingsTemplate } from '@/widgets';
 
 function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
   return {
@@ -39,12 +38,12 @@ export const CourseCreateEditPage = () => {
 
   const isEdit = Boolean(courseSlug);
 
-  const {
-    data: courses,
-    isLoading: isCoursesLoading,
-  } = useGetCoursesQuery(undefined, {
-    skip: !isEdit,
-  });
+  const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery(
+    undefined,
+    {
+      skip: !isEdit,
+    },
+  );
 
   const course = courses?.find((c) => c.slug === courseSlug) ?? null;
   const courseId = course?.id ?? null;
@@ -96,7 +95,9 @@ export const CourseCreateEditPage = () => {
         });
       }
     } catch {
-      showError(isEdit ? 'Не удалось обновить курс' : 'Не удалось создать курс');
+      showError(
+        isEdit ? 'Не удалось обновить курс' : 'Не удалось создать курс',
+      );
     }
   };
 
@@ -131,7 +132,8 @@ export const CourseCreateEditPage = () => {
       };
 
       return (
-        <CourseActionsSection
+        <InfoActionsSection
+          infoType={INFO_TYPE.COURSE}
           initialStatus={
             course.status?.code === 'published' ? 'published' : 'unpublished'
           }
@@ -146,20 +148,18 @@ export const CourseCreateEditPage = () => {
     return null;
   }
 
-  const infoTitle = isEdit
-    ? course?.title ?? 'Курс'
-    : 'Создание курса';
+  const infoTitle = isEdit ? (course?.title ?? 'Курс') : 'Создание курса';
 
   return (
-    <InfoSettingsTemplate
-      backUrl="/cabinet/courses"
-      title={infoTitle}
-      entityType="course"
-      availableSections={
-        isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]
-      }
-    >
-      {renderSettingsSection()}
-    </InfoSettingsTemplate>
+    <>
+      <InfoSettingsTemplate
+        backUrl="/cabinet/courses"
+        title={infoTitle}
+        infoType={INFO_TYPE.COURSE}
+        availableSections={isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]}
+      >
+        {renderSettingsSection()}
+      </InfoSettingsTemplate>
+    </>
   );
 };
