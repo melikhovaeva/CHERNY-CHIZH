@@ -48,3 +48,13 @@
     flex-shrink: 0;
   }
 }
+
+.skeletonCard {
+  width: 385px;
+  height: 385px;
+
+  @media (max-width: 420px) {
+    max-width: 320px;
+    max-height: 320px;
+  }
+}

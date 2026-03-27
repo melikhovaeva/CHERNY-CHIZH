@@ -1,10 +1,13 @@
-import { selectSelectedBreedSlug, setSelectedBreed } from '@/features/selected-breed';
 import { useAppDispatch, useAppSelector } from '@/app/store';
 import { useGetBreedsQuery } from '@/entities/breed/api/breed.api';
 import { type DogByBreedListRead, getFirstPhotoUrl } from '@/entities/puppy';
 import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';
+import {
+  selectSelectedBreedSlug,
+  setSelectedBreed,
+} from '@/features/selected-breed';
 import { cn } from '@/shared/lib/utils';
-import { Button, Card, Skeleton } from '@/shared/ui/components';
+import { Button, Card } from '@/shared/ui/components';
 import { FilterableGallery } from '@/widgets/FilterableGallery';
 import { useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
@@ -69,67 +72,34 @@ export function PuppiesSection() {
   return (
     <section className={cn([styles.root, 'filled primary'])}>
       <div className={styles.container}>
-        <h2 className={styles.title}>
-          {isLoadingPuppiesSection ? (
-            <Skeleton height={64} width="100%" />
-          ) : (
-            'Наши Щенки'
+        <h2 className={styles.title}>Наши Щенки</h2>
+        <FilterableGallery<DogByBreedListRead>
+          isLoading={isLoadingPuppiesSection}
+          tabs={breedTabs}
+          items={puppies.slice(0, 3)}
+          filterBy='breed'
+          activeTab={activeBreed}
+          onActiveTabChange={(value) => dispatch(setSelectedBreed(value))}
+          getItemKey={(puppy) => puppy.id}
+          getFilterValue={(puppy) => puppy.breed.slug}
+          renderItem={(puppy) => (
+            <Card imgUrl={getFirstPhotoUrl(puppy)} subtitle={puppy.name} />
           )}
-        </h2>
-
-        {isLoadingPuppiesSection ? (
-          <div className={styles.skeletonGallery}>
-            <Skeleton
-              height={38}
-              width="100%"
-              className={styles.skeletonTabs}
-            />
-            <div className={styles.skeletonScroll}>
-              <ul className={styles.skeletonList}>
-                {Array.from({ length: 3 }).map((_, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <li key={index} className={styles.skeletonCard}>
-                    <Skeleton height="100%" width="100%" />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : (
-          puppies.length > 0 && (
-            <FilterableGallery<DogByBreedListRead>
-              tabs={breedTabs}
-              items={puppies.slice(0, 3)}
-              filterBy="breed"
-              activeTab={activeBreed}
-              onActiveTabChange={(value) => dispatch(setSelectedBreed(value))}
-              getItemKey={(puppy) => puppy.id}
-              getFilterValue={(puppy) => puppy.breed.slug}
-              renderItem={(puppy) => (
-                <Card imgUrl={getFirstPhotoUrl(puppy)} subtitle={puppy.name} />
-              )}
-              className={styles.gallery}
-            />
-          )
-        )}
-
+          className={styles.gallery}
+        />
         <div className={styles.buttonContainer}>
-          {isLoadingPuppiesSection ? (
-            <Skeleton className={styles.skeletonButton} height={55} />
-          ) : (
-            <Button
-              onClick={() => {
-                const breedId = activeBreed || breedTabs[0]?.value;
-                if (!breedId) return;
-                router.navigate({
-                  to: '/puppies/$breedId',
-                  params: { breedId },
-                });
-              }}
-            >
-              Смотреть всех
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              const breedId = activeBreed || breedTabs[0]?.value;
+              if (!breedId) return;
+              router.navigate({
+                to: '/puppies/$breedId',
+                params: { breedId },
+              });
+            }}
+          >
+            Смотреть всех
+          </Button>
         </div>
       </div>
     </section>

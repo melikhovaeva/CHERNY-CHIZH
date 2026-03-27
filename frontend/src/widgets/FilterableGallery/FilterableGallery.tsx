@@ -1,5 +1,6 @@
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import { cn } from '@/shared/lib/utils';
+import { Skeleton } from '@/shared/ui/components/Skeleton/Skeleton';
 import { useMemo, useState } from 'react';
 import styles from './FilterableGallery.module.scss';
 
@@ -14,6 +15,7 @@ interface FilterableGalleryProps<T extends { id: number | string }> {
   onActiveTabChange?: (value: string) => void;
   getItemKey?: (item: T) => string | number;
   getFilterValue?: (item: T) => string;
+  isLoading?: boolean;
 }
 
 export function FilterableGallery<T extends { id: number | string }>({
@@ -27,6 +29,7 @@ export function FilterableGallery<T extends { id: number | string }>({
   onActiveTabChange,
   getItemKey,
   getFilterValue,
+  isLoading = false,
 }: FilterableGalleryProps<T>) {
   const [internalActiveTab, setInternalActiveTab] = useState<string>(
     tabs[0]?.value ?? '',
@@ -57,18 +60,33 @@ export function FilterableGallery<T extends { id: number | string }>({
       />
       <div className={styles.gallery__scroll}>
         <ul className={styles.gallery__list}>
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <li
-                key={getItemKey ? getItemKey(item) : item.id}
-                className={styles.gallery__list__item}
-              >
-                {renderItem(item)}
-              </li>
-            ))
-          ) : fallback ? (
-            <li className={styles.gallery__list__item}>{fallback}</li>
-          ) : null}
+          {isLoading ? (
+            <>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton
+                  key={index}
+                  className={styles.skeletonCard}
+                  height={385}
+                  width={385}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item) => (
+                  <li
+                    key={getItemKey ? getItemKey(item) : item.id}
+                    className={styles.gallery__list__item}
+                  >
+                    {renderItem(item)}
+                  </li>
+                ))
+              ) : fallback ? (
+                <li className={styles.gallery__list__item}>{fallback}</li>
+              ) : null}
+            </>
+          )}
         </ul>
       </div>
     </div>
