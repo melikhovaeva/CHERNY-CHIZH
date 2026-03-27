@@ -90,7 +90,7 @@ export const CourseCreateEditPage = () => {
 
       if (!isEdit && targetCourseSlug) {
         navigate({
-          to: '/cabinet/courses/$courseSlug',
+          to: '/cabinet/courses/$courseSlug/settings',
           params: { courseSlug: targetCourseSlug },
         });
       }
