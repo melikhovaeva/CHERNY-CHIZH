@@ -1,4 +1,18 @@
 .root {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: $content-with-left-bar-gap-desktop;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop-md) {
+    grid-template-columns: 1fr;
+    gap: $content-with-left-bar-gap-mobile;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
   background-color: $c-mp-bg-card-light;
   padding: $left-bar-padding;
   border-radius: $left-bar-border-radius;
@@ -7,4 +21,5 @@
 .placeholder {
   color: $c-neutral-500;
   margin-top: 16px;
+  @include typography-text-m;
 }
