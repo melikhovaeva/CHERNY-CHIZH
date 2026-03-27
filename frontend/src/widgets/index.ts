@@ -36,4 +36,9 @@ export { PuppiesList } from './PuppiesList';
 export { PuppyTabsSection } from './PuppyTabsSection';
 export { RelatedPuppies } from './RelatedPuppies';
 
-export { InfoActionsSection, InfoSettingsTemplate } from './info';
+export {
+  CourseConstructorTemplate,
+  CoursePreviewTemplate,
+  InfoActionsSection,
+  InfoSettingsTemplate,
+} from './info';

@@ -1,0 +1,1 @@
+export { CourseConstructorTemplate } from './CourseConstructorTemplate';

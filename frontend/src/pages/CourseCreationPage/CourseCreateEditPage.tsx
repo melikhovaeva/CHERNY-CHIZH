@@ -10,14 +10,30 @@ import {
 import { usePatchCourseStatusMutation } from '@/entities/course/api/courseStatus.api';
 import { selectInfoSettingsActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
+import { Tabs, type Tab } from '@/features/tabs-filter';
 import type {
   CourseCreateUpdate,
   InfoTagRead,
 } from '@/shared/api/generated/courses.generated';
-import { INFO_TYPE } from '@/shared/config/info';
+import { getInfoDisplayTitle, INFO_TYPE } from '@/shared/config/info';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
-import { InfoActionsSection, InfoSettingsTemplate } from '@/widgets';
+import {
+  CourseConstructorTemplate,
+  CoursePreviewTemplate,
+  InfoActionsSection,
+  InfoSettingsTemplate,
+} from '@/widgets';
 import { useNavigate, useParams } from '@tanstack/react-router';
+import { useMemo, useState } from 'react';
+import styles from './CourseCreateEditPage.module.scss';
+
+const COURSE_PAGE_TAB = {
+  PREVIEW: 'preview',
+  CONSTRUCTOR: 'constructor',
+  SETTINGS: 'settings',
+} as const;
+
+type CoursePageTab = (typeof COURSE_PAGE_TAB)[keyof typeof COURSE_PAGE_TAB];
 
 function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
   return {
@@ -37,6 +53,33 @@ export const CourseCreateEditPage = () => {
   const showError = useError();
 
   const isEdit = Boolean(courseSlug);
+
+  const [activeTab, setActiveTab] = useState<CoursePageTab>(
+    COURSE_PAGE_TAB.SETTINGS,
+  );
+
+  const tabs: Tab[] = useMemo(
+    () => [
+      {
+        id: 'preview',
+        label: 'Предпросмотр',
+        value: COURSE_PAGE_TAB.PREVIEW,
+        disabled: !isEdit,
+      },
+      {
+        id: 'constructor',
+        label: 'Конструктор',
+        value: COURSE_PAGE_TAB.CONSTRUCTOR,
+        disabled: !isEdit,
+      },
+      {
+        id: 'settings',
+        label: 'Настройки',
+        value: COURSE_PAGE_TAB.SETTINGS,
+      },
+    ],
+    [isEdit],
+  );
 
   const { data: courses, isLoading: isCoursesLoading } = useGetCoursesQuery(
     undefined,
@@ -90,7 +133,7 @@ export const CourseCreateEditPage = () => {
 
       if (!isEdit && targetCourseSlug) {
         navigate({
-          to: '/cabinet/courses/$courseSlug/settings',
+          to: '/cabinet/courses/$courseSlug',
           params: { courseSlug: targetCourseSlug },
         });
       }
@@ -149,17 +192,46 @@ export const CourseCreateEditPage = () => {
   }
 
   const infoTitle = isEdit ? (course?.title ?? 'Курс') : 'Создание курса';
+  const displayTitle = getInfoDisplayTitle(infoTitle, 'course');
+
+  const renderActiveTab = () => {
+    switch (activeTab) {
+      case COURSE_PAGE_TAB.CONSTRUCTOR:
+        return (
+          <CourseConstructorTemplate
+            backUrl="/cabinet/courses"
+            title={displayTitle}
+          />
+        );
+      case COURSE_PAGE_TAB.PREVIEW:
+        return <CoursePreviewTemplate />;
+      case COURSE_PAGE_TAB.SETTINGS:
+      default:
+        return (
+          <InfoSettingsTemplate
+            backUrl="/cabinet/courses"
+            title={infoTitle}
+            infoType={INFO_TYPE.COURSE}
+            availableSections={
+              isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]
+            }
+          >
+            {renderSettingsSection()}
+          </InfoSettingsTemplate>
+        );
+    }
+  };
 
   return (
-    <>
-      <InfoSettingsTemplate
-        backUrl='/cabinet/courses'
-        title={infoTitle}
-        infoType={INFO_TYPE.COURSE}
-        availableSections={isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]}
-      >
-        {renderSettingsSection()}
-      </InfoSettingsTemplate>
-    </>
+    <div className={styles.root}>
+      <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={(value) => setActiveTab(value as CoursePageTab)}
+        variant="secondary"
+        className={styles.tabs}
+      />
+      <div className={styles.content}>{renderActiveTab()}</div>
+    </div>
   );
 };

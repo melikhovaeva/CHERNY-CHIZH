@@ -34,14 +34,16 @@ export function Tabs({
               type="button"
               role="tab"
               aria-selected={activeTab === tab.value}
+              disabled={tab.disabled}
               className={cn([
                 styles.button,
                 buttonClassName ?? '',
                 activeTab === tab.value
                   ? (buttonActiveClassName ?? styles.button_active)
                   : '',
+                tab.disabled ? styles.button_disabled : '',
               ])}
-              onClick={() => onTabChange(tab.value)}
+              onClick={tab.disabled ? undefined : () => onTabChange(tab.value)}
             >
               {tab.label}
             </button>

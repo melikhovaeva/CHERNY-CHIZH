@@ -1,1 +1,0 @@
-export { CourseConstructorPage } from './CourseConstructorPage';
