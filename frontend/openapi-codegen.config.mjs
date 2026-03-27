@@ -34,5 +34,8 @@ export default {
     './src/shared/api/generated/users.generated.ts': {
       filterEndpoints: [/^v1Users/],
     },
+    './src/shared/api/generated/education.generated.ts': {
+      filterEndpoints: [/^v1Education/],
+    },
   },
 };

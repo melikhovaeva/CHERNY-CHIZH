@@ -1,27 +1,106 @@
 import {
-  createInitialStages,
   generateLocalId,
   getStageOrdinalLabel,
+  useConstructorQueue,
+  useGetCourseStepsQuery,
+  type ConstructorLesson,
   type ConstructorStage,
 } from '@/entities/course';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './CourseConstructorTemplate.module.scss';
 
 export interface CourseConstructorTemplateProps {
   backUrl: string;
   title: string;
+  courseId: number | null;
 }
 
 export const CourseConstructorTemplate = ({
   backUrl,
   title,
+  courseId,
 }: CourseConstructorTemplateProps) => {
-  const [stages, setStages] =
-    useState<ConstructorStage[]>(createInitialStages);
+  const showSuccess = useSuccess();
+  const showError = useError();
+
+  const { data: serverSteps, isLoading } = useGetCourseStepsQuery(
+    { coursePk: String(courseId) },
+    { skip: !courseId },
+  );
+
+  const [stages, setStages] = useState<ConstructorStage[]>([]);
+  const [initialized, setInitialized] = useState(false);
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const localToServerIdMap = useRef<Record<string, number>>({});
+  const stagesRef = useRef(stages);
+  stagesRef.current = stages;
+
+  const queue = useConstructorQueue();
+
+  // Load server data on mount
+  useEffect(() => {
+    if (initialized) return;
+    if (!courseId) {
+      setStages([]);
+      setInitialized(true);
+      return;
+    }
+    if (isLoading || !serverSteps) return;
+
+    const loaded: ConstructorStage[] = serverSteps.map((step, i) => {
+      const localId = generateLocalId();
+      localToServerIdMap.current[localId] = step.id;
+      return {
+        id: localId,
+        serverId: step.id,
+        label: getStageOrdinalLabel(i),
+        title: step.title,
+        lessons: step.lessons.map((lesson) => {
+          const lessonLocalId = generateLocalId();
+          localToServerIdMap.current[lessonLocalId] = lesson.id;
+          return {
+            id: lessonLocalId,
+            serverId: lesson.id,
+            title: lesson.title,
+            tasks: lesson.tasks.map((task) => ({
+              id: String(task.id),
+              title: task.title,
+            })),
+          };
+        }),
+      };
+    });
+
+    setStages(loaded.length > 0 ? loaded : []);
+    setInitialized(true);
+  }, [courseId, isLoading, serverSteps, initialized]);
+
+  // ── Unsycned IDs (items without serverId) ──
+
+  const unsyncedIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const stage of stages) {
+      if (!stage.serverId) ids.add(stage.id);
+      for (const lesson of stage.lessons) {
+        if (!lesson.serverId) ids.add(lesson.id);
+      }
+    }
+    // Also mark items that have pending queue updates
+    for (const entry of queue.queue) {
+      if (entry.action === 'update') {
+        ids.add(entry.localId);
+      }
+    }
+    return ids;
+  }, [stages, queue.queue]);
+
+  // ── Stage handlers ──
 
   const handleSelectStage = useCallback((stageId: string) => {
     setActiveStageId(stageId);
@@ -48,68 +127,104 @@ export const CourseConstructorTemplate = ({
   );
 
   const handleAddStage = useCallback(() => {
-    setStages((prev) => [
-      ...prev,
-      {
-        id: generateLocalId(),
-        label: getStageOrdinalLabel(prev.length),
-        title: `Ступень ${prev.length + 1}`,
-        lessons: [],
-      },
-    ]);
-  }, []);
+    const prev = stagesRef.current;
+    const localId = generateLocalId();
+    const order = prev.length;
+    const newStage: ConstructorStage = {
+      id: localId,
+      label: getStageOrdinalLabel(order),
+      title: `Ступень ${order + 1}`,
+      lessons: [],
+    };
+    queue.enqueueCreateStep(localId, newStage.title, order);
+    setStages([...prev, newStage]);
+  }, [queue]);
 
-  const handleAddLesson = useCallback((stageId: string) => {
-    setStages((prev) =>
-      prev.map((stage) => {
-        if (stage.id !== stageId) return stage;
-        return {
-          ...stage,
-          lessons: [
-            ...stage.lessons,
-            {
-              id: generateLocalId(),
-              title: `Урок ${stage.lessons.length + 1}`,
-              tasks: [],
-            },
-          ],
-        };
-      }),
-    );
-  }, []);
+  const handleAddLesson = useCallback(
+    (stageId: string) => {
+      const prev = stagesRef.current;
+      const stage = prev.find((s) => s.id === stageId);
+      if (!stage) return;
 
-  const handleDeleteStage = useCallback((stageId: string) => {
-    setStages((prev) => prev.filter((s) => s.id !== stageId));
-    setActiveStageId((prev) => {
-      if (prev === stageId) {
-        setActiveLessonId(null);
-        setActiveTaskId(null);
-        return null;
-      }
-      return prev;
-    });
-  }, []);
-
-  const handleDeleteLesson = useCallback(
-    (stageId: string, lessonId: string) => {
-      setStages((prev) =>
-        prev.map((stage) => {
-          if (stage.id !== stageId) return stage;
-          return {
-            ...stage,
-            lessons: stage.lessons.filter((l) => l.id !== lessonId),
-          };
-        }),
+      const localId = generateLocalId();
+      const order = stage.lessons.length;
+      const newLesson: ConstructorLesson = {
+        id: localId,
+        title: `Урок ${order + 1}`,
+        tasks: [],
+      };
+      queue.enqueueCreateLesson(
+        localId,
+        stageId,
+        stage.serverId,
+        newLesson.title,
+        order,
       );
-      setActiveLessonId((prev) => {
-        if (prev === lessonId) {
+      setStages(
+        prev.map((s) =>
+          s.id !== stageId
+            ? s
+            : { ...s, lessons: [...s.lessons, newLesson] },
+        ),
+      );
+    },
+    [queue],
+  );
+
+  const handleDeleteStage = useCallback(
+    (stageId: string) => {
+      const prev = stagesRef.current;
+      const stage = prev.find((s) => s.id === stageId);
+      if (stage) {
+        const lessonLocalIds = stage.lessons.map((l) => l.id);
+        queue.enqueueDeleteStep(stageId, stage.serverId, lessonLocalIds);
+      }
+      setStages(
+        prev
+          .filter((s) => s.id !== stageId)
+          .map((s, i) => ({ ...s, label: getStageOrdinalLabel(i) })),
+      );
+      setActiveStageId((p) => {
+        if (p === stageId) {
+          setActiveLessonId(null);
           setActiveTaskId(null);
           return null;
         }
-        return prev;
+        return p;
       });
     },
-    [],
+    [queue],
+  );
+
+  const handleDeleteLesson = useCallback(
+    (stageId: string, lessonId: string) => {
+      const prev = stagesRef.current;
+      const stage = prev.find((s) => s.id === stageId);
+      const lesson = stage?.lessons.find((l) => l.id === lessonId);
+      if (stage && lesson) {
+        queue.enqueueDeleteLesson(
+          lessonId,
+          lesson.serverId,
+          stageId,
+          stage.serverId,
+        );
+      }
+      setStages(
+        prev.map((s) =>
+          s.id !== stageId
+            ? s
+            : { ...s, lessons: s.lessons.filter((l) => l.id !== lessonId) },
+        ),
+      );
+      setActiveLessonId((p) => {
+        if (p === lessonId) {
+          setActiveTaskId(null);
+          return null;
+        }
+        return p;
+      });
+    },
+    [queue],
   );
 
   const handleAddTask = useCallback(
@@ -163,32 +278,51 @@ export const CourseConstructorTemplate = ({
 
   const handleRenameStage = useCallback(
     (stageId: string, newTitle: string) => {
-      setStages((prev) =>
-        prev.map((stage) =>
-          stage.id === stageId ? { ...stage, title: newTitle } : stage,
+      const prev = stagesRef.current;
+      const stage = prev.find((s) => s.id === stageId);
+      if (stage) {
+        const order = prev.indexOf(stage);
+        queue.enqueueUpdateStep(stageId, stage.serverId, newTitle, order);
+      }
+      setStages(
+        prev.map((s) =>
+          s.id === stageId ? { ...s, title: newTitle } : s,
         ),
       );
     },
-    [],
+    [queue],
   );
 
   const handleRenameLesson = useCallback(
     (stageId: string, lessonId: string, newTitle: string) => {
-      setStages((prev) =>
-        prev.map((stage) => {
-          if (stage.id !== stageId) return stage;
-          return {
-            ...stage,
-            lessons: stage.lessons.map((lesson) =>
-              lesson.id === lessonId
-                ? { ...lesson, title: newTitle }
-                : lesson,
-            ),
-          };
-        }),
+      const prev = stagesRef.current;
+      const stage = prev.find((s) => s.id === stageId);
+      const lesson = stage?.lessons.find((l) => l.id === lessonId);
+      if (stage && lesson) {
+        const order = stage.lessons.indexOf(lesson);
+        queue.enqueueUpdateLesson(
+          lessonId,
+          lesson.serverId,
+          stageId,
+          stage.serverId,
+          newTitle,
+          order,
+        );
+      }
+      setStages(
+        prev.map((s) =>
+          s.id !== stageId
+            ? s
+            : {
+                ...s,
+                lessons: s.lessons.map((l) =>
+                  l.id === lessonId ? { ...l, title: newTitle } : l,
+                ),
+              },
+        ),
       );
     },
-    [],
+    [queue],
   );
 
   const handleRenameTask = useCallback(
@@ -214,11 +348,45 @@ export const CourseConstructorTemplate = ({
     [],
   );
 
+  // ── Save handler ──
+
+  const handleSave = useCallback(async () => {
+    if (!courseId || !queue.hasChanges) return;
+    setIsSaving(true);
+    try {
+      await queue.flush(courseId, localToServerIdMap);
+      queue.clear();
+
+      // Mark all items as synced by assigning serverIds from the map
+      setStages((prev) =>
+        prev.map((stage) => ({
+          ...stage,
+          serverId: stage.serverId ?? localToServerIdMap.current[stage.id],
+          lessons: stage.lessons.map((lesson) => ({
+            ...lesson,
+            serverId:
+              lesson.serverId ?? localToServerIdMap.current[lesson.id],
+          })),
+        })),
+      );
+
+      showSuccess('Изменения сохранены');
+    } catch {
+      showError('Не удалось сохранить изменения');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [courseId, queue, showSuccess, showError]);
+
   const activeStage = stages.find((s) => s.id === activeStageId);
   const activeLesson = activeStage?.lessons.find(
     (l) => l.id === activeLessonId,
   );
   const activeTask = activeLesson?.tasks.find((t) => t.id === activeTaskId);
+
+  if (!initialized && courseId) {
+    return null;
+  }
 
   return (
     <div className={styles.root}>
@@ -229,6 +397,11 @@ export const CourseConstructorTemplate = ({
         activeStageId={activeStageId}
         activeLessonId={activeLessonId}
         activeTaskId={activeTaskId}
+        unsyncedIds={unsyncedIds}
+        hasChanges={queue.hasChanges}
+        isSaving={isSaving}
+        unsavedCount={queue.queue.length}
+        onSave={courseId ? handleSave : undefined}
         onSelectStage={handleSelectStage}
         onSelectLesson={handleSelectLesson}
         onSelectTask={handleSelectTask}
@@ -270,6 +443,7 @@ export const CourseConstructorTemplate = ({
             Выберите ступень, урок или задание для редактирования
           </p>
         )}
+
       </div>
     </div>
   );
