@@ -17,6 +17,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   courses: 'Курсы',
   'my-courses': 'Мои курсы',
   settings: 'Настройки',
+  constructor: 'Конструктор',
+  preview: 'Предпросмотр',
   new: 'Создание курса',
 };
 
