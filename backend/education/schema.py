@@ -13,6 +13,8 @@ __all__ = [
     "course_view_schema",
     "education_article_view_schema",
     "education_course_view_schema",
+    "education_course_step_view_schema",
+    "education_course_lesson_view_schema",
     "education_tag_view_schema",
 ]
 
@@ -129,6 +131,72 @@ education_course_view_schema = {
     ),
 }
 
+
+education_course_step_view_schema = {
+    "list": extend_schema(
+        summary="Список ступеней курса",
+        description="Возвращает список ступеней указанного курса.",
+        tags=["Education"],
+    ),
+    "retrieve": extend_schema(
+        summary="Детали ступени курса",
+        description="Возвращает ступень курса с уроками.",
+        tags=["Education"],
+    ),
+    "create": extend_schema(
+        summary="Создать ступень курса (только администратор)",
+        description="Создаёт новую ступень в указанном курсе.",
+        tags=["Education"],
+    ),
+    "update": extend_schema(
+        summary="Обновить ступень курса (только администратор)",
+        description="Полное обновление ступени курса.",
+        tags=["Education"],
+    ),
+    "partial_update": extend_schema(
+        summary="Частично обновить ступень курса (только администратор)",
+        description="Частичное обновление ступени курса.",
+        tags=["Education"],
+    ),
+    "destroy": extend_schema(
+        summary="Удалить ступень курса (только администратор)",
+        description="Безвозвратное удаление ступени курса.",
+        tags=["Education"],
+    ),
+}
+
+education_course_lesson_view_schema = {
+    "list": extend_schema(
+        summary="Список уроков ступени",
+        description="Возвращает список уроков указанной ступени курса.",
+        tags=["Education"],
+    ),
+    "retrieve": extend_schema(
+        summary="Детали урока",
+        description="Возвращает урок с привязанной статьёй и заданиями.",
+        tags=["Education"],
+    ),
+    "create": extend_schema(
+        summary="Создать урок (только администратор)",
+        description="Создаёт новый урок в указанной ступени курса.",
+        tags=["Education"],
+    ),
+    "update": extend_schema(
+        summary="Обновить урок (только администратор)",
+        description="Полное обновление урока.",
+        tags=["Education"],
+    ),
+    "partial_update": extend_schema(
+        summary="Частично обновить урок (только администратор)",
+        description="Частичное обновление урока.",
+        tags=["Education"],
+    ),
+    "destroy": extend_schema(
+        summary="Удалить урок (только администратор)",
+        description="Безвозвратное удаление урока.",
+        tags=["Education"],
+    ),
+}
 
 education_tag_view_schema = {
     "list": extend_schema(
