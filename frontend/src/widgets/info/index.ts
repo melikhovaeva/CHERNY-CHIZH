@@ -1,4 +1,8 @@
 export {
+  CourseConstructorLeftBar,
+  type CourseConstructorLeftBarProps,
+} from './CourseConstructorLeftBar';
+export {
   InfoActionsSection,
   type InfoActionsSectionProps,
 } from './InfoActionsSection';
