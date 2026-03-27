@@ -201,6 +201,7 @@ export const CourseCreateEditPage = () => {
           <CourseConstructorTemplate
             backUrl="/cabinet/courses"
             title={displayTitle}
+            courseId={courseId}
           />
         );
       case COURSE_PAGE_TAB.PREVIEW:

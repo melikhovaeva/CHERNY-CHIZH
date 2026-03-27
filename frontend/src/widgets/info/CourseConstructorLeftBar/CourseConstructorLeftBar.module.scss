@@ -4,6 +4,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .stageBlock {
@@ -37,16 +39,27 @@
   gap: 2px;
   flex: 1;
   min-width: 0;
-  padding: 0;
+  padding: 6px 8px;
   border: none;
   background: transparent;
   text-align: left;
   cursor: pointer;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-4;
+  }
 }
 
 .stageHeaderBtnActive {
+  background-color: $c-neutral-d-600-8;
+
   .stageTitle {
-    color: $c-b-crm-500;
+    color: $c-neutral-900;
+    font-weight: $font-weight-text-m-semibold;
   }
 }
 
@@ -400,4 +413,40 @@
 .taskInlineEditor {
   @include typography-text-s;
   padding: 3px 8px;
+}
+
+// === Sync status indicator ===
+
+.unsyncedIcon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.unsyncedIconSmall {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+// === Save bar (pinned to bottom) ===
+
+.saveBar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 16px;
+  width: 100%;
+}
+
+.unsavedHint {
+  @include typography-text-s;
+  color: $c-neutral-500;
+}
+
+.saveBtn {
+  width: 100%;
 }

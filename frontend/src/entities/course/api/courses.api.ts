@@ -5,6 +5,13 @@ import {
   useV1EducationCoursesCreateMutation,
   useV1EducationCoursesUpdateMutation,
   useV1EducationCoursesUploadImageCreateMutation,
+  useV1EducationCoursesStepsListQuery,
+  useV1EducationCoursesStepsCreateMutation,
+  useV1EducationCoursesStepsUpdateMutation,
+  useV1EducationCoursesStepsDestroyMutation,
+  useV1EducationCoursesStepsLessonsCreateMutation,
+  useV1EducationCoursesStepsLessonsUpdateMutation,
+  useV1EducationCoursesStepsLessonsDestroyMutation,
 } from '@/shared/api/generated/courses.generated';
 import {
   useV1UsersMeCoursesCreateMutation,
@@ -20,6 +27,20 @@ export const useCreateCourseMutation = useV1EducationCoursesCreateMutation;
 export const useUpdateCourseMutation = useV1EducationCoursesUpdateMutation;
 
 export const useEnrollToCourseMutation = useV1UsersMeCoursesCreateMutation;
+
+// Steps CRUD
+export const useGetCourseStepsQuery = useV1EducationCoursesStepsListQuery;
+export const useCreateStepMutation = useV1EducationCoursesStepsCreateMutation;
+export const useUpdateStepMutation = useV1EducationCoursesStepsUpdateMutation;
+export const useDeleteStepMutation = useV1EducationCoursesStepsDestroyMutation;
+
+// Lessons CRUD
+export const useCreateLessonMutation =
+  useV1EducationCoursesStepsLessonsCreateMutation;
+export const useUpdateLessonMutation =
+  useV1EducationCoursesStepsLessonsUpdateMutation;
+export const useDeleteLessonMutation =
+  useV1EducationCoursesStepsLessonsDestroyMutation;
 
 /** Загрузка изображения курса (multipart/form-data). */
 export function useUploadCourseImageMutation() {
@@ -44,6 +65,24 @@ coursesApi.enhanceEndpoints({
       invalidatesTags: ['Education', 'Courses'],
     },
     v1EducationCoursesUploadImageCreate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsCreate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsUpdate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsDestroy: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsLessonsCreate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsLessonsUpdate: {
+      invalidatesTags: ['Education', 'Courses'],
+    },
+    v1EducationCoursesStepsLessonsDestroy: {
       invalidatesTags: ['Education', 'Courses'],
     },
   },

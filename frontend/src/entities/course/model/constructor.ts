@@ -5,12 +5,14 @@ export interface ConstructorTask {
 
 export interface ConstructorLesson {
   id: string;
+  serverId?: number;
   title: string;
   tasks: ConstructorTask[];
 }
 
 export interface ConstructorStage {
   id: string;
+  serverId?: number;
   label: string;
   title: string;
   lessons: ConstructorLesson[];
@@ -36,6 +38,10 @@ export function getStageOrdinalLabel(index: number): string {
 let nextLocalId = 1;
 export function generateLocalId(): string {
   return `local-${Date.now()}-${nextLocalId++}`;
+}
+
+export function isLocalId(id: string): boolean {
+  return id.startsWith('local-');
 }
 
 export function createInitialStages(): ConstructorStage[] {
