@@ -21,7 +21,6 @@ export {
   useWarning,
   type AccordionItem,
   type BreadcrumbItem,
-  type EntityType,
   type DifficultyBadgeProps,
   type DifficultyLevel,
   type LeftBarProps,

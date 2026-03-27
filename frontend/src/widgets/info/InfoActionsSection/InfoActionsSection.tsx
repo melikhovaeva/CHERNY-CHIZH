@@ -1,3 +1,4 @@
+import type { InfoType } from '@/shared/config/info';
 import {
   Button,
   ChoiceDialog,
@@ -16,7 +17,6 @@ import {
   INFO_UNPUBLISH_DIALOG_TITLE,
   INFO_UNPUBLISH_HINTS,
   type InfoPublishStatus,
-  type InfoType,
 } from './model/constants';
 
 export interface InfoActionsSectionProps {
@@ -100,7 +100,7 @@ export const InfoActionsSection = ({
 
         <div className={styles.deleteBlock}>
           <Button
-            variant="destructive"
+            variant='destructive'
             className={styles.actionButton}
             onClick={onDelete}
           >
