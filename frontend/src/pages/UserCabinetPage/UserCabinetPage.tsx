@@ -28,7 +28,7 @@ export function UserCabinetPage() {
     pathSegments[0] === 'cabinet' &&
     pathSegments[1] === 'courses' &&
     (pathSegments[2] === 'new' ||
-      (Boolean(pathSegments[2]) && pathSegments.length === 3));
+      (Boolean(pathSegments[2]) && pathSegments.length >= 3));
 
   const tabs: Tab[] = useMemo(() => {
     const cabinetRoute = router.routesById['/cabinet'];
