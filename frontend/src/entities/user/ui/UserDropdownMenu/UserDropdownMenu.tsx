@@ -1,5 +1,5 @@
 import { DropdownMenu } from '@/shared/ui/components';
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { UserAvatar } from '../UserAvatar';
 import styles from './UserDropdownMenu.module.scss';
 
@@ -37,8 +37,18 @@ export function UserDropdownMenu({
   items,
 }: UserDropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  const menuIsOpen = isMobile ? true : isOpen;
   const handleClose = () => setIsOpen(false);
 
   return (
@@ -60,7 +70,7 @@ export function UserDropdownMenu({
       </button>
 
       <DropdownMenu
-        isOpen={isOpen}
+        isOpen={menuIsOpen}
         onClose={handleClose}
         anchorRef={triggerRef}
         className={`${styles.dropdownMenu} ${dropdownClassName ?? ''}`}
