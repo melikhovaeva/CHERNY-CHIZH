@@ -37,6 +37,128 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Education"],
       }),
+      v1EducationCoursesStepsList: build.query<
+        V1EducationCoursesStepsListApiResponse,
+        V1EducationCoursesStepsListApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsCreate: build.mutation<
+        V1EducationCoursesStepsCreateApiResponse,
+        V1EducationCoursesStepsCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/`,
+          method: "POST",
+          body: queryArg.courseStepCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsRetrieve: build.query<
+        V1EducationCoursesStepsRetrieveApiResponse,
+        V1EducationCoursesStepsRetrieveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.id}/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsUpdate: build.mutation<
+        V1EducationCoursesStepsUpdateApiResponse,
+        V1EducationCoursesStepsUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.id}/`,
+          method: "PUT",
+          body: queryArg.courseStepCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsPartialUpdate: build.mutation<
+        V1EducationCoursesStepsPartialUpdateApiResponse,
+        V1EducationCoursesStepsPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.id}/`,
+          method: "PATCH",
+          body: queryArg.patchedCourseStepCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsDestroy: build.mutation<
+        V1EducationCoursesStepsDestroyApiResponse,
+        V1EducationCoursesStepsDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.id}/`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsList: build.query<
+        V1EducationCoursesStepsLessonsListApiResponse,
+        V1EducationCoursesStepsLessonsListApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsCreate: build.mutation<
+        V1EducationCoursesStepsLessonsCreateApiResponse,
+        V1EducationCoursesStepsLessonsCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/`,
+          method: "POST",
+          body: queryArg.courseLessonCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsRetrieve: build.query<
+        V1EducationCoursesStepsLessonsRetrieveApiResponse,
+        V1EducationCoursesStepsLessonsRetrieveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.id}/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsUpdateApiResponse,
+        V1EducationCoursesStepsLessonsUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.id}/`,
+          method: "PUT",
+          body: queryArg.courseLessonCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsPartialUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsPartialUpdateApiResponse,
+        V1EducationCoursesStepsLessonsPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.id}/`,
+          method: "PATCH",
+          body: queryArg.patchedCourseLessonCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsDestroy: build.mutation<
+        V1EducationCoursesStepsLessonsDestroyApiResponse,
+        V1EducationCoursesStepsLessonsDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.id}/`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Education"],
+      }),
       v1EducationCoursesRetrieve: build.query<
         V1EducationCoursesRetrieveApiResponse,
         V1EducationCoursesRetrieveApiArg
@@ -106,6 +228,84 @@ export type V1EducationCoursesCreateApiResponse =
   /** status 201  */ CourseCreateUpdateRead;
 export type V1EducationCoursesCreateApiArg = {
   courseCreateUpdate: CourseCreateUpdate;
+};
+export type V1EducationCoursesStepsListApiResponse =
+  /** status 200  */ CourseStepRead[];
+export type V1EducationCoursesStepsListApiArg = {
+  coursePk: string;
+};
+export type V1EducationCoursesStepsCreateApiResponse =
+  /** status 201  */ CourseStepCreateUpdateRead;
+export type V1EducationCoursesStepsCreateApiArg = {
+  coursePk: string;
+  courseStepCreateUpdate: CourseStepCreateUpdate;
+};
+export type V1EducationCoursesStepsRetrieveApiResponse =
+  /** status 200  */ CourseStepRead;
+export type V1EducationCoursesStepsRetrieveApiArg = {
+  coursePk: string;
+  id: string;
+};
+export type V1EducationCoursesStepsUpdateApiResponse =
+  /** status 200  */ CourseStepCreateUpdateRead;
+export type V1EducationCoursesStepsUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  courseStepCreateUpdate: CourseStepCreateUpdate;
+};
+export type V1EducationCoursesStepsPartialUpdateApiResponse =
+  /** status 200  */ CourseStepCreateUpdateRead;
+export type V1EducationCoursesStepsPartialUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  patchedCourseStepCreateUpdate: PatchedCourseStepCreateUpdate;
+};
+export type V1EducationCoursesStepsDestroyApiResponse = unknown;
+export type V1EducationCoursesStepsDestroyApiArg = {
+  coursePk: string;
+  id: string;
+};
+export type V1EducationCoursesStepsLessonsListApiResponse =
+  /** status 200  */ CourseLessonRead[];
+export type V1EducationCoursesStepsLessonsListApiArg = {
+  coursePk: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsCreateApiResponse =
+  /** status 201  */ CourseLessonCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsCreateApiArg = {
+  coursePk: string;
+  stepPk: string;
+  courseLessonCreateUpdate: CourseLessonCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsRetrieveApiResponse =
+  /** status 200  */ CourseLessonRead;
+export type V1EducationCoursesStepsLessonsRetrieveApiArg = {
+  coursePk: string;
+  id: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsUpdateApiResponse =
+  /** status 200  */ CourseLessonCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  stepPk: string;
+  courseLessonCreateUpdate: CourseLessonCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsPartialUpdateApiResponse =
+  /** status 200  */ CourseLessonCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsPartialUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  stepPk: string;
+  patchedCourseLessonCreateUpdate: PatchedCourseLessonCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsDestroyApiResponse = unknown;
+export type V1EducationCoursesStepsLessonsDestroyApiArg = {
+  coursePk: string;
+  id: string;
+  stepPk: string;
 };
 export type V1EducationCoursesRetrieveApiResponse =
   /** status 200  */ CourseDetailRead;
@@ -289,6 +489,58 @@ export type CourseCreateUpdateRead = {
   createdAt: string;
   updatedAt: string;
 };
+export type CourseStepCreateUpdate = {
+  title: string;
+  order?: number;
+};
+export type CourseStepCreateUpdateRead = {
+  id: number;
+  course: number;
+  title: string;
+  order?: number;
+  createdAt: string;
+  updatedAt: string;
+};
+export type PatchedCourseStepCreateUpdate = {
+  title?: string;
+  order?: number;
+};
+export type PatchedCourseStepCreateUpdateRead = {
+  id?: number;
+  course?: number;
+  title?: string;
+  order?: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+export type CourseLessonCreateUpdate = {
+  title: string;
+  order?: number;
+  articleId?: number | null;
+};
+export type CourseLessonCreateUpdateRead = {
+  id: number;
+  step: number;
+  title: string;
+  order?: number;
+  articleId?: number | null;
+  createdAt: string;
+  updatedAt: string;
+};
+export type PatchedCourseLessonCreateUpdate = {
+  title?: string;
+  order?: number;
+  articleId?: number | null;
+};
+export type PatchedCourseLessonCreateUpdateRead = {
+  id?: number;
+  step?: number;
+  title?: string;
+  order?: number;
+  articleId?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
 export type PatchedCourseCreateUpdate = {
   title?: string;
   description?: string;
@@ -316,6 +568,18 @@ export const {
   useV1CoursesRetrieveQuery,
   useV1EducationCoursesListQuery,
   useV1EducationCoursesCreateMutation,
+  useV1EducationCoursesStepsListQuery,
+  useV1EducationCoursesStepsCreateMutation,
+  useV1EducationCoursesStepsRetrieveQuery,
+  useV1EducationCoursesStepsUpdateMutation,
+  useV1EducationCoursesStepsPartialUpdateMutation,
+  useV1EducationCoursesStepsDestroyMutation,
+  useV1EducationCoursesStepsLessonsListQuery,
+  useV1EducationCoursesStepsLessonsCreateMutation,
+  useV1EducationCoursesStepsLessonsRetrieveQuery,
+  useV1EducationCoursesStepsLessonsUpdateMutation,
+  useV1EducationCoursesStepsLessonsPartialUpdateMutation,
+  useV1EducationCoursesStepsLessonsDestroyMutation,
   useV1EducationCoursesRetrieveQuery,
   useV1EducationCoursesUpdateMutation,
   useV1EducationCoursesPartialUpdateMutation,

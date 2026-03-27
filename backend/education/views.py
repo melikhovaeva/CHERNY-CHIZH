@@ -6,6 +6,8 @@ from education.schema import (
     course_view_schema,
     education_article_view_schema,
     education_course_view_schema,
+    education_course_lesson_view_schema,
+    education_course_step_view_schema,
     education_tag_view_schema,
     extend_schema_view,
 )
@@ -20,14 +22,18 @@ from education.constants import (
     COURSE_IMAGE_MAX_SIZE_BYTES,
     COURSE_IMAGE_UPLOAD_FIELD_NAME,
 )
-from education.models import Article, Course, InfoStatus, InfoTag
+from education.models import Article, Course, CourseLesson, CourseStep, InfoStatus, InfoTag
 from education.serializers import (
     ArticleListSerializer,
     ArticleMinimalSerializer,
     ArticleSerializer,
     CourseCreateUpdateSerializer,
     CourseDetailSerializer,
+    CourseLessonCreateUpdateSerializer,
+    CourseLessonSerializer,
     CourseSerializer,
+    CourseStepCreateUpdateSerializer,
+    CourseStepSerializer,
     InfoTagSerializer,
 )
 
@@ -49,7 +55,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             .order_by("-created_at")
         )
         if getattr(self, "action", None) == "list":
-            qs = qs.filter(breed__isnull=True)
+            qs = qs.filter(breed__isnull=True, lesson__isnull=True)
         search = self.request.query_params.get("search", "").strip()
         if search:
             qs = qs.filter(
@@ -296,4 +302,56 @@ class EducationTagViewSet(
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@extend_schema_view(**education_course_step_view_schema)
+class EducationCourseStepViewSet(viewsets.ModelViewSet):
+    """
+    CRUD ступеней курса (только для администраторов).
+    Вложен в курс: /education/courses/{course_pk}/steps/
+    """
+
+    permission_classes = [IsAdmin]
+
+    def get_queryset(self):
+        return CourseStep.objects.filter(
+            course_id=self.kwargs["course_pk"],
+        ).order_by("order", "id")
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return CourseStepCreateUpdateSerializer
+        return CourseStepSerializer
+
+    def perform_create(self, serializer):
+        course = Course.objects.get(pk=self.kwargs["course_pk"])
+        serializer.save(course=course)
+
+
+@extend_schema_view(**education_course_lesson_view_schema)
+class EducationCourseLessonViewSet(viewsets.ModelViewSet):
+    """
+    CRUD уроков ступени курса (только для администраторов).
+    Вложен в ступень: /education/courses/{course_pk}/steps/{step_pk}/lessons/
+    """
+
+    permission_classes = [IsAdmin]
+
+    def get_queryset(self):
+        return CourseLesson.objects.filter(
+            step_id=self.kwargs["step_pk"],
+            step__course_id=self.kwargs["course_pk"],
+        ).select_related("article").order_by("order", "id")
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return CourseLessonCreateUpdateSerializer
+        return CourseLessonSerializer
+
+    def perform_create(self, serializer):
+        step = CourseStep.objects.get(
+            pk=self.kwargs["step_pk"],
+            course_id=self.kwargs["course_pk"],
+        )
+        serializer.save(step=step)
 

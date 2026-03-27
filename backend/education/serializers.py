@@ -233,6 +233,35 @@ class CourseCreateUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSe
         }
 
 
+class CourseStepCreateUpdateSerializer(
+    CamelCaseSerializerMixin, serializers.ModelSerializer
+):
+    """Сериализатор для создания и обновления ступени курса (админ)."""
+
+    class Meta:
+        model = CourseStep
+        fields = ("id", "course", "title", "order", "created_at", "updated_at")
+        read_only_fields = ("id", "course", "created_at", "updated_at")
+
+
+class CourseLessonCreateUpdateSerializer(
+    CamelCaseSerializerMixin, serializers.ModelSerializer
+):
+    """Сериализатор для создания и обновления урока ступени (админ)."""
+
+    article_id = serializers.PrimaryKeyRelatedField(
+        source="article",
+        queryset=Article.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = CourseLesson
+        fields = ("id", "step", "title", "order", "article_id", "created_at", "updated_at")
+        read_only_fields = ("id", "step", "created_at", "updated_at")
+
+
 class CourseEnrollmentSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
   course = CourseSerializer(read_only=True)
 
