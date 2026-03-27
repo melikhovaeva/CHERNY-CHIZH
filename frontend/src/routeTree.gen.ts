@@ -30,10 +30,6 @@ import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies/
 import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs/$breedId/$dogId'
 import { Route as CabinetCoursesNewRouteImport } from './app/routes/cabinet/courses.new'
 import { Route as CabinetCoursesCourseSlugRouteImport } from './app/routes/cabinet/courses.$courseSlug'
-import { Route as CabinetCoursesCourseSlugIndexRouteImport } from './app/routes/cabinet/courses.$courseSlug.index'
-import { Route as CabinetCoursesCourseSlugSettingsRouteImport } from './app/routes/cabinet/courses.$courseSlug.settings'
-import { Route as CabinetCoursesCourseSlugPreviewRouteImport } from './app/routes/cabinet/courses.$courseSlug.preview'
-import { Route as CabinetCoursesCourseSlugConstructorRouteImport } from './app/routes/cabinet/courses.$courseSlug.constructor'
 
 const KnowledgeBaseRoute = KnowledgeBaseRouteImport.update({
   id: '/knowledge-base',
@@ -141,30 +137,6 @@ const CabinetCoursesCourseSlugRoute =
     path: '/$courseSlug',
     getParentRoute: () => CabinetCoursesRoute,
   } as any)
-const CabinetCoursesCourseSlugIndexRoute =
-  CabinetCoursesCourseSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => CabinetCoursesCourseSlugRoute,
-  } as any)
-const CabinetCoursesCourseSlugSettingsRoute =
-  CabinetCoursesCourseSlugSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => CabinetCoursesCourseSlugRoute,
-  } as any)
-const CabinetCoursesCourseSlugPreviewRoute =
-  CabinetCoursesCourseSlugPreviewRouteImport.update({
-    id: '/preview',
-    path: '/preview',
-    getParentRoute: () => CabinetCoursesCourseSlugRoute,
-  } as any)
-const CabinetCoursesCourseSlugConstructorRoute =
-  CabinetCoursesCourseSlugConstructorRouteImport.update({
-    id: '/constructor',
-    path: '/constructor',
-    getParentRoute: () => CabinetCoursesCourseSlugRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -182,16 +154,12 @@ export interface FileRoutesByFullPath {
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
-  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRouteWithChildren
+  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId/': typeof PuppiesBreedIdIndexRoute
-  '/cabinet/courses/$courseSlug/constructor': typeof CabinetCoursesCourseSlugConstructorRoute
-  '/cabinet/courses/$courseSlug/preview': typeof CabinetCoursesCourseSlugPreviewRoute
-  '/cabinet/courses/$courseSlug/settings': typeof CabinetCoursesCourseSlugSettingsRoute
-  '/cabinet/courses/$courseSlug/': typeof CabinetCoursesCourseSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -206,15 +174,12 @@ export interface FileRoutesByTo {
   '/cabinet/settings': typeof CabinetSettingsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/cabinet': typeof CabinetIndexRoute
+  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId': typeof PuppiesBreedIdIndexRoute
-  '/cabinet/courses/$courseSlug/constructor': typeof CabinetCoursesCourseSlugConstructorRoute
-  '/cabinet/courses/$courseSlug/preview': typeof CabinetCoursesCourseSlugPreviewRoute
-  '/cabinet/courses/$courseSlug/settings': typeof CabinetCoursesCourseSlugSettingsRoute
-  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -233,16 +198,12 @@ export interface FileRoutesById {
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
-  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRouteWithChildren
+  '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
   '/puppies/$breedId/$puppyId': typeof PuppiesBreedIdPuppyIdRoute
   '/dogs/$breedId/': typeof DogsBreedIdIndexRoute
   '/puppies/$breedId/': typeof PuppiesBreedIdIndexRoute
-  '/cabinet/courses/$courseSlug/constructor': typeof CabinetCoursesCourseSlugConstructorRoute
-  '/cabinet/courses/$courseSlug/preview': typeof CabinetCoursesCourseSlugPreviewRoute
-  '/cabinet/courses/$courseSlug/settings': typeof CabinetCoursesCourseSlugSettingsRoute
-  '/cabinet/courses/$courseSlug/': typeof CabinetCoursesCourseSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -268,10 +229,6 @@ export interface FileRouteTypes {
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId/'
     | '/puppies/$breedId/'
-    | '/cabinet/courses/$courseSlug/constructor'
-    | '/cabinet/courses/$courseSlug/preview'
-    | '/cabinet/courses/$courseSlug/settings'
-    | '/cabinet/courses/$courseSlug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,15 +243,12 @@ export interface FileRouteTypes {
     | '/cabinet/settings'
     | '/courses/$slug'
     | '/cabinet'
+    | '/cabinet/courses/$courseSlug'
     | '/cabinet/courses/new'
     | '/dogs/$breedId/$dogId'
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId'
     | '/puppies/$breedId'
-    | '/cabinet/courses/$courseSlug/constructor'
-    | '/cabinet/courses/$courseSlug/preview'
-    | '/cabinet/courses/$courseSlug/settings'
-    | '/cabinet/courses/$courseSlug'
   id:
     | '__root__'
     | '/'
@@ -318,10 +272,6 @@ export interface FileRouteTypes {
     | '/puppies/$breedId/$puppyId'
     | '/dogs/$breedId/'
     | '/puppies/$breedId/'
-    | '/cabinet/courses/$courseSlug/constructor'
-    | '/cabinet/courses/$courseSlug/preview'
-    | '/cabinet/courses/$courseSlug/settings'
-    | '/cabinet/courses/$courseSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -485,66 +435,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CabinetCoursesCourseSlugRouteImport
       parentRoute: typeof CabinetCoursesRoute
     }
-    '/cabinet/courses/$courseSlug/': {
-      id: '/cabinet/courses/$courseSlug/'
-      path: '/'
-      fullPath: '/cabinet/courses/$courseSlug/'
-      preLoaderRoute: typeof CabinetCoursesCourseSlugIndexRouteImport
-      parentRoute: typeof CabinetCoursesCourseSlugRoute
-    }
-    '/cabinet/courses/$courseSlug/settings': {
-      id: '/cabinet/courses/$courseSlug/settings'
-      path: '/settings'
-      fullPath: '/cabinet/courses/$courseSlug/settings'
-      preLoaderRoute: typeof CabinetCoursesCourseSlugSettingsRouteImport
-      parentRoute: typeof CabinetCoursesCourseSlugRoute
-    }
-    '/cabinet/courses/$courseSlug/preview': {
-      id: '/cabinet/courses/$courseSlug/preview'
-      path: '/preview'
-      fullPath: '/cabinet/courses/$courseSlug/preview'
-      preLoaderRoute: typeof CabinetCoursesCourseSlugPreviewRouteImport
-      parentRoute: typeof CabinetCoursesCourseSlugRoute
-    }
-    '/cabinet/courses/$courseSlug/constructor': {
-      id: '/cabinet/courses/$courseSlug/constructor'
-      path: '/constructor'
-      fullPath: '/cabinet/courses/$courseSlug/constructor'
-      preLoaderRoute: typeof CabinetCoursesCourseSlugConstructorRouteImport
-      parentRoute: typeof CabinetCoursesCourseSlugRoute
-    }
   }
 }
-
-interface CabinetCoursesCourseSlugRouteChildren {
-  CabinetCoursesCourseSlugConstructorRoute: typeof CabinetCoursesCourseSlugConstructorRoute
-  CabinetCoursesCourseSlugPreviewRoute: typeof CabinetCoursesCourseSlugPreviewRoute
-  CabinetCoursesCourseSlugSettingsRoute: typeof CabinetCoursesCourseSlugSettingsRoute
-  CabinetCoursesCourseSlugIndexRoute: typeof CabinetCoursesCourseSlugIndexRoute
-}
-
-const CabinetCoursesCourseSlugRouteChildren: CabinetCoursesCourseSlugRouteChildren =
-  {
-    CabinetCoursesCourseSlugConstructorRoute:
-      CabinetCoursesCourseSlugConstructorRoute,
-    CabinetCoursesCourseSlugPreviewRoute: CabinetCoursesCourseSlugPreviewRoute,
-    CabinetCoursesCourseSlugSettingsRoute:
-      CabinetCoursesCourseSlugSettingsRoute,
-    CabinetCoursesCourseSlugIndexRoute: CabinetCoursesCourseSlugIndexRoute,
-  }
-
-const CabinetCoursesCourseSlugRouteWithChildren =
-  CabinetCoursesCourseSlugRoute._addFileChildren(
-    CabinetCoursesCourseSlugRouteChildren,
-  )
 
 interface CabinetCoursesRouteChildren {
-  CabinetCoursesCourseSlugRoute: typeof CabinetCoursesCourseSlugRouteWithChildren
+  CabinetCoursesCourseSlugRoute: typeof CabinetCoursesCourseSlugRoute
   CabinetCoursesNewRoute: typeof CabinetCoursesNewRoute
 }
 
 const CabinetCoursesRouteChildren: CabinetCoursesRouteChildren = {
-  CabinetCoursesCourseSlugRoute: CabinetCoursesCourseSlugRouteWithChildren,
+  CabinetCoursesCourseSlugRoute: CabinetCoursesCourseSlugRoute,
   CabinetCoursesNewRoute: CabinetCoursesNewRoute,
 }
 

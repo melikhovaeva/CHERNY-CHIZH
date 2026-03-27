@@ -1,10 +1,8 @@
 export { AboutPage } from './AboutPage/AboutPage';
 export { ArticlePage } from './ArticlePage/ArticlePage';
 export { ContactsPage } from './ContactsPage/ContactsPage';
-export { CourseConstructorPage } from './CourseConstructorPage';
-export { CourseEditLayout } from './CourseEditLayout';
+export { CourseCreateEditPage } from './CourseCreationPage/CourseCreateEditPage';
 export { CoursePage } from './CoursePage';
-export { CoursePreviewPage } from './CoursePreviewPage';
 export { DogDetailsPage } from './DogDetailsPage';
 export { DogsPage } from './DogsPage/DogsPage';
 export { HomePage } from './HomePage';

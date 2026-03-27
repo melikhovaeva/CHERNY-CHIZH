@@ -1,0 +1,1 @@
+export { CoursePreviewTemplate } from './CoursePreviewTemplate';

@@ -2,25 +2,23 @@ import {
   createInitialStages,
   generateLocalId,
   getStageOrdinalLabel,
-  useGetCoursesQuery,
   type ConstructorStage,
 } from '@/entities/course';
-import { getInfoDisplayTitle } from '@/shared/config/info';
-import { CourseConstructorLeftBar } from '@/widgets/info';
-import { useParams } from '@tanstack/react-router';
+import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { useCallback, useState } from 'react';
-import styles from './CourseConstructorPage.module.scss';
+import styles from './CourseConstructorTemplate.module.scss';
 
-export const CourseConstructorPage = () => {
-  const { courseSlug } = useParams({ strict: false });
+export interface CourseConstructorTemplateProps {
+  backUrl: string;
+  title: string;
+}
 
-  const { data: courses } = useGetCoursesQuery(undefined, {
-    skip: !courseSlug,
-  });
-  const course = courses?.find((c) => c.slug === courseSlug) ?? null;
-  const courseTitle = getInfoDisplayTitle(course?.title ?? 'Курс', 'course');
-
-  const [stages, setStages] = useState<ConstructorStage[]>(createInitialStages);
+export const CourseConstructorTemplate = ({
+  backUrl,
+  title,
+}: CourseConstructorTemplateProps) => {
+  const [stages, setStages] =
+    useState<ConstructorStage[]>(createInitialStages);
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
@@ -225,8 +223,8 @@ export const CourseConstructorPage = () => {
   return (
     <div className={styles.root}>
       <CourseConstructorLeftBar
-        backUrl="/cabinet/courses"
-        title={courseTitle}
+        backUrl={backUrl}
+        title={title}
         stages={stages}
         activeStageId={activeStageId}
         activeLessonId={activeLessonId}

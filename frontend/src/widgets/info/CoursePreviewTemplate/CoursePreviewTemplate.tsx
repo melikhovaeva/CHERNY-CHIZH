@@ -1,6 +1,6 @@
-import styles from './CoursePreviewPage.module.scss';
+import styles from './CoursePreviewTemplate.module.scss';
 
-export const CoursePreviewPage = () => {
+export const CoursePreviewTemplate = () => {
   return (
     <div className={styles.root}>
       <h2>Предпросмотр</h2>
