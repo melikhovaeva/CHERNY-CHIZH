@@ -153,7 +153,7 @@ export const CourseCreateEditPage = () => {
   return (
     <>
       <InfoSettingsTemplate
-        backUrl="/cabinet/courses"
+        backUrl='/cabinet/courses'
         title={infoTitle}
         infoType={INFO_TYPE.COURSE}
         availableSections={isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]}

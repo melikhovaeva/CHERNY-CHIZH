@@ -27,7 +27,10 @@ export function useUploadCourseImageMutation() {
   const uploadCourseImage = (args: { id: number; file: File }) => {
     const formData = new FormData();
     formData.append('image', args.file);
-    return mutate({ id: args.id, body: formData as unknown as { image: Blob } });
+    return mutate({
+      id: args.id,
+      body: formData as unknown as { image: Blob },
+    });
   };
   return [uploadCourseImage, result] as const;
 }
@@ -43,11 +46,11 @@ coursesApi.enhanceEndpoints({
     v1EducationCoursesUploadImageCreate: {
       invalidatesTags: ['Education', 'Courses'],
     },
-    v1UsersMeCoursesCreate: {
-      invalidatesTags: ['Users', 'Courses'],
-    },
   },
 });
 
-export type { CourseRead, CourseDetailRead } from '@/shared/api/generated/courses.generated';
+export type {
+  CourseDetailRead,
+  CourseRead,
+} from '@/shared/api/generated/courses.generated';
 export type { CourseEnrollmentRead } from '@/shared/api/generated/users.generated';
