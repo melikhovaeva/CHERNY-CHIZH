@@ -61,6 +61,12 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.filter(
                 Q(title__icontains=search) | Q(description__icontains=search)
             )
+        tag_id = self.request.query_params.get("tag")
+        if tag_id:
+            try:
+                qs = qs.filter(tags__id=int(tag_id))
+            except (TypeError, ValueError):
+                pass
         return qs
 
     def get_serializer_class(self):

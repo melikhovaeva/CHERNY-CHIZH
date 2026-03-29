@@ -26,9 +26,9 @@ export function BookingModalContent({
   const onSubmit: SubmitHandler<BookingFormFields> = async (data) => {
     try {
       const payload: SubmitBookingRequest = {
-        first_name: data.first_name.trim(),
-        phone: data.phone.trim(),
-        messenger: data.messenger.trim(),
+        firstName: (data.firstName ?? '').trim(),
+        phone: (data.phone ?? '').trim(),
+        messenger: (data.messenger ?? '').trim(),
         message: data.message.trim(),
         dog: dogId ?? undefined,
       };
@@ -40,6 +40,7 @@ export function BookingModalContent({
       const message =
         getFirstApiErrorMessage(err) ?? 'Не удалось отправить заявку';
       addError(message);
+      throw err;
     }
   };
 
