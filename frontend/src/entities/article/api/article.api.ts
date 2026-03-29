@@ -17,7 +17,7 @@ enhancedApi.injectEndpoints({
   endpoints: (build) => ({
     v1ArticlesList: build.query<
       V1ArticlesListApiResponse,
-      V1ArticlesListApiArg & { search?: string }
+      V1ArticlesListApiArg & { search?: string; tag?: number }
     >({
       query: (queryArg) => ({
         url: '/api/v1/articles/',
@@ -27,6 +27,7 @@ enhancedApi.injectEndpoints({
           ...(queryArg.search?.trim()
             ? { search: queryArg.search.trim() }
             : {}),
+          ...(queryArg.tag != null ? { tag: queryArg.tag } : {}),
         },
       }),
     }),
@@ -41,6 +42,8 @@ export interface GetArticlesListQueryArgs {
   search?: string;
   /** Filter by content type: 'all' | 'articles'. Sent as content_type to BE. */
   contentType?: string;
+  /** Filter by tag id. */
+  tag?: number;
 }
 
 /** Wrapper: app uses slug string; generated hook expects { slug }. */
@@ -85,6 +88,7 @@ export function useGetArticlesListQuery(
       ...(args?.search != null && args.search !== ''
         ? { search: args.search }
         : {}),
+      ...(args?.tag != null ? { tag: args.tag } : {}),
     },
     options,
   );

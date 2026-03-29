@@ -350,6 +350,10 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         allow_null=True,
     )
 
+    def to_internal_value(self, data):
+        data = keys_to_snake_case(data)
+        return super().to_internal_value(data)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get("request")

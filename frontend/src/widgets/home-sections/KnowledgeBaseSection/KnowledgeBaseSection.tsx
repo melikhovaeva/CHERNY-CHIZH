@@ -1,4 +1,5 @@
 import {
+  useGetArticlesListQuery,
   useGetHomeLibraryQuery,
   type ArticleMinimal,
 } from '@/entities/article';
@@ -8,10 +9,11 @@ import { cn } from '@/shared/lib/utils';
 import { Button, Card, Skeleton } from '@/shared/ui/components';
 import { FilterableGallery } from '@/widgets/FilterableGallery';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import styles from './KnowledgeBaseSection.module.scss';
 
 const SKELETON_ITEMS = 6;
+const ARTICLES_PER_TAG = 3;
 
 function getImageUrl(imagePreview: string | null): string | undefined {
   if (!imagePreview) return undefined;
@@ -25,33 +27,41 @@ export interface KnowledgeBaseSectionItem extends ArticleMinimal {
 }
 
 export function KnowledgeBaseSection() {
-  const { data, isLoading } = useGetHomeLibraryQuery();
+  const { data: libraryData, isLoading: tagsLoading } = useGetHomeLibraryQuery();
   const navigate = useNavigate();
 
   const tabs: Tab[] = useMemo(
     () =>
-      (data?.tags ?? []).map((tag) => ({
+      (libraryData?.tags ?? []).map((tag) => ({
         id: tag.id,
         label: tag.label,
         value: String(tag.id),
       })),
-    [data?.tags],
+    [libraryData?.tags],
   );
+
+  const [activeTagValue, setActiveTagValue] = useState<string>('');
+  const activeTab = activeTagValue || tabs[0]?.value || '';
+  const activeTagId = activeTab ? Number(activeTab) : undefined;
+
+  const { data: articlesData, isLoading: articlesLoading } =
+    useGetArticlesListQuery(
+      { tag: activeTagId!, pageSize: ARTICLES_PER_TAG },
+      { skip: activeTagId == null },
+    );
 
   const items: KnowledgeBaseSectionItem[] = useMemo(
     () =>
-      (data?.groups ?? []).flatMap((group) =>
-        group.articles.map((article) => ({
-          ...article,
-          _tagId: String(group.tagId),
-        })),
-      ),
-    [data?.groups],
+      (articlesData?.results ?? []).map((article: ArticleMinimal) => ({
+        ...article,
+        _tagId: activeTab,
+      })),
+    [articlesData?.results, activeTab],
   );
 
-  const hasContent = tabs.length > 0 && items.length > 0;
+  const hasContent = tabs.length > 0;
 
-  if (isLoading) {
+  if (tagsLoading) {
     return (
       <section className={cn([styles.root, 'filled primary'])}>
         <div className={styles.container}>
@@ -99,6 +109,9 @@ export function KnowledgeBaseSection() {
           filterBy="_tagId"
           getFilterValue={(item) => item._tagId}
           getItemKey={(item) => `${item.id}-${item._tagId}`}
+          activeTab={activeTab}
+          onActiveTabChange={setActiveTagValue}
+          isLoading={articlesLoading}
           renderItem={(item) => (
             <Link
               to="/articles/$slug"
