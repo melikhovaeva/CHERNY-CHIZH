@@ -9,6 +9,12 @@ import {
 import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { cn } from '@/shared/lib/utils';
+import {
+  buildTreePayloadFromLocalSelection,
+  loadCourseWorkspaceState,
+  mergeCourseWorkspaceState,
+  resolveTreeSelection,
+} from '@/features/course-workspace-persistence';
 import { LessonArticleEditor } from '@/features/lesson-article-editor';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
@@ -40,10 +46,12 @@ function mergeLessonArticleSlugs(
 
 export interface CourseConstructorTemplateProps {
   courseId: number | null;
+  persistenceCourseSlug?: string | null;
 }
 
 export const CourseConstructorTemplate = ({
   courseId,
+  persistenceCourseSlug = null,
 }: CourseConstructorTemplateProps) => {
   const showSuccess = useSuccess();
   const showError = useError();
@@ -66,6 +74,45 @@ export const CourseConstructorTemplate = ({
   stagesRef.current = stages;
 
   const queue = useConstructorQueue();
+
+  const treeHydratedRef = useRef(false);
+
+  useEffect(() => {
+    treeHydratedRef.current = false;
+  }, [courseId]);
+
+  useEffect(() => {
+    if (!persistenceCourseSlug || !initialized) return;
+    if (stages.length === 0) return;
+    if (treeHydratedRef.current) return;
+    treeHydratedRef.current = true;
+
+    const stored = loadCourseWorkspaceState(persistenceCourseSlug);
+    const resolved = resolveTreeSelection(stages, {
+      stepServerId: stored.stepServerId,
+      lessonServerId: stored.lessonServerId,
+      taskId: stored.taskId,
+    });
+    if (resolved) {
+      setActiveStageId(resolved.stageId);
+      setActiveLessonId(resolved.lessonId);
+      setActiveTaskId(resolved.taskId);
+    }
+  }, [persistenceCourseSlug, initialized, stages]);
+
+  const persistTreeSelection = useCallback(
+    (stageId: string, lessonId: string, taskId: string | null) => {
+      if (!persistenceCourseSlug) return;
+      const payload = buildTreePayloadFromLocalSelection(
+        stagesRef.current,
+        stageId,
+        lessonId,
+        taskId,
+      );
+      mergeCourseWorkspaceState(persistenceCourseSlug, payload);
+    },
+    [persistenceCourseSlug],
+  );
 
   // Load server data on mount
   useEffect(() => {
@@ -132,8 +179,9 @@ export const CourseConstructorTemplate = ({
       setActiveStageId(stageId);
       setActiveLessonId(lessonId);
       setActiveTaskId(null);
+      persistTreeSelection(stageId, lessonId, null);
     },
-    [],
+    [persistTreeSelection],
   );
 
   const handleSelectTask = useCallback(
@@ -141,8 +189,9 @@ export const CourseConstructorTemplate = ({
       setActiveStageId(stageId);
       setActiveLessonId(lessonId);
       setActiveTaskId(taskId);
+      persistTreeSelection(stageId, lessonId, taskId);
     },
-    [],
+    [persistTreeSelection],
   );
 
   const handleAddStage = useCallback(() => {

@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/app/store';
+import { useAppDispatch, useAppSelector } from '@/app/store';
 import {
   CourseCreateEditForm,
   useCreateCourseMutation,
@@ -8,7 +8,14 @@ import {
   type CourseFormData,
 } from '@/entities/course';
 import { usePatchCourseStatusMutation } from '@/entities/course/api/courseStatus.api';
-import { selectInfoSettingsActiveSection } from '@/features/info-settings';
+import {
+  COURSE_WORKSPACE_TAB,
+  getInitialCourseWorkspaceTab,
+  loadCourseWorkspaceState,
+  mergeCourseWorkspaceState,
+  type CourseWorkspaceTab,
+} from '@/features/course-workspace-persistence';
+import { selectInfoSettingsActiveSection, setActiveSection } from '@/features/info-settings';
 import { INFO_SETTINGS_SECTION } from '@/features/info-settings/model/types';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import type {
@@ -24,22 +31,14 @@ import {
   InfoSettingsTemplate,
 } from '@/widgets';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { cn } from '@/shared/lib/utils';
 import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import styles from './CourseCreateEditPage.module.scss';
 
-const COURSE_PAGE_TAB = {
-  PREVIEW: 'preview',
-  CONSTRUCTOR: 'constructor',
-  SETTINGS: 'settings',
-} as const;
-
 const COURSE_CABINET_LIST_PATH = '/cabinet/courses' as const;
 
 const WORKSPACE_TITLE_MAX_LENGTH = 16;
-
-type CoursePageTab = (typeof COURSE_PAGE_TAB)[keyof typeof COURSE_PAGE_TAB];
 
 function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
   return {
@@ -52,6 +51,7 @@ function toCreateUpdatePayload(values: CourseFormData): CourseCreateUpdate {
 }
 
 export const CourseCreateEditPage = () => {
+  const dispatch = useAppDispatch();
   const activeSettingsSection = useAppSelector(selectInfoSettingsActiveSection);
   const { courseSlug } = useParams({ strict: false });
   const navigate = useNavigate();
@@ -60,28 +60,47 @@ export const CourseCreateEditPage = () => {
 
   const isEdit = Boolean(courseSlug);
 
-  const [activeTab, setActiveTab] = useState<CoursePageTab>(
-    COURSE_PAGE_TAB.SETTINGS,
+  const [activeTab, setActiveTab] = useState<CourseWorkspaceTab>(() =>
+    getInitialCourseWorkspaceTab(courseSlug, isEdit),
   );
+
+  useEffect(() => {
+    if (!isEdit || !courseSlug) return;
+    setActiveTab(getInitialCourseWorkspaceTab(courseSlug, isEdit));
+    const s = loadCourseWorkspaceState(courseSlug);
+    dispatch(setActiveSection(s.settingsSection));
+  }, [courseSlug, isEdit, dispatch]);
+
+  useEffect(() => {
+    if (!isEdit || !courseSlug) return;
+    mergeCourseWorkspaceState(courseSlug, { tab: activeTab });
+  }, [isEdit, courseSlug, activeTab]);
+
+  useEffect(() => {
+    if (!isEdit || !courseSlug) return;
+    mergeCourseWorkspaceState(courseSlug, {
+      settingsSection: activeSettingsSection,
+    });
+  }, [isEdit, courseSlug, activeSettingsSection]);
 
   const tabs: Tab[] = useMemo(
     () => [
       {
         id: 'preview',
         label: 'Предпросмотр',
-        value: COURSE_PAGE_TAB.PREVIEW,
+        value: COURSE_WORKSPACE_TAB.PREVIEW,
         disabled: !isEdit,
       },
       {
         id: 'constructor',
         label: 'Конструктор',
-        value: COURSE_PAGE_TAB.CONSTRUCTOR,
+        value: COURSE_WORKSPACE_TAB.CONSTRUCTOR,
         disabled: !isEdit,
       },
       {
         id: 'settings',
         label: 'Настройки',
-        value: COURSE_PAGE_TAB.SETTINGS,
+        value: COURSE_WORKSPACE_TAB.SETTINGS,
       },
     ],
     [isEdit],
@@ -204,13 +223,25 @@ export const CourseCreateEditPage = () => {
     ? `${displayTitle.slice(0, WORKSPACE_TITLE_MAX_LENGTH).trimEnd()}`
     : displayTitle;
 
+  const persistenceSlug = isEdit && courseSlug ? courseSlug : null;
+
   const renderActiveTab = () => {
     switch (activeTab) {
-      case COURSE_PAGE_TAB.CONSTRUCTOR:
-        return <CourseConstructorTemplate courseId={courseId} />;
-      case COURSE_PAGE_TAB.PREVIEW:
-        return <CoursePreviewTemplate courseId={courseId} />;
-      case COURSE_PAGE_TAB.SETTINGS:
+      case COURSE_WORKSPACE_TAB.CONSTRUCTOR:
+        return (
+          <CourseConstructorTemplate
+            courseId={courseId}
+            persistenceCourseSlug={persistenceSlug}
+          />
+        );
+      case COURSE_WORKSPACE_TAB.PREVIEW:
+        return (
+          <CoursePreviewTemplate
+            courseId={courseId}
+            persistenceCourseSlug={persistenceSlug}
+          />
+        );
+      case COURSE_WORKSPACE_TAB.SETTINGS:
       default:
         return (
           <InfoSettingsTemplate
@@ -247,7 +278,7 @@ export const CourseCreateEditPage = () => {
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={(value) => setActiveTab(value as CoursePageTab)}
+        onTabChange={(value) => setActiveTab(value as CourseWorkspaceTab)}
         variant="secondary"
         className={styles.tabs}
       />

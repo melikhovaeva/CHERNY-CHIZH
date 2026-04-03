@@ -4,9 +4,15 @@ import {
   useGetCourseStepsQuery,
   type ConstructorStage,
 } from '@/entities/course';
+import {
+  buildTreePayloadFromLocalSelection,
+  loadCourseWorkspaceState,
+  mergeCourseWorkspaceState,
+  resolveTreeSelection,
+} from '@/features/course-workspace-persistence';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CourseConstructorLessonArticle } from '../CourseConstructorTemplate/CourseConstructorLessonArticle';
 import styles from './CoursePreviewTemplate.module.scss';
 
@@ -35,10 +41,12 @@ const previewNoopRenameTask: (
 
 export interface CoursePreviewTemplateProps {
   courseId: number | null;
+  persistenceCourseSlug?: string | null;
 }
 
 export const CoursePreviewTemplate = ({
   courseId,
+  persistenceCourseSlug = null,
 }: CoursePreviewTemplateProps) => {
   const { data: serverSteps, isLoading } = useGetCourseStepsQuery(
     { coursePk: String(courseId) },
@@ -51,12 +59,15 @@ export const CoursePreviewTemplate = ({
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
+  const initialSelectionAppliedRef = useRef(false);
+
   useEffect(() => {
     setInitialized(false);
     setStages([]);
     setActiveStageId(null);
     setActiveLessonId(null);
     setActiveTaskId(null);
+    initialSelectionAppliedRef.current = false;
   }, [courseId]);
 
   useEffect(() => {
@@ -97,7 +108,23 @@ export const CoursePreviewTemplate = ({
 
   useEffect(() => {
     if (!initialized || stages.length === 0) return;
-    if (activeStageId != null && activeLessonId != null) return;
+    if (initialSelectionAppliedRef.current) return;
+    initialSelectionAppliedRef.current = true;
+
+    if (persistenceCourseSlug) {
+      const stored = loadCourseWorkspaceState(persistenceCourseSlug);
+      const resolved = resolveTreeSelection(stages, {
+        stepServerId: stored.stepServerId,
+        lessonServerId: stored.lessonServerId,
+        taskId: stored.taskId,
+      });
+      if (resolved) {
+        setActiveStageId(resolved.stageId);
+        setActiveLessonId(resolved.lessonId);
+        setActiveTaskId(resolved.taskId);
+        return;
+      }
+    }
 
     const firstStage = stages[0];
     const firstLesson = firstStage?.lessons[0];
@@ -106,15 +133,27 @@ export const CoursePreviewTemplate = ({
       setActiveLessonId(firstLesson.id);
       setActiveTaskId(null);
     }
-  }, [initialized, stages, activeStageId, activeLessonId]);
+  }, [initialized, stages, persistenceCourseSlug]);
+
+  const persistTreeSelection = useCallback(
+    (stageId: string, lessonId: string, taskId: string | null) => {
+      if (!persistenceCourseSlug) return;
+      mergeCourseWorkspaceState(
+        persistenceCourseSlug,
+        buildTreePayloadFromLocalSelection(stages, stageId, lessonId, taskId),
+      );
+    },
+    [persistenceCourseSlug, stages],
+  );
 
   const handleSelectLesson = useCallback(
     (stageId: string, lessonId: string) => {
       setActiveStageId(stageId);
       setActiveLessonId(lessonId);
       setActiveTaskId(null);
+      persistTreeSelection(stageId, lessonId, null);
     },
-    [],
+    [persistTreeSelection],
   );
 
   const handleSelectTask = useCallback(
@@ -122,8 +161,9 @@ export const CoursePreviewTemplate = ({
       setActiveStageId(stageId);
       setActiveLessonId(lessonId);
       setActiveTaskId(taskId);
+      persistTreeSelection(stageId, lessonId, taskId);
     },
-    [],
+    [persistTreeSelection],
   );
 
   const activeLesson = stages
