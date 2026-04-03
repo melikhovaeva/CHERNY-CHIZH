@@ -103,6 +103,72 @@ class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             return {"code": obj.status, "label": obj.status}
 
 
+class ArticleAdminReadSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор чтения статьи для редактора (включает content_blocks)."""
+
+    status = serializers.SerializerMethodField()
+    content_html = serializers.SerializerMethodField()
+    tags = InfoTagSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            "id",
+            "title",
+            "slug",
+            "description",
+            "image_preview",
+            "status",
+            "tags",
+            "content_html",
+            "content_blocks",
+            "created_at",
+            "updated_at",
+        )
+
+    def get_content_html(self, obj: Article) -> str:
+        return sanitize_html(obj.content or "")
+
+    @extend_schema_field(CodeLabelSerializer)
+    def get_status(self, obj: Article):
+        if not obj.status:
+            return None
+        try:
+            status_enum = InfoStatus(obj.status)
+            return {"code": status_enum.value, "label": status_enum.label}
+        except ValueError:
+            return {"code": obj.status, "label": obj.status}
+
+
+class ArticleAdminWriteSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор записи статьи для редактора (title, description, status, content_blocks)."""
+
+    content_blocks = serializers.JSONField(required=False, default=list)
+
+    class Meta:
+        model = Article
+        fields = ("title", "description", "status", "content_blocks")
+        extra_kwargs = {
+            "title": {"required": False},
+            "description": {"required": False},
+            "status": {"required": False},
+        }
+
+    def validate_content_blocks(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("content_blocks должен быть списком.")
+        valid_types = {"text", "image", "video", "file"}
+        for block in value:
+            if not isinstance(block, dict):
+                raise serializers.ValidationError("Каждый блок должен быть объектом.")
+            if block.get("type") not in valid_types:
+                raise serializers.ValidationError(
+                    f"Недопустимый тип блока: {block.get('type')!r}. "
+                    f"Допустимые: {', '.join(sorted(valid_types))}."
+                )
+        return value
+
+
 class ArticleMinimalSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     """Минимальный набор полей для карточки статьи (блок home_library)."""
 

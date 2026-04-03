@@ -24,6 +24,8 @@ from education.constants import (
 )
 from education.models import Article, Course, CourseLesson, CourseStep, InfoStatus, InfoTag
 from education.serializers import (
+    ArticleAdminReadSerializer,
+    ArticleAdminWriteSerializer,
     ArticleListSerializer,
     ArticleMinimalSerializer,
     ArticleSerializer,
@@ -130,10 +132,113 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 @extend_schema_view(**education_article_view_schema)
-class EducationArticleViewSet(ArticleViewSet):
-    """Публичный API для статей под префиксом /education."""
+class EducationArticleViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    Admin API для редактирования статей под префиксом /education.
+    retrieve — возвращает статью с content_blocks (для редактора).
+    partial_update — принимает title/description/status/content_blocks.
+    upload-media — загружает медиафайл в хранилище и возвращает URL.
+    """
 
-    pass
+    lookup_field = "slug"
+    lookup_url_kwarg = "slug"
+
+    def get_permissions(self):
+        return [IsAdmin()]
+
+    def get_queryset(self):
+        return (
+            Article.objects
+            .select_related("author")
+            .prefetch_related("tags")
+        )
+
+    def get_serializer_class(self):
+        if self.action in ("update", "partial_update"):
+            return ArticleAdminWriteSerializer
+        return ArticleAdminReadSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        data = keys_to_snake_case(dict(request.data))
+        # content_blocks arrives as camelCase key from JS; re-check
+        if "contentBlocks" in request.data and "content_blocks" not in data:
+            data["content_blocks"] = request.data["contentBlocks"]
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(
+            ArticleAdminReadSerializer(
+                instance, context=self.get_serializer_context()
+            ).data
+        )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="upload-media",
+    )
+    def upload_media(self, request, slug=None):
+        ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+        ALLOWED_VIDEO_TYPES = {"video/mp4", "video/webm", "video/ogg"}
+        ALLOWED_DOC_TYPES = {
+            "application/pdf",
+            "application/zip",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        }
+        ALLOWED_TYPES = ALLOWED_IMAGE_TYPES | ALLOWED_VIDEO_TYPES | ALLOWED_DOC_TYPES
+        MAX_SIZE = 50 * 1024 * 1024  # 50 MB
+
+        media_file = request.FILES.get("file")
+        if not media_file:
+            return Response(
+                {"detail": "Файл не передан."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        content_type = getattr(media_file, "content_type", "") or ""
+        if content_type not in ALLOWED_TYPES:
+            return Response(
+                {"detail": f"Недопустимый тип файла: {content_type}."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if media_file.size > MAX_SIZE:
+            return Response(
+                {"detail": "Файл превышает 50 МБ."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if content_type in ALLOWED_IMAGE_TYPES:
+            media_type = "image"
+            upload_dir = "article_media/images"
+        elif content_type in ALLOWED_VIDEO_TYPES:
+            media_type = "video"
+            upload_dir = "article_media/videos"
+        else:
+            media_type = "file"
+            upload_dir = "article_media/files"
+
+        from django.core.files.storage import default_storage
+        saved_path = default_storage.save(
+            f"{upload_dir}/{media_file.name}", media_file
+        )
+        file_url = default_storage.url(saved_path)
+
+        return Response(
+            {
+                "url": file_url,
+                "mediaType": media_type,
+                "name": media_file.name,
+                "size": media_file.size,
+                "contentType": content_type,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 @extend_schema_view(**education_course_view_schema)
@@ -359,5 +464,14 @@ class EducationCourseLessonViewSet(viewsets.ModelViewSet):
             pk=self.kwargs["step_pk"],
             course_id=self.kwargs["course_pk"],
         )
-        serializer.save(step=step)
+        lesson = serializer.save(step=step)
+        if lesson.article_id is None:
+            article = Article.objects.create(
+                title=lesson.title,
+                description="",
+                content="",
+                content_blocks=[],
+            )
+            lesson.article = article
+            lesson.save(update_fields=["article"])
 
