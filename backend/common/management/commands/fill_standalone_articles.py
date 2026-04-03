@@ -9,6 +9,7 @@ import random
 
 from django.core.management.base import BaseCommand
 
+from education.markdown_utils import markdown_to_safe_html
 from education.models import Article, InfoStatus, InfoTag
 from user_management.models import User
 
@@ -185,10 +186,11 @@ def _random_content(sections_source, min_sections=4, max_sections=7):
 
 
 def _random_article_data(titles_source, paragraphs_source, sections_source):
-    """Возвращает dict с title, description, content (большой markdown)."""
+    """Возвращает dict с title, description, content (санитизированный HTML)."""
     title = random.choice(titles_source)
     description = random.choice(paragraphs_source)[:500]
-    content = _random_content(sections_source)
+    markdown_body = _random_content(sections_source)
+    content = markdown_to_safe_html(markdown_body)
     return {"title": title, "description": description, "content": content}
 
 
