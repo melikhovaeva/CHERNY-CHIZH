@@ -104,34 +104,16 @@
   gap: 4px;
 }
 
-.stageHeaderBtn {
+.stageHeaderTitle {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex: 1;
   min-width: 0;
   padding: 6px 8px;
-  border: none;
-  background: transparent;
   text-align: left;
-  cursor: pointer;
   border-radius: 6px;
-  transition:
-    color 0.15s,
-    background-color 0.15s;
-
-  &:hover {
-    background-color: $c-neutral-d-600-4;
-  }
-}
-
-.stageHeaderBtnActive {
-  background-color: $c-neutral-d-600-8;
-
-  .stageTitle {
-    color: $c-neutral-900;
-    font-weight: $font-weight-text-m-semibold;
-  }
+  cursor: default;
 }
 
 .stageLabel {

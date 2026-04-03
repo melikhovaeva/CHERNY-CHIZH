@@ -23,7 +23,6 @@ export interface CourseConstructorLeftBarProps {
   isSaving?: boolean;
   unsavedCount?: number;
   onSave?: () => void;
-  onSelectStage: (stageId: string) => void;
   onSelectLesson: (stageId: string, lessonId: string) => void;
   onSelectTask: (stageId: string, lessonId: string, taskId: string) => void;
   onAddStage: () => void;
@@ -56,7 +55,6 @@ export const CourseConstructorLeftBar = ({
   isSaving,
   unsavedCount,
   onSave,
-  onSelectStage,
   onSelectLesson,
   onSelectTask,
   onAddStage,
@@ -157,7 +155,6 @@ export const CourseConstructorLeftBar = ({
             key={stage.id}
             stage={stage}
             isLast={index === stages.length - 1}
-            isActive={activeStageId === stage.id && !activeLessonId}
             isCollapsed={collapsedStageIds.has(stage.id)}
             unsyncedIds={unsyncedIds}
             activeLessonId={
@@ -172,7 +169,6 @@ export const CourseConstructorLeftBar = ({
             onStartEditing={startEditing}
             onCommitEditing={commitEditing}
             onCancelEditing={cancelEditing}
-            onSelect={() => onSelectStage(stage.id)}
             onToggleCollapse={() => toggleCollapse(stage.id)}
             onSelectLesson={(lessonId) =>
               onSelectLesson(stage.id, lessonId)
@@ -239,7 +235,6 @@ export const CourseConstructorLeftBar = ({
 interface StageCardProps {
   stage: ConstructorStage;
   isLast: boolean;
-  isActive: boolean;
   isCollapsed: boolean;
   unsyncedIds?: Set<string>;
   activeLessonId: string | null;
@@ -254,7 +249,6 @@ interface StageCardProps {
     taskId?: string,
   ) => void;
   onCancelEditing: () => void;
-  onSelect: () => void;
   onToggleCollapse: () => void;
   onSelectLesson: (lessonId: string) => void;
   onSelectTask: (lessonId: string, taskId: string) => void;
@@ -274,7 +268,6 @@ interface StageCardProps {
 function StageCard({
   stage,
   isLast,
-  isActive,
   isCollapsed,
   unsyncedIds,
   activeLessonId,
@@ -285,7 +278,6 @@ function StageCard({
   onStartEditing,
   onCommitEditing,
   onCancelEditing,
-  onSelect,
   onToggleCollapse,
   onSelectLesson,
   onSelectTask,
@@ -317,16 +309,10 @@ function StageCard({
               className={styles.stageInlineEditor}
             />
           ) : (
-            <button
-              type="button"
-              className={cn([styles.stageHeaderBtn], {
-                [styles.stageHeaderBtnActive]: isActive,
-              })}
-              onClick={onSelect}
-            >
+            <div className={styles.stageHeaderTitle}>
               <span className={styles.stageLabel}>{stage.label}</span>
               <span className={styles.stageTitle}>{stage.title}</span>
-            </button>
+            </div>
           )}
 
           <div className={styles.headerActions}>
