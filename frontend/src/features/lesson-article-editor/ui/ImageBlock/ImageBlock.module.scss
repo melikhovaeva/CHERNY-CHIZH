@@ -1,0 +1,97 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 140px;
+  padding: 20px;
+  border: 1px dashed $c-neutral-200;
+  border-radius: 12px;
+  background-color: $c-neutral-d-600-4;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+
+  &:hover {
+    border-color: $c-neutral-300;
+    background-color: $c-neutral-d-600-8;
+  }
+}
+
+.dropzoneHint {
+  margin: 0;
+  @include typography-text-s;
+  color: $c-neutral-500;
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.previewWrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+.previewImg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.replaceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.metaFields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.fieldLabel {
+  @include typography-text-s;
+  color: $c-neutral-600;
+}
+
+.textInput {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid $c-neutral-150;
+  border-radius: 8px;
+  @include typography-text-m;
+  color: $c-mp-text-body;
+}
+
+.spinner {
+  display: inline-block;
+  @include typography-text-s;
+  color: $c-neutral-500;
+}

@@ -1,0 +1,102 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  padding: 20px;
+  border: 1px dashed $c-neutral-200;
+  border-radius: 12px;
+  background-color: $c-neutral-d-600-4;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    border-color: $c-neutral-300;
+    background-color: $c-neutral-d-600-8;
+  }
+}
+
+.dropzoneHint {
+  margin: 0;
+  @include typography-text-s;
+  color: $c-neutral-500;
+}
+
+.hiddenInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fileRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid $c-neutral-150;
+  border-radius: 10px;
+  background-color: $c-neutral-0;
+}
+
+.clip {
+  @include typography-text-m;
+}
+
+.link {
+  @include typography-text-m;
+  color: $urls-color;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.size {
+  @include typography-text-s;
+  color: $c-neutral-500;
+}
+
+.replaceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.fieldLabel {
+  @include typography-text-s;
+  color: $c-neutral-600;
+}
+
+.textInput {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid $c-neutral-150;
+  border-radius: 8px;
+  @include typography-text-m;
+  color: $c-mp-text-body;
+}
+
+.spinner {
+  @include typography-text-s;
+  color: $c-neutral-500;
+}

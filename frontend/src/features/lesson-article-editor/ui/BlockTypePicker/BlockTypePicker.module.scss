@@ -1,0 +1,92 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+/* Совпадает с полосой шапки редактора (EditorHeader). */
+$add-content-header-bg: #f2f2f2;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: $c-neutral-0;
+  box-shadow: 0 1px 6px $c-neutral-d-600-16;
+}
+
+.root_compact {
+  max-width: min(360px, calc(100vw - 24px));
+  box-shadow: 0 2px 10px $c-neutral-d-600-16;
+}
+
+.header {
+  padding: 14px 16px;
+  background-color: $add-content-header-bg;
+  border-bottom: 1px solid $c-neutral-200;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  @include typography-text-m-semibold;
+  color: $c-neutral-700;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+  padding: 8px 4px 12px;
+}
+
+.root_compact .row {
+  padding: 6px 2px 10px;
+}
+
+.option {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px 6px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: $c-neutral-600;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+    color: $c-neutral-800;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-16;
+  }
+}
+
+.optionIcon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.root_compact .optionIcon {
+  width: 28px;
+  height: 28px;
+}
+
+.optionLabel {
+  @include typography-text-xs;
+  text-align: center;
+  color: inherit;
+}

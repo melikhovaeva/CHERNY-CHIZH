@@ -1,0 +1,114 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  position: relative;
+  margin-bottom: 8px;
+
+  &:hover .controls {
+    opacity: 1;
+  }
+}
+
+.controls {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.surfaceBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background-color: $c-neutral-100;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: $c-neutral-150;
+  }
+
+  &:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-16;
+  }
+}
+
+.surfaceBtn_edit {
+  color: $c-neutral-900;
+
+  &[data-editing-active] {
+    box-shadow: inset 0 0 0 1px $c-neutral-300;
+    background-color: $c-neutral-50;
+  }
+}
+
+.surfaceBtn_move {
+  color: $c-neutral-300;
+}
+
+.controlIconEdit {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.controlIconMove {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+
+  path {
+    stroke-width: 1.25px;
+  }
+}
+
+.controlIconTrash {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.deleteBtn {
+  background-color: $c-status-red;
+  color: $c-neutral-0;
+
+  &:hover:not(:disabled) {
+    background-color: darken($c-status-red, 6%);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px $c-status-red-d-32;
+  }
+}
+
+/* Без горизонтальных отступов: ширина контента совпадает с линией вставки. */
+.body {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}

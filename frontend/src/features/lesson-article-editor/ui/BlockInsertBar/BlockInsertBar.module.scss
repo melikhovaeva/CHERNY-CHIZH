@@ -1,0 +1,49 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0;
+  gap: 8px;
+}
+
+.line {
+  flex: 1;
+  height: 0;
+  border-top: 1px dashed $c-neutral-200;
+}
+
+.plusWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: $c-neutral-950;
+  cursor: pointer;
+  @include typography-text-m-semibold;
+  color: $c-neutral-0;
+  line-height: 1;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-900;
+  }
+}
+
+.menu {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  z-index: 5;
+}
