@@ -69,7 +69,6 @@ export const CourseConstructorLeftBar = ({
   onRenameLesson,
   onRenameTask,
 }: CourseConstructorLeftBarProps) => {
-  const [openAddMenuId, setOpenAddMenuId] = useState<string | null>(null);
   const [openMoreMenuId, setOpenMoreMenuId] = useState<string | null>(null);
   const [collapsedStageIds, setCollapsedStageIds] = useState<Set<string>>(
     new Set(),
@@ -77,7 +76,6 @@ export const CourseConstructorLeftBar = ({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState('');
 
-  const addBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const moreBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const toggleCollapse = (stageId: string) => {
@@ -174,21 +172,8 @@ export const CourseConstructorLeftBar = ({
             onDeleteTask={(lessonId, taskId) =>
               onDeleteTask(stage.id, lessonId, taskId)
             }
-            addBtnRef={(el) => {
-              addBtnRefs.current[stage.id] = el;
-            }}
             moreBtnRef={(el) => {
               moreBtnRefs.current[stage.id] = el;
-            }}
-            isAddMenuOpen={openAddMenuId === stage.id}
-            onToggleAddMenu={() =>
-              setOpenAddMenuId((prev) =>
-                prev === stage.id ? null : stage.id,
-              )
-            }
-            onCloseAddMenu={() => setOpenAddMenuId(null)}
-            addMenuAnchor={{
-              current: addBtnRefs.current[stage.id] ?? null,
             }}
             isMoreMenuOpen={openMoreMenuId === stage.id}
             onToggleMoreMenu={() =>
@@ -202,12 +187,9 @@ export const CourseConstructorLeftBar = ({
             }}
             onAddLesson={() => {
               onAddLesson(stage.id);
-              setOpenAddMenuId(null);
+              setOpenMoreMenuId(null);
             }}
-            onAddStage={() => {
-              onAddStage();
-              setOpenAddMenuId(null);
-            }}
+            onAddStage={onAddStage}
             onDeleteStage={() => {
               onDeleteStage(stage.id);
               setOpenMoreMenuId(null);
@@ -264,12 +246,7 @@ interface StageCardProps {
   onDeleteLesson: (lessonId: string) => void;
   onAddTask: (lessonId: string) => void;
   onDeleteTask: (lessonId: string, taskId: string) => void;
-  addBtnRef: (el: HTMLButtonElement | null) => void;
   moreBtnRef: (el: HTMLButtonElement | null) => void;
-  isAddMenuOpen: boolean;
-  onToggleAddMenu: () => void;
-  onCloseAddMenu: () => void;
-  addMenuAnchor: { current: HTMLElement | null };
   isMoreMenuOpen: boolean;
   onToggleMoreMenu: () => void;
   onCloseMoreMenu: () => void;
@@ -300,12 +277,7 @@ function StageCard({
   onDeleteLesson,
   onAddTask,
   onDeleteTask,
-  addBtnRef,
   moreBtnRef,
-  isAddMenuOpen,
-  onToggleAddMenu,
-  onCloseAddMenu,
-  addMenuAnchor,
   isMoreMenuOpen,
   onToggleMoreMenu,
   onCloseMoreMenu,
@@ -385,9 +357,19 @@ function StageCard({
                 <button
                   type="button"
                   className={styles.dropdownItem}
-                  onClick={() => onStartEditing(stage.id, stage.title)}
+                  onClick={() => {
+                    onStartEditing(stage.id, stage.title);
+                    onCloseMoreMenu();
+                  }}
                 >
                   Переименовать
+                </button>
+                <button
+                  type="button"
+                  className={styles.dropdownItem}
+                  onClick={onAddLesson}
+                >
+                  Добавить урок
                 </button>
                 <button
                   type="button"
@@ -431,38 +413,13 @@ function StageCard({
           <div className={styles.separatorLine} />
           <button
             type="button"
-            ref={addBtnRef}
             className={styles.addBtn}
-            onClick={onToggleAddMenu}
-            aria-label="Добавить"
+            onClick={onAddStage}
+            aria-label="Добавить ступень"
           >
             <span className={styles.addBtnIcon}>+</span>
           </button>
         </div>
-      )}
-
-      {isLast && (
-        <DropdownMenu
-          isOpen={isAddMenuOpen}
-          onClose={onCloseAddMenu}
-          anchorRef={addMenuAnchor}
-          className={styles.addDropdown}
-        >
-          <button
-            type="button"
-            className={styles.dropdownItem}
-            onClick={onAddLesson}
-          >
-            Добавить урок
-          </button>
-          <button
-            type="button"
-            className={styles.dropdownItem}
-            onClick={onAddStage}
-          >
-            Добавить ступень
-          </button>
-        </DropdownMenu>
       )}
     </div>
   );
