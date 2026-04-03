@@ -98,12 +98,6 @@ export const CourseConstructorTemplate = ({
 
   // ── Stage handlers ──
 
-  const handleSelectStage = useCallback((stageId: string) => {
-    setActiveStageId(stageId);
-    setActiveLessonId(null);
-    setActiveTaskId(null);
-  }, []);
-
   const handleSelectLesson = useCallback(
     (stageId: string, lessonId: string) => {
       setActiveStageId(stageId);
@@ -374,10 +368,9 @@ export const CourseConstructorTemplate = ({
     }
   }, [courseId, queue, showSuccess, showError]);
 
-  const activeStage = stages.find((s) => s.id === activeStageId);
-  const activeLesson = activeStage?.lessons.find(
-    (l) => l.id === activeLessonId,
-  );
+  const activeLesson = stages
+    .find((s) => s.id === activeStageId)
+    ?.lessons.find((l) => l.id === activeLessonId);
   const activeTask = activeLesson?.tasks.find((t) => t.id === activeTaskId);
 
   if (!initialized && courseId) {
@@ -396,7 +389,6 @@ export const CourseConstructorTemplate = ({
         isSaving={isSaving}
         unsavedCount={queue.queue.length}
         onSave={courseId ? handleSave : undefined}
-        onSelectStage={handleSelectStage}
         onSelectLesson={handleSelectLesson}
         onSelectTask={handleSelectTask}
         onAddStage={handleAddStage}
@@ -425,16 +417,9 @@ export const CourseConstructorTemplate = ({
               Редактирование урока будет доступно после подключения бекенда
             </p>
           </>
-        ) : activeStage ? (
-          <>
-            <h2>{activeStage.title}</h2>
-            <p className={styles.placeholder}>
-              Настройка ступени будет доступна после подключения бекенда
-            </p>
-          </>
         ) : (
           <p className={styles.placeholder}>
-            Выберите ступень, урок или задание для редактирования
+            Выберите урок или задание для редактирования
           </p>
         )}
 
