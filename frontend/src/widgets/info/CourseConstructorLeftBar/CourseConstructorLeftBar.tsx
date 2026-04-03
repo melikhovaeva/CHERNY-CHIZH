@@ -8,7 +8,7 @@ import { Button, LeftBar } from '@/shared/ui';
 import { DropdownMenu } from '@/shared/ui/components';
 import ChevronDownSvg from '@/shared/ui/components/Select/assets/chevron-down.svg?react';
 import UnsyncedIcon from './assets/unsynced.svg?react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './CourseConstructorLeftBar.module.scss';
 
 const ADD_FIRST_STAGE_LABEL = 'Добавить ступень';
@@ -89,6 +89,21 @@ export const CourseConstructorLeftBar = ({
       return next;
     });
   };
+
+  useEffect(() => {
+    setCollapsedStageIds((prev) => {
+      const next = new Set(prev);
+      let changed = false;
+      for (const id of prev) {
+        const stage = stages.find((s) => s.id === id);
+        if (!stage || stage.lessons.length === 0) {
+          next.delete(id);
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [stages]);
 
   const startEditing = (id: string, currentTitle: string) => {
     setEditingId(id);
@@ -315,26 +330,28 @@ function StageCard({
           )}
 
           <div className={styles.headerActions}>
-            {isUnsynced && stage.lessons.length > 0 && (
+            {isUnsynced && (
               <span title="Не сохранено">
                 <UnsyncedIcon className={styles.unsyncedIcon} />
               </span>
             )}
 
-            <button
-              type="button"
-              className={styles.chevronBtn}
-              onClick={onToggleCollapse}
-              aria-label={
-                isCollapsed ? 'Развернуть ступень' : 'Свернуть ступень'
-              }
-            >
-              <ChevronDownSvg
-                className={cn([styles.chevronIcon], {
-                  [styles.chevronIconCollapsed]: isCollapsed,
-                })}
-              />
-            </button>
+            {stage.lessons.length > 0 && (
+              <button
+                type="button"
+                className={styles.chevronBtn}
+                onClick={onToggleCollapse}
+                aria-label={
+                  isCollapsed ? 'Развернуть ступень' : 'Свернуть ступень'
+                }
+              >
+                <ChevronDownSvg
+                  className={cn([styles.chevronIcon], {
+                    [styles.chevronIconCollapsed]: isCollapsed,
+                  })}
+                />
+              </button>
+            )}
 
             <div className={styles.moreWrapper}>
               <button
