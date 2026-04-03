@@ -13,9 +13,26 @@
 .content {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
   background-color: $c-mp-bg-card-light;
   padding: $left-bar-padding;
   border-radius: $left-bar-border-radius;
+  min-height: min(70vh, 900px);
+}
+
+/* Редактор статьи: без внутренних отступов секции — занимает всю площадь карточки */
+.content_flush {
+  padding: 0;
+  min-height: 0;
+}
+
+.articleEditor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 .placeholder {
