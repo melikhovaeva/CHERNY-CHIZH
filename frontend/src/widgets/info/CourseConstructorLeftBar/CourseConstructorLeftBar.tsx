@@ -11,6 +11,8 @@ import UnsyncedIcon from './assets/unsynced.svg?react';
 import { useRef, useState } from 'react';
 import styles from './CourseConstructorLeftBar.module.scss';
 
+const ADD_FIRST_STAGE_LABEL = 'Добавить ступень';
+
 export interface CourseConstructorLeftBarProps {
   stages: ConstructorStage[];
   activeStageId: string | null;
@@ -121,7 +123,23 @@ export const CourseConstructorLeftBar = ({
   return (
     <LeftBar hideHeader>
       <div className={styles.stageList}>
-        {stages.map((stage, index) => (
+        {stages.length === 0 ? (
+          <div className={styles.emptyStageTree}>
+            <button
+              type="button"
+              className={styles.emptyStageCta}
+              onClick={onAddStage}
+            >
+              <span className={styles.emptyStageLabel}>
+                {ADD_FIRST_STAGE_LABEL}
+              </span>
+              <span className={styles.emptyStagePlusBadge} aria-hidden>
+                <span className={styles.addBtnIcon}>+</span>
+              </span>
+            </button>
+          </div>
+        ) : (
+          stages.map((stage, index) => (
           <StageCard
             key={stage.id}
             stage={stage}
@@ -195,7 +213,8 @@ export const CourseConstructorLeftBar = ({
               setOpenMoreMenuId(null);
             }}
           />
-        ))}
+        ))
+        )}
       </div>
 
       {onSave && (
