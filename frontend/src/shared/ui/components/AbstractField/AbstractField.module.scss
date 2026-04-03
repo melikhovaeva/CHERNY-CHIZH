@@ -147,12 +147,65 @@
 
 .selectWrapper {
   position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.selectWrapper_input {
+  display: block;
   width: 100%;
 }
 
-.trigger {
-  position: relative;
+.selectInner {
+  display: grid;
+  grid-template-columns: minmax(0, max-content);
+  grid-template-rows: 50px;
+}
+
+.selectInner_input {
+  display: block;
   width: 100%;
+}
+
+.selectSizer {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 50px;
+  padding: 12px 14px;
+  overflow: hidden;
+}
+
+.selectSizerLabels {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.selectSizerLine {
+  white-space: nowrap;
+  @include typography-text-m;
+}
+
+.selectSizerChevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.trigger {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -177,16 +230,6 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     outline-offset: -1px;
-
-    & + .listWrapper {
-      width: calc(100% + 2px);
-      left: -1px;
-
-      .list {
-        outline: 2px solid $c-b-crm-200;
-        outline-offset: -2px;
-      }
-    }
   }
 
   &_invalid {
@@ -197,6 +240,22 @@
   &_disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+.selectWrapper_default:has(.trigger_open) .listWrapper {
+  width: 100%;
+  left: 0;
+}
+
+.selectWrapper_input:has(.trigger_open) .listWrapper {
+  width: calc(100% + 2px);
+  left: -1px;
+  right: auto;
+
+  .list {
+    outline: 2px solid $c-b-crm-200;
+    outline-offset: -2px;
   }
 }
 
@@ -281,6 +340,48 @@
 
   &_highlighted {
     background-color: $c-b-crm-50;
+  }
+}
+
+// --- Select default variant ---
+
+.selectWrapper_default {
+  .trigger_default {
+    background-color: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    color: $text-inverted-color;
+
+    &.trigger_open {
+      outline: none;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom-color: transparent;
+    }
+  }
+
+  .triggerPlaceholder {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .list {
+    background-color: $c-mp-accent-primary;
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    border-top: none;
+    // Override the blue outline applied by .selectWrapper:has(.trigger_open) .listWrapper .list
+    outline: none !important;
+  }
+
+  .option {
+    color: $text-inverted-color;
+
+    &:hover,
+    &_highlighted {
+      background-color: $c-mp-bg-accent-primary-hover;
+    }
+
+    &_selected {
+      background-color: $c-mp-bg-accent-primary-active;
+    }
   }
 }
 

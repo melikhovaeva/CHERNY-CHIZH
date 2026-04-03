@@ -10,6 +10,7 @@ export interface FieldLayoutProps {
   className?: string;
   children: React.ReactNode;
   charCounter?: React.ReactNode;
+  noFooter?: boolean;
 }
 
 export const FieldLayout = ({
@@ -21,6 +22,7 @@ export const FieldLayout = ({
   className,
   children,
   charCounter,
+  noFooter,
 }: FieldLayoutProps) => {
   const hasError = !!error;
 
@@ -39,17 +41,19 @@ export const FieldLayout = ({
         <span className={styles.helperText}>{helperText}</span>
       )}
 
-      <div className={styles.footerRow}>
-        <span
-          className={cn([styles.error], {
-            [styles.error_visible]: hasError,
-          })}
-          role={hasError ? 'alert' : undefined}
-        >
-          {error || '\u00A0'}
-        </span>
-        {charCounter}
-      </div>
+      {!noFooter && (
+        <div className={styles.footerRow}>
+          <span
+            className={cn([styles.error], {
+              [styles.error_visible]: hasError,
+            })}
+            role={hasError ? 'alert' : undefined}
+          >
+            {error || '\u00A0'}
+          </span>
+          {charCounter}
+        </div>
+      )}
     </div>
   );
 };
