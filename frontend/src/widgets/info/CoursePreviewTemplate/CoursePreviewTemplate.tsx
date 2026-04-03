@@ -5,6 +5,7 @@ import {
   type ConstructorStage,
 } from '@/entities/course';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
+import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CourseConstructorLessonArticle } from '../CourseConstructorTemplate/CourseConstructorLessonArticle';
 import styles from './CoursePreviewTemplate.module.scss';
@@ -133,7 +134,7 @@ export const CoursePreviewTemplate = ({
   const emptyUnsynced = useMemo(() => new Set<string>(), []);
 
   if (!initialized && courseId) {
-    return null;
+    return <CourseWorkspaceSkeleton />;
   }
 
   return (

@@ -1,0 +1,76 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: $content-with-left-bar-gap-desktop;
+  width: 100%;
+
+  @media (max-width: $breakpoint-desktop-md) {
+    grid-template-columns: 1fr;
+    gap: $content-with-left-bar-gap-mobile;
+  }
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: $left-bar-inner-gap;
+  padding: $left-bar-padding;
+  background-color: $c-mp-bg-card-light;
+  border-radius: $left-bar-border-radius;
+  flex-shrink: 0;
+  min-height: min(70vh, 900px);
+}
+
+.stageBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stageTitle {
+  border-radius: 10px;
+}
+
+.lessonStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 12px;
+}
+
+.lessonLine {
+  border-radius: 8px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: $c-mp-bg-card-light;
+  padding: $left-bar-padding;
+  border-radius: $left-bar-border-radius;
+  min-height: min(70vh, 900px);
+}
+
+.titleLine {
+  border-radius: 10px;
+}
+
+.bodyLines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bodyLine {
+  border-radius: 8px;
+}
+
+.bodyBlock {
+  flex: 1;
+  margin-top: 8px;
+  border-radius: 12px;
+  min-height: 200px;
+}
