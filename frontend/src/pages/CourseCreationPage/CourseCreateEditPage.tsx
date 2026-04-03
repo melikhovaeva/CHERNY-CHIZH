@@ -23,8 +23,10 @@ import {
   InfoActionsSection,
   InfoSettingsTemplate,
 } from '@/widgets';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
+import { cn } from '@/shared/lib/utils';
+import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import styles from './CourseCreateEditPage.module.scss';
 
 const COURSE_PAGE_TAB = {
@@ -32,6 +34,10 @@ const COURSE_PAGE_TAB = {
   CONSTRUCTOR: 'constructor',
   SETTINGS: 'settings',
 } as const;
+
+const COURSE_CABINET_LIST_PATH = '/cabinet/courses' as const;
+
+const WORKSPACE_TITLE_MAX_LENGTH = 16;
 
 type CoursePageTab = (typeof COURSE_PAGE_TAB)[keyof typeof COURSE_PAGE_TAB];
 
@@ -193,26 +199,21 @@ export const CourseCreateEditPage = () => {
 
   const infoTitle = isEdit ? (course?.title ?? 'Курс') : 'Создание курса';
   const displayTitle = getInfoDisplayTitle(infoTitle, 'course');
+  const isTitleTruncated = displayTitle.length > WORKSPACE_TITLE_MAX_LENGTH;
+  const truncatedWorkspaceTitle = isTitleTruncated
+    ? `${displayTitle.slice(0, WORKSPACE_TITLE_MAX_LENGTH).trimEnd()}`
+    : displayTitle;
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case COURSE_PAGE_TAB.CONSTRUCTOR:
-        return (
-          <CourseConstructorTemplate
-            backUrl="/cabinet/courses"
-            title={displayTitle}
-            courseId={courseId}
-          />
-        );
+        return <CourseConstructorTemplate courseId={courseId} />;
       case COURSE_PAGE_TAB.PREVIEW:
         return <CoursePreviewTemplate />;
       case COURSE_PAGE_TAB.SETTINGS:
       default:
         return (
           <InfoSettingsTemplate
-            backUrl="/cabinet/courses"
-            title={infoTitle}
-            infoType={INFO_TYPE.COURSE}
             availableSections={
               isEdit ? undefined : [INFO_SETTINGS_SECTION.INFO]
             }
@@ -225,6 +226,24 @@ export const CourseCreateEditPage = () => {
 
   return (
     <div className={styles.root}>
+      <header className={styles.workspaceHeader}>
+        <Link
+          to={COURSE_CABINET_LIST_PATH}
+          className={styles.backNav}
+          aria-label="Назад"
+        >
+          <ArrowLeftIcon className={styles.backNavIcon} aria-hidden />
+          <span className={styles.backNavLabel}>Назад</span>
+        </Link>
+        <h2
+          className={cn([styles.workspaceTitle], {
+            [styles.workspaceTitleTruncated]: isTitleTruncated,
+          })}
+          title={displayTitle}
+        >
+          {truncatedWorkspaceTitle}
+        </h2>
+      </header>
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
