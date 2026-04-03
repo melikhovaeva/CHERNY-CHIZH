@@ -6,10 +6,34 @@ import {
   type ConstructorLesson,
   type ConstructorStage,
 } from '@/entities/course';
+import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CourseConstructorLessonArticle } from './CourseConstructorLessonArticle';
 import styles from './CourseConstructorTemplate.module.scss';
+
+function mergeLessonArticleSlugs(
+  stages: ConstructorStage[],
+  serverSteps: CourseStepRead[],
+): ConstructorStage[] {
+  return stages.map((stage) => {
+    const serverStep = serverSteps.find((s) => s.id === stage.serverId);
+    if (!serverStep) return stage;
+    return {
+      ...stage,
+      lessons: stage.lessons.map((lesson) => {
+        if (lesson.serverId == null) return lesson;
+        const serverLesson = serverStep.lessons.find(
+          (l) => l.id === lesson.serverId,
+        );
+        const slug = serverLesson?.article?.slug;
+        if (slug == null || slug === '') return lesson;
+        return { ...lesson, articleSlug: slug };
+      }),
+    };
+  });
+}
 
 export interface CourseConstructorTemplateProps {
   courseId: number | null;
@@ -21,10 +45,11 @@ export const CourseConstructorTemplate = ({
   const showSuccess = useSuccess();
   const showError = useError();
 
-  const { data: serverSteps, isLoading } = useGetCourseStepsQuery(
-    { coursePk: String(courseId) },
-    { skip: !courseId },
-  );
+  const { data: serverSteps, isLoading, refetch: refetchCourseSteps } =
+    useGetCourseStepsQuery(
+      { coursePk: String(courseId) },
+      { skip: !courseId },
+    );
 
   const [stages, setStages] = useState<ConstructorStage[]>([]);
   const [initialized, setInitialized] = useState(false);
@@ -64,6 +89,7 @@ export const CourseConstructorTemplate = ({
             id: lessonLocalId,
             serverId: lesson.id,
             title: lesson.title,
+            articleSlug: lesson.article?.slug ?? null,
             tasks: lesson.tasks.map((task) => ({
               id: String(task.id),
               title: task.title,
@@ -141,6 +167,7 @@ export const CourseConstructorTemplate = ({
       const newLesson: ConstructorLesson = {
         id: localId,
         title: `Урок ${order + 1}`,
+        articleSlug: null,
         tasks: [],
       };
       queue.enqueueCreateLesson(
@@ -360,13 +387,20 @@ export const CourseConstructorTemplate = ({
         })),
       );
 
+      const refetchResult = await refetchCourseSteps();
+      if (refetchResult.data) {
+        setStages((prev) =>
+          mergeLessonArticleSlugs(prev, refetchResult.data as CourseStepRead[]),
+        );
+      }
+
       showSuccess('Изменения сохранены');
     } catch {
       showError('Не удалось сохранить изменения');
     } finally {
       setIsSaving(false);
     }
-  }, [courseId, queue, showSuccess, showError]);
+  }, [courseId, queue, refetchCourseSteps, showSuccess, showError]);
 
   const activeLesson = stages
     .find((s) => s.id === activeStageId)
@@ -411,12 +445,10 @@ export const CourseConstructorTemplate = ({
             </p>
           </>
         ) : activeLesson ? (
-          <>
-            <h2>{activeLesson.title}</h2>
-            <p className={styles.placeholder}>
-              Редактирование урока будет доступно после подключения бекенда
-            </p>
-          </>
+          <CourseConstructorLessonArticle
+            lessonTitle={activeLesson.title}
+            articleSlug={activeLesson.articleSlug}
+          />
         ) : (
           <p className={styles.placeholder}>
             Выберите урок или задание для редактирования

@@ -7,6 +7,7 @@ export interface ConstructorLesson {
   id: string;
   serverId?: number;
   title: string;
+  articleSlug?: string | null;
   tasks: ConstructorTask[];
 }
 
