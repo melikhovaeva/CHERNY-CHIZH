@@ -209,7 +209,7 @@ export const CourseCreateEditPage = () => {
       case COURSE_PAGE_TAB.CONSTRUCTOR:
         return <CourseConstructorTemplate courseId={courseId} />;
       case COURSE_PAGE_TAB.PREVIEW:
-        return <CoursePreviewTemplate />;
+        return <CoursePreviewTemplate courseId={courseId} />;
       case COURSE_PAGE_TAB.SETTINGS:
       default:
         return (

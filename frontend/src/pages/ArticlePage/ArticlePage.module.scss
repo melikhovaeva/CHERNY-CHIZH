@@ -47,6 +47,40 @@
   p {
     margin-bottom: 1rem;
   }
+
+  figure {
+    margin: 0 0 1rem;
+    max-width: 100%;
+  }
+
+  video {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: $article-embedded-media-max-height;
+    margin: 0 0 1rem;
+    border-radius: 8px;
+    object-fit: contain;
+    background-color: $c-neutral-d-600-4;
+  }
+
+  figure video {
+    margin-bottom: 0;
+  }
+
+  iframe {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    margin: 0 0 1rem;
+    border: 0;
+    border-radius: 8px;
+    aspect-ratio: 16 / 9;
+  }
 }
 
 .skeletonTitle,

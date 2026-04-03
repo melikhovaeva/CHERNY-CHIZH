@@ -69,12 +69,14 @@ export function VideoBlock({
         </label>
       ) : (
         <>
-          <video
-            className={styles.video}
-            src={block.url}
-            controls
-            preload="metadata"
-          />
+          <div className={styles.videoFrame}>
+            <video
+              className={styles.video}
+              src={block.url}
+              controls
+              preload="metadata"
+            />
+          </div>
           {block.title && !isEditing && (
             <p className={styles.titleBelow}>{block.title}</p>
           )}
