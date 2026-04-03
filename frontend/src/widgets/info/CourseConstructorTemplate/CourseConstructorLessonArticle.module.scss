@@ -1,0 +1,91 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.lessonHeading {
+  margin: 0 0 16px;
+  @include typography-h3;
+  color: $c-mp-text-headers;
+}
+
+.hint {
+  margin: 0;
+  color: $c-neutral-500;
+  @include typography-text-m;
+}
+
+.error {
+  margin: 0;
+  color: $c-neutral-900;
+  @include typography-text-m;
+}
+
+.articleBody {
+  @include typography-text-m;
+  color: $c-neutral-900;
+
+  h1 {
+    margin: 1.5rem 0 0.75rem;
+    @include typography-text-l-semibold;
+  }
+
+  h2 {
+    margin: 1.25rem 0 0.5rem;
+    @include typography-text-l-semibold;
+  }
+
+  h3 {
+    margin: 1rem 0 0.5rem;
+    @include typography-text-m-semibold;
+  }
+
+  p {
+    margin: 0 0 1rem;
+  }
+
+  ul,
+  ol {
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+  }
+
+  a {
+    color: $c-b-crm-500;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  pre,
+  code {
+    font-family: ui-monospace, monospace;
+  }
+
+  pre {
+    overflow: auto;
+    padding: 12px;
+    margin: 0 0 1rem;
+    border-radius: 8px;
+    background-color: $c-neutral-d-600-4;
+  }
+}
+
+.skeletonLine {
+  height: 20px;
+  width: 55%;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background-color: $c-neutral-d-600-8;
+}
+
+.skeletonBlock {
+  height: 180px;
+  border-radius: 8px;
+  background-color: $c-neutral-d-600-4;
+}
