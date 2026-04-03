@@ -7,12 +7,18 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_CONFIG } from '../config/api';
 
 const UPLOAD_IMAGE_ENDPOINT = 'v1EducationCoursesUploadImageCreate';
+const UPLOAD_ARTICLE_MEDIA_ENDPOINT = 'uploadArticleMedia';
+
+const ENDPOINTS_WITHOUT_JSON_BODY = new Set<string>([
+  UPLOAD_IMAGE_ENDPOINT,
+  UPLOAD_ARTICLE_MEDIA_ENDPOINT,
+]);
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: API_CONFIG.BASE_URL,
   credentials: 'include',
   prepareHeaders: (headers, { endpoint }) => {
-    if (endpoint === UPLOAD_IMAGE_ENDPOINT) {
+    if (endpoint && ENDPOINTS_WITHOUT_JSON_BODY.has(endpoint)) {
       return headers;
     }
     headers.set('Content-Type', 'application/json');
