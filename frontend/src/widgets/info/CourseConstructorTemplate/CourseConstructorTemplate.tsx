@@ -11,6 +11,7 @@ import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { cn } from '@/shared/lib/utils';
 import { LessonArticleEditor } from '@/features/lesson-article-editor';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
+import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CourseConstructorLessonArticle } from './CourseConstructorLessonArticle';
 import styles from './CourseConstructorTemplate.module.scss';
@@ -410,7 +411,7 @@ export const CourseConstructorTemplate = ({
   const activeTask = activeLesson?.tasks.find((t) => t.id === activeTaskId);
 
   if (!initialized && courseId) {
-    return null;
+    return <CourseWorkspaceSkeleton />;
   }
 
   return (

@@ -4,6 +4,7 @@ export {
 } from './CourseConstructorLeftBar';
 export { CourseConstructorTemplate } from './CourseConstructorTemplate';
 export { CoursePreviewTemplate } from './CoursePreviewTemplate';
+export { CourseWorkspaceSkeleton } from './CourseWorkspaceSkeleton';
 export {
   InfoActionsSection,
   type InfoActionsSectionProps,
