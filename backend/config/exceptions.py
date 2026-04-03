@@ -15,8 +15,6 @@ def custom_exception_handler(exc, context):
 
     if isinstance(exc, (InvalidToken, TokenError)):
         response.delete_cookie(settings.ACCESS_TOKEN_COOKIE_NAME)
-        response.delete_cookie(settings.REFRESH_TOKEN_COOKIE_NAME)
-        response.delete_cookie(getattr(settings, "SESSION_BINDING_COOKIE_NAME", "session_binding"))
         return response
 
     if isinstance(exc, AuthenticationFailed):

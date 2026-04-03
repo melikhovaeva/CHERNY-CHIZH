@@ -26,6 +26,30 @@ const rawBaseQuery = fetchBaseQuery({
   },
 });
 
+let refreshAccessInFlight: Promise<boolean> | null = null;
+
+function refreshAccessToken(
+  api: Parameters<BaseQueryFn>[1],
+  extraOptions: Parameters<BaseQueryFn>[2],
+): Promise<boolean> {
+  if (!refreshAccessInFlight) {
+    refreshAccessInFlight = (async (): Promise<boolean> => {
+      const refreshResult = await rawBaseQuery(
+        {
+          url: API_CONFIG.ENDPOINTS.REFRESH,
+          method: 'POST',
+        },
+        api,
+        extraOptions,
+      );
+      return !refreshResult.error;
+    })().finally(() => {
+      refreshAccessInFlight = null;
+    });
+  }
+  return refreshAccessInFlight;
+}
+
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -34,16 +58,8 @@ const baseQueryWithReauth: BaseQueryFn<
   let result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error && result.error.status === 401) {
-    const refreshResult = await rawBaseQuery(
-      {
-        url: API_CONFIG.ENDPOINTS.REFRESH,
-        method: 'POST',
-      },
-      api,
-      extraOptions,
-    );
-
-    if (!refreshResult.error) {
+    const refreshedOk = await refreshAccessToken(api, extraOptions);
+    if (refreshedOk) {
       result = await rawBaseQuery(args, api, extraOptions);
     }
   }
