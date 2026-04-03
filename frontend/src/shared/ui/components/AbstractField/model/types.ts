@@ -53,6 +53,7 @@ export interface AbstractFieldTextAreaProps extends AbstractFieldBaseProps {
 
 export interface AbstractFieldSelectProps extends AbstractFieldBaseProps {
   variant: typeof ABSTRACT_FIELD_VARIANT.SELECT;
+  styleVariant?: 'default' | 'input';
   value?: string;
   onChange?: (value: string) => void;
   options: SelectOption[];

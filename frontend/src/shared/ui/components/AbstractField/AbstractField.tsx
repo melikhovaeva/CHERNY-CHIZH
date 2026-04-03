@@ -205,7 +205,9 @@ function SelectCore({
   disabled,
   label,
   hasError,
+  styleVariant,
 }: AbstractFieldSelectProps & { hasError: boolean }) {
+  const isDefault = styleVariant === 'default';
   const dropdown = useDropdownState(disabled);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
@@ -298,38 +300,66 @@ function SelectCore({
     </span>
   );
 
+  const placeholderText = placeholder ?? 'Выберите...';
+
   const activeOptionId =
     highlightedIndex != null && options[highlightedIndex]
       ? `${LIST_OPTION_ID_PREFIX}${options[highlightedIndex].value}`
       : undefined;
 
   return (
-    <div className={styles.selectWrapper} ref={dropdown.containerRef}>
-      <button
-        ref={triggerRef}
-        type="button"
-        className={cn([styles.trigger], {
-          [styles.trigger_open]: dropdown.isOpen,
-          [styles.trigger_invalid]: hasError,
-          [styles.trigger_disabled]: !!disabled,
+    <div
+      className={cn([styles.selectWrapper], {
+        [styles.selectWrapper_default]: isDefault,
+        [styles.selectWrapper_input]: !isDefault,
+      })}
+      ref={dropdown.containerRef}
+    >
+      <div
+        className={cn([styles.selectInner], {
+          [styles.selectInner_input]: !isDefault,
         })}
-        onClick={dropdown.toggle}
-        onKeyDown={handleTriggerKeyDown}
-        disabled={disabled}
-        aria-expanded={dropdown.isOpen}
-        aria-haspopup="listbox"
-        aria-label={label}
-        aria-activedescendant={dropdown.isOpen ? activeOptionId : undefined}
       >
-        {triggerContent}
-        <span
-          className={cn([styles.chevron], {
-            [styles.chevron_open]: dropdown.isOpen,
+        {isDefault && (
+          <div className={styles.selectSizer} aria-hidden>
+            <div className={styles.selectSizerLabels}>
+              {options.map((option) => (
+                <span key={option.value} className={styles.selectSizerLine}>
+                  {option.label}
+                </span>
+              ))}
+              <span className={styles.selectSizerLine}>{placeholderText}</span>
+            </div>
+            <span className={styles.selectSizerChevron} />
+          </div>
+        )}
+        <button
+          ref={triggerRef}
+          type="button"
+          className={cn([styles.trigger], {
+            [styles.trigger_default]: isDefault,
+            [styles.trigger_open]: dropdown.isOpen,
+            [styles.trigger_invalid]: hasError,
+            [styles.trigger_disabled]: !!disabled,
           })}
+          onClick={dropdown.toggle}
+          onKeyDown={handleTriggerKeyDown}
+          disabled={disabled}
+          aria-expanded={dropdown.isOpen}
+          aria-haspopup="listbox"
+          aria-label={label}
+          aria-activedescendant={dropdown.isOpen ? activeOptionId : undefined}
         >
-          <ChevronDownIcon width={16} height={16} aria-hidden />
-        </span>
-      </button>
+          {triggerContent}
+          <span
+            className={cn([styles.chevron], {
+              [styles.chevron_open]: dropdown.isOpen,
+            })}
+          >
+            <ChevronDownIcon width={16} height={16} aria-hidden />
+          </span>
+        </button>
+      </div>
 
       {(dropdown.isOpen || dropdown.isClosing) && (
         <div className={styles.listWrapper}>
@@ -661,15 +691,20 @@ export const AbstractField = forwardRef<
     </span>
   ) : undefined;
 
+  const isDefaultSelectVariant =
+    props.variant === ABSTRACT_FIELD_VARIANT.SELECT &&
+    (props as AbstractFieldSelectProps).styleVariant === 'default';
+
   return (
     <FieldLayout
-      label={props.label}
-      error={props.error}
-      helperText={props.helperText}
-      required={props.required}
+      label={isDefaultSelectVariant ? undefined : props.label}
+      error={isDefaultSelectVariant ? undefined : props.error}
+      helperText={isDefaultSelectVariant ? undefined : props.helperText}
+      required={isDefaultSelectVariant ? undefined : props.required}
       id={fieldId}
       className={props.className}
       charCounter={charCounterNode}
+      noFooter={isDefaultSelectVariant}
     >
       {control}
     </FieldLayout>

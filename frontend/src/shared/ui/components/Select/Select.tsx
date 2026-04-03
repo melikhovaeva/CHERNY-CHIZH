@@ -1,6 +1,6 @@
 import { AbstractField } from '@/shared/ui/components/AbstractField';
-import { ABSTRACT_FIELD_VARIANT } from '@/shared/ui/components/AbstractField/model/types';
 import type { SelectOption as AbstractFieldSelectOption } from '@/shared/ui/components/AbstractField/model/types';
+import { ABSTRACT_FIELD_VARIANT } from '@/shared/ui/components/AbstractField/model/types';
 import { useState } from 'react';
 
 export type SelectOption = AbstractFieldSelectOption;
@@ -21,6 +21,7 @@ export interface SelectProps {
 export const Select = ({
   label,
   options,
+  variant = 'default',
   value: valueProp,
   onChange,
   className,
@@ -41,6 +42,7 @@ export const Select = ({
   return (
     <AbstractField
       variant={ABSTRACT_FIELD_VARIANT.SELECT}
+      styleVariant={variant}
       label={label}
       options={options}
       value={value}
