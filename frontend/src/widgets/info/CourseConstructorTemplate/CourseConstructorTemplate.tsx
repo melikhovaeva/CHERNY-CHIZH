@@ -8,6 +8,8 @@ import {
 } from '@/entities/course';
 import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
+import { cn } from '@/shared/lib/utils';
+import { LessonArticleEditor } from '@/features/lesson-article-editor';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CourseConstructorLessonArticle } from './CourseConstructorLessonArticle';
@@ -436,7 +438,12 @@ export const CourseConstructorTemplate = ({
         onRenameTask={handleRenameTask}
       />
 
-      <div className={styles.content}>
+      <div
+        className={cn([
+          styles.content,
+          ...(activeLesson?.articleSlug ? [styles.content_flush] : []),
+        ])}
+      >
         {activeTask ? (
           <>
             <h2>{activeTask.title}</h2>
@@ -444,6 +451,24 @@ export const CourseConstructorTemplate = ({
               Редактирование задания будет доступно после подключения бекенда
             </p>
           </>
+        ) : activeLesson && activeLesson.articleSlug ? (
+          <div className={styles.articleEditor}>
+            <LessonArticleEditor
+              variant="embedded"
+              articleSlug={activeLesson.articleSlug}
+              lessonTitle={activeLesson.title}
+              onLessonTitleChange={(t) => {
+                if (activeStageId && activeLessonId) {
+                  handleRenameLesson(activeStageId, activeLessonId, t);
+                }
+              }}
+              onDeleteLesson={() => {
+                if (activeStageId && activeLessonId) {
+                  handleDeleteLesson(activeStageId, activeLessonId);
+                }
+              }}
+            />
+          </div>
         ) : activeLesson ? (
           <CourseConstructorLessonArticle
             lessonTitle={activeLesson.title}
@@ -454,7 +479,6 @@ export const CourseConstructorTemplate = ({
             Выберите урок или задание для редактирования
           </p>
         )}
-
       </div>
     </div>
   );
