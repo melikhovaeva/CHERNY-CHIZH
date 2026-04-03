@@ -8,6 +8,77 @@
   min-height: 0;
 }
 
+.emptyStageTree {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  min-height: 120px;
+  padding: 8px 0 16px;
+}
+
+.emptyStageCta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px dashed $c-neutral-200;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  background-color: $c-neutral-d-600-4;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+    border-color: $c-neutral-300;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: $c-b-crm-500;
+    box-shadow: 0 0 0 2px $c-b-crm-d-500-32;
+  }
+}
+
+.emptyStageLabel {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  @include typography-text-m-semibold;
+  color: $c-mp-text-headers;
+}
+
+.emptyStagePlusBadge {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: $c-neutral-900;
+  transition:
+    transform 0.15s,
+    background-color 0.15s;
+
+  .emptyStageCta:hover & {
+    background-color: $c-neutral-800;
+    transform: scale(1.08);
+  }
+
+  .emptyStageCta:focus-visible & {
+    background-color: $c-neutral-800;
+  }
+}
+
 .stageBlock {
   position: relative;
   display: flex;
