@@ -12,8 +12,6 @@ import { useRef, useState } from 'react';
 import styles from './CourseConstructorLeftBar.module.scss';
 
 export interface CourseConstructorLeftBarProps {
-  backUrl: string;
-  title: string;
   stages: ConstructorStage[];
   activeStageId: string | null;
   activeLessonId: string | null;
@@ -47,8 +45,6 @@ export interface CourseConstructorLeftBarProps {
 }
 
 export const CourseConstructorLeftBar = ({
-  backUrl,
-  title,
   stages,
   activeStageId,
   activeLessonId,
@@ -123,7 +119,7 @@ export const CourseConstructorLeftBar = ({
   };
 
   return (
-    <LeftBar backUrl={backUrl} title={title}>
+    <LeftBar hideHeader>
       <div className={styles.stageList}>
         {stages.map((stage, index) => (
           <StageCard

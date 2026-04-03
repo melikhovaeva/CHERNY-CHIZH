@@ -4,6 +4,72 @@
   width: 100%;
 }
 
+.workspaceHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  margin-bottom: 12px;
+}
+
+.backNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: $c-mp-text-headers;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+    color: $c-neutral-900;
+  }
+
+  &:focus-visible {
+    color: $c-b-crm-500;
+  }
+}
+
+.backNavIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.backNavLabel {
+  @include typography-text-m;
+  margin: 0;
+}
+
+.workspaceTitle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(60vw, 480px);
+  margin: 0;
+  padding: 0 8px;
+  text-align: center;
+  @include typography-text-l-semibold;
+  color: $c-mp-text-headers;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workspaceTitleTruncated {
+  cursor: help;
+}
+
 .tabs {
   display: flex;
   justify-content: center;

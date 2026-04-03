@@ -3,13 +3,31 @@ import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?re
 import { Link } from '@tanstack/react-router';
 import styles from './LeftBar.module.scss';
 
-export interface LeftBarProps {
-  backUrl: string;
-  title: string;
-  children?: React.ReactNode;
-}
+export type LeftBarProps =
+  | {
+      hideHeader: true;
+      children?: React.ReactNode;
+    }
+  | {
+      hideHeader?: false;
+      backUrl: string;
+      title: string;
+      children?: React.ReactNode;
+    };
 
-export const LeftBar = ({ backUrl, title, children }: LeftBarProps) => {
+export const LeftBar = (props: LeftBarProps) => {
+  if (props.hideHeader) {
+    const { children } = props;
+    return (
+      <aside className={styles.root}>
+        {children != null ? (
+          <div className={styles.content}>{children}</div>
+        ) : null}
+      </aside>
+    );
+  }
+
+  const { backUrl, title, children } = props;
   const MAX_TITLE_LENGTH = 16;
   const isTruncated = title.length > MAX_TITLE_LENGTH;
   const truncatedTitle = isTruncated

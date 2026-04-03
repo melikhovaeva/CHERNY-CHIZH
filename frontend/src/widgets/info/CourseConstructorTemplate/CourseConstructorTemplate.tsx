@@ -12,14 +12,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './CourseConstructorTemplate.module.scss';
 
 export interface CourseConstructorTemplateProps {
-  backUrl: string;
-  title: string;
   courseId: number | null;
 }
 
 export const CourseConstructorTemplate = ({
-  backUrl,
-  title,
   courseId,
 }: CourseConstructorTemplateProps) => {
   const showSuccess = useSuccess();
@@ -391,8 +387,6 @@ export const CourseConstructorTemplate = ({
   return (
     <div className={styles.root}>
       <CourseConstructorLeftBar
-        backUrl={backUrl}
-        title={title}
         stages={stages}
         activeStageId={activeStageId}
         activeLessonId={activeLessonId}
