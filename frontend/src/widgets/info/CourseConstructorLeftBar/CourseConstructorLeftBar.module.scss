@@ -8,6 +8,13 @@
   min-height: 0;
 }
 
+.emptyReadonlyHint {
+  margin: 0;
+  padding: 12px 4px 16px;
+  color: $c-neutral-500;
+  @include typography-text-s;
+}
+
 .emptyStageTree {
   display: flex;
   flex-direction: column;

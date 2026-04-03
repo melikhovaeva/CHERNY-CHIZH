@@ -11,6 +11,12 @@
   color: $c-mp-text-headers;
 }
 
+.previewTask {
+  margin: -8px 0 16px;
+  color: $c-neutral-600;
+  @include typography-text-m;
+}
+
 .hint {
   margin: 0;
   color: $c-neutral-500;
@@ -60,6 +66,40 @@
     max-width: 100%;
     height: auto;
     border-radius: 8px;
+  }
+
+  figure {
+    margin: 0 0 1rem;
+    max-width: 100%;
+  }
+
+  video {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: $article-embedded-media-max-height;
+    margin: 0 0 1rem;
+    border-radius: 8px;
+    object-fit: contain;
+    background-color: $c-neutral-d-600-4;
+  }
+
+  figure video {
+    margin-bottom: 0;
+  }
+
+  iframe {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    margin: 0 0 1rem;
+    border: 0;
+    border-radius: 8px;
+    aspect-ratio: 16 / 9;
   }
 
   pre,

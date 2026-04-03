@@ -319,6 +319,9 @@ $c-mp-text-body-inverted: $c-neutral-0;
 $c-mp-text-placeholder: $c-neutral-500;
 $c-mp-text-urls: $c-b-crm-500;
 
+/** Видео/iframes в HTML статей и в редакторе: max высота, пропорции через object-fit / aspect-ratio */
+$article-embedded-media-max-height: min(70vh, 640px);
+
 // Background
 $c-mp-bg-body: $c-b-beige-50;
 

@@ -13,11 +13,16 @@ import styles from './CourseConstructorLeftBar.module.scss';
 
 const ADD_FIRST_STAGE_LABEL = 'Добавить ступень';
 
+const EMPTY_PREVIEW_HINT =
+  'В программе курса пока нет уроков. Добавьте ступени и уроки в конструкторе.';
+
 export interface CourseConstructorLeftBarProps {
   stages: ConstructorStage[];
   activeStageId: string | null;
   activeLessonId: string | null;
   activeTaskId: string | null;
+  /** Только навигация: без сохранения, переименований и удаления. */
+  readOnly?: boolean;
   unsyncedIds?: Set<string>;
   hasChanges?: boolean;
   isSaving?: boolean;
@@ -50,6 +55,7 @@ export const CourseConstructorLeftBar = ({
   activeStageId,
   activeLessonId,
   activeTaskId,
+  readOnly = false,
   unsyncedIds,
   hasChanges,
   isSaving,
@@ -135,25 +141,30 @@ export const CourseConstructorLeftBar = ({
     <LeftBar hideHeader>
       <div className={styles.stageList}>
         {stages.length === 0 ? (
-          <div className={styles.emptyStageTree}>
-            <button
-              type="button"
-              className={styles.emptyStageCta}
-              onClick={onAddStage}
-            >
-              <span className={styles.emptyStageLabel}>
-                {ADD_FIRST_STAGE_LABEL}
-              </span>
-              <span className={styles.emptyStagePlusBadge} aria-hidden>
-                <span className={styles.addBtnIcon}>+</span>
-              </span>
-            </button>
-          </div>
+          readOnly ? (
+            <p className={styles.emptyReadonlyHint}>{EMPTY_PREVIEW_HINT}</p>
+          ) : (
+            <div className={styles.emptyStageTree}>
+              <button
+                type="button"
+                className={styles.emptyStageCta}
+                onClick={onAddStage}
+              >
+                <span className={styles.emptyStageLabel}>
+                  {ADD_FIRST_STAGE_LABEL}
+                </span>
+                <span className={styles.emptyStagePlusBadge} aria-hidden>
+                  <span className={styles.addBtnIcon}>+</span>
+                </span>
+              </button>
+            </div>
+          )
         ) : (
           stages.map((stage, index) => (
           <StageCard
             key={stage.id}
             stage={stage}
+            readOnly={readOnly}
             isLast={index === stages.length - 1}
             isCollapsed={collapsedStageIds.has(stage.id)}
             unsyncedIds={unsyncedIds}
@@ -210,7 +221,7 @@ export const CourseConstructorLeftBar = ({
         )}
       </div>
 
-      {onSave && (
+      {!readOnly && onSave && (
         <div className={styles.saveBar}>
           {hasChanges && (
             <span className={styles.unsavedHint}>
@@ -234,6 +245,7 @@ export const CourseConstructorLeftBar = ({
 
 interface StageCardProps {
   stage: ConstructorStage;
+  readOnly: boolean;
   isLast: boolean;
   isCollapsed: boolean;
   unsyncedIds?: Set<string>;
@@ -267,6 +279,7 @@ interface StageCardProps {
 
 function StageCard({
   stage,
+  readOnly,
   isLast,
   isCollapsed,
   unsyncedIds,
@@ -293,7 +306,7 @@ function StageCard({
   onAddStage,
   onDeleteStage,
 }: StageCardProps) {
-  const isEditingStage = editingId === stage.id;
+  const isEditingStage = !readOnly && editingId === stage.id;
   const isUnsynced = unsyncedIds?.has(stage.id) ?? false;
 
   return (
@@ -316,7 +329,7 @@ function StageCard({
           )}
 
           <div className={styles.headerActions}>
-            {isUnsynced && (
+            {!readOnly && isUnsynced && (
               <span title="Не сохранено">
                 <UnsyncedIcon className={styles.unsyncedIcon} />
               </span>
@@ -339,59 +352,62 @@ function StageCard({
               </button>
             )}
 
-            <div className={styles.moreWrapper}>
-              <button
-                type="button"
-                ref={moreBtnRef}
-                className={styles.moreBtn}
-                onClick={onToggleMoreMenu}
-                aria-label="Действия со ступенью"
-              >
-                <span className={styles.moreDot} />
-                <span className={styles.moreDot} />
-                <span className={styles.moreDot} />
-              </button>
-              <DropdownMenu
-                isOpen={isMoreMenuOpen}
-                onClose={onCloseMoreMenu}
-                anchorRef={moreMenuAnchor}
-                className={styles.dropdown}
-              >
+            {!readOnly && (
+              <div className={styles.moreWrapper}>
                 <button
                   type="button"
-                  className={styles.dropdownItem}
-                  onClick={() => {
-                    onStartEditing(stage.id, stage.title);
-                    onCloseMoreMenu();
-                  }}
+                  ref={moreBtnRef}
+                  className={styles.moreBtn}
+                  onClick={onToggleMoreMenu}
+                  aria-label="Действия со ступенью"
                 >
-                  Переименовать
+                  <span className={styles.moreDot} />
+                  <span className={styles.moreDot} />
+                  <span className={styles.moreDot} />
                 </button>
-                <button
-                  type="button"
-                  className={styles.dropdownItem}
-                  onClick={onAddLesson}
+                <DropdownMenu
+                  isOpen={isMoreMenuOpen}
+                  onClose={onCloseMoreMenu}
+                  anchorRef={moreMenuAnchor}
+                  className={styles.dropdown}
                 >
-                  Добавить урок
-                </button>
-                <button
-                  type="button"
-                  className={cn([
-                    styles.dropdownItem,
-                    styles.dropdownItemDanger,
-                  ])}
-                  onClick={onDeleteStage}
-                >
-                  Удалить
-                </button>
-              </DropdownMenu>
-            </div>
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={() => {
+                      onStartEditing(stage.id, stage.title);
+                      onCloseMoreMenu();
+                    }}
+                  >
+                    Переименовать
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.dropdownItem}
+                    onClick={onAddLesson}
+                  >
+                    Добавить урок
+                  </button>
+                  <button
+                    type="button"
+                    className={cn([
+                      styles.dropdownItem,
+                      styles.dropdownItemDanger,
+                    ])}
+                    onClick={onDeleteStage}
+                  >
+                    Удалить
+                  </button>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
         </div>
 
         {!isCollapsed && stage.lessons.length > 0 && (
           <LessonsList
             stageId={stage.id}
+            readOnly={readOnly}
             lessons={stage.lessons}
             activeLessonId={activeLessonId}
             activeTaskId={activeTaskId}
@@ -411,7 +427,7 @@ function StageCard({
         )}
       </div>
 
-      {isLast && (
+      {!readOnly && isLast && (
         <div className={styles.separator}>
           <div className={styles.separatorLine} />
           <button
@@ -466,6 +482,7 @@ function InlineEditor({
 
 interface LessonsListProps {
   stageId: string;
+  readOnly: boolean;
   lessons: ConstructorLesson[];
   activeLessonId: string | null;
   activeTaskId: string | null;
@@ -489,6 +506,7 @@ interface LessonsListProps {
 
 function LessonsList({
   stageId,
+  readOnly,
   lessons,
   activeLessonId,
   activeTaskId,
@@ -531,6 +549,7 @@ function LessonsList({
           <div key={lesson.id} className={styles.lessonGroup}>
             <LessonItem
               stageId={stageId}
+              readOnly={readOnly}
               lesson={lesson}
               isActive={activeLessonId === lesson.id && !activeTaskId}
               isUnsynced={unsyncedIds?.has(lesson.id) ?? false}
@@ -564,6 +583,7 @@ function LessonsList({
                 key={task.id}
                 stageId={stageId}
                 lessonId={lesson.id}
+                readOnly={readOnly}
                 task={task}
                 isActive={
                   activeLessonId === lesson.id && activeTaskId === task.id
@@ -592,7 +612,7 @@ function LessonsList({
               />
             ))}
 
-            {!isCollapsed && (
+            {!readOnly && !isCollapsed && (
               <button
                 type="button"
                 className={styles.addTaskBtn}
@@ -612,6 +632,7 @@ function LessonsList({
 
 interface LessonItemProps {
   stageId: string;
+  readOnly: boolean;
   lesson: ConstructorLesson;
   isActive: boolean;
   isUnsynced: boolean;
@@ -638,6 +659,7 @@ interface LessonItemProps {
 
 function LessonItem({
   stageId,
+  readOnly,
   lesson,
   isActive,
   isUnsynced,
@@ -657,7 +679,7 @@ function LessonItem({
   menuBtnRef,
   menuAnchor,
 }: LessonItemProps) {
-  const isEditing = editingId === lesson.id;
+  const isEditing = !readOnly && editingId === lesson.id;
 
   const hasTasks = lesson.tasks.length > 0;
 
@@ -683,7 +705,7 @@ function LessonItem({
         </button>
       )}
 
-      {isUnsynced && (
+      {!readOnly && isUnsynced && (
         <span title="Не сохранено">
           <UnsyncedIcon className={styles.unsyncedIconSmall} />
         </span>
@@ -704,46 +726,48 @@ function LessonItem({
         </button>
       )}
 
-      <div className={styles.moreWrapper}>
-        <button
-          type="button"
-          ref={menuBtnRef}
-          className={styles.itemMoreBtn}
-          onClick={onToggleMenu}
-          aria-label={`Действия с ${lesson.title}`}
-        >
-          <span className={styles.itemMoreDot} />
-          <span className={styles.itemMoreDot} />
-          <span className={styles.itemMoreDot} />
-        </button>
-        <DropdownMenu
-          isOpen={isMenuOpen}
-          onClose={onCloseMenu}
-          anchorRef={menuAnchor}
-          className={styles.dropdown}
-        >
+      {!readOnly && (
+        <div className={styles.moreWrapper}>
           <button
             type="button"
-            className={styles.dropdownItem}
-            onClick={() => {
-              onStartEditing(lesson.id, lesson.title);
-              onCloseMenu();
-            }}
+            ref={menuBtnRef}
+            className={styles.itemMoreBtn}
+            onClick={onToggleMenu}
+            aria-label={`Действия с ${lesson.title}`}
           >
-            Переименовать
+            <span className={styles.itemMoreDot} />
+            <span className={styles.itemMoreDot} />
+            <span className={styles.itemMoreDot} />
           </button>
-          <button
-            type="button"
-            className={cn([styles.dropdownItem, styles.dropdownItemDanger])}
-            onClick={() => {
-              onDelete();
-              onCloseMenu();
-            }}
+          <DropdownMenu
+            isOpen={isMenuOpen}
+            onClose={onCloseMenu}
+            anchorRef={menuAnchor}
+            className={styles.dropdown}
           >
-            Удалить
-          </button>
-        </DropdownMenu>
-      </div>
+            <button
+              type="button"
+              className={styles.dropdownItem}
+              onClick={() => {
+                onStartEditing(lesson.id, lesson.title);
+                onCloseMenu();
+              }}
+            >
+              Переименовать
+            </button>
+            <button
+              type="button"
+              className={cn([styles.dropdownItem, styles.dropdownItemDanger])}
+              onClick={() => {
+                onDelete();
+                onCloseMenu();
+              }}
+            >
+              Удалить
+            </button>
+          </DropdownMenu>
+        </div>
+      )}
     </div>
   );
 }
@@ -753,6 +777,7 @@ function LessonItem({
 interface TaskItemProps {
   stageId: string;
   lessonId: string;
+  readOnly: boolean;
   task: ConstructorTask;
   isActive: boolean;
   editingId: string | null;
@@ -777,6 +802,7 @@ interface TaskItemProps {
 function TaskItem({
   stageId,
   lessonId,
+  readOnly,
   task,
   isActive,
   editingId,
@@ -793,7 +819,7 @@ function TaskItem({
   menuBtnRef,
   menuAnchor,
 }: TaskItemProps) {
-  const isEditing = editingId === task.id;
+  const isEditing = !readOnly && editingId === task.id;
 
   return (
     <div className={styles.taskItem}>
@@ -817,46 +843,48 @@ function TaskItem({
         </button>
       )}
 
-      <div className={styles.moreWrapper}>
-        <button
-          type="button"
-          ref={menuBtnRef}
-          className={styles.itemMoreBtn}
-          onClick={onToggleMenu}
-          aria-label={`Действия с ${task.title}`}
-        >
-          <span className={styles.itemMoreDot} />
-          <span className={styles.itemMoreDot} />
-          <span className={styles.itemMoreDot} />
-        </button>
-        <DropdownMenu
-          isOpen={isMenuOpen}
-          onClose={onCloseMenu}
-          anchorRef={menuAnchor}
-          className={styles.dropdown}
-        >
+      {!readOnly && (
+        <div className={styles.moreWrapper}>
           <button
             type="button"
-            className={styles.dropdownItem}
-            onClick={() => {
-              onStartEditing(task.id, task.title);
-              onCloseMenu();
-            }}
+            ref={menuBtnRef}
+            className={styles.itemMoreBtn}
+            onClick={onToggleMenu}
+            aria-label={`Действия с ${task.title}`}
           >
-            Переименовать
+            <span className={styles.itemMoreDot} />
+            <span className={styles.itemMoreDot} />
+            <span className={styles.itemMoreDot} />
           </button>
-          <button
-            type="button"
-            className={cn([styles.dropdownItem, styles.dropdownItemDanger])}
-            onClick={() => {
-              onDelete();
-              onCloseMenu();
-            }}
+          <DropdownMenu
+            isOpen={isMenuOpen}
+            onClose={onCloseMenu}
+            anchorRef={menuAnchor}
+            className={styles.dropdown}
           >
-            Удалить
-          </button>
-        </DropdownMenu>
-      </div>
+            <button
+              type="button"
+              className={styles.dropdownItem}
+              onClick={() => {
+                onStartEditing(task.id, task.title);
+                onCloseMenu();
+              }}
+            >
+              Переименовать
+            </button>
+            <button
+              type="button"
+              className={cn([styles.dropdownItem, styles.dropdownItemDanger])}
+              onClick={() => {
+                onDelete();
+                onCloseMenu();
+              }}
+            >
+              Удалить
+            </button>
+          </DropdownMenu>
+        </div>
+      )}
     </div>
   );
 }
