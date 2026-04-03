@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from common.models import OrderedCodeLabelModel, OrderedItemModel, TimeStampModel
-from education.markdown_utils import sanitize_html
+from education.markdown_utils import blocks_to_html, sanitize_html
 
 
 class InfoTag(OrderedCodeLabelModel):
@@ -95,6 +95,11 @@ class Article(InfoModel):
     content = models.TextField(
         help_text="HTML-контент статьи (санитизируется при сохранении).",
     )
+    content_blocks = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Блоки контента для редактора. Если непусто — content генерируется из блоков.",
+    )
 
     class Meta:
         db_table = "common_article"
@@ -102,7 +107,10 @@ class Article(InfoModel):
         verbose_name_plural = "Статьи"
 
     def save(self, *args, **kwargs):
-        self.content = sanitize_html(self.content or "")
+        if self.content_blocks:
+            self.content = blocks_to_html(self.content_blocks)
+        else:
+            self.content = sanitize_html(self.content or "")
         super().save(*args, **kwargs)
 
 
