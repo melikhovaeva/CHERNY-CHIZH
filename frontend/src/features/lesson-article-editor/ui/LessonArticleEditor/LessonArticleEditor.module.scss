@@ -1,0 +1,55 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  width: 100%;
+  min-height: 60vh;
+  padding: 16px 20px 32px;
+  background-color: $c-mp-bg-card-light;
+  border-radius: $left-bar-border-radius;
+}
+
+.root_embedded {
+  min-height: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loading,
+.error {
+  @include typography-text-m;
+  color: $c-neutral-600;
+}
+
+.error {
+  color: $error-color;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 800px;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.root_embedded .body {
+  max-width: 720px;
+  width: 100%;
+  padding: 16px 20px 24px;
+  box-sizing: border-box;
+}
+
+.bottomPanel {
+  margin-top: 16px;
+}

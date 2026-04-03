@@ -1,0 +1,316 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.root {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+}
+
+.editorShell {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 12px;
+  background-color: $c-neutral-0;
+  box-shadow: 0 1px 8px $c-neutral-d-600-12;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid $c-neutral-200;
+  border-radius: 12px 12px 0 0;
+  background-color: $c-neutral-0;
+}
+
+.toolbarGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbarDivider {
+  align-self: stretch;
+  width: 1px;
+  min-height: 24px;
+  margin: 0 2px;
+  background-color: $c-neutral-200;
+}
+
+.toolIconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: $c-neutral-900;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-16;
+  }
+}
+
+.toolbarIcon {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.toolbarIconLink {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.colorTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-16;
+  }
+}
+
+.colorDot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid $c-neutral-300;
+  box-sizing: border-box;
+}
+
+.colorInputHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.toolbarSelect {
+  min-width: 120px;
+  max-width: 160px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  border: 1px solid $c-neutral-200;
+  border-radius: 6px;
+  background-color: $c-neutral-0;
+  background-image: linear-gradient(45deg, transparent 50%, $c-neutral-600 50%),
+    linear-gradient(135deg, $c-neutral-600 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) calc(50% + 2px),
+    calc(100% - 11px) calc(50% + 2px);
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  @include typography-text-s;
+  color: $c-mp-text-body;
+  appearance: none;
+
+  &:hover {
+    border-color: $c-neutral-300;
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: $c-neutral-400;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-12;
+  }
+}
+
+.toolBtnText {
+  min-height: 32px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  @include typography-text-s;
+  color: $c-neutral-600;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+    color: $c-neutral-900;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $c-neutral-d-600-16;
+  }
+}
+
+.editable {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 160px;
+  padding: 16px 18px 20px;
+  border: none;
+  border-radius: 0 0 12px 12px;
+  outline: none;
+  background-color: $c-neutral-0;
+  @include typography-text-m;
+  color: $c-mp-text-body;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:empty::before {
+    content: attr(data-placeholder);
+    color: $c-mp-text-placeholder;
+  }
+
+  :where(h2) {
+    margin: 0 0 0.5em;
+    @include typography-text-l-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(h3) {
+    margin: 0 0 0.45em;
+    @include typography-text-m-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(p) {
+    margin: 0 0 0.5em;
+  }
+
+  :where(ul, ol) {
+    margin: 0.5em 0;
+    padding-left: 1.75em;
+    list-style-position: outside;
+  }
+
+  :where(ul) {
+    list-style-type: disc;
+  }
+
+  :where(ol) {
+    list-style-type: decimal;
+  }
+
+  /* Глобальный reset: ul, ul li { list-style: none } — явно возвращаем маркеры. */
+  :where(ul li) {
+    list-style-type: disc;
+    list-style-position: outside;
+  }
+
+  :where(ol li) {
+    list-style-type: decimal;
+    list-style-position: outside;
+  }
+
+  :where(li) {
+    display: list-item;
+    margin: 0.2em 0;
+    padding-left: 0.25em;
+  }
+
+  :where(ul ul, ol ol, ul ol, ol ul) {
+    margin: 0.35em 0;
+  }
+
+  :where(a) {
+    color: $c-mp-text-urls;
+    text-decoration: underline;
+  }
+}
+
+.readonly {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 0;
+  @include typography-text-m;
+  color: $c-mp-text-body;
+
+  :where(h2) {
+    margin: 0 0 0.5em;
+    @include typography-text-l-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(h3) {
+    margin: 0 0 0.45em;
+    @include typography-text-m-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(p) {
+    margin: 0 0 0.5em;
+  }
+
+  :where(ul, ol) {
+    margin: 0.5em 0;
+    padding-left: 1.75em;
+    list-style-position: outside;
+  }
+
+  :where(ul) {
+    list-style-type: disc;
+  }
+
+  :where(ol) {
+    list-style-type: decimal;
+  }
+
+  :where(ul li) {
+    list-style-type: disc;
+    list-style-position: outside;
+  }
+
+  :where(ol li) {
+    list-style-type: decimal;
+    list-style-position: outside;
+  }
+
+  :where(li) {
+    display: list-item;
+    margin: 0.2em 0;
+    padding-left: 0.25em;
+  }
+
+  :where(ul ul, ol ol, ul ol, ol ul) {
+    margin: 0.35em 0;
+  }
+
+  :where(a) {
+    color: $c-mp-text-urls;
+    text-decoration: underline;
+  }
+}

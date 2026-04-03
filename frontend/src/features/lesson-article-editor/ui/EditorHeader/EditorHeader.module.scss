@@ -1,0 +1,230 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+/* Токены шапки редактора (макет) */
+$editor-header-bar-bg: #f2f2f2;
+$editor-publish-blue: #2b2dfa;
+$editor-publish-blue-hover: #2428d4;
+$editor-gear-bg: #0c0d0d;
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.root_embedded {
+  margin: 0;
+  padding: 18px 20px;
+  background-color: $editor-header-bar-bg;
+  border-radius: $left-bar-border-radius $left-bar-border-radius 0 0;
+  border-bottom: 1px solid $c-neutral-200;
+}
+
+.root_page {
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  background-color: $editor-header-bar-bg;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid $c-neutral-200;
+}
+
+.left {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.titleRow {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.titleRow_embedded {
+  gap: 8px;
+}
+
+.pencilWrap {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: $c-neutral-800;
+}
+
+.pencilIcon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  color: $c-neutral-700;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: rgba($c-neutral-1000, 0.06);
+  }
+}
+
+.backIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.titleInput {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background-color: transparent;
+  @include typography-text-l-semibold;
+  color: $c-neutral-1000;
+
+  &::placeholder {
+    color: $c-neutral-500;
+  }
+
+  &:hover {
+    border-color: rgba($c-neutral-1000, 0.08);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $c-neutral-300;
+    background-color: $c-neutral-0;
+  }
+}
+
+.right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.syncWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.syncIcon {
+  display: block;
+  transition:
+    color 0.2s,
+    opacity 0.2s;
+}
+
+.syncIcon_clean {
+  color: $c-neutral-500;
+  opacity: 0.85;
+}
+
+.syncIcon_dirty {
+  color: $c-neutral-900;
+  opacity: 1;
+}
+
+.gearWrap {
+  position: relative;
+}
+
+.gearBtnDark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background-color: $editor-gear-bg;
+  color: $c-neutral-0;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-900;
+  }
+}
+
+.publishBtn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: $editor-publish-blue;
+  color: $c-neutral-0;
+  cursor: pointer;
+  @include typography-text-s;
+  font-weight: $font-weight-text-m-semibold;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: $editor-publish-blue-hover;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.dropdown {
+  right: 0;
+  left: auto;
+  min-width: 220px;
+  padding: 6px;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  @include typography-text-s;
+  color: $c-mp-text-body;
+
+  &:hover:not(:disabled) {
+    background-color: $c-neutral-d-600-8;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.dropdownItemDanger {
+  color: $error-color;
+}
