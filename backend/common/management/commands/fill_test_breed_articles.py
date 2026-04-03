@@ -1,11 +1,12 @@
 """
 Создаёт статью о каждой породе для блока «Узнать подробнее» на FE.
-Заполняет title, slug (poroda-{breed.slug}), description, content (markdown),
+Заполняет title, slug (poroda-{breed.slug}), description, content (HTML),
 image_preview из test-photos, status=published и связь breed.
 """
 from django.core.management.base import BaseCommand
 
 from common.models import Breed
+from education.markdown_utils import markdown_to_safe_html
 from education.models import Article, InfoStatus
 
 from ._test_photos import assign_photo_from_path, get_photos_by_breed
@@ -17,8 +18,8 @@ def _build_article_description(payload: dict) -> str:
     return payload.get("appearance", "")[:500] or "Подробнее о породе."
 
 
-def _build_article_content(breed_name: str, full_name: str, payload: dict) -> str:
-    """Markdown-контент статьи о породе."""
+def _build_article_markdown(full_name: str, payload: dict) -> str:
+    """Промежуточный markdown для конвертации в HTML."""
     appearance = payload.get("appearance", "")
     character = payload.get("character_text", "")
     adaptability = payload.get("adaptability_text", "")
@@ -82,8 +83,8 @@ class Command(BaseCommand):
 
             payload = _get_description_payload(breed)
             description = _build_article_description(payload)
-            content = _build_article_content(
-                breed.name, breed.full_name or breed.name, payload
+            content = markdown_to_safe_html(
+                _build_article_markdown(breed.full_name or breed.name, payload)
             )
             slug = f"poroda-{breed.slug}"
 

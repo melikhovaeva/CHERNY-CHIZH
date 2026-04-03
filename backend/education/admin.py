@@ -54,10 +54,10 @@ class ArticleAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Контент (Markdown)",
+            "Контент (HTML)",
             {
                 "fields": ("content",),
-                "description": "Контент статьи в формате Markdown. Поддерживаются заголовки, списки, ссылки, код и т.д.",
+                "description": "Разметка статьи в HTML. При сохранении контент проходит санитизацию (безопасные теги и атрибуты).",
             },
         ),
         (
@@ -81,7 +81,10 @@ class ArticleAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if "content" in form.base_fields:
-            form.base_fields["content"].help_text = "Используйте синтаксис Markdown: # заголовок, ## подзаголовок, **жирный**, [ссылка](url)."
+            form.base_fields["content"].help_text = (
+                "Вставьте HTML-разметку (абзацы, заголовки, списки, ссылки). "
+                "Опасные теги и атрибуты удаляются при сохранении."
+            )
             form.base_fields["content"].widget.attrs.setdefault("rows", 20)
         return form
 

@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from common.models import OrderedCodeLabelModel, OrderedItemModel, TimeStampModel
+from education.markdown_utils import sanitize_html
 
 
 class InfoTag(OrderedCodeLabelModel):
@@ -91,12 +92,18 @@ class Article(InfoModel):
         blank=True,
         db_table="common_article_tags",
     )
-    content = models.TextField()
+    content = models.TextField(
+        help_text="HTML-контент статьи (санитизируется при сохранении).",
+    )
 
     class Meta:
         db_table = "common_article"
         verbose_name = "Статья"
         verbose_name_plural = "Статьи"
+
+    def save(self, *args, **kwargs):
+        self.content = sanitize_html(self.content or "")
+        super().save(*args, **kwargs)
 
 
 class Course(InfoModel):
