@@ -1,3 +1,5 @@
+import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
+
 export interface ConstructorTask {
   id: string;
   title: string;
@@ -54,4 +56,32 @@ export function createInitialStages(): ConstructorStage[] {
       lessons: [],
     },
   ];
+}
+
+/** Ступени из публичного CourseDetail (GET /courses/:id/) → дерево конструктора для предпросмотра. */
+export function mapApiCourseStepsToConstructorStages(
+  serverSteps: CourseStepRead[],
+): ConstructorStage[] {
+  return serverSteps.map((step, i) => {
+    const localId = generateLocalId();
+    return {
+      id: localId,
+      serverId: step.id,
+      label: getStageOrdinalLabel(i),
+      title: step.title,
+      lessons: step.lessons.map((lesson) => {
+        const lessonLocalId = generateLocalId();
+        return {
+          id: lessonLocalId,
+          serverId: lesson.id,
+          title: lesson.title,
+          articleSlug: lesson.article?.slug ?? null,
+          tasks: lesson.tasks.map((task) => ({
+            id: String(task.id),
+            title: task.title,
+          })),
+        };
+      }),
+    };
+  });
 }

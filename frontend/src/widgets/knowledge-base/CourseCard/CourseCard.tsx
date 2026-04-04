@@ -1,6 +1,6 @@
 import { useAppSelector } from '@/app/store';
 import { useEnrollToCourseMutation, type CourseRead } from '@/entities/course';
-import { selectIsAdmin } from '@/entities/session';
+import { selectIsAdmin, selectIsAuthenticated } from '@/entities/session';
 import { Button, formatDate, getImageUrl } from '@/shared';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
@@ -40,6 +40,7 @@ export function CourseCard({
   const dateStr = formatDate(course.updatedAt ?? course.createdAt);
   const isHorizontal = variant === 'horizontal';
   const isAdmin = useAppSelector(selectIsAdmin);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const [enrollToCourse, { isLoading: isEnrollLoading }] =
     useEnrollToCourseMutation();
 
@@ -99,7 +100,7 @@ export function CourseCard({
     >
       {COURSE_CARD_LABELS.GO_TO}
     </Button>
-  ) : (
+  ) : isAuthenticated ? (
     <Button
       variant="primary"
       onClick={handleEnroll}
@@ -107,7 +108,7 @@ export function CourseCard({
     >
       {isEnrollLoading ? COURSE_CARD_LABELS.ENROLLING : COURSE_CARD_LABELS.ENROLL}
     </Button>
-  );
+  ) : null;
 
   const content = (
     <>
@@ -145,7 +146,9 @@ export function CourseCard({
           {isHorizontal ? (
             <>
               <span className={styles.date}>{dateStr}</span>
-              <span className={styles.actionButtonWrap}>{actionButton}</span>
+              {actionButton != null && (
+                <span className={styles.actionButtonWrap}>{actionButton}</span>
+              )}
             </>
           ) : (
             <>

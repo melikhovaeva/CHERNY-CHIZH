@@ -23,6 +23,8 @@ export interface CourseConstructorLeftBarProps {
   activeTaskId: string | null;
   /** Только навигация: без сохранения, переименований и удаления. */
   readOnly?: boolean;
+  /** Текст при пустой программе в режиме readOnly (например, для ученика). */
+  emptyReadonlyHint?: string;
   unsyncedIds?: Set<string>;
   hasChanges?: boolean;
   isSaving?: boolean;
@@ -56,6 +58,7 @@ export const CourseConstructorLeftBar = ({
   activeLessonId,
   activeTaskId,
   readOnly = false,
+  emptyReadonlyHint = EMPTY_PREVIEW_HINT,
   unsyncedIds,
   hasChanges,
   isSaving,
@@ -142,7 +145,7 @@ export const CourseConstructorLeftBar = ({
       <div className={styles.stageList}>
         {stages.length === 0 ? (
           readOnly ? (
-            <p className={styles.emptyReadonlyHint}>{EMPTY_PREVIEW_HINT}</p>
+            <p className={styles.emptyReadonlyHint}>{emptyReadonlyHint}</p>
           ) : (
             <div className={styles.emptyStageTree}>
               <button

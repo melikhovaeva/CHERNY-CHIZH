@@ -2,7 +2,7 @@ import { useGetArticleAdminQuery } from '@/entities/article';
 import { SafeHtmlContent } from '@/shared/ui';
 import styles from './CourseConstructorLessonArticle.module.scss';
 
-const EMPTY_ARTICLE_HINT =
+const EMPTY_ARTICLE_HINT_DEFAULT =
   'У урока пока нет статьи на сервере. Сохраните изменения — после синхронизации текст подтянется автоматически.';
 
 export interface CourseConstructorLessonArticleProps {
@@ -10,12 +10,15 @@ export interface CourseConstructorLessonArticleProps {
   articleSlug: string | null | undefined;
   /** Подзаголовок (например, выбранное задание в режиме предпросмотра). */
   previewTaskTitle?: string | null;
+  /** Текст, если у урока нет slug статьи (например, для ученика). */
+  emptyArticleHint?: string;
 }
 
 export function CourseConstructorLessonArticle({
   lessonTitle,
   articleSlug,
   previewTaskTitle,
+  emptyArticleHint = EMPTY_ARTICLE_HINT_DEFAULT,
 }: CourseConstructorLessonArticleProps) {
   const { data: article, isLoading, isError } = useGetArticleAdminQuery(
     articleSlug ?? '',
@@ -32,7 +35,7 @@ export function CourseConstructorLessonArticle({
       <div className={styles.root}>
         <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
         {taskLine}
-        <p className={styles.hint}>{EMPTY_ARTICLE_HINT}</p>
+        <p className={styles.hint}>{emptyArticleHint}</p>
       </div>
     );
   }

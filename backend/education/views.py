@@ -14,6 +14,7 @@ from education.schema import (
 from rest_framework import permissions, status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from education.permissions import CanReadEducationArticle
 from user_management.permissions import IsAdmin
 
 from common.serializers import keys_to_snake_case
@@ -148,6 +149,8 @@ class EducationArticleViewSet(
     lookup_url_kwarg = "slug"
 
     def get_permissions(self):
+        if self.action == "retrieve":
+            return [CanReadEducationArticle()]
         return [IsAdmin()]
 
     def get_queryset(self):
