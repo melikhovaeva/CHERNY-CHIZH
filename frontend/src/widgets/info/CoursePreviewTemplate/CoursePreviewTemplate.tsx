@@ -1,9 +1,9 @@
 import {
-  generateLocalId,
-  getStageOrdinalLabel,
+  mapApiCourseStepsToConstructorStages,
   useGetCourseStepsQuery,
   type ConstructorStage,
 } from '@/entities/course';
+import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
 import {
   buildTreePayloadFromLocalSelection,
   loadCourseWorkspaceState,
@@ -16,8 +16,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CourseConstructorLessonArticle } from '../CourseConstructorTemplate/CourseConstructorLessonArticle';
 import styles from './CoursePreviewTemplate.module.scss';
 
-const EMPTY_SELECTION_HINT =
+const EMPTY_SELECTION_HINT_ADMIN =
   'Выберите урок или задание в списке слева, чтобы открыть материал.';
+
+const EMPTY_SELECTION_HINT_LEARNER =
+  'Выберите урок слева, чтобы открыть материал.';
+
+const EMPTY_PROGRAM_HINT_LEARNER =
+  'Программа курса пока готовится. Загляните позже.';
+
+const EMPTY_LESSON_ARTICLE_HINT_LEARNER =
+  'Материал этого урока скоро появится.';
 
 function previewNoop() {}
 
@@ -42,15 +51,26 @@ const previewNoopRenameTask: (
 export interface CoursePreviewTemplateProps {
   courseId: number | null;
   persistenceCourseSlug?: string | null;
+  /**
+   * Ступени из публичного детального ответа курса (без education/steps, доступного только админам).
+   * Если передано — запрос шагов не выполняется.
+   */
+  embeddedSteps?: CourseStepRead[];
+  /** Режим прохождения: дружелюбные тексты и публичные статьи. */
+  learnerMode?: boolean;
 }
 
 export const CoursePreviewTemplate = ({
   courseId,
   persistenceCourseSlug = null,
+  embeddedSteps,
+  learnerMode = false,
 }: CoursePreviewTemplateProps) => {
+  const useEmbeddedSteps = embeddedSteps !== undefined;
+
   const { data: serverSteps, isLoading } = useGetCourseStepsQuery(
     { coursePk: String(courseId) },
-    { skip: !courseId },
+    { skip: !courseId || useEmbeddedSteps },
   );
 
   const [stages, setStages] = useState<ConstructorStage[]>([]);
@@ -72,6 +92,12 @@ export const CoursePreviewTemplate = ({
 
   useEffect(() => {
     if (initialized) return;
+    if (useEmbeddedSteps) {
+      const loaded = mapApiCourseStepsToConstructorStages(embeddedSteps ?? []);
+      setStages(loaded.length > 0 ? loaded : []);
+      setInitialized(true);
+      return;
+    }
     if (!courseId) {
       setStages([]);
       setInitialized(true);
@@ -79,32 +105,18 @@ export const CoursePreviewTemplate = ({
     }
     if (isLoading || !serverSteps) return;
 
-    const loaded: ConstructorStage[] = serverSteps.map((step, i) => {
-      const localId = generateLocalId();
-      return {
-        id: localId,
-        serverId: step.id,
-        label: getStageOrdinalLabel(i),
-        title: step.title,
-        lessons: step.lessons.map((lesson) => {
-          const lessonLocalId = generateLocalId();
-          return {
-            id: lessonLocalId,
-            serverId: lesson.id,
-            title: lesson.title,
-            articleSlug: lesson.article?.slug ?? null,
-            tasks: lesson.tasks.map((task) => ({
-              id: String(task.id),
-              title: task.title,
-            })),
-          };
-        }),
-      };
-    });
+    const loaded = mapApiCourseStepsToConstructorStages(serverSteps);
 
     setStages(loaded.length > 0 ? loaded : []);
     setInitialized(true);
-  }, [courseId, isLoading, serverSteps, initialized]);
+  }, [
+    courseId,
+    isLoading,
+    serverSteps,
+    initialized,
+    useEmbeddedSteps,
+    embeddedSteps,
+  ]);
 
   useEffect(() => {
     if (!initialized || stages.length === 0) return;
@@ -173,7 +185,10 @@ export const CoursePreviewTemplate = ({
 
   const emptyUnsynced = useMemo(() => new Set<string>(), []);
 
-  if (!initialized && courseId) {
+  const showSkeleton =
+    !initialized && (useEmbeddedSteps ? false : Boolean(courseId));
+
+  if (showSkeleton) {
     return <CourseWorkspaceSkeleton />;
   }
 
@@ -181,6 +196,9 @@ export const CoursePreviewTemplate = ({
     <div className={styles.root}>
       <CourseConstructorLeftBar
         readOnly
+        emptyReadonlyHint={
+          learnerMode ? EMPTY_PROGRAM_HINT_LEARNER : undefined
+        }
         stages={stages}
         activeStageId={activeStageId}
         activeLessonId={activeLessonId}
@@ -205,9 +223,16 @@ export const CoursePreviewTemplate = ({
             lessonTitle={activeLesson.title}
             articleSlug={activeLesson.articleSlug}
             previewTaskTitle={activeTask?.title}
+            emptyArticleHint={
+              learnerMode ? EMPTY_LESSON_ARTICLE_HINT_LEARNER : undefined
+            }
           />
         ) : (
-          <p className={styles.placeholder}>{EMPTY_SELECTION_HINT}</p>
+          <p className={styles.placeholder}>
+            {learnerMode
+              ? EMPTY_SELECTION_HINT_LEARNER
+              : EMPTY_SELECTION_HINT_ADMIN}
+          </p>
         )}
       </div>
     </div>

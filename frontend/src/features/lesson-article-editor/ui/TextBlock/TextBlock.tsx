@@ -70,8 +70,7 @@ export function TextBlock({
     if (!isEditing) return;
     const el = ref.current;
     if (!el) return;
-    const html =
-      block.html && block.html.trim() ? block.html : '<p><br></p>';
+    const html = block.html && block.html.trim() ? block.html : '<p><br></p>';
     el.innerHTML = html;
     lastHtmlRef.current = html;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- см. комментарий выше
@@ -263,10 +262,7 @@ export function TextBlock({
   const addLink = useCallback(() => {
     ref.current?.focus();
     setStyleWithCss(true);
-    const raw = window.prompt(
-      TEXT_BLOCK_TOOLBAR.LINK_PROMPT,
-      'https://',
-    );
+    const raw = window.prompt(TEXT_BLOCK_TOOLBAR.LINK_PROMPT, 'https://');
     if (raw === null) return;
     const trimmed = raw.trim();
     if (trimmed === '') {
@@ -342,44 +338,41 @@ export function TextBlock({
   return (
     <div className={styles.root}>
       <div className={styles.editorShell}>
-        <div
-          className={styles.toolbar}
-          onMouseDown={handleToolbarMouseDown}
-        >
+        <div className={styles.toolbar} onMouseDown={handleToolbarMouseDown}>
           <div className={styles.toolbarGroup}>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('bold')}
-              aria-label="Жирный"
-              title="Жирный"
+              aria-label='Жирный'
+              title='Жирный'
             >
               <BoldIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('italic')}
-              aria-label="Курсив"
-              title="Курсив"
+              aria-label='Курсив'
+              title='Курсив'
             >
               <ItalicIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('underline')}
-              aria-label="Подчёркивание"
-              title="Подчёркивание"
+              aria-label='Подчёркивание'
+              title='Подчёркивание'
             >
               <UnderlineIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('strikeThrough')}
-              aria-label="Зачёркивание"
-              title="Зачёркивание"
+              aria-label='Зачёркивание'
+              title='Зачёркивание'
             >
               <StrokedIcon className={styles.toolbarIcon} aria-hidden />
             </button>
@@ -389,7 +382,7 @@ export function TextBlock({
 
           <div className={styles.toolbarGroup}>
             <button
-              type="button"
+              type='button'
               className={styles.colorTrigger}
               title={TEXT_BLOCK_TOOLBAR.COLOR_TITLE}
               aria-label={TEXT_BLOCK_TOOLBAR.COLOR_TITLE}
@@ -402,7 +395,7 @@ export function TextBlock({
             </button>
             <input
               ref={colorInputRef}
-              type="color"
+              type='color'
               className={styles.colorInputHidden}
               value={foreColor}
               onChange={(e) => applyForeColor(e.target.value)}
@@ -415,29 +408,29 @@ export function TextBlock({
 
           <div className={styles.toolbarGroup}>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('justifyLeft')}
-              aria-label="По левому краю"
-              title="По левому краю"
+              aria-label='По левому краю'
+              title='По левому краю'
             >
               <AlignLeftIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('justifyCenter')}
-              aria-label="По центру"
-              title="По центру"
+              aria-label='По центру'
+              title='По центру'
             >
               <AlignMiddleIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => execRich('justifyRight')}
-              aria-label="По правому краю"
-              title="По правому краю"
+              aria-label='По правому краю'
+              title='По правому краю'
             >
               <AlignRightIcon className={styles.toolbarIcon} aria-hidden />
             </button>
@@ -447,25 +440,22 @@ export function TextBlock({
 
           <div className={styles.toolbarGroup}>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => insertList(true)}
-              aria-label="Нумерованный список"
-              title="Нумерованный список"
+              aria-label='Нумерованный список'
+              title='Нумерованный список'
             >
               <OrderedListIcon className={styles.toolbarIcon} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={() => insertList(false)}
-              aria-label="Маркированный список"
-              title="Маркированный список"
+              aria-label='Маркированный список'
+              title='Маркированный список'
             >
-              <UnorderedListIcon
-                className={styles.toolbarIcon}
-                aria-hidden
-              />
+              <UnorderedListIcon className={styles.toolbarIcon} aria-hidden />
             </button>
           </div>
 
@@ -476,7 +466,7 @@ export function TextBlock({
               className={styles.toolbarSelect}
               value={formatBlock}
               onChange={(e) => onFormatChange(e.target.value)}
-              aria-label="Стиль абзаца"
+              aria-label='Стиль абзаца'
             >
               {TEXT_BLOCK_FORMAT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -490,7 +480,7 @@ export function TextBlock({
               onChange={(e) =>
                 onFontSizeChange(normalizeFontSize(e.target.value))
               }
-              aria-label="Размер шрифта"
+              aria-label='Размер шрифта'
             >
               {TEXT_BLOCK_FONT_SIZE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -504,7 +494,7 @@ export function TextBlock({
 
           <div className={styles.toolbarGroup}>
             <button
-              type="button"
+              type='button'
               className={styles.toolIconBtn}
               onClick={addLink}
               aria-label={TEXT_BLOCK_TOOLBAR.LINK_TITLE}
@@ -513,7 +503,7 @@ export function TextBlock({
               <LinkIcon className={styles.toolbarIconLink} aria-hidden />
             </button>
             <button
-              type="button"
+              type='button'
               className={styles.toolBtnText}
               onClick={resetStyles}
               title={TEXT_BLOCK_TOOLBAR.RESET_TITLE}
@@ -525,12 +515,12 @@ export function TextBlock({
 
         <div
           ref={ref}
-          role="textbox"
+          role='textbox'
           tabIndex={0}
           className={styles.editable}
           contentEditable
           suppressContentEditableWarning
-          data-placeholder="Введите текст…"
+          data-placeholder='Введите текст…'
           onFocus={onFocus}
           onInput={scheduleChange}
           onBlur={flushChange}
