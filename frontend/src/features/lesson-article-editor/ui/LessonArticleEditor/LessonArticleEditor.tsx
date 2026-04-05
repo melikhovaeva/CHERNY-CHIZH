@@ -15,7 +15,12 @@ import { VideoBlock } from '../VideoBlock/VideoBlock';
 import styles from './LessonArticleEditor.module.scss';
 
 export interface LessonArticleEditorProps {
-  articleSlug: string;
+  /**
+   * Slug существующей статьи. Для нового урока, у которого ещё нет статьи на сервере,
+   * не передаётся. Первое сохранение/публикация вызовет onBeforeSave, который создаст
+   * цепочку ступень → урок → статья и вернёт slug.
+   */
+  articleSlug?: string;
   lessonTitle: string;
   /** Встроенная панель в конструкторе курса — без кнопки «Назад». */
   variant?: 'page' | 'embedded';
@@ -23,6 +28,11 @@ export interface LessonArticleEditorProps {
   onBack?: () => void;
   onLessonTitleChange?: (title: string) => void;
   onDeleteLesson?: () => void;
+  /**
+   * Вызывается перед первым сохранением/публикацией, когда articleSlug ещё не задан.
+   * Должна создать ступень (если нужно) и урок на сервере и вернуть slug созданной статьи.
+   */
+  onBeforeSave?: () => Promise<string>;
 }
 
 export function LessonArticleEditor({
@@ -32,6 +42,7 @@ export function LessonArticleEditor({
   onBack,
   onLessonTitleChange,
   onDeleteLesson,
+  onBeforeSave,
 }: LessonArticleEditorProps) {
   const showSuccess = useSuccess();
   const showError = useError();
@@ -56,7 +67,7 @@ export function LessonArticleEditor({
     unpublish,
     uploadBlockMedia,
     uploadingBlockId,
-  } = useArticleEditor(articleSlug);
+  } = useArticleEditor(articleSlug, onBeforeSave);
 
   const handleBack = useCallback(() => {
     if (!onBack) return;
@@ -119,7 +130,8 @@ export function LessonArticleEditor({
     variant === 'embedded' ? styles.root_embedded : '',
   ]);
 
-  if (isLoading && !article) {
+  // Guards only apply when a slug is known — a new lesson has no article yet.
+  if (articleSlug && isLoading && !article) {
     return (
       <div className={rootClass}>
         <p className={styles.loading}>Загрузка статьи…</p>
@@ -127,7 +139,7 @@ export function LessonArticleEditor({
     );
   }
 
-  if (!isLoading && (isError || !article)) {
+  if (articleSlug && !isLoading && (isError || !article)) {
     return (
       <div className={rootClass}>
         <p className={styles.error}>Не удалось загрузить статью</p>

@@ -7,16 +7,18 @@ import {
   useV1EducationCoursesUploadImageCreateMutation,
   useV1EducationCoursesStepsListQuery,
   useV1EducationCoursesStepsCreateMutation,
+  useV1EducationCoursesStepsPartialUpdateMutation,
   useV1EducationCoursesStepsUpdateMutation,
   useV1EducationCoursesStepsDestroyMutation,
   useV1EducationCoursesStepsLessonsCreateMutation,
+  useV1EducationCoursesStepsLessonsPartialUpdateMutation,
   useV1EducationCoursesStepsLessonsUpdateMutation,
   useV1EducationCoursesStepsLessonsDestroyMutation,
-} from '@/shared/api/generated/courses.generated';
+} from "@/shared/api/generated/courses.generated";
 import {
   useV1UsersMeCoursesCreateMutation,
   useV1UsersMeCoursesListQuery,
-} from '@/shared/api/generated/users.generated';
+} from "@/shared/api/generated/users.generated";
 
 export const coursesApi = enhancedApi;
 
@@ -32,6 +34,8 @@ export const useEnrollToCourseMutation = useV1UsersMeCoursesCreateMutation;
 export const useGetCourseStepsQuery = useV1EducationCoursesStepsListQuery;
 export const useCreateStepMutation = useV1EducationCoursesStepsCreateMutation;
 export const useUpdateStepMutation = useV1EducationCoursesStepsUpdateMutation;
+export const useUpdateStepPartialMutation =
+  useV1EducationCoursesStepsPartialUpdateMutation;
 export const useDeleteStepMutation = useV1EducationCoursesStepsDestroyMutation;
 
 // Lessons CRUD
@@ -39,6 +43,8 @@ export const useCreateLessonMutation =
   useV1EducationCoursesStepsLessonsCreateMutation;
 export const useUpdateLessonMutation =
   useV1EducationCoursesStepsLessonsUpdateMutation;
+export const useUpdateLessonPartialMutation =
+  useV1EducationCoursesStepsLessonsPartialUpdateMutation;
 export const useDeleteLessonMutation =
   useV1EducationCoursesStepsLessonsDestroyMutation;
 
@@ -47,7 +53,7 @@ export function useUploadCourseImageMutation() {
   const [mutate, result] = useV1EducationCoursesUploadImageCreateMutation();
   const uploadCourseImage = (args: { id: number; file: File }) => {
     const formData = new FormData();
-    formData.append('image', args.file);
+    formData.append("image", args.file);
     return mutate({
       id: args.id,
       body: formData as unknown as { image: Blob },
@@ -59,31 +65,37 @@ export function useUploadCourseImageMutation() {
 coursesApi.enhanceEndpoints({
   endpoints: {
     v1EducationCoursesCreate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesUpdate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesUploadImageCreate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsCreate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsUpdate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
+    },
+    v1EducationCoursesStepsPartialUpdate: {
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsDestroy: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsLessonsCreate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsLessonsUpdate: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
+    },
+    v1EducationCoursesStepsLessonsPartialUpdate: {
+      invalidatesTags: ["Education", "Courses"],
     },
     v1EducationCoursesStepsLessonsDestroy: {
-      invalidatesTags: ['Education', 'Courses'],
+      invalidatesTags: ["Education", "Courses"],
     },
   },
 });
@@ -91,5 +103,5 @@ coursesApi.enhanceEndpoints({
 export type {
   CourseDetailRead,
   CourseRead,
-} from '@/shared/api/generated/courses.generated';
-export type { CourseEnrollmentRead } from '@/shared/api/generated/users.generated';
+} from "@/shared/api/generated/courses.generated";
+export type { CourseEnrollmentRead } from "@/shared/api/generated/users.generated";
