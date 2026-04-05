@@ -20,6 +20,8 @@ export interface VideoBlock {
   type: 'video';
   url: string;
   title?: string;
+  /** 'file' — загружен файлом; 'url' — вставлен по ссылке (YouTube, Vimeo, прямой URL). */
+  sourceType?: 'file' | 'url';
 }
 
 export interface FileBlock {

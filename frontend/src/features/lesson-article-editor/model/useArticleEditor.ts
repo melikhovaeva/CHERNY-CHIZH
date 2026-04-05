@@ -226,6 +226,7 @@ export function useArticleEditor(
           type: BLOCK_TYPE.VIDEO,
           url: res.url,
           title: res.name,
+          sourceType: 'file',
         } as Partial<VideoBlock>);
       } else {
         updateBlock(blockId, {
