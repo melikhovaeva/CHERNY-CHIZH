@@ -11,6 +11,7 @@ import {
   mergeCourseWorkspaceState,
   resolveTreeSelection,
 } from '@/features/course-workspace-persistence';
+import { cn } from '@/shared/lib/utils';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -231,16 +232,23 @@ export const CoursePreviewTemplate = ({
         onRenameTask={previewNoopRenameTask}
       />
 
-      <div className={styles.content}>
+      <div
+        className={cn([
+          styles.content,
+          activeLesson ? styles.content_flush : '',
+        ])}
+      >
         {activeLesson ? (
-          <CourseConstructorLessonArticle
-            lessonTitle={activeLesson.title}
-            articleSlug={activeLesson.articleSlug}
-            previewTaskTitle={activeTask?.title}
-            emptyArticleHint={
-              learnerMode ? EMPTY_LESSON_ARTICLE_HINT_LEARNER : undefined
-            }
-          />
+          <div className={styles.articlePreview}>
+            <CourseConstructorLessonArticle
+              lessonTitle={activeLesson.title}
+              articleSlug={activeLesson.articleSlug}
+              previewTaskTitle={activeTask?.title}
+              emptyArticleHint={
+                learnerMode ? EMPTY_LESSON_ARTICLE_HINT_LEARNER : undefined
+              }
+            />
+          </div>
         ) : (
           <p className={styles.placeholder}>
             {learnerMode
