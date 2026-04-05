@@ -1,29 +1,34 @@
-from django.db.models import Count, Q
-
-from common.pagination import DogPagination
-from education.schema import (
-    article_view_schema,
-    course_view_schema,
-    education_article_view_schema,
-    education_course_view_schema,
-    education_course_lesson_view_schema,
-    education_course_step_view_schema,
-    education_tag_view_schema,
-    extend_schema_view,
-)
-from rest_framework import permissions, status, viewsets, mixins
+from django.db.models import Count, Prefetch, Q
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from education.permissions import CanReadEducationArticle
-from user_management.permissions import IsAdmin
 
+from common.pagination import DogPagination
 from common.serializers import keys_to_snake_case
 from education.constants import (
     COURSE_IMAGE_ALLOWED_CONTENT_TYPES,
     COURSE_IMAGE_MAX_SIZE_BYTES,
     COURSE_IMAGE_UPLOAD_FIELD_NAME,
 )
-from education.models import Article, Course, CourseLesson, CourseStep, InfoStatus, InfoTag
+from education.models import (
+    Article,
+    Course,
+    CourseLesson,
+    CourseStep,
+    InfoStatus,
+    InfoTag,
+)
+from education.permissions import CanReadEducationArticle
+from education.schema import (
+    article_view_schema,
+    course_view_schema,
+    education_article_view_schema,
+    education_course_lesson_view_schema,
+    education_course_step_view_schema,
+    education_course_view_schema,
+    education_tag_view_schema,
+    extend_schema_view,
+)
 from education.serializers import (
     ArticleAdminReadSerializer,
     ArticleAdminWriteSerializer,
@@ -39,6 +44,7 @@ from education.serializers import (
     CourseStepSerializer,
     InfoTagSerializer,
 )
+from user_management.permissions import IsAdmin
 
 
 @extend_schema_view(**article_view_schema)
@@ -99,10 +105,7 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
         tags_data = InfoTagSerializer(selected_tags, many=True).data
         groups = []
         for tag in selected_tags:
-            articles = (
-                published.filter(tags=tag)
-                .order_by("-created_at")[:12]
-            )
+            articles = published.filter(tags=tag).order_by("-created_at")[:12]
             articles_data = ArticleMinimalSerializer(articles, many=True).data
             groups.append({"tagId": tag.id, "articles": articles_data})
         return Response({"tags": tags_data, "groups": groups})
@@ -115,16 +118,32 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        qs = Course.objects.prefetch_related(
-            "tags",
-            "steps__lessons__tasks__questions__answers",
-        ).order_by("id")
-
         user = getattr(self, "request", None) and getattr(self.request, "user", None)
-        if user is not None and getattr(user, "is_superuser", False):
-            return qs
+        is_admin = user is not None and getattr(user, "is_superuser", False)
 
-        return qs.filter(status=InfoStatus.PUBLISHED)
+        if is_admin:
+            return Course.objects.prefetch_related(
+                "tags",
+                "steps__lessons__tasks__questions__answers",
+            ).order_by("id")
+
+        published_lessons_qs = (
+            CourseLesson.objects.filter(
+                article__status=InfoStatus.PUBLISHED,
+            )
+            .select_related("article")
+            .prefetch_related("tasks__questions__answers")
+        )
+
+        return (
+            Course.objects.prefetch_related(
+                "tags",
+                "steps",
+                Prefetch("steps__lessons", queryset=published_lessons_qs),
+            )
+            .order_by("id")
+            .filter(status=InfoStatus.PUBLISHED)
+        )
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -154,11 +173,7 @@ class EducationArticleViewSet(
         return [IsAdmin()]
 
     def get_queryset(self):
-        return (
-            Article.objects
-            .select_related("author")
-            .prefetch_related("tags")
-        )
+        return Article.objects.select_related("author").prefetch_related("tags")
 
     def get_serializer_class(self):
         if self.action in ("update", "partial_update"):
@@ -227,9 +242,8 @@ class EducationArticleViewSet(
             upload_dir = "article_media/files"
 
         from django.core.files.storage import default_storage
-        saved_path = default_storage.save(
-            f"{upload_dir}/{media_file.name}", media_file
-        )
+
+        saved_path = default_storage.save(f"{upload_dir}/{media_file.name}", media_file)
         file_url = default_storage.url(saved_path)
 
         return Response(
@@ -352,9 +366,7 @@ class EducationTagViewSet(
 
         if raw_query:
             query = raw_query.lower()
-            tags = tags.filter(
-                Q(label__icontains=query) | Q(code__icontains=query)
-            )
+            tags = tags.filter(Q(label__icontains=query) | Q(code__icontains=query))
             tags_list = list(tags)
 
             def get_match_position(tag: InfoTag) -> int | None:
@@ -362,9 +374,7 @@ class EducationTagViewSet(
                 code = (tag.code or "").lower()
                 label_pos = label.find(query)
                 code_pos = code.find(query)
-                positions = [
-                    pos for pos in (label_pos, code_pos) if pos != -1
-                ]
+                positions = [pos for pos in (label_pos, code_pos) if pos != -1]
                 if not positions:
                     return None
                 return min(positions)
@@ -374,9 +384,7 @@ class EducationTagViewSet(
                 match_pos = get_match_position(tag)
                 if match_pos is None:
                     continue
-                scored_tags.append(
-                    (match_pos, tag.order, tag.id, tag)
-                )
+                scored_tags.append((match_pos, tag.order, tag.id, tag))
 
             scored_tags.sort(key=lambda item: (item[0], item[1], item[2]))
             ordered_tags = [item[3] for item in scored_tags]
@@ -452,10 +460,14 @@ class EducationCourseLessonViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin]
 
     def get_queryset(self):
-        return CourseLesson.objects.filter(
-            step_id=self.kwargs["step_pk"],
-            step__course_id=self.kwargs["course_pk"],
-        ).select_related("article").order_by("order", "id")
+        return (
+            CourseLesson.objects.filter(
+                step_id=self.kwargs["step_pk"],
+                step__course_id=self.kwargs["course_pk"],
+            )
+            .select_related("article")
+            .order_by("order", "id")
+        )
 
     def get_serializer_class(self):
         if self.action in ("create", "update", "partial_update"):
@@ -477,4 +489,3 @@ class EducationCourseLessonViewSet(viewsets.ModelViewSet):
             )
             lesson.article = article
             lesson.save(update_fields=["article"])
-
