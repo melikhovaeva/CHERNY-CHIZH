@@ -44,7 +44,6 @@ export interface ArticleAdminRead {
   description: string;
   imagePreview: string | null;
   status: ArticleStatusLabel | null;
-  contentHtml: string;
   contentBlocks: ContentBlock[];
   createdAt: string;
   updatedAt: string;

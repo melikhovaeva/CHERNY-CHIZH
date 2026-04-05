@@ -111,7 +111,9 @@ export type ArticleRead = {
   imagePreview?: string | null;
   status: CodeLabel;
   tags: InfoTagRead[];
-  contentHtml: string;
+  contentBlocks: {
+    [key: string]: any;
+  }[];
   createdAt: string;
   updatedAt: string;
 };

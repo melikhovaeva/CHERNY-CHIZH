@@ -140,7 +140,7 @@ class EducationArticleViewSet(
 ):
     """
     Admin API для редактирования статей под префиксом /education.
-    retrieve — возвращает статью с content_blocks (для редактора).
+    retrieve — возвращает статью с contentBlocks (для редактора и предпросмотра).
     partial_update — принимает title/description/status/content_blocks.
     upload-media — загружает медиафайл в хранилище и возвращает URL.
     """

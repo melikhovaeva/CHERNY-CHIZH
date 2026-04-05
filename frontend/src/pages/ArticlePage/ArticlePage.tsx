@@ -1,7 +1,10 @@
-import { useGetArticleBySlugQuery } from '@/entities/article';
+import {
+  ArticleContentPreview,
+  useGetArticleBySlugQuery,
+} from '@/entities/article';
 import { useParams } from '@tanstack/react-router';
 import { API_CONFIG } from '@/shared/config/api';
-import { Placeholder, SafeHtmlContent } from '@/shared/ui/components';
+import { Placeholder } from '@/shared/ui/components';
 import styles from './ArticlePage.module.scss';
 
 export const ArticlePage = () => {
@@ -51,8 +54,8 @@ export const ArticlePage = () => {
         {article.description && (
           <p className={styles.description}>{article.description}</p>
         )}
-        <SafeHtmlContent
-          html={article.contentHtml}
+        <ArticleContentPreview
+          blocks={article.contentBlocks}
           className={styles.content}
         />
       </div>

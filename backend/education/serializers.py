@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from common.serializers import CamelCaseSerializerMixin, CodeLabelSerializer
 from education.schema import extend_schema_field
-from education.markdown_utils import sanitize_html
+from education.markdown_utils import article_api_content_blocks
 from education.models import (
   Article,
   Course,
@@ -71,7 +71,7 @@ class ArticleListSerializer(CamelCaseSerializerMixin, serializers.ModelSerialize
 
 class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
-    content_html = serializers.SerializerMethodField()
+    content_blocks = serializers.SerializerMethodField()
     tags = InfoTagSerializer(many=True, read_only=True)
 
     class Meta:
@@ -84,13 +84,13 @@ class ArticleSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "image_preview",
             "status",
             "tags",
-            "content_html",
+            "content_blocks",
             "created_at",
             "updated_at",
         )
 
-    def get_content_html(self, obj: Article) -> str:
-        return sanitize_html(obj.content or "")
+    def get_content_blocks(self, obj: Article) -> list:
+        return article_api_content_blocks(obj.content_blocks, obj.content or "")
 
     @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Article):
@@ -107,7 +107,7 @@ class ArticleAdminReadSerializer(CamelCaseSerializerMixin, serializers.ModelSeri
     """Сериализатор чтения статьи для редактора (включает content_blocks)."""
 
     status = serializers.SerializerMethodField()
-    content_html = serializers.SerializerMethodField()
+    content_blocks = serializers.SerializerMethodField()
     tags = InfoTagSerializer(many=True, read_only=True)
 
     class Meta:
@@ -120,14 +120,13 @@ class ArticleAdminReadSerializer(CamelCaseSerializerMixin, serializers.ModelSeri
             "image_preview",
             "status",
             "tags",
-            "content_html",
             "content_blocks",
             "created_at",
             "updated_at",
         )
 
-    def get_content_html(self, obj: Article) -> str:
-        return sanitize_html(obj.content or "")
+    def get_content_blocks(self, obj: Article) -> list:
+        return article_api_content_blocks(obj.content_blocks, obj.content or "")
 
     @extend_schema_field(CodeLabelSerializer)
     def get_status(self, obj: Article):

@@ -1,3 +1,6 @@
+export { CONTENT_BLOCK_TYPE, type ContentBlockType } from './config/contentBlockTypes';
+export { normalizeContentBlocks } from './lib/normalizeContentBlocks';
+export { resolveApiAssetUrl } from './lib/resolveApiAssetUrl';
 export {
   useGetArticleBySlugQuery,
   useGetHomeLibraryQuery,
@@ -22,6 +25,8 @@ export type {
   UploadMediaResponse,
   VideoBlock,
 } from './api/articleAdmin.api';
+export { ArticleContentPreview } from './ui/ArticleContentPreview/ArticleContentPreview';
+export type { ArticleContentPreviewProps } from './ui/ArticleContentPreview/ArticleContentPreview';
 export type {
   Article,
   ArticleAuthor,
