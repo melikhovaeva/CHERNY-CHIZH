@@ -2,6 +2,12 @@ export { CONTENT_BLOCK_TYPE, type ContentBlockType } from './config/contentBlock
 export { normalizeContentBlocks } from './lib/normalizeContentBlocks';
 export { resolveApiAssetUrl } from './lib/resolveApiAssetUrl';
 export {
+  resolveVideoEmbed,
+  isEmbedUrl,
+  type VideoEmbedInfo,
+  type VideoEmbedType,
+} from './lib/resolveVideoEmbed';
+export {
   useGetArticleBySlugQuery,
   useGetHomeLibraryQuery,
   useGetArticlesListQuery,

@@ -4,6 +4,7 @@ import type { ContentBlock } from '../../api/articleAdmin.api';
 import { CONTENT_BLOCK_TYPE } from '../../config/contentBlockTypes';
 import { normalizeContentBlocks } from '../../lib/normalizeContentBlocks';
 import { resolveApiAssetUrl } from '../../lib/resolveApiAssetUrl';
+import { resolveVideoEmbed } from '../../lib/resolveVideoEmbed';
 
 export interface ArticleContentPreviewProps {
   /** Сырой массив блоков из API или уже нормализованный список. */
@@ -51,10 +52,21 @@ function ArticleContentBlockView({
     }
     case CONTENT_BLOCK_TYPE.VIDEO: {
       if (!block.url) return null;
-      const src = resolveApiAssetUrl(block.url);
+      const { embedType, embedUrl } = resolveVideoEmbed(block.url);
+      const isEmbed = embedType === 'youtube' || embedType === 'vimeo';
       return (
-        <figure data-block-type="video">
-          <video src={src} controls preload="metadata" />
+        <figure data-block-type='video'>
+          {isEmbed ? (
+            <iframe
+              src={embedUrl}
+              title={block.title ?? 'Видео'}
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              allowFullScreen
+              style={{ width: '100%', aspectRatio: '16/9', border: 'none' }}
+            />
+          ) : (
+            <video src={resolveApiAssetUrl(block.url)} controls preload='metadata' />
+          )}
           {block.title ? <figcaption>{block.title}</figcaption> : null}
         </figure>
       );

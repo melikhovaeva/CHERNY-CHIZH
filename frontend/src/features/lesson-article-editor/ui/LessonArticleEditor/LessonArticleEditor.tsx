@@ -230,6 +230,13 @@ export function LessonArticleEditor({
                           title,
                         })
                       }
+                      onUrlChange={(url) =>
+                        updateBlock(block.id, {
+                          type: BLOCK_TYPE.VIDEO,
+                          url,
+                          sourceType: 'url',
+                        })
+                      }
                     />
                   )}
                   {block.type === BLOCK_TYPE.FILE && (

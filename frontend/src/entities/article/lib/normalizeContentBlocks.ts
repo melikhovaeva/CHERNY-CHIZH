@@ -43,6 +43,9 @@ export function normalizeContentBlocks(raw: unknown): ContentBlock[] {
         type: CONTENT_BLOCK_TYPE.VIDEO,
         url: typeof b.url === 'string' ? b.url : '',
         ...(typeof b.title === 'string' ? { title: b.title } : {}),
+        ...(b.sourceType === 'file' || b.sourceType === 'url'
+          ? { sourceType: b.sourceType }
+          : {}),
       } satisfies VideoBlock);
     } else if (type === CONTENT_BLOCK_TYPE.FILE) {
       out.push({

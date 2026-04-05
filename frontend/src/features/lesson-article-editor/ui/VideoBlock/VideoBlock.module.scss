@@ -9,6 +9,60 @@
   min-width: 0;
 }
 
+// ── Переключатель режима (Файл / Ссылка) ──────────────────────────────────────
+
+.modeTabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid $c-neutral-150;
+  border-radius: 8px;
+  overflow: hidden;
+  align-self: flex-start;
+}
+
+.modeTab {
+  padding: 6px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include typography-text-s;
+  color: $c-neutral-500;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+
+  & + & {
+    border-left: 1px solid $c-neutral-150;
+  }
+
+  &:hover:not(.modeTab_active) {
+    background-color: $c-neutral-d-600-4;
+    color: $c-neutral-700;
+  }
+}
+
+.modeTab_active {
+  background-color: $accent-primary-color;
+  color: $c-neutral-0;
+  font-weight: 500;
+}
+
+// ── URL-режим ─────────────────────────────────────────────────────────────────
+
+.urlMode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.urlInputRow {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  width: 100%;
+}
+
 .dropzone {
   display: flex;
   flex-direction: column;
@@ -100,4 +154,13 @@
 .spinner {
   @include typography-text-s;
   color: $c-neutral-500;
+}
+
+.embedIframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 10px;
+  background-color: $c-neutral-900;
 }
