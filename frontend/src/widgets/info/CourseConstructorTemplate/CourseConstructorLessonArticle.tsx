@@ -2,6 +2,7 @@ import {
   ArticleContentPreview,
   useGetArticleAdminQuery,
 } from '@/entities/article';
+import { EditorHeaderPreview } from '@/features/lesson-article-editor';
 import styles from './CourseConstructorLessonArticle.module.scss';
 
 const EMPTY_ARTICLE_HINT_DEFAULT =
@@ -36,9 +37,11 @@ export function CourseConstructorLessonArticle({
   if (!articleSlug) {
     return (
       <div className={styles.root}>
-        <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
-        {taskLine}
-        <p className={styles.hint}>{emptyArticleHint}</p>
+        <EditorHeaderPreview lessonTitle={lessonTitle} />
+        <div className={styles.previewBody}>
+          {taskLine}
+          <p className={styles.hint}>{emptyArticleHint}</p>
+        </div>
       </div>
     );
   }
@@ -46,10 +49,12 @@ export function CourseConstructorLessonArticle({
   if (isLoading) {
     return (
       <div className={styles.root}>
-        <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
-        {taskLine}
-        <div className={styles.skeletonLine} />
-        <div className={styles.skeletonBlock} />
+        <EditorHeaderPreview lessonTitle={lessonTitle} />
+        <div className={styles.previewBody}>
+          {taskLine}
+          <div className={styles.skeletonLine} />
+          <div className={styles.skeletonBlock} />
+        </div>
       </div>
     );
   }
@@ -57,22 +62,26 @@ export function CourseConstructorLessonArticle({
   if (isError || !article) {
     return (
       <div className={styles.root}>
-        <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
-        {taskLine}
-        <p className={styles.error}>Не удалось загрузить статью</p>
+        <EditorHeaderPreview lessonTitle={lessonTitle} />
+        <div className={styles.previewBody}>
+          {taskLine}
+          <p className={styles.error}>Не удалось загрузить статью</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={styles.root}>
-      <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
-      {taskLine}
-      <ArticleContentPreview
-        blocks={article.contentBlocks}
-        className={styles.articleBody}
-        as='article'
-      />
+      <EditorHeaderPreview lessonTitle={lessonTitle} />
+      <div className={styles.previewBody}>
+        {taskLine}
+        <ArticleContentPreview
+          blocks={article.contentBlocks}
+          className={styles.articleBody}
+          as='article'
+        />
+      </div>
     </div>
   );
 }

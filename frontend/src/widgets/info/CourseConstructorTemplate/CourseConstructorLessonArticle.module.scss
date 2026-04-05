@@ -1,18 +1,25 @@
 .root {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
+  min-width: 0;
   width: 100%;
 }
 
-.lessonHeading {
-  margin: 0 0 16px;
-  @include typography-h3;
-  color: $c-mp-text-headers;
+.previewBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 20px 24px;
+  box-sizing: border-box;
 }
 
 .previewTask {
-  margin: -8px 0 16px;
+  margin: 0 0 16px;
   color: $c-neutral-600;
   @include typography-text-m;
 }

@@ -115,6 +115,18 @@ $editor-gear-bg: #0c0d0d;
   }
 }
 
+/** Только просмотр: тот же размер/типографика, без рамок и фокуса. */
+.titleStatic {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  @include typography-text-l-semibold;
+  color: $c-neutral-1000;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .right {
   display: flex;
   // flex-wrap: wrap;
