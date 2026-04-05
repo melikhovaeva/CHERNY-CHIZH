@@ -5,6 +5,7 @@ import { CONTENT_BLOCK_TYPE } from '../../config/contentBlockTypes';
 import { normalizeContentBlocks } from '../../lib/normalizeContentBlocks';
 import { resolveApiAssetUrl } from '../../lib/resolveApiAssetUrl';
 import { resolveVideoEmbed } from '../../lib/resolveVideoEmbed';
+import previewStyles from './ArticleContentPreview.module.scss';
 
 export interface ArticleContentPreviewProps {
   /** Сырой массив блоков из API или уже нормализованный список. */
@@ -44,9 +45,17 @@ function ArticleContentBlockView({
       if (!block.url) return null;
       const src = resolveApiAssetUrl(block.url);
       return (
-        <figure>
-          <img src={src} alt={block.alt} />
-          {block.caption ? <figcaption>{block.caption}</figcaption> : null}
+        <figure className={previewStyles.imageFigure}>
+          <img
+            className={previewStyles.image}
+            src={src}
+            alt={block.alt}
+          />
+          {block.caption ? (
+            <figcaption className={previewStyles.imageCaption}>
+              {block.caption}
+            </figcaption>
+          ) : null}
         </figure>
       );
     }
