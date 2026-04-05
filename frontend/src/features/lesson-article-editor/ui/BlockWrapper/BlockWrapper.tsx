@@ -17,7 +17,6 @@ export interface BlockWrapperProps {
   onDelete: () => void;
   onInsertAfter: (type: ContentBlock['type']) => void;
   children: React.ReactNode;
-  /** Показать нижнюю полосу вставки (последний блок тоже может иметь вставку снизу). */
   showInsertBar?: boolean;
 }
 
@@ -37,38 +36,38 @@ export function BlockWrapper({
     <div className={styles.root} data-editing={isEditing ? '' : undefined}>
       <div className={styles.controls}>
         <button
-          type="button"
+          type='button'
           className={cn([styles.surfaceBtn, styles.surfaceBtn_edit])}
           onClick={onEdit}
-          aria-label="Редактировать блок"
+          aria-label='Редактировать блок'
           aria-pressed={isEditing}
           data-editing-active={isEditing ? '' : undefined}
         >
           <EditIcon className={styles.controlIconEdit} aria-hidden />
         </button>
         <button
-          type="button"
+          type='button'
           className={cn([styles.surfaceBtn, styles.surfaceBtn_move])}
           onClick={onMoveDown}
           disabled={isLast}
-          aria-label="Переместить вниз"
+          aria-label='Переместить вниз'
         >
           <DownIcon className={styles.controlIconMove} aria-hidden />
         </button>
         <button
-          type="button"
+          type='button'
           className={cn([styles.surfaceBtn, styles.surfaceBtn_move])}
           onClick={onMoveUp}
           disabled={isFirst}
-          aria-label="Переместить вверх"
+          aria-label='Переместить вверх'
         >
           <UpIcon className={styles.controlIconMove} aria-hidden />
         </button>
         <button
-          type="button"
+          type='button'
           className={cn([styles.surfaceBtn, styles.deleteBtn])}
           onClick={onDelete}
-          aria-label="Удалить блок"
+          aria-label='Удалить блок'
         >
           <TrashIcon className={styles.controlIconTrash} aria-hidden />
         </button>

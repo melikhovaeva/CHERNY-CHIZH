@@ -22,10 +22,11 @@ export function CourseConstructorLessonArticle({
   previewTaskTitle,
   emptyArticleHint = EMPTY_ARTICLE_HINT_DEFAULT,
 }: CourseConstructorLessonArticleProps) {
-  const { data: article, isLoading, isError } = useGetArticleAdminQuery(
-    articleSlug ?? '',
-    { skip: !articleSlug },
-  );
+  const {
+    data: article,
+    isLoading,
+    isError,
+  } = useGetArticleAdminQuery(articleSlug ?? '', { skip: !articleSlug });
 
   const taskLine =
     previewTaskTitle != null && previewTaskTitle !== '' ? (
@@ -70,7 +71,7 @@ export function CourseConstructorLessonArticle({
       <ArticleContentPreview
         blocks={article.contentBlocks}
         className={styles.articleBody}
-        as="article"
+        as='article'
       />
     </div>
   );

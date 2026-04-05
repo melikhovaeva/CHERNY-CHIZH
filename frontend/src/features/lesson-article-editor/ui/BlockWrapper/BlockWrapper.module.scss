@@ -47,6 +47,7 @@
   &:disabled {
     opacity: 0.38;
     cursor: not-allowed;
+    color: $c-neutral-300;
   }
 
   &:focus-visible {
@@ -64,10 +65,6 @@
   }
 }
 
-.surfaceBtn_move {
-  color: $c-neutral-300;
-}
-
 .controlIconEdit {
   display: block;
   width: 18px;
@@ -77,8 +74,8 @@
 
 .controlIconMove {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
 
   path {
