@@ -59,6 +59,16 @@ export function createInitialStages(): ConstructorStage[] {
   ];
 }
 
+/**
+ * Для ученика: не показываем ступени без доступных уроков.
+ * В публичном API у таких шагов `lessons` уже пустой (неопубликованные отфильтрованы на бэкенде).
+ */
+export function filterCourseStepsForLearnerTree(
+  serverSteps: CourseStepRead[],
+): CourseStepRead[] {
+  return serverSteps.filter((step) => step.lessons.length > 0);
+}
+
 /** Ступени из публичного CourseDetail (GET /courses/:id/) → дерево конструктора для предпросмотра. */
 export function mapApiCourseStepsToConstructorStages(
   serverSteps: CourseStepRead[],

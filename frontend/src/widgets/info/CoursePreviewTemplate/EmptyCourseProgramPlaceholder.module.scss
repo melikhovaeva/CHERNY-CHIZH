@@ -1,0 +1,64 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  padding: 48px 24px 56px;
+  background-color: $c-mp-bg-card-light;
+  border-radius: $left-bar-border-radius;
+  width: 100%;
+}
+
+.illustration {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.illustrationBg {
+  color: $c-b-green-50;
+}
+
+.illustrationCard {
+  color: $c-neutral-0;
+}
+
+.illustrationSpine {
+  color: $c-b-green-200;
+}
+
+.illustrationLine {
+  color: $c-neutral-150;
+}
+
+.illustrationClockBg {
+  color: $c-neutral-0;
+}
+
+.illustrationClockFace {
+  color: $c-b-beige-100;
+}
+
+.illustrationClockHand {
+  color: $c-b-beige-700;
+}
+
+.illustrationClockDot {
+  color: $c-b-beige-700;
+}
+
+.title {
+  margin: 0;
+  @include typography-h4;
+  color: $c-mp-text-headers;
+}
+
+.description {
+  margin: 0;
+  max-width: 420px;
+  @include typography-text-m;
+  color: $c-neutral-500;
+  line-height: 1.6;
+}

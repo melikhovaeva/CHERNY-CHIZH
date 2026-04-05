@@ -1,4 +1,5 @@
 import {
+  filterCourseStepsForLearnerTree,
   mapApiCourseStepsToConstructorStages,
   useGetCourseStepsQuery,
   type ConstructorStage,
@@ -14,6 +15,7 @@ import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBa
 import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CourseConstructorLessonArticle } from '../CourseConstructorTemplate/CourseConstructorLessonArticle';
+import { EmptyCourseProgramPlaceholder } from './EmptyCourseProgramPlaceholder';
 import styles from './CoursePreviewTemplate.module.scss';
 
 const EMPTY_SELECTION_HINT_ADMIN =
@@ -93,7 +95,11 @@ export const CoursePreviewTemplate = ({
   useEffect(() => {
     if (initialized) return;
     if (useEmbeddedSteps) {
-      const loaded = mapApiCourseStepsToConstructorStages(embeddedSteps ?? []);
+      const raw = embeddedSteps ?? [];
+      const stepsForTree = learnerMode
+        ? filterCourseStepsForLearnerTree(raw)
+        : raw;
+      const loaded = mapApiCourseStepsToConstructorStages(stepsForTree);
       setStages(loaded.length > 0 ? loaded : []);
       setInitialized(true);
       return;
@@ -105,7 +111,10 @@ export const CoursePreviewTemplate = ({
     }
     if (isLoading || !serverSteps) return;
 
-    const loaded = mapApiCourseStepsToConstructorStages(serverSteps);
+    const stepsForTree = learnerMode
+      ? filterCourseStepsForLearnerTree(serverSteps)
+      : serverSteps;
+    const loaded = mapApiCourseStepsToConstructorStages(stepsForTree);
 
     setStages(loaded.length > 0 ? loaded : []);
     setInitialized(true);
@@ -116,6 +125,7 @@ export const CoursePreviewTemplate = ({
     initialized,
     useEmbeddedSteps,
     embeddedSteps,
+    learnerMode,
   ]);
 
   useEffect(() => {
@@ -190,6 +200,10 @@ export const CoursePreviewTemplate = ({
 
   if (showSkeleton) {
     return <CourseWorkspaceSkeleton />;
+  }
+
+  if (learnerMode && initialized && stages.length === 0) {
+    return <EmptyCourseProgramPlaceholder />;
   }
 
   return (
