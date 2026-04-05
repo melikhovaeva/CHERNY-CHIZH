@@ -1,9 +1,6 @@
-import {
-  ChoiceDialog,
-  type ChoiceDialogOption,
-} from '@/shared/ui/components';
-import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { cn } from '@/shared/lib/utils';
+import { ChoiceDialog, type ChoiceDialogOption } from '@/shared/ui/components';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { useCallback, useState } from 'react';
 import { BLOCK_TYPE } from '../../config';
 import { useArticleEditor } from '../../model/useArticleEditor';
@@ -155,17 +152,12 @@ export function LessonArticleEditor({
       />
       <div className={styles.body}>
         {blocks.length === 0 ? (
-          <AddContentPanel
-            variant="empty"
-            onAdd={(type) => addBlock(type)}
-          />
+          <AddContentPanel variant='empty' onAdd={(type) => addBlock(type)} />
         ) : (
           <>
             <BlockInsertBar
-              ariaLabel="Вставить блок перед первым"
-              onInsert={(type) =>
-                addBlock(type, { before: blocks[0]!.id })
-              }
+              ariaLabel='Вставить блок перед первым'
+              onInsert={(type) => addBlock(type, { before: blocks[0]!.id })}
             />
             {blocks.map((block, index) => {
               const isEditing = editingBlockId === block.id;
@@ -180,9 +172,7 @@ export function LessonArticleEditor({
                   onMoveUp={() => moveBlock(block.id, 'up')}
                   onMoveDown={() => moveBlock(block.id, 'down')}
                   onDelete={() => deleteBlock(block.id)}
-                  onInsertAfter={(type) =>
-                    addBlock(type, { after: block.id })
-                  }
+                  onInsertAfter={(type) => addBlock(type, { after: block.id })}
                   showInsertBar
                 >
                   {block.type === BLOCK_TYPE.TEXT && (
@@ -246,7 +236,7 @@ export function LessonArticleEditor({
             })}
             <div className={styles.bottomPanel}>
               <AddContentPanel
-                variant="bottom"
+                variant='bottom'
                 onAdd={(type) => addBlock(type)}
               />
             </div>
@@ -257,8 +247,8 @@ export function LessonArticleEditor({
         <ChoiceDialog
           isOpen={leaveDialogOpen}
           onClose={() => setLeaveDialogOpen(false)}
-          title="Несохранённые изменения"
-          description="Выйти из редактора? Изменения статьи будут потеряны."
+          title='Несохранённые изменения'
+          description='Выйти из редактора? Изменения статьи будут потеряны.'
           options={leaveOptions}
         />
       )}

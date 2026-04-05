@@ -6,9 +6,6 @@ import {
   type ConstructorLesson,
   type ConstructorStage,
 } from '@/entities/course';
-import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
-import { useError, useSuccess } from '@/shared/ui/components/Toast';
-import { cn } from '@/shared/lib/utils';
 import {
   buildTreePayloadFromLocalSelection,
   loadCourseWorkspaceState,
@@ -16,9 +13,12 @@ import {
   resolveTreeSelection,
 } from '@/features/course-workspace-persistence';
 import { LessonArticleEditor } from '@/features/lesson-article-editor';
+import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
+import { cn } from '@/shared/lib/utils';
+import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
-import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
 import { CourseConstructorLessonArticle } from './CourseConstructorLessonArticle';
 import styles from './CourseConstructorTemplate.module.scss';
 
@@ -56,11 +56,14 @@ export const CourseConstructorTemplate = ({
   const showSuccess = useSuccess();
   const showError = useError();
 
-  const { data: serverSteps, isLoading, refetch: refetchCourseSteps } =
-    useGetCourseStepsQuery(
-      { coursePk: String(courseId) },
-      { skip: !courseId },
-    );
+  const {
+    data: serverSteps,
+    isLoading,
+    refetch: refetchCourseSteps,
+  } = useGetCourseStepsQuery(
+    { coursePk: String(courseId) },
+    { skip: !courseId },
+  );
 
   const [stages, setStages] = useState<ConstructorStage[]>([]);
   const [initialized, setInitialized] = useState(false);
@@ -231,9 +234,7 @@ export const CourseConstructorTemplate = ({
       );
       setStages(
         prev.map((s) =>
-          s.id !== stageId
-            ? s
-            : { ...s, lessons: [...s.lessons, newLesson] },
+          s.id !== stageId ? s : { ...s, lessons: [...s.lessons, newLesson] },
         ),
       );
     },
@@ -296,32 +297,29 @@ export const CourseConstructorTemplate = ({
     [queue],
   );
 
-  const handleAddTask = useCallback(
-    (stageId: string, lessonId: string) => {
-      setStages((prev) =>
-        prev.map((stage) => {
-          if (stage.id !== stageId) return stage;
-          return {
-            ...stage,
-            lessons: stage.lessons.map((lesson) => {
-              if (lesson.id !== lessonId) return lesson;
-              return {
-                ...lesson,
-                tasks: [
-                  ...lesson.tasks,
-                  {
-                    id: generateLocalId(),
-                    title: `Задание ${lesson.tasks.length + 1}`,
-                  },
-                ],
-              };
-            }),
-          };
-        }),
-      );
-    },
-    [],
-  );
+  const handleAddTask = useCallback((stageId: string, lessonId: string) => {
+    setStages((prev) =>
+      prev.map((stage) => {
+        if (stage.id !== stageId) return stage;
+        return {
+          ...stage,
+          lessons: stage.lessons.map((lesson) => {
+            if (lesson.id !== lessonId) return lesson;
+            return {
+              ...lesson,
+              tasks: [
+                ...lesson.tasks,
+                {
+                  id: generateLocalId(),
+                  title: `Задание ${lesson.tasks.length + 1}`,
+                },
+              ],
+            };
+          }),
+        };
+      }),
+    );
+  }, []);
 
   const handleDeleteTask = useCallback(
     (stageId: string, lessonId: string, taskId: string) => {
@@ -354,9 +352,7 @@ export const CourseConstructorTemplate = ({
         queue.enqueueUpdateStep(stageId, stage.serverId, newTitle, order);
       }
       setStages(
-        prev.map((s) =>
-          s.id === stageId ? { ...s, title: newTitle } : s,
-        ),
+        prev.map((s) => (s.id === stageId ? { ...s, title: newTitle } : s)),
       );
     },
     [queue],
@@ -433,8 +429,7 @@ export const CourseConstructorTemplate = ({
           serverId: stage.serverId ?? localToServerIdMap.current[stage.id],
           lessons: stage.lessons.map((lesson) => ({
             ...lesson,
-            serverId:
-              lesson.serverId ?? localToServerIdMap.current[lesson.id],
+            serverId: lesson.serverId ?? localToServerIdMap.current[lesson.id],
           })),
         })),
       );
@@ -498,13 +493,13 @@ export const CourseConstructorTemplate = ({
           <>
             <h2>{activeTask.title}</h2>
             <p className={styles.placeholder}>
-              Редактирование задания будет доступно после подключения бекенда
+              Редактирование задания будет после добавления статьи
             </p>
           </>
         ) : activeLesson && activeLesson.articleSlug ? (
           <div className={styles.articleEditor}>
             <LessonArticleEditor
-              variant="embedded"
+              variant='embedded'
               articleSlug={activeLesson.articleSlug}
               lessonTitle={activeLesson.title}
               onLessonTitleChange={(t) => {
