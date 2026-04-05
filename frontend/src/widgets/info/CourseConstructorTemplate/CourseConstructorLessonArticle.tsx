@@ -1,5 +1,7 @@
-import { useGetArticleAdminQuery } from '@/entities/article';
-import { SafeHtmlContent } from '@/shared/ui';
+import {
+  ArticleContentPreview,
+  useGetArticleAdminQuery,
+} from '@/entities/article';
 import styles from './CourseConstructorLessonArticle.module.scss';
 
 const EMPTY_ARTICLE_HINT_DEFAULT =
@@ -65,8 +67,8 @@ export function CourseConstructorLessonArticle({
     <div className={styles.root}>
       <h2 className={styles.lessonHeading}>{lessonTitle}</h2>
       {taskLine}
-      <SafeHtmlContent
-        html={article.contentHtml}
+      <ArticleContentPreview
+        blocks={article.contentBlocks}
         className={styles.articleBody}
         as="article"
       />

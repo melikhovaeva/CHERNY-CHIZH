@@ -4,6 +4,7 @@ import {
   type VideoBlock,
   type FileBlock,
   type UploadMediaResponse,
+  normalizeContentBlocks,
   useGetArticleAdminQuery,
   useUpdateArticleMutation,
   useUploadArticleMediaMutation,
@@ -13,48 +14,6 @@ import { ARTICLE_STATUS, BLOCK_TYPE, type BlockTypeValue } from '../config';
 
 function newBlockId(): string {
   return globalThis.crypto?.randomUUID?.() ?? `b-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-}
-
-function normalizeBlocks(raw: unknown): ContentBlock[] {
-  if (!Array.isArray(raw)) return [];
-  const out: ContentBlock[] = [];
-  for (const item of raw) {
-    if (typeof item !== 'object' || item === null) continue;
-    const b = item as Record<string, unknown>;
-    const id = typeof b.id === 'string' ? b.id : newBlockId();
-    const type = b.type;
-    if (type === BLOCK_TYPE.TEXT) {
-      out.push({
-        id,
-        type: BLOCK_TYPE.TEXT,
-        html: typeof b.html === 'string' ? b.html : '',
-      });
-    } else if (type === BLOCK_TYPE.IMAGE) {
-      out.push({
-        id,
-        type: BLOCK_TYPE.IMAGE,
-        url: typeof b.url === 'string' ? b.url : '',
-        alt: typeof b.alt === 'string' ? b.alt : '',
-        ...(typeof b.caption === 'string' ? { caption: b.caption } : {}),
-      });
-    } else if (type === BLOCK_TYPE.VIDEO) {
-      out.push({
-        id,
-        type: BLOCK_TYPE.VIDEO,
-        url: typeof b.url === 'string' ? b.url : '',
-        ...(typeof b.title === 'string' ? { title: b.title } : {}),
-      });
-    } else if (type === BLOCK_TYPE.FILE) {
-      out.push({
-        id,
-        type: BLOCK_TYPE.FILE,
-        url: typeof b.url === 'string' ? b.url : '',
-        name: typeof b.name === 'string' ? b.name : '',
-        size: typeof b.size === 'number' ? b.size : 0,
-      });
-    }
-  }
-  return out;
 }
 
 function emptyBlock(type: BlockTypeValue): ContentBlock {
@@ -106,7 +65,7 @@ export function useArticleEditor(articleSlug: string) {
   useEffect(() => {
     if (!article || initializedRef.current) return;
     initializedRef.current = true;
-    setBlocks(normalizeBlocks(article.contentBlocks));
+    setBlocks(normalizeContentBlocks(article.contentBlocks));
   }, [article]);
 
   const addBlock = useCallback(

@@ -1,3 +1,8 @@
+import {
+  CONTENT_BLOCK_TYPE,
+  type ContentBlockType,
+} from '@/entities/article';
+
 /** Статусы публикации статьи (совпадают с backend InfoStatus). */
 export const ARTICLE_STATUS = {
   PUBLISHED: 'published',
@@ -5,14 +10,9 @@ export const ARTICLE_STATUS = {
 } as const;
 
 /** Типы блоков редактора (совпадают с backend validate_content_blocks). */
-export const BLOCK_TYPE = {
-  TEXT: 'text',
-  IMAGE: 'image',
-  VIDEO: 'video',
-  FILE: 'file',
-} as const;
+export const BLOCK_TYPE = CONTENT_BLOCK_TYPE;
 
-export type BlockTypeValue = (typeof BLOCK_TYPE)[keyof typeof BLOCK_TYPE];
+export type BlockTypeValue = ContentBlockType;
 
 /** Задержка дебаунса для HTML текстового блока, мс. */
 export const TEXT_BLOCK_DEBOUNCE_MS = 200;

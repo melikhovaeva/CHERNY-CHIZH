@@ -82,7 +82,7 @@ def sanitize_html(html: str) -> str:
 
 
 def blocks_to_html(blocks: list) -> str:
-    """Convert content_blocks JSON list to sanitized HTML for public display."""
+    """Convert content_blocks JSON list to sanitized HTML (denormalized `Article.content`)."""
     parts = []
     for block in blocks:
         btype = block.get("type")
@@ -121,6 +121,30 @@ def blocks_to_html(blocks: list) -> str:
             if url:
                 parts.append(f'<p><a href="{url}" download="{name}">{name}</a></p>')
     return sanitize_html("\n".join(parts))
+
+
+def article_api_content_blocks(
+    stored_blocks: list | None,
+    legacy_html_content: str,
+) -> list:
+    """
+    Тело статьи для API: блоки из JSON либо один текстовый блок из legacy `content`.
+    HTML текстовых блоков санитизируется; остальные поля отдаются как в БД.
+    """
+    if isinstance(stored_blocks, list) and len(stored_blocks) > 0:
+        out = []
+        for raw in stored_blocks:
+            if not isinstance(raw, dict):
+                continue
+            block = dict(raw)
+            if block.get("type") == "text":
+                block["html"] = sanitize_html(block.get("html", ""))
+            out.append(block)
+        return out
+    html = sanitize_html(legacy_html_content or "")
+    if html:
+        return [{"type": "text", "html": html}]
+    return []
 
 
 def markdown_to_safe_html(raw_markdown: str) -> str:

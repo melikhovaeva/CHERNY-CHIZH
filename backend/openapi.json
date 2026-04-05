@@ -2846,8 +2846,12 @@
                         },
                         "readOnly": true
                     },
-                    "contentHtml": {
-                        "type": "string",
+                    "contentBlocks": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": true
+                        },
                         "readOnly": true
                     },
                     "createdAt": {
@@ -2862,7 +2866,7 @@
                     }
                 },
                 "required": [
-                    "contentHtml",
+                    "contentBlocks",
                     "createdAt",
                     "description",
                     "id",
