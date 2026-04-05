@@ -3,13 +3,17 @@ import {
   getStageOrdinalLabel,
   useCreateLessonMutation,
   useCreateStepMutation,
+  useCreateTaskMutation,
   useDeleteLessonMutation,
   useDeleteStepMutation,
+  useDeleteTaskMutation,
   useGetCourseStepsQuery,
   useUpdateLessonPartialMutation,
   useUpdateStepPartialMutation,
+  useUpdateTaskPartialMutation,
   type ConstructorLesson,
   type ConstructorStage,
+  type ConstructorTask,
 } from '@/entities/course';
 import {
   buildTreePayloadFromLocalSelection,
@@ -18,6 +22,8 @@ import {
   resolveTreeSelection,
 } from '@/features/course-workspace-persistence';
 import { LessonArticleEditor } from '@/features/lesson-article-editor';
+import { LessonTaskEditor } from '@/features/lesson-task-editor';
+import type { TaskEditorSavePayload } from '@/features/lesson-task-editor';
 import { cn } from '@/shared/lib/utils';
 import { useError } from '@/shared/ui/components/Toast';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
@@ -51,6 +57,9 @@ export const CourseConstructorTemplate = ({
   const [createLessonApi] = useCreateLessonMutation();
   const [updateLessonApi] = useUpdateLessonPartialMutation();
   const [deleteLessonApi] = useDeleteLessonMutation();
+  const [createTaskApi] = useCreateTaskMutation();
+  const [updateTaskApi] = useUpdateTaskPartialMutation();
+  const [deleteTaskApi] = useDeleteTaskMutation();
 
   const [stages, setStages] = useState<ConstructorStage[]>([]);
   const [initialized, setInitialized] = useState(false);
@@ -136,7 +145,9 @@ export const CourseConstructorTemplate = ({
             articleSlug: lesson.article?.slug ?? null,
             tasks: lesson.tasks.map((task) => ({
               id: String(task.id),
+              serverId: task.id,
               title: task.title,
+              questions: task.questions,
             })),
           };
         }),
@@ -345,94 +356,158 @@ export const CourseConstructorTemplate = ({
     [courseId, updateLessonApi, showError],
   );
 
-  // ── Task handlers (local-only — no backend endpoint in the constructor) ────
+  // ── Task handlers ──────────────────────────────────────────────────────────
 
-  const handleAddTask = useCallback((stageId: string, lessonId: string) => {
-    setStages((prev) =>
-      prev.map((stage) => {
-        if (stage.id !== stageId) return stage;
-        return {
-          ...stage,
-          lessons: stage.lessons.map((lesson) => {
-            if (lesson.id !== lessonId) return lesson;
-            return {
-              ...lesson,
-              tasks: [
-                ...lesson.tasks,
-                {
-                  id: generateLocalId(),
-                  title: `Задание ${lesson.tasks.length + 1}`,
-                },
-              ],
-            };
-          }),
-        };
-      }),
-    );
-  }, []);
+  const handleAddTask = useCallback(
+    (stageId: string, lessonId: string) => {
+      const lesson = stagesRef.current
+        .find((s) => s.id === stageId)
+        ?.lessons.find((l) => l.id === lessonId);
+      if (!lesson) return;
 
-  const handleDeleteTask = useCallback(
-    (stageId: string, lessonId: string, taskId: string) => {
+      const newTask: ConstructorTask = {
+        id: generateLocalId(),
+        title: `Задание ${lesson.tasks.length + 1}`,
+      };
+
       setStages((prev) =>
         prev.map((stage) => {
           if (stage.id !== stageId) return stage;
           return {
             ...stage,
-            lessons: stage.lessons.map((lesson) => {
-              if (lesson.id !== lessonId) return lesson;
-              return {
-                ...lesson,
-                tasks: lesson.tasks.filter((t) => t.id !== taskId),
-              };
-            }),
+            lessons: stage.lessons.map((l) =>
+              l.id !== lessonId ? l : { ...l, tasks: [...l.tasks, newTask] },
+            ),
           };
         }),
       );
-      setActiveTaskId((prev) => (prev === taskId ? null : prev));
+
+      setActiveStageId(stageId);
+      setActiveLessonId(lessonId);
+      setActiveTaskId(newTask.id);
     },
     [],
   );
 
-  const handleRenameTask = useCallback(
-    (stageId: string, lessonId: string, taskId: string, newTitle: string) => {
+  const handleDeleteTask = useCallback(
+    async (stageId: string, lessonId: string, taskId: string) => {
+      const stage = stagesRef.current.find((s) => s.id === stageId);
+      const lesson = stage?.lessons.find((l) => l.id === lessonId);
+      const task = lesson?.tasks.find((t) => t.id === taskId);
+
       setStages((prev) =>
-        prev.map((stage) => {
-          if (stage.id !== stageId) return stage;
+        prev.map((s) => {
+          if (s.id !== stageId) return s;
           return {
-            ...stage,
-            lessons: stage.lessons.map((lesson) => {
-              if (lesson.id !== lessonId) return lesson;
+            ...s,
+            lessons: s.lessons.map((l) =>
+              l.id !== lessonId
+                ? l
+                : { ...l, tasks: l.tasks.filter((t) => t.id !== taskId) },
+            ),
+          };
+        }),
+      );
+      setActiveTaskId((prev) => (prev === taskId ? null : prev));
+
+      const taskServerId = task?.serverId;
+      const lessonServerId = lesson?.serverId ?? localToServerIdMap.current[lessonId];
+      const stepServerId = stage?.serverId ?? localToServerIdMap.current[stageId];
+      if (!taskServerId || !lessonServerId || !stepServerId) return;
+
+      try {
+        await deleteTaskApi({
+          coursePk: String(courseId),
+          stepPk: String(stepServerId),
+          lessonPk: String(lessonServerId),
+          id: String(taskServerId),
+        }).unwrap();
+      } catch {
+        showError('Не удалось удалить задание');
+        void refetchCourseSteps();
+      }
+    },
+    [courseId, deleteTaskApi, refetchCourseSteps, showError],
+  );
+
+  const handleRenameTask = useCallback(
+    async (stageId: string, lessonId: string, taskId: string, newTitle: string) => {
+      const stage = stagesRef.current.find((s) => s.id === stageId);
+      const lesson = stage?.lessons.find((l) => l.id === lessonId);
+      const task = lesson?.tasks.find((t) => t.id === taskId);
+
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id !== stageId) return s;
+          return {
+            ...s,
+            lessons: s.lessons.map((l) => {
+              if (l.id !== lessonId) return l;
               return {
-                ...lesson,
-                tasks: lesson.tasks.map((task) =>
-                  task.id === taskId ? { ...task, title: newTitle } : task,
+                ...l,
+                tasks: l.tasks.map((t) =>
+                  t.id === taskId ? { ...t, title: newTitle } : t,
                 ),
               };
             }),
           };
         }),
       );
+
+      const taskServerId = task?.serverId;
+      const lessonServerId = lesson?.serverId ?? localToServerIdMap.current[lessonId];
+      const stepServerId = stage?.serverId ?? localToServerIdMap.current[stageId];
+      if (!taskServerId || !lessonServerId || !stepServerId) return;
+
+      try {
+        await updateTaskApi({
+          coursePk: String(courseId),
+          stepPk: String(stepServerId),
+          lessonPk: String(lessonServerId),
+          id: String(taskServerId),
+          patchedCourseTaskCreateUpdate: { title: newTitle },
+        }).unwrap();
+      } catch {
+        showError('Не удалось переименовать задание');
+      }
     },
-    [],
+    [courseId, updateTaskApi, showError],
   );
 
   // ── Cascade creation: stage → lesson → article ────────────────────────────
   //
-  // Called by useArticleEditor (via onBeforeSave) the first time the user saves
-  // content in a lesson that hasn't been persisted to the server yet.
-  // Returns the article slug so the editor can immediately issue a PATCH.
+  // ensureLessonAndAncestors: persists step+lesson to server if not yet saved.
+  // Returns { articleSlug, lessonServerId, stepServerId }.
+  // ensureLessonSaved wraps it for useArticleEditor (returns only articleSlug).
 
-  const ensureLessonSaved = useCallback(
-    async (stageId: string, lessonId: string): Promise<string> => {
-      // Fast path: lesson already has an article slug
-      const existingSlug = stagesRef.current
+  const ensureLessonAndAncestors = useCallback(
+    async (
+      stageId: string,
+      lessonId: string,
+    ): Promise<{ articleSlug: string; lessonServerId: number; stepServerId: number }> => {
+      // Fast path: lesson already saved and has a slug
+      const existingLesson = stagesRef.current
         .find((s) => s.id === stageId)
-        ?.lessons.find((l) => l.id === lessonId)?.articleSlug;
-      if (existingSlug) return existingSlug;
+        ?.lessons.find((l) => l.id === lessonId);
+      if (existingLesson?.articleSlug && existingLesson.serverId) {
+        const sid = stagesRef.current.find((s) => s.id === stageId)?.serverId
+          ?? localToServerIdMap.current[stageId];
+        return {
+          articleSlug: existingLesson.articleSlug,
+          lessonServerId: existingLesson.serverId,
+          stepServerId: sid!,
+        };
+      }
 
       // Deduplicate concurrent calls (e.g. user hammers save)
       if (pendingLessonCreations.current[lessonId]) {
-        return pendingLessonCreations.current[lessonId]!;
+        const slug = await pendingLessonCreations.current[lessonId]!;
+        const lesson = stagesRef.current
+          .find((s) => s.id === stageId)
+          ?.lessons.find((l) => l.id === lessonId);
+        const stepSid = stagesRef.current.find((s) => s.id === stageId)?.serverId
+          ?? localToServerIdMap.current[stageId];
+        return { articleSlug: slug, lessonServerId: lesson!.serverId!, stepServerId: stepSid! };
       }
 
       if (!courseId) throw new Error('courseId is not set');
@@ -528,12 +603,125 @@ export const CourseConstructorTemplate = ({
       pendingLessonCreations.current[lessonId] = promise;
 
       try {
-        return await promise;
+        const articleSlug = await promise;
+        const lesson = stagesRef.current
+          .find((s) => s.id === stageId)
+          ?.lessons.find((l) => l.id === lessonId);
+        const stepSid = stagesRef.current.find((s) => s.id === stageId)?.serverId
+          ?? localToServerIdMap.current[stageId];
+        return { articleSlug, lessonServerId: lesson!.serverId!, stepServerId: stepSid! };
       } finally {
         delete pendingLessonCreations.current[lessonId];
       }
     },
     [courseId, createStepApi, createLessonApi, refetchCourseSteps],
+  );
+
+  /** Wrapper for useArticleEditor: returns only the articleSlug. */
+  const ensureLessonSaved = useCallback(
+    async (stageId: string, lessonId: string): Promise<string> => {
+      const { articleSlug } = await ensureLessonAndAncestors(stageId, lessonId);
+      return articleSlug;
+    },
+    [ensureLessonAndAncestors],
+  );
+
+  /**
+   * Persist task to server (called by TaskEditor on first save).
+   * Also ensures lesson+step cascade first.
+   * Returns serverId of the created/updated task.
+   */
+  const ensureTaskSaved = useCallback(
+    async (
+      stageId: string,
+      lessonId: string,
+      taskId: string,
+      payload: { title: string; questions: Array<{ text: string; order: number; answers: Array<{ text: string; isCorrect: boolean; order: number }> }> },
+    ): Promise<number> => {
+      const { lessonServerId, stepServerId } = await ensureLessonAndAncestors(stageId, lessonId);
+
+      const task = stagesRef.current
+        .find((s) => s.id === stageId)
+        ?.lessons.find((l) => l.id === lessonId)
+        ?.tasks.find((t) => t.id === taskId);
+
+      /** Конвертирует payload вопросов в CourseTaskQuestionRead[] для хранения в stages. */
+      const questionsToStore = payload.questions.map((q, qi) => ({
+        id: qi + 1,
+        text: q.text,
+        order: q.order,
+        answers: q.answers.map((a, ai) => ({
+          id: ai + 1,
+          text: a.text,
+          isCorrect: a.isCorrect ?? false,
+          order: a.order,
+        })),
+      }));
+
+      if (task?.serverId) {
+        await updateTaskApi({
+          coursePk: String(courseId),
+          stepPk: String(stepServerId),
+          lessonPk: String(lessonServerId),
+          id: String(task.serverId),
+          patchedCourseTaskCreateUpdate: { ...payload },
+        }).unwrap();
+        setStages((prev) =>
+          prev.map((s) => {
+            if (s.id !== stageId) return s;
+            return {
+              ...s,
+              lessons: s.lessons.map((l) => {
+                if (l.id !== lessonId) return l;
+                return {
+                  ...l,
+                  tasks: l.tasks.map((t) =>
+                    t.id !== taskId ? t : { ...t, questions: questionsToStore },
+                  ),
+                };
+              }),
+            };
+          }),
+        );
+        return task.serverId;
+      }
+
+      const taskOrder =
+        stagesRef.current
+          .find((s) => s.id === stageId)
+          ?.lessons.find((l) => l.id === lessonId)
+          ?.tasks.findIndex((t) => t.id === taskId) ?? 0;
+
+      const result = await createTaskApi({
+        coursePk: String(courseId),
+        stepPk: String(stepServerId),
+        lessonPk: String(lessonServerId),
+        courseTaskCreateUpdate: { ...payload, order: taskOrder },
+      }).unwrap();
+
+      const newServerId = result.id;
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id !== stageId) return s;
+          return {
+            ...s,
+            lessons: s.lessons.map((l) => {
+              if (l.id !== lessonId) return l;
+              return {
+                ...l,
+                tasks: l.tasks.map((t) =>
+                  t.id !== taskId
+                    ? t
+                    : { ...t, serverId: newServerId, questions: questionsToStore },
+                ),
+              };
+            }),
+          };
+        }),
+      );
+      return newServerId;
+    },
+    [courseId, createTaskApi, updateTaskApi, ensureLessonAndAncestors],
   );
 
   // ── Derived ────────────────────────────────────────────────────────────────
@@ -549,6 +737,19 @@ export const CourseConstructorTemplate = ({
       new Set(
         stages.flatMap((s) =>
           s.lessons.filter((l) => !l.serverId).map((l) => l.id),
+        ),
+      ),
+    [stages],
+  );
+
+  /** Local IDs of tasks that have not yet been saved to the server. */
+  const unsyncedTaskIds = useMemo(
+    () =>
+      new Set(
+        stages.flatMap((s) =>
+          s.lessons.flatMap((l) =>
+            l.tasks.filter((t) => !t.serverId).map((t) => t.id),
+          ),
         ),
       ),
     [stages],
@@ -577,29 +778,58 @@ export const CourseConstructorTemplate = ({
           void handleDeleteLesson(stageId, lessonId)
         }
         onAddTask={handleAddTask}
-        onDeleteTask={handleDeleteTask}
+        onDeleteTask={(stageId, lessonId, taskId) =>
+          void handleDeleteTask(stageId, lessonId, taskId)
+        }
         onRenameStage={(stageId, title) =>
           void handleRenameStage(stageId, title)
         }
         onRenameLesson={(stageId, lessonId, title) =>
           void handleRenameLesson(stageId, lessonId, title)
         }
-        onRenameTask={handleRenameTask}
+        onRenameTask={(stageId, lessonId, taskId, newTitle) =>
+          void handleRenameTask(stageId, lessonId, taskId, newTitle)
+        }
       />
 
       <div
         className={cn([
           styles.content,
-          activeLesson?.articleSlug ? styles.content_flush : '',
+          activeTask || activeLesson?.articleSlug ? styles.content_flush : '',
         ])}
       >
-        {activeTask ? (
-          <>
-            <h2>{activeTask.title}</h2>
-            <p className={styles.placeholder}>
-              Редактирование задания будет после добавления статьи
-            </p>
-          </>
+        {activeTask && activeStageId && activeLessonId && activeTaskId ? (
+          <LessonTaskEditor
+            key={activeTask.id}
+            taskTitle={activeTask.title}
+            isSynced={!unsyncedTaskIds.has(activeTask.id)}
+            initialState={
+              activeTask.questions?.length
+                ? {
+                    questions: activeTask.questions.map((q) => ({
+                      id: String(q.id),
+                      text: q.text,
+                      order: q.order ?? 0,
+                      answers: q.answers.map((a) => ({
+                        id: String(a.id),
+                        text: a.text,
+                        isCorrect: a.isCorrect ?? false,
+                        order: a.order ?? 0,
+                      })),
+                    })),
+                  }
+                : undefined
+            }
+            onTitleChange={(newTitle) => {
+              void handleRenameTask(activeStageId, activeLessonId, activeTaskId, newTitle);
+            }}
+            onSave={(payload: TaskEditorSavePayload) =>
+              ensureTaskSaved(activeStageId, activeLessonId, activeTaskId, payload)
+            }
+            onDeleteTask={() => {
+              void handleDeleteTask(activeStageId, activeLessonId, activeTaskId);
+            }}
+          />
         ) : activeLesson ? (
           // Editor is shown immediately for all selected lessons — even before
           // the lesson has been saved to the server. The first save/publish

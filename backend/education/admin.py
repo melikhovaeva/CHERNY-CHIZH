@@ -10,6 +10,7 @@ from education.models import (
     CourseTaskAnswer,
     CourseTaskQuestion,
     InfoTag,
+    UserTaskAttempt,
 )
 
 
@@ -168,4 +169,17 @@ class CourseEnrollmentAdmin(admin.ModelAdmin):
     list_filter = ("status", "course")
     search_fields = ("user__email", "course__title")
     raw_id_fields = ("user", "course")
+
+
+@admin.register(UserTaskAttempt)
+class UserTaskAttemptAdmin(admin.ModelAdmin):
+    list_display = ("user", "question", "selected_answer", "get_is_correct", "created_at")
+    list_filter = ("question__task",)
+    search_fields = ("user__email",)
+    raw_id_fields = ("user", "question", "selected_answer")
+    readonly_fields = ("created_at", "updated_at")
+
+    @admin.display(description="Правильно?", boolean=True)
+    def get_is_correct(self, obj):
+        return obj.selected_answer.is_correct
 

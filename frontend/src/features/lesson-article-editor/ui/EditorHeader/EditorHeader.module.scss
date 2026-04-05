@@ -187,6 +187,43 @@ $editor-gear-bg: #0c0d0d;
   }
 }
 
+.saveIconBtn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid $c-neutral-200;
+  border-radius: 4px;
+  background-color: $c-neutral-0;
+  color: $c-neutral-800;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+
+  &:hover:not(:disabled) {
+    background-color: $c-neutral-100;
+    border-color: $c-neutral-300;
+    color: $c-neutral-900;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.saveIcon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
 .publishBtn {
   box-sizing: border-box;
   display: inline-flex;

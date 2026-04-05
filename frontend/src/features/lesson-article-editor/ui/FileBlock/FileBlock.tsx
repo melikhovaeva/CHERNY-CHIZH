@@ -1,7 +1,8 @@
 import type { FileBlock as FileBlockModel } from '@/entities/article';
+import { formatFileSize } from '@/shared/lib/formatFileSize';
 import { Button } from '@/shared/ui/components/Button/Button';
+import { FileAttachmentCard } from '@/shared/ui/components/FileAttachmentCard';
 import { useCallback, useId, useRef, useState } from 'react';
-import { formatFileSize } from '../../lib/formatFileSize';
 import styles from './FileBlock.module.scss';
 
 export interface FileBlockProps {
@@ -66,15 +67,12 @@ export function FileBlock({
         </label>
       ) : (
         <>
-          <div className={styles.fileRow}>
-            <span className={styles.clip} aria-hidden>
-              📎
-            </span>
-            <a className={styles.link} href={block.url} download={block.name}>
-              {block.name || 'Файл'}
-            </a>
-            <span className={styles.size}>{formatFileSize(block.size)}</span>
-          </div>
+          <FileAttachmentCard
+            href={block.url}
+            fileName={block.name || 'Файл'}
+            fileSizeLabel={formatFileSize(block.size)}
+            download={block.name || undefined}
+          />
           <div className={styles.replaceRow}>
             <Button
               type="button"

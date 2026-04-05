@@ -747,54 +747,6 @@
                 }
             }
         },
-        "/api/v1/education/articles/": {
-            "get": {
-                "operationId": "v1_education_articles_list",
-                "description": "Возвращает список статей с краткой информацией (education-префикс).",
-                "summary": "Список статей (education)",
-                "parameters": [
-                    {
-                        "name": "limit",
-                        "required": false,
-                        "in": "query",
-                        "description": "Number of results to return per page.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "offset",
-                        "required": false,
-                        "in": "query",
-                        "description": "The initial index from which to return the results.",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "tags": [
-                    "Education"
-                ],
-                "security": [
-                    {
-                        "CookieJWT": []
-                    },
-                    {}
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/PaginatedArticleListList"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/api/v1/education/articles/{slug}/": {
             "get": {
                 "operationId": "v1_education_articles_retrieve",
@@ -816,15 +768,120 @@
                 "security": [
                     {
                         "CookieJWT": []
-                    },
-                    {}
+                    }
                 ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Article"
+                                    "$ref": "#/components/schemas/ArticleAdminRead"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_education_articles_update",
+                "description": "Admin API для редактирования статей под префиксом /education.\nretrieve — возвращает статью с contentBlocks (для редактора и предпросмотра).\npartial_update — принимает title/description/status/content_blocks.\nupload-media — загружает медиафайл в хранилище и возвращает URL.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminWrite"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminWrite"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminWrite"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArticleAdminWrite"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_education_articles_partial_update",
+                "description": "Admin API для редактирования статей под префиксом /education.\nretrieve — возвращает статью с contentBlocks (для редактора и предпросмотра).\npartial_update — принимает title/description/status/content_blocks.\nupload-media — загружает медиафайл в хранилище и возвращает URL.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedArticleAdminWrite"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedArticleAdminWrite"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedArticleAdminWrite"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArticleAdminWrite"
                                 }
                             }
                         },
@@ -833,26 +890,54 @@
                 }
             }
         },
-        "/api/v1/education/articles/home-library/": {
-            "get": {
-                "operationId": "v1_education_articles_home_library_retrieve",
-                "description": "Теги с не менее чем 3 статьями (макс. 4 тега), для каждого — минимум 3 статьи. Только опубликованные статьи. (education-префикс)",
-                "summary": "Блок «База знаний» для главной (education)",
-                "tags": [
-                    "Education"
+        "/api/v1/education/articles/{slug}/upload-media/": {
+            "post": {
+                "operationId": "v1_education_articles_upload_media_create",
+                "description": "Admin API для редактирования статей под префиксом /education.\nretrieve — возвращает статью с contentBlocks (для редактора и предпросмотра).\npartial_update — принимает title/description/status/content_blocks.\nupload-media — загружает медиафайл в хранилище и возвращает URL.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "slug",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
                 ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminRead"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminRead"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleAdminRead"
+                            }
+                        }
+                    },
+                    "required": true
+                },
                 "security": [
                     {
                         "CookieJWT": []
-                    },
-                    {}
+                    }
                 ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Article"
+                                    "$ref": "#/components/schemas/ArticleAdminRead"
                                 }
                             }
                         },
@@ -1345,6 +1430,403 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/education/courses/{course_pk}/steps/{step_pk}/lessons/{lesson_pk}/tasks/": {
+            "get": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_list",
+                "description": "Возвращает список заданий с вопросами и ответами для указанного урока.",
+                "summary": "Список заданий урока",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CourseTask"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_create",
+                "description": "Создаёт новое задание в указанном уроке курса с вложенными вопросами и ответами.",
+                "summary": "Создать задание (только администратор)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/education/courses/{course_pk}/steps/{step_pk}/lessons/{lesson_pk}/tasks/{id}/": {
+            "get": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_retrieve",
+                "description": "Возвращает задание с вложенными вопросами и ответами.",
+                "summary": "Детали задания",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseTask"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_update",
+                "description": "Полное обновление задания. При передаче questions — дерево вопросов/ответов атомарно пересобирается.",
+                "summary": "Обновить задание (только администратор)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_partial_update",
+                "description": "Частичное обновление задания. При передаче questions — дерево вопросов/ответов атомарно пересобирается.",
+                "summary": "Частично обновить задание (только администратор)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCourseTaskCreateUpdate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCourseTaskCreateUpdate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCourseTaskCreateUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseTaskCreateUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1_education_courses_steps_lessons_tasks_destroy",
+                "description": "Безвозвратное удаление задания вместе с вопросами и ответами.",
+                "summary": "Удалить задание (только администратор)",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "course_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "lesson_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "path",
+                        "name": "step_pk",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -1896,6 +2378,122 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/education/task-attempts/": {
+            "get": {
+                "operationId": "v1_education_task_attempts_list",
+                "description": "Возвращает список ответов текущего пользователя. Фильтрация по заданию: ?task={task_id}.",
+                "summary": "Мои ответы на задание",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "task",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID задания для фильтрации ответов."
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserTaskAttemptRead"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_education_task_attempts_create",
+                "description": "Сохраняет выбранный вариант ответа для текущего пользователя. Повторный ответ на один и тот же вопрос не допускается.",
+                "summary": "Отправить ответ на вопрос задания",
+                "tags": [
+                    "Education"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserTaskAttemptCreate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserTaskAttemptCreate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserTaskAttemptCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserTaskAttemptRead"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/education/task-attempts/reset/": {
+            "delete": {
+                "operationId": "v1_education_task_attempts_reset_destroy",
+                "description": "Удаляет все ответы администратора на вопросы задания. Обязательный параметр: ?task={task_id}.",
+                "summary": "Сбросить прогресс задания (только администратор)",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "task",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID задания для сброса прогресса.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Education"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -2848,10 +3446,7 @@
                     },
                     "contentBlocks": {
                         "type": "array",
-                        "items": {
-                            "type": "object",
-                            "additionalProperties": true
-                        },
+                        "items": {},
                         "readOnly": true
                     },
                     "createdAt": {
@@ -2876,6 +3471,91 @@
                     "title",
                     "updatedAt"
                 ]
+            },
+            "ArticleAdminRead": {
+                "type": "object",
+                "description": "Сериализатор чтения статьи для редактора (включает content_blocks).",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "imagePreview": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CodeLabel"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InfoTag"
+                        },
+                        "readOnly": true
+                    },
+                    "contentBlocks": {
+                        "type": "array",
+                        "items": {},
+                        "readOnly": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "contentBlocks",
+                    "createdAt",
+                    "description",
+                    "id",
+                    "slug",
+                    "status",
+                    "tags",
+                    "title",
+                    "updatedAt"
+                ]
+            },
+            "ArticleAdminWrite": {
+                "type": "object",
+                "description": "Сериализатор записи статьи для редактора (title, description, status, content_blocks).",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status783Enum"
+                    },
+                    "contentBlocks": {}
+                }
             },
             "ArticleBrief": {
                 "type": "object",
@@ -3208,7 +3888,7 @@
                         "$ref": "#/components/schemas/DifficultyEnum"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/CourseCreateUpdateStatusEnum"
+                        "$ref": "#/components/schemas/Status783Enum"
                     },
                     "tags": {
                         "type": "array",
@@ -3236,14 +3916,6 @@
                     "title",
                     "updatedAt"
                 ]
-            },
-            "CourseCreateUpdateStatusEnum": {
-                "enum": [
-                    "published",
-                    "unpublished"
-                ],
-                "type": "string",
-                "description": "* `published` - Опубликован\n* `unpublished` - Не опубликован"
             },
             "CourseDetail": {
                 "type": "object",
@@ -3607,6 +4279,61 @@
                     "text"
                 ]
             },
+            "CourseTaskAnswerWrite": {
+                "type": "object",
+                "description": "Write-сериализатор для варианта ответа при создании/обновлении задания.",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "isCorrect": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "order": {
+                        "type": "integer",
+                        "default": 0
+                    }
+                },
+                "required": [
+                    "text"
+                ]
+            },
+            "CourseTaskCreateUpdate": {
+                "type": "object",
+                "description": "Write-сериализатор для создания и обновления задания с вложенными вопросами и ответами.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 32767,
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "questions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CourseTaskQuestionWrite"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "title"
+                ]
+            },
             "CourseTaskQuestion": {
                 "type": "object",
                 "description": "Миксин: результат to_representation отдаётся с ключами в camelCase без null и пустых строк.",
@@ -3634,6 +4361,29 @@
                 "required": [
                     "answers",
                     "id",
+                    "text"
+                ]
+            },
+            "CourseTaskQuestionWrite": {
+                "type": "object",
+                "description": "Write-сериализатор для вопроса при создании/обновлении задания.",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "answers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CourseTaskAnswerWrite"
+                        }
+                    }
+                },
+                "required": [
+                    "answers",
                     "text"
                 ]
             },
@@ -4097,6 +4847,23 @@
                     }
                 }
             },
+            "PatchedArticleAdminWrite": {
+                "type": "object",
+                "description": "Сериализатор записи статьи для редактора (title, description, status, content_blocks).",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status783Enum"
+                    },
+                    "contentBlocks": {}
+                }
+            },
             "PatchedCourseCreateUpdate": {
                 "type": "object",
                 "description": "Сериализатор для создания и обновления курса (админ). Поля: название, описание, текст кнопки, изображение, уровень, теги, статус.",
@@ -4130,7 +4897,7 @@
                         "$ref": "#/components/schemas/DifficultyEnum"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/CourseCreateUpdateStatusEnum"
+                        "$ref": "#/components/schemas/Status783Enum"
                     },
                     "tags": {
                         "type": "array",
@@ -4217,6 +4984,36 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true
+                    }
+                }
+            },
+            "PatchedCourseTaskCreateUpdate": {
+                "type": "object",
+                "description": "Write-сериализатор для создания и обновления задания с вложенными вопросами и ответами.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 32767,
+                        "minimum": 0,
+                        "default": 0
+                    },
+                    "questions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CourseTaskQuestionWrite"
+                        }
                     }
                 }
             },
@@ -4426,6 +5223,14 @@
                     "label"
                 ]
             },
+            "Status783Enum": {
+                "enum": [
+                    "published",
+                    "unpublished"
+                ],
+                "type": "string",
+                "description": "* `published` - Опубликован\n* `unpublished` - Не опубликован"
+            },
             "TokenObtainPair": {
                 "type": "object",
                 "properties": {
@@ -4516,6 +5321,56 @@
                     "id",
                     "isActive",
                     "role"
+                ]
+            },
+            "UserTaskAttemptCreate": {
+                "type": "object",
+                "description": "Сериализатор для отправки ответа на вопрос задания.",
+                "properties": {
+                    "questionId": {
+                        "type": "integer"
+                    },
+                    "answerId": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "answerId",
+                    "questionId"
+                ]
+            },
+            "UserTaskAttemptRead": {
+                "type": "object",
+                "description": "Сериализатор для чтения попытки ответа пользователя.",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "questionId": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "selectedAnswerId": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "isCorrect": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "createdAt",
+                    "id",
+                    "isCorrect",
+                    "questionId",
+                    "selectedAnswerId"
                 ]
             }
         },

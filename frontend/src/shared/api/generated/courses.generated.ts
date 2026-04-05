@@ -118,6 +118,67 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Education"],
       }),
+      v1EducationCoursesStepsLessonsTasksList: build.query<
+        V1EducationCoursesStepsLessonsTasksListApiResponse,
+        V1EducationCoursesStepsLessonsTasksListApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksCreate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksCreateApiResponse,
+        V1EducationCoursesStepsLessonsTasksCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/`,
+          method: "POST",
+          body: queryArg.courseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksRetrieve: build.query<
+        V1EducationCoursesStepsLessonsTasksRetrieveApiResponse,
+        V1EducationCoursesStepsLessonsTasksRetrieveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksUpdateApiResponse,
+        V1EducationCoursesStepsLessonsTasksUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "PUT",
+          body: queryArg.courseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksPartialUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksPartialUpdateApiResponse,
+        V1EducationCoursesStepsLessonsTasksPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "PATCH",
+          body: queryArg.patchedCourseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksDestroy: build.mutation<
+        V1EducationCoursesStepsLessonsTasksDestroyApiResponse,
+        V1EducationCoursesStepsLessonsTasksDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Education"],
+      }),
       v1EducationCoursesStepsLessonsRetrieve: build.query<
         V1EducationCoursesStepsLessonsRetrieveApiResponse,
         V1EducationCoursesStepsLessonsRetrieveApiArg
@@ -277,6 +338,54 @@ export type V1EducationCoursesStepsLessonsCreateApiArg = {
   coursePk: string;
   stepPk: string;
   courseLessonCreateUpdate: CourseLessonCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksListApiResponse =
+  /** status 200  */ CourseTaskRead[];
+export type V1EducationCoursesStepsLessonsTasksListApiArg = {
+  coursePk: string;
+  lessonPk: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsTasksCreateApiResponse =
+  /** status 201  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksCreateApiArg = {
+  coursePk: string;
+  lessonPk: string;
+  stepPk: string;
+  courseTaskCreateUpdate: CourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksRetrieveApiResponse =
+  /** status 200  */ CourseTaskRead;
+export type V1EducationCoursesStepsLessonsTasksRetrieveApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsTasksUpdateApiResponse =
+  /** status 200  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+  courseTaskCreateUpdate: CourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksPartialUpdateApiResponse =
+  /** status 200  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksPartialUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+  patchedCourseTaskCreateUpdate: PatchedCourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksDestroyApiResponse = unknown;
+export type V1EducationCoursesStepsLessonsTasksDestroyApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
 };
 export type V1EducationCoursesStepsLessonsRetrieveApiResponse =
   /** status 200  */ CourseLessonRead;
@@ -466,14 +575,14 @@ export type CourseDetailRead = {
   updatedAt: string;
   steps: CourseStepRead[];
 };
-export type CourseCreateUpdateStatusEnum = "published" | "unpublished";
+export type Status783Enum = "published" | "unpublished";
 export type CourseCreateUpdate = {
   title: string;
   description: string;
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
 };
 export type CourseCreateUpdateRead = {
@@ -484,7 +593,7 @@ export type CourseCreateUpdateRead = {
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
   createdAt: string;
   updatedAt: string;
@@ -527,6 +636,42 @@ export type CourseLessonCreateUpdateRead = {
   createdAt: string;
   updatedAt: string;
 };
+export type CourseTaskAnswerWrite = {
+  text: string;
+  isCorrect?: boolean;
+  order?: number;
+};
+export type CourseTaskQuestionWrite = {
+  text: string;
+  order?: number;
+  answers: CourseTaskAnswerWrite[];
+};
+export type CourseTaskCreateUpdate = {
+  title: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type CourseTaskCreateUpdateRead = {
+  id: number;
+  title: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type PatchedCourseTaskCreateUpdate = {
+  title?: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type PatchedCourseTaskCreateUpdateRead = {
+  id?: number;
+  title?: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
 export type PatchedCourseLessonCreateUpdate = {
   title?: string;
   order?: number;
@@ -547,7 +692,7 @@ export type PatchedCourseCreateUpdate = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
 };
 export type PatchedCourseCreateUpdateRead = {
@@ -558,7 +703,7 @@ export type PatchedCourseCreateUpdateRead = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
   createdAt?: string;
   updatedAt?: string;
@@ -576,6 +721,12 @@ export const {
   useV1EducationCoursesStepsDestroyMutation,
   useV1EducationCoursesStepsLessonsListQuery,
   useV1EducationCoursesStepsLessonsCreateMutation,
+  useV1EducationCoursesStepsLessonsTasksListQuery,
+  useV1EducationCoursesStepsLessonsTasksCreateMutation,
+  useV1EducationCoursesStepsLessonsTasksRetrieveQuery,
+  useV1EducationCoursesStepsLessonsTasksUpdateMutation,
+  useV1EducationCoursesStepsLessonsTasksPartialUpdateMutation,
+  useV1EducationCoursesStepsLessonsTasksDestroyMutation,
   useV1EducationCoursesStepsLessonsRetrieveQuery,
   useV1EducationCoursesStepsLessonsUpdateMutation,
   useV1EducationCoursesStepsLessonsPartialUpdateMutation,

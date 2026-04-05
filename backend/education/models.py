@@ -277,3 +277,29 @@ class CourseEnrollment(TimeStampModel):
         verbose_name = "Запись на курс"
         verbose_name_plural = "Записи на курсы"
 
+
+class UserTaskAttempt(TimeStampModel):
+    """Ответ пользователя на вопрос задания курса."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="task_attempts",
+    )
+    question = models.ForeignKey(
+        CourseTaskQuestion,
+        on_delete=models.CASCADE,
+        related_name="attempts",
+    )
+    selected_answer = models.ForeignKey(
+        CourseTaskAnswer,
+        on_delete=models.CASCADE,
+        related_name="attempts",
+    )
+
+    class Meta:
+        db_table = "education_usertaskattempt"
+        unique_together = [("user", "question")]
+        verbose_name = "Попытка ответа на задание"
+        verbose_name_plural = "Попытки ответов на задания"
+

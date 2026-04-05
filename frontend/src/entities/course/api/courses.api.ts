@@ -16,6 +16,15 @@ import {
   useV1EducationCoursesStepsLessonsDestroyMutation,
 } from "@/shared/api/generated/courses.generated";
 import {
+  enhancedApi as educationEnhancedApi,
+  useV1EducationCoursesStepsLessonsTasksCreateMutation,
+  useV1EducationCoursesStepsLessonsTasksPartialUpdateMutation,
+  useV1EducationCoursesStepsLessonsTasksDestroyMutation,
+  useV1EducationTaskAttemptsListQuery,
+  useV1EducationTaskAttemptsCreateMutation,
+  useV1EducationTaskAttemptsResetDestroyMutation,
+} from "@/shared/api/generated/education.generated";
+import {
   useV1UsersMeCoursesCreateMutation,
   useV1UsersMeCoursesListQuery,
 } from "@/shared/api/generated/users.generated";
@@ -47,6 +56,21 @@ export const useUpdateLessonPartialMutation =
   useV1EducationCoursesStepsLessonsPartialUpdateMutation;
 export const useDeleteLessonMutation =
   useV1EducationCoursesStepsLessonsDestroyMutation;
+
+// Tasks CRUD
+export const useCreateTaskMutation =
+  useV1EducationCoursesStepsLessonsTasksCreateMutation;
+export const useUpdateTaskPartialMutation =
+  useV1EducationCoursesStepsLessonsTasksPartialUpdateMutation;
+export const useDeleteTaskMutation =
+  useV1EducationCoursesStepsLessonsTasksDestroyMutation;
+
+// Task attempts (learner progress)
+export const useGetTaskAttemptsQuery = useV1EducationTaskAttemptsListQuery;
+export const useSubmitTaskAttemptMutation =
+  useV1EducationTaskAttemptsCreateMutation;
+export const useResetTaskAttemptsMutation =
+  useV1EducationTaskAttemptsResetDestroyMutation;
 
 /** Загрузка изображения курса (multipart/form-data). */
 export function useUploadCourseImageMutation() {
@@ -97,6 +121,29 @@ coursesApi.enhanceEndpoints({
     v1EducationCoursesStepsLessonsDestroy: {
       invalidatesTags: ["Education", "Courses"],
     },
+    v1EducationCoursesStepsLessonsTasksCreate: {
+      invalidatesTags: ["Education", "Courses"],
+    },
+    v1EducationCoursesStepsLessonsTasksUpdate: {
+      invalidatesTags: ["Education", "Courses"],
+    },
+    v1EducationCoursesStepsLessonsTasksPartialUpdate: {
+      invalidatesTags: ["Education", "Courses"],
+    },
+    v1EducationCoursesStepsLessonsTasksDestroy: {
+      invalidatesTags: ["Education", "Courses"],
+    },
+  },
+});
+
+educationEnhancedApi.enhanceEndpoints({
+  endpoints: {
+    v1EducationTaskAttemptsCreate: {
+      invalidatesTags: ["Education"],
+    },
+    v1EducationTaskAttemptsResetDestroy: {
+      invalidatesTags: ["Education"],
+    },
   },
 });
 
@@ -105,3 +152,11 @@ export type {
   CourseRead,
 } from "@/shared/api/generated/courses.generated";
 export type { CourseEnrollmentRead } from "@/shared/api/generated/users.generated";
+export type {
+  CourseTaskRead,
+  CourseTaskCreateUpdate,
+  CourseTaskQuestionWrite,
+  CourseTaskAnswerWrite,
+  UserTaskAttemptReadRead,
+  UserTaskAttemptCreate,
+} from "@/shared/api/generated/education.generated";

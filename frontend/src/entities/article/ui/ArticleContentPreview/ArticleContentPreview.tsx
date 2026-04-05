@@ -1,5 +1,7 @@
 import type { JSX } from 'react';
+import { formatFileSize } from '@/shared/lib/formatFileSize';
 import { SafeHtmlContent } from '@/shared/ui';
+import { FileAttachmentCard } from '@/shared/ui/components/FileAttachmentCard';
 import type { ContentBlock } from '../../api/articleAdmin.api';
 import { CONTENT_BLOCK_TYPE } from '../../config/contentBlockTypes';
 import { normalizeContentBlocks } from '../../lib/normalizeContentBlocks';
@@ -64,19 +66,28 @@ function ArticleContentBlockView({
       const { embedType, embedUrl } = resolveVideoEmbed(block.url);
       const isEmbed = embedType === 'youtube' || embedType === 'vimeo';
       return (
-        <figure data-block-type='video'>
+        <figure className={previewStyles.imageFigure} data-block-type='video'>
           {isEmbed ? (
             <iframe
+              className={previewStyles.videoEmbed}
               src={embedUrl}
               title={block.title ?? 'Видео'}
               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
               allowFullScreen
-              style={{ width: '100%', aspectRatio: '16/9', border: 'none' }}
             />
           ) : (
-            <video src={resolveApiAssetUrl(block.url)} controls preload='metadata' />
+            <video
+              className={previewStyles.image}
+              src={resolveApiAssetUrl(block.url)}
+              controls
+              preload='metadata'
+            />
           )}
-          {block.title ? <figcaption>{block.title}</figcaption> : null}
+          {block.title ? (
+            <figcaption className={previewStyles.imageCaption}>
+              {block.title}
+            </figcaption>
+          ) : null}
         </figure>
       );
     }
@@ -84,11 +95,14 @@ function ArticleContentBlockView({
       if (!block.url) return null;
       const href = resolveApiAssetUrl(block.url);
       return (
-        <p>
-          <a href={href} download={block.name}>
-            {block.name}
-          </a>
-        </p>
+        <div className={previewStyles.fileAttachmentWrap}>
+          <FileAttachmentCard
+            href={href}
+            fileName={block.name || 'Файл'}
+            fileSizeLabel={formatFileSize(block.size)}
+            download={block.name || undefined}
+          />
+        </div>
       );
     }
     default:

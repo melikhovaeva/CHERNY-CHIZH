@@ -7,17 +7,31 @@ import {
 } from '@/entities/course';
 import { selectIsAdmin } from '@/entities/session';
 import { CoursePreviewTemplate } from '@/widgets';
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { DifficultyBadge, Placeholder } from '@/shared/ui/components';
 import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { getImageUrl } from '@/shared/lib/utils';
 import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import styles from './CoursePage.module.scss';
 
-const KNOWLEDGE_BASE_PATH = '/knowledge-base' as const;
+const BACK_DEFAULT_PATH = '/knowledge-base' as const;
+
+const BACK_LABELS: Record<string, string> = {
+  '/knowledge-base': 'К базе знаний',
+  '/cabinet/my-courses': 'К моим курсам',
+  '/cabinet/courses': 'К курсам',
+};
+
+function getBackLabel(from: string | undefined): string {
+  if (!from) return BACK_LABELS[BACK_DEFAULT_PATH];
+  return BACK_LABELS[from] ?? 'Назад';
+}
 
 export const CoursePage = () => {
   const { slug } = useParams({ from: '/courses/$slug' });
+  const { from } = useSearch({ from: '/courses/$slug' });
+  const backPath = from ?? BACK_DEFAULT_PATH;
+  const backLabel = getBackLabel(from);
   const { data: courses, isLoading: isCoursesLoading, isError: isCoursesError } =
     useGetCoursesQuery();
   const { data: myCourses, isLoading: isMyCoursesLoading } =
@@ -96,12 +110,12 @@ export const CoursePage = () => {
     <article className={styles.root}>
       <div className={styles.inner}>
         <Link
-          to={KNOWLEDGE_BASE_PATH}
+          to={backPath}
           className={styles.backLink}
-          aria-label="Назад к базе знаний"
+          aria-label={backLabel}
         >
           <ArrowLeftIcon className={styles.backIcon} aria-hidden />
-          <span>К базе знаний</span>
+          <span>{backLabel}</span>
         </Link>
 
         <header className={styles.hero}>
@@ -144,6 +158,7 @@ export const CoursePage = () => {
             persistenceCourseSlug={slug}
             embeddedSteps={courseDetail.steps}
             learnerMode
+            isAdmin={isAdmin}
           />
         </section>
       </div>

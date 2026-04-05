@@ -11,6 +11,10 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { useEffect } from 'react'
 import { Providers } from '../providers/Providers'
 
+const BREADCRUMB_LINK_OVERRIDES: Record<string, string> = {
+  '/courses': '/knowledge-base',
+}
+
 function RootContent() {
   const getSegmentLabel = useSegmentLabel()
   const { data: dictionariesIndex } = useGetDictionariesIndexQuery()
@@ -26,7 +30,10 @@ function RootContent() {
     <>
       <Header />
       <main>
-        <Breadcrumb getSegmentLabel={getSegmentLabel} />
+        <Breadcrumb
+          getSegmentLabel={getSegmentLabel}
+          linkPathOverrides={BREADCRUMB_LINK_OVERRIDES}
+        />
         <Outlet />
       </main>
       <Footer />
