@@ -2,34 +2,34 @@ import type {
   ConstructorLesson,
   ConstructorStage,
   ConstructorTask,
-} from '@/entities/course';
-import { cn } from '@/shared/lib/utils';
-import { Button, LeftBar } from '@/shared/ui';
-import { DropdownMenu } from '@/shared/ui/components';
-import ChevronDownSvg from '@/shared/ui/components/Select/assets/chevron-down.svg?react';
-import UnsyncedIcon from './assets/unsynced.svg?react';
-import { useEffect, useRef, useState } from 'react';
-import styles from './CourseConstructorLeftBar.module.scss';
+} from "@/entities/course";
+import { cn } from "@/shared/lib/utils";
+import { LeftBar } from "@/shared/ui";
+import { DropdownMenu } from "@/shared/ui/components";
+import ChevronDownSvg from "@/shared/ui/components/Select/assets/chevron-down.svg?react";
+import UnsyncedSvg from "./assets/unsynced.svg?react";
+import { useEffect, useRef, useState } from "react";
+import styles from "./CourseConstructorLeftBar.module.scss";
 
-const ADD_FIRST_STAGE_LABEL = 'Добавить ступень';
+const ADD_FIRST_STAGE_LABEL = "Добавить ступень";
 
 const EMPTY_PREVIEW_HINT =
-  'В программе курса пока нет уроков. Добавьте ступени и уроки в конструкторе.';
+  "В программе курса пока нет уроков. Добавьте ступени и уроки в конструкторе.";
 
 export interface CourseConstructorLeftBarProps {
   stages: ConstructorStage[];
   activeStageId: string | null;
   activeLessonId: string | null;
   activeTaskId: string | null;
+  /**
+   * Локальные IDs уроков, которые ещё не сохранены на сервере.
+   * В режиме readOnly передаётся пустой Set.
+   */
+  unsyncedIds: Set<string>;
   /** Только навигация: без сохранения, переименований и удаления. */
   readOnly?: boolean;
   /** Текст при пустой программе в режиме readOnly (например, для ученика). */
   emptyReadonlyHint?: string;
-  unsyncedIds?: Set<string>;
-  hasChanges?: boolean;
-  isSaving?: boolean;
-  unsavedCount?: number;
-  onSave?: () => void;
   onSelectLesson: (stageId: string, lessonId: string) => void;
   onSelectTask: (stageId: string, lessonId: string, taskId: string) => void;
   onAddStage: () => void;
@@ -39,11 +39,7 @@ export interface CourseConstructorLeftBarProps {
   onAddTask: (stageId: string, lessonId: string) => void;
   onDeleteTask: (stageId: string, lessonId: string, taskId: string) => void;
   onRenameStage: (stageId: string, newTitle: string) => void;
-  onRenameLesson: (
-    stageId: string,
-    lessonId: string,
-    newTitle: string,
-  ) => void;
+  onRenameLesson: (stageId: string, lessonId: string, newTitle: string) => void;
   onRenameTask: (
     stageId: string,
     lessonId: string,
@@ -57,13 +53,9 @@ export const CourseConstructorLeftBar = ({
   activeStageId,
   activeLessonId,
   activeTaskId,
+  unsyncedIds,
   readOnly = false,
   emptyReadonlyHint = EMPTY_PREVIEW_HINT,
-  unsyncedIds,
-  hasChanges,
-  isSaving,
-  unsavedCount,
-  onSave,
   onSelectLesson,
   onSelectTask,
   onAddStage,
@@ -81,7 +73,7 @@ export const CourseConstructorLeftBar = ({
     new Set(),
   );
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingValue, setEditingValue] = useState('');
+  const [editingValue, setEditingValue] = useState("");
 
   const moreBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
@@ -164,82 +156,59 @@ export const CourseConstructorLeftBar = ({
           )
         ) : (
           stages.map((stage, index) => (
-          <StageCard
-            key={stage.id}
-            stage={stage}
-            readOnly={readOnly}
-            isLast={index === stages.length - 1}
-            isCollapsed={collapsedStageIds.has(stage.id)}
-            unsyncedIds={unsyncedIds}
-            activeLessonId={
-              activeStageId === stage.id ? activeLessonId : null
-            }
-            activeTaskId={
-              activeStageId === stage.id ? activeTaskId : null
-            }
-            editingId={editingId}
-            editingValue={editingValue}
-            onEditingValueChange={setEditingValue}
-            onStartEditing={startEditing}
-            onCommitEditing={commitEditing}
-            onCancelEditing={cancelEditing}
-            onToggleCollapse={() => toggleCollapse(stage.id)}
-            onSelectLesson={(lessonId) =>
-              onSelectLesson(stage.id, lessonId)
-            }
-            onSelectTask={(lessonId, taskId) =>
-              onSelectTask(stage.id, lessonId, taskId)
-            }
-            onDeleteLesson={(lessonId) =>
-              onDeleteLesson(stage.id, lessonId)
-            }
-            onAddTask={(lessonId) => onAddTask(stage.id, lessonId)}
-            onDeleteTask={(lessonId, taskId) =>
-              onDeleteTask(stage.id, lessonId, taskId)
-            }
-            moreBtnRef={(el) => {
-              moreBtnRefs.current[stage.id] = el;
-            }}
-            isMoreMenuOpen={openMoreMenuId === stage.id}
-            onToggleMoreMenu={() =>
-              setOpenMoreMenuId((prev) =>
-                prev === stage.id ? null : stage.id,
-              )
-            }
-            onCloseMoreMenu={() => setOpenMoreMenuId(null)}
-            moreMenuAnchor={{
-              current: moreBtnRefs.current[stage.id] ?? null,
-            }}
-            onAddLesson={() => {
-              onAddLesson(stage.id);
-              setOpenMoreMenuId(null);
-            }}
-            onAddStage={onAddStage}
-            onDeleteStage={() => {
-              onDeleteStage(stage.id);
-              setOpenMoreMenuId(null);
-            }}
-          />
-        ))
+            <StageCard
+              key={stage.id}
+              stage={stage}
+              readOnly={readOnly}
+              unsyncedIds={unsyncedIds}
+              isLast={index === stages.length - 1}
+              isCollapsed={collapsedStageIds.has(stage.id)}
+              activeLessonId={
+                activeStageId === stage.id ? activeLessonId : null
+              }
+              activeTaskId={activeStageId === stage.id ? activeTaskId : null}
+              editingId={editingId}
+              editingValue={editingValue}
+              onEditingValueChange={setEditingValue}
+              onStartEditing={startEditing}
+              onCommitEditing={commitEditing}
+              onCancelEditing={cancelEditing}
+              onToggleCollapse={() => toggleCollapse(stage.id)}
+              onSelectLesson={(lessonId) => onSelectLesson(stage.id, lessonId)}
+              onSelectTask={(lessonId, taskId) =>
+                onSelectTask(stage.id, lessonId, taskId)
+              }
+              onDeleteLesson={(lessonId) => onDeleteLesson(stage.id, lessonId)}
+              onAddTask={(lessonId) => onAddTask(stage.id, lessonId)}
+              onDeleteTask={(lessonId, taskId) =>
+                onDeleteTask(stage.id, lessonId, taskId)
+              }
+              moreBtnRef={(el) => {
+                moreBtnRefs.current[stage.id] = el;
+              }}
+              isMoreMenuOpen={openMoreMenuId === stage.id}
+              onToggleMoreMenu={() =>
+                setOpenMoreMenuId((prev) =>
+                  prev === stage.id ? null : stage.id,
+                )
+              }
+              onCloseMoreMenu={() => setOpenMoreMenuId(null)}
+              moreMenuAnchor={{
+                current: moreBtnRefs.current[stage.id] ?? null,
+              }}
+              onAddLesson={() => {
+                onAddLesson(stage.id);
+                setOpenMoreMenuId(null);
+              }}
+              onAddStage={onAddStage}
+              onDeleteStage={() => {
+                onDeleteStage(stage.id);
+                setOpenMoreMenuId(null);
+              }}
+            />
+          ))
         )}
       </div>
-
-      {!readOnly && onSave && (
-        <div className={styles.saveBar}>
-          {hasChanges && (
-            <span className={styles.unsavedHint}>
-              Несохранённые изменения ({unsavedCount})
-            </span>
-          )}
-          <Button
-            onClick={onSave}
-            disabled={!hasChanges || isSaving}
-            className={styles.saveBtn}
-          >
-            {isSaving ? 'Сохранение...' : 'Сохранить'}
-          </Button>
-        </div>
-      )}
     </LeftBar>
   );
 };
@@ -249,9 +218,9 @@ export const CourseConstructorLeftBar = ({
 interface StageCardProps {
   stage: ConstructorStage;
   readOnly: boolean;
+  unsyncedIds: Set<string>;
   isLast: boolean;
   isCollapsed: boolean;
-  unsyncedIds?: Set<string>;
   activeLessonId: string | null;
   activeTaskId: string | null;
   editingId: string | null;
@@ -283,9 +252,9 @@ interface StageCardProps {
 function StageCard({
   stage,
   readOnly,
+  unsyncedIds,
   isLast,
   isCollapsed,
-  unsyncedIds,
   activeLessonId,
   activeTaskId,
   editingId,
@@ -310,7 +279,15 @@ function StageCard({
   onDeleteStage,
 }: StageCardProps) {
   const isEditingStage = !readOnly && editingId === stage.id;
-  const isUnsynced = unsyncedIds?.has(stage.id) ?? false;
+  const stageHasUnsavedLessons = stage.lessons.some((l) =>
+    unsyncedIds.has(l.id),
+  );
+  const stageHasUnsaved =
+    !readOnly &&
+    (!stage.serverId || stageHasUnsavedLessons);
+  const stageUnsavedTitle = stageHasUnsavedLessons
+    ? "Есть несохранённые уроки"
+    : "Ступень ещё не сохранена на сервере";
 
   return (
     <div className={styles.stageBlock}>
@@ -332,19 +309,18 @@ function StageCard({
           )}
 
           <div className={styles.headerActions}>
-            {!readOnly && isUnsynced && (
-              <span title="Не сохранено">
-                <UnsyncedIcon className={styles.unsyncedIcon} />
+            {stageHasUnsaved && (
+              <span title={stageUnsavedTitle}>
+                <UnsyncedSvg className={styles.unsyncedIcon} aria-hidden />
               </span>
             )}
-
             {stage.lessons.length > 0 && (
               <button
                 type="button"
                 className={styles.chevronBtn}
                 onClick={onToggleCollapse}
                 aria-label={
-                  isCollapsed ? 'Развернуть ступень' : 'Свернуть ступень'
+                  isCollapsed ? "Развернуть ступень" : "Свернуть ступень"
                 }
               >
                 <ChevronDownSvg
@@ -411,10 +387,10 @@ function StageCard({
           <LessonsList
             stageId={stage.id}
             readOnly={readOnly}
+            unsyncedIds={unsyncedIds}
             lessons={stage.lessons}
             activeLessonId={activeLessonId}
             activeTaskId={activeTaskId}
-            unsyncedIds={unsyncedIds}
             editingId={editingId}
             editingValue={editingValue}
             onEditingValueChange={onEditingValueChange}
@@ -469,12 +445,12 @@ function InlineEditor({
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       type="text"
-      className={cn([styles.inlineInput, className ?? ''])}
+      className={cn([styles.inlineInput, className ?? ""])}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') onCommit();
-        if (e.key === 'Escape') onCancel();
+        if (e.key === "Enter") onCommit();
+        if (e.key === "Escape") onCancel();
       }}
       onBlur={onCommit}
     />
@@ -486,10 +462,10 @@ function InlineEditor({
 interface LessonsListProps {
   stageId: string;
   readOnly: boolean;
+  unsyncedIds: Set<string>;
   lessons: ConstructorLesson[];
   activeLessonId: string | null;
   activeTaskId: string | null;
-  unsyncedIds?: Set<string>;
   editingId: string | null;
   editingValue: string;
   onEditingValueChange: (value: string) => void;
@@ -510,10 +486,10 @@ interface LessonsListProps {
 function LessonsList({
   stageId,
   readOnly,
+  unsyncedIds,
   lessons,
   activeLessonId,
   activeTaskId,
-  unsyncedIds,
   editingId,
   editingValue,
   onEditingValueChange,
@@ -553,9 +529,9 @@ function LessonsList({
             <LessonItem
               stageId={stageId}
               readOnly={readOnly}
+              isUnsaved={unsyncedIds.has(lesson.id)}
               lesson={lesson}
               isActive={activeLessonId === lesson.id && !activeTaskId}
-              isUnsynced={unsyncedIds?.has(lesson.id) ?? false}
               isCollapsed={isCollapsed}
               onToggleCollapse={() => toggleLessonCollapse(lesson.id)}
               editingId={editingId}
@@ -568,9 +544,7 @@ function LessonsList({
               onDelete={() => onDelete(lesson.id)}
               isMenuOpen={openMenuId === lesson.id}
               onToggleMenu={() =>
-                setOpenMenuId((prev) =>
-                  prev === lesson.id ? null : lesson.id,
-                )
+                setOpenMenuId((prev) => (prev === lesson.id ? null : lesson.id))
               }
               onCloseMenu={() => setOpenMenuId(null)}
               menuBtnRef={(el) => {
@@ -581,39 +555,38 @@ function LessonsList({
               }}
             />
 
-            {!isCollapsed && lesson.tasks.map((task) => (
-              <TaskItem
-                key={task.id}
-                stageId={stageId}
-                lessonId={lesson.id}
-                readOnly={readOnly}
-                task={task}
-                isActive={
-                  activeLessonId === lesson.id && activeTaskId === task.id
-                }
-                editingId={editingId}
-                editingValue={editingValue}
-                onEditingValueChange={onEditingValueChange}
-                onStartEditing={onStartEditing}
-                onCommitEditing={onCommitEditing}
-                onCancelEditing={onCancelEditing}
-                onSelect={() => onSelectTask(lesson.id, task.id)}
-                onDelete={() => onDeleteTask(lesson.id, task.id)}
-                isMenuOpen={openMenuId === task.id}
-                onToggleMenu={() =>
-                  setOpenMenuId((prev) =>
-                    prev === task.id ? null : task.id,
-                  )
-                }
-                onCloseMenu={() => setOpenMenuId(null)}
-                menuBtnRef={(el) => {
-                  menuBtnRefs.current[task.id] = el;
-                }}
-                menuAnchor={{
-                  current: menuBtnRefs.current[task.id] ?? null,
-                }}
-              />
-            ))}
+            {!isCollapsed &&
+              lesson.tasks.map((task) => (
+                <TaskItem
+                  key={task.id}
+                  stageId={stageId}
+                  lessonId={lesson.id}
+                  readOnly={readOnly}
+                  task={task}
+                  isActive={
+                    activeLessonId === lesson.id && activeTaskId === task.id
+                  }
+                  editingId={editingId}
+                  editingValue={editingValue}
+                  onEditingValueChange={onEditingValueChange}
+                  onStartEditing={onStartEditing}
+                  onCommitEditing={onCommitEditing}
+                  onCancelEditing={onCancelEditing}
+                  onSelect={() => onSelectTask(lesson.id, task.id)}
+                  onDelete={() => onDeleteTask(lesson.id, task.id)}
+                  isMenuOpen={openMenuId === task.id}
+                  onToggleMenu={() =>
+                    setOpenMenuId((prev) => (prev === task.id ? null : task.id))
+                  }
+                  onCloseMenu={() => setOpenMenuId(null)}
+                  menuBtnRef={(el) => {
+                    menuBtnRefs.current[task.id] = el;
+                  }}
+                  menuAnchor={{
+                    current: menuBtnRefs.current[task.id] ?? null,
+                  }}
+                />
+              ))}
 
             {!readOnly && !isCollapsed && (
               <button
@@ -636,9 +609,9 @@ function LessonsList({
 interface LessonItemProps {
   stageId: string;
   readOnly: boolean;
+  isUnsaved: boolean;
   lesson: ConstructorLesson;
   isActive: boolean;
-  isUnsynced: boolean;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   editingId: string | null;
@@ -663,9 +636,9 @@ interface LessonItemProps {
 function LessonItem({
   stageId,
   readOnly,
+  isUnsaved,
   lesson,
   isActive,
-  isUnsynced,
   isCollapsed,
   onToggleCollapse,
   editingId,
@@ -683,7 +656,6 @@ function LessonItem({
   menuAnchor,
 }: LessonItemProps) {
   const isEditing = !readOnly && editingId === lesson.id;
-
   const hasTasks = lesson.tasks.length > 0;
 
   return (
@@ -703,14 +675,15 @@ function LessonItem({
             [styles.lessonBtnActive]: isActive,
           })}
           onClick={onSelect}
+          disabled={lesson.isCreating}
         >
-          {lesson.title}
+          {lesson.isCreating ? `${lesson.title}…` : lesson.title}
         </button>
       )}
 
-      {!readOnly && isUnsynced && (
+      {isUnsaved && !lesson.isCreating && (
         <span title="Не сохранено">
-          <UnsyncedIcon className={styles.unsyncedIconSmall} />
+          <UnsyncedSvg className={styles.unsyncedIconSmall} aria-hidden />
         </span>
       )}
 
@@ -719,7 +692,7 @@ function LessonItem({
           type="button"
           className={styles.chevronBtn}
           onClick={onToggleCollapse}
-          aria-label={isCollapsed ? 'Развернуть урок' : 'Свернуть урок'}
+          aria-label={isCollapsed ? "Развернуть урок" : "Свернуть урок"}
         >
           <ChevronDownSvg
             className={cn([styles.chevronIcon], {
@@ -729,7 +702,7 @@ function LessonItem({
         </button>
       )}
 
-      {!readOnly && (
+      {!readOnly && !lesson.isCreating && (
         <div className={styles.moreWrapper}>
           <button
             type="button"

@@ -1,4 +1,4 @@
-import type { CourseStepRead } from '@/shared/api/generated/courses.generated';
+import type { CourseStepRead } from "@/shared/api/generated/courses.generated";
 
 export interface ConstructorTask {
   id: string;
@@ -11,6 +11,7 @@ export interface ConstructorLesson {
   title: string;
   articleSlug?: string | null;
   tasks: ConstructorTask[];
+  isCreating?: boolean;
 }
 
 export interface ConstructorStage {
@@ -22,16 +23,16 @@ export interface ConstructorStage {
 }
 
 const STAGE_ORDINAL_LABELS = [
-  'Первая ступень',
-  'Вторая ступень',
-  'Третья ступень',
-  'Четвёртая ступень',
-  'Пятая ступень',
-  'Шестая ступень',
-  'Седьмая ступень',
-  'Восьмая ступень',
-  'Девятая ступень',
-  'Десятая ступень',
+  "Первая ступень",
+  "Вторая ступень",
+  "Третья ступень",
+  "Четвёртая ступень",
+  "Пятая ступень",
+  "Шестая ступень",
+  "Седьмая ступень",
+  "Восьмая ступень",
+  "Девятая ступень",
+  "Десятая ступень",
 ];
 
 export function getStageOrdinalLabel(index: number): string {
@@ -44,7 +45,7 @@ export function generateLocalId(): string {
 }
 
 export function isLocalId(id: string): boolean {
-  return id.startsWith('local-');
+  return id.startsWith("local-");
 }
 
 export function createInitialStages(): ConstructorStage[] {
@@ -52,7 +53,7 @@ export function createInitialStages(): ConstructorStage[] {
     {
       id: generateLocalId(),
       label: getStageOrdinalLabel(0),
-      title: 'Ступень 1',
+      title: "Ступень 1",
       lessons: [],
     },
   ];
