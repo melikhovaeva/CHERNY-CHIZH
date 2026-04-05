@@ -239,6 +239,7 @@ export const CourseCreateEditPage = () => {
           <CoursePreviewTemplate
             courseId={courseId}
             persistenceCourseSlug={persistenceSlug}
+            isAdmin
           />
         );
       case COURSE_WORKSPACE_TAB.SETTINGS:

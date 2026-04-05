@@ -17,7 +17,9 @@ from common.models import (
 
 
 def _to_camel_case(snake_str: str) -> str:
-    """Преобразует snake_case в camelCase"""
+    """Преобразует snake_case в camelCase. Если подчёркиваний нет — строка уже camelCase, возвращается без изменений."""
+    if "_" not in snake_str:
+        return snake_str
     parts = snake_str.split("_")
     return parts[0].lower() + "".join(p.capitalize() for p in parts[1:])
 

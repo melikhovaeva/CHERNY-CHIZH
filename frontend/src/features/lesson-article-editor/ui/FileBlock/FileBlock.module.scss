@@ -44,35 +44,6 @@
   pointer-events: none;
 }
 
-.fileRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid $c-neutral-150;
-  border-radius: 10px;
-  background-color: $c-neutral-0;
-}
-
-.clip {
-  @include typography-text-m;
-}
-
-.link {
-  @include typography-text-m;
-  color: $urls-color;
-  text-decoration: underline;
-  word-break: break-all;
-}
-
-.size {
-  @include typography-text-s;
-  color: $c-neutral-500;
-}
-
 .replaceRow {
   display: flex;
   flex-wrap: wrap;

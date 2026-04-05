@@ -1,24 +1,11 @@
 import { baseApi as api } from "../base-api";
-export const addTagTypes = ["Education"] as const;
+export const addTagTypes = ["Education", "v1"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      v1EducationArticlesList: build.query<
-        V1EducationArticlesListApiResponse,
-        V1EducationArticlesListApiArg
-      >({
-        query: (queryArg) => ({
-          url: `/api/v1/education/articles/`,
-          params: {
-            limit: queryArg.limit,
-            offset: queryArg.offset,
-          },
-        }),
-        providesTags: ["Education"],
-      }),
       v1EducationArticlesRetrieve: build.query<
         V1EducationArticlesRetrieveApiResponse,
         V1EducationArticlesRetrieveApiArg
@@ -28,12 +15,38 @@ const injectedRtkApi = api
         }),
         providesTags: ["Education"],
       }),
-      v1EducationArticlesHomeLibraryRetrieve: build.query<
-        V1EducationArticlesHomeLibraryRetrieveApiResponse,
-        V1EducationArticlesHomeLibraryRetrieveApiArg
+      v1EducationArticlesUpdate: build.mutation<
+        V1EducationArticlesUpdateApiResponse,
+        V1EducationArticlesUpdateApiArg
       >({
-        query: () => ({ url: `/api/v1/education/articles/home-library/` }),
-        providesTags: ["Education"],
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/${queryArg.slug}/`,
+          method: "PUT",
+          body: queryArg.articleAdminWrite,
+        }),
+        invalidatesTags: ["v1"],
+      }),
+      v1EducationArticlesPartialUpdate: build.mutation<
+        V1EducationArticlesPartialUpdateApiResponse,
+        V1EducationArticlesPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/${queryArg.slug}/`,
+          method: "PATCH",
+          body: queryArg.patchedArticleAdminWrite,
+        }),
+        invalidatesTags: ["v1"],
+      }),
+      v1EducationArticlesUploadMediaCreate: build.mutation<
+        V1EducationArticlesUploadMediaCreateApiResponse,
+        V1EducationArticlesUploadMediaCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/${queryArg.slug}/upload-media/`,
+          method: "POST",
+          body: queryArg.articleAdminRead,
+        }),
+        invalidatesTags: ["v1"],
       }),
       v1EducationCoursesList: build.query<
         V1EducationCoursesListApiResponse,
@@ -131,6 +144,67 @@ const injectedRtkApi = api
           url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/`,
           method: "POST",
           body: queryArg.courseLessonCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksList: build.query<
+        V1EducationCoursesStepsLessonsTasksListApiResponse,
+        V1EducationCoursesStepsLessonsTasksListApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksCreate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksCreateApiResponse,
+        V1EducationCoursesStepsLessonsTasksCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/`,
+          method: "POST",
+          body: queryArg.courseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksRetrieve: build.query<
+        V1EducationCoursesStepsLessonsTasksRetrieveApiResponse,
+        V1EducationCoursesStepsLessonsTasksRetrieveApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksUpdateApiResponse,
+        V1EducationCoursesStepsLessonsTasksUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "PUT",
+          body: queryArg.courseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksPartialUpdate: build.mutation<
+        V1EducationCoursesStepsLessonsTasksPartialUpdateApiResponse,
+        V1EducationCoursesStepsLessonsTasksPartialUpdateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "PATCH",
+          body: queryArg.patchedCourseTaskCreateUpdate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationCoursesStepsLessonsTasksDestroy: build.mutation<
+        V1EducationCoursesStepsLessonsTasksDestroyApiResponse,
+        V1EducationCoursesStepsLessonsTasksDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/courses/${queryArg.coursePk}/steps/${queryArg.stepPk}/lessons/${queryArg.lessonPk}/tasks/${queryArg.id}/`,
+          method: "DELETE",
         }),
         invalidatesTags: ["Education"],
       }),
@@ -245,26 +319,69 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ["Education"],
       }),
+      v1EducationTaskAttemptsList: build.query<
+        V1EducationTaskAttemptsListApiResponse,
+        V1EducationTaskAttemptsListApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/task-attempts/`,
+          params: {
+            task: queryArg.task,
+          },
+        }),
+        providesTags: ["Education"],
+      }),
+      v1EducationTaskAttemptsCreate: build.mutation<
+        V1EducationTaskAttemptsCreateApiResponse,
+        V1EducationTaskAttemptsCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/task-attempts/`,
+          method: "POST",
+          body: queryArg.userTaskAttemptCreate,
+        }),
+        invalidatesTags: ["Education"],
+      }),
+      v1EducationTaskAttemptsResetDestroy: build.mutation<
+        V1EducationTaskAttemptsResetDestroyApiResponse,
+        V1EducationTaskAttemptsResetDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/task-attempts/reset/`,
+          method: "DELETE",
+          params: {
+            task: queryArg.task,
+          },
+        }),
+        invalidatesTags: ["Education"],
+      }),
     }),
     overrideExisting: false,
   });
 export { injectedRtkApi as enhancedApi };
-export type V1EducationArticlesListApiResponse =
-  /** status 200  */ PaginatedArticleListListRead;
-export type V1EducationArticlesListApiArg = {
-  /** Number of results to return per page. */
-  limit?: number;
-  /** The initial index from which to return the results. */
-  offset?: number;
-};
 export type V1EducationArticlesRetrieveApiResponse =
-  /** status 200  */ ArticleRead;
+  /** status 200  */ ArticleAdminReadRead;
 export type V1EducationArticlesRetrieveApiArg = {
   slug: string;
 };
-export type V1EducationArticlesHomeLibraryRetrieveApiResponse =
-  /** status 200  */ ArticleRead;
-export type V1EducationArticlesHomeLibraryRetrieveApiArg = void;
+export type V1EducationArticlesUpdateApiResponse =
+  /** status 200  */ ArticleAdminWrite;
+export type V1EducationArticlesUpdateApiArg = {
+  slug: string;
+  articleAdminWrite: ArticleAdminWrite;
+};
+export type V1EducationArticlesPartialUpdateApiResponse =
+  /** status 200  */ ArticleAdminWrite;
+export type V1EducationArticlesPartialUpdateApiArg = {
+  slug: string;
+  patchedArticleAdminWrite: PatchedArticleAdminWrite;
+};
+export type V1EducationArticlesUploadMediaCreateApiResponse =
+  /** status 200  */ ArticleAdminReadRead;
+export type V1EducationArticlesUploadMediaCreateApiArg = {
+  slug: string;
+  articleAdminRead: ArticleAdminRead;
+};
 export type V1EducationCoursesListApiResponse = /** status 200  */ CourseRead[];
 export type V1EducationCoursesListApiArg = void;
 export type V1EducationCoursesCreateApiResponse =
@@ -320,6 +437,54 @@ export type V1EducationCoursesStepsLessonsCreateApiArg = {
   coursePk: string;
   stepPk: string;
   courseLessonCreateUpdate: CourseLessonCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksListApiResponse =
+  /** status 200  */ CourseTaskRead[];
+export type V1EducationCoursesStepsLessonsTasksListApiArg = {
+  coursePk: string;
+  lessonPk: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsTasksCreateApiResponse =
+  /** status 201  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksCreateApiArg = {
+  coursePk: string;
+  lessonPk: string;
+  stepPk: string;
+  courseTaskCreateUpdate: CourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksRetrieveApiResponse =
+  /** status 200  */ CourseTaskRead;
+export type V1EducationCoursesStepsLessonsTasksRetrieveApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+};
+export type V1EducationCoursesStepsLessonsTasksUpdateApiResponse =
+  /** status 200  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+  courseTaskCreateUpdate: CourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksPartialUpdateApiResponse =
+  /** status 200  */ CourseTaskCreateUpdateRead;
+export type V1EducationCoursesStepsLessonsTasksPartialUpdateApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
+  patchedCourseTaskCreateUpdate: PatchedCourseTaskCreateUpdate;
+};
+export type V1EducationCoursesStepsLessonsTasksDestroyApiResponse = unknown;
+export type V1EducationCoursesStepsLessonsTasksDestroyApiArg = {
+  coursePk: string;
+  id: string;
+  lessonPk: string;
+  stepPk: string;
 };
 export type V1EducationCoursesStepsLessonsRetrieveApiResponse =
   /** status 200  */ CourseLessonRead;
@@ -393,11 +558,31 @@ export type V1EducationTagsCreateApiResponse = /** status 201  */ InfoTagRead;
 export type V1EducationTagsCreateApiArg = {
   infoTag: InfoTag;
 };
-export type ArticleList = {
+export type V1EducationTaskAttemptsListApiResponse =
+  /** status 200  */ UserTaskAttemptReadRead[];
+export type V1EducationTaskAttemptsListApiArg = {
+  /** ID задания для фильтрации ответов. */
+  task?: number;
+};
+export type V1EducationTaskAttemptsCreateApiResponse =
+  /** status 201  */ UserTaskAttemptReadRead;
+export type V1EducationTaskAttemptsCreateApiArg = {
+  userTaskAttemptCreate: UserTaskAttemptCreate;
+};
+export type V1EducationTaskAttemptsResetDestroyApiResponse = unknown;
+export type V1EducationTaskAttemptsResetDestroyApiArg = {
+  /** ID задания для сброса прогресса. */
+  task: number;
+};
+export type ArticleAdminRead = {
   title: string;
   slug: string;
   description: string;
   imagePreview?: string | null;
+};
+export type CodeLabel = {
+  code: string;
+  label: string;
 };
 export type InfoTag = {
   code: string;
@@ -410,41 +595,7 @@ export type InfoTagRead = {
   label: string;
   order?: number;
 };
-export type ArticleListRead = {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  imagePreview?: string | null;
-  tags: InfoTagRead[];
-  createdAt: string;
-  author: {
-    [key: string]: any;
-  };
-};
-export type PaginatedArticleListList = {
-  count: number;
-  next?: string | null;
-  previous?: string | null;
-  results: ArticleList[];
-};
-export type PaginatedArticleListListRead = {
-  count: number;
-  next?: string | null;
-  previous?: string | null;
-  results: ArticleListRead[];
-};
-export type Article = {
-  title: string;
-  slug: string;
-  description: string;
-  imagePreview?: string | null;
-};
-export type CodeLabel = {
-  code: string;
-  label: string;
-};
-export type ArticleRead = {
+export type ArticleAdminReadRead = {
   id: number;
   title: string;
   slug: string;
@@ -452,11 +603,22 @@ export type ArticleRead = {
   imagePreview?: string | null;
   status: CodeLabel;
   tags: InfoTagRead[];
-  contentBlocks: {
-    [key: string]: any;
-  }[];
+  contentBlocks: any[];
   createdAt: string;
   updatedAt: string;
+};
+export type Status783Enum = "published" | "unpublished";
+export type ArticleAdminWrite = {
+  title?: string;
+  description?: string;
+  status?: Status783Enum;
+  contentBlocks?: any;
+};
+export type PatchedArticleAdminWrite = {
+  title?: string;
+  description?: string;
+  status?: Status783Enum;
+  contentBlocks?: any;
 };
 export type DifficultyEnum = "beginner" | "intermediate" | "advanced";
 export type Course = {
@@ -480,14 +642,13 @@ export type CourseRead = {
   createdAt: string;
   updatedAt: string;
 };
-export type CourseCreateUpdateStatusEnum = "published" | "unpublished";
 export type CourseCreateUpdate = {
   title: string;
   description: string;
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
 };
 export type CourseCreateUpdateRead = {
@@ -498,7 +659,7 @@ export type CourseCreateUpdateRead = {
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
   createdAt: string;
   updatedAt: string;
@@ -604,6 +765,42 @@ export type CourseLessonCreateUpdateRead = {
   createdAt: string;
   updatedAt: string;
 };
+export type CourseTaskAnswerWrite = {
+  text: string;
+  isCorrect?: boolean;
+  order?: number;
+};
+export type CourseTaskQuestionWrite = {
+  text: string;
+  order?: number;
+  answers: CourseTaskAnswerWrite[];
+};
+export type CourseTaskCreateUpdate = {
+  title: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type CourseTaskCreateUpdateRead = {
+  id: number;
+  title: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type PatchedCourseTaskCreateUpdate = {
+  title?: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
+export type PatchedCourseTaskCreateUpdateRead = {
+  id?: number;
+  title?: string;
+  description?: string | null;
+  order?: number;
+  questions?: CourseTaskQuestionWrite[];
+};
 export type PatchedCourseLessonCreateUpdate = {
   title?: string;
   order?: number;
@@ -646,7 +843,7 @@ export type PatchedCourseCreateUpdate = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
 };
 export type PatchedCourseCreateUpdateRead = {
@@ -657,15 +854,28 @@ export type PatchedCourseCreateUpdateRead = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: CourseCreateUpdateStatusEnum;
+  status?: Status783Enum;
   tags?: number[];
   createdAt?: string;
   updatedAt?: string;
 };
+export type UserTaskAttemptRead = {};
+export type UserTaskAttemptReadRead = {
+  id: number;
+  questionId: number;
+  selectedAnswerId: number;
+  isCorrect: boolean;
+  createdAt: string;
+};
+export type UserTaskAttemptCreate = {
+  questionId: number;
+  answerId: number;
+};
 export const {
-  useV1EducationArticlesListQuery,
   useV1EducationArticlesRetrieveQuery,
-  useV1EducationArticlesHomeLibraryRetrieveQuery,
+  useV1EducationArticlesUpdateMutation,
+  useV1EducationArticlesPartialUpdateMutation,
+  useV1EducationArticlesUploadMediaCreateMutation,
   useV1EducationCoursesListQuery,
   useV1EducationCoursesCreateMutation,
   useV1EducationCoursesStepsListQuery,
@@ -676,6 +886,12 @@ export const {
   useV1EducationCoursesStepsDestroyMutation,
   useV1EducationCoursesStepsLessonsListQuery,
   useV1EducationCoursesStepsLessonsCreateMutation,
+  useV1EducationCoursesStepsLessonsTasksListQuery,
+  useV1EducationCoursesStepsLessonsTasksCreateMutation,
+  useV1EducationCoursesStepsLessonsTasksRetrieveQuery,
+  useV1EducationCoursesStepsLessonsTasksUpdateMutation,
+  useV1EducationCoursesStepsLessonsTasksPartialUpdateMutation,
+  useV1EducationCoursesStepsLessonsTasksDestroyMutation,
   useV1EducationCoursesStepsLessonsRetrieveQuery,
   useV1EducationCoursesStepsLessonsUpdateMutation,
   useV1EducationCoursesStepsLessonsPartialUpdateMutation,
@@ -687,4 +903,7 @@ export const {
   useV1EducationCoursesUploadImageCreateMutation,
   useV1EducationTagsListQuery,
   useV1EducationTagsCreateMutation,
+  useV1EducationTaskAttemptsListQuery,
+  useV1EducationTaskAttemptsCreateMutation,
+  useV1EducationTaskAttemptsResetDestroyMutation,
 } = injectedRtkApi;

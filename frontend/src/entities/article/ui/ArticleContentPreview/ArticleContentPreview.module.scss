@@ -21,3 +21,16 @@
   @include typography-text-s;
   color: $c-neutral-600;
 }
+
+.videoEmbed {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 8px;
+}
+
+.fileAttachmentWrap {
+  margin: 0 0 1rem;
+}

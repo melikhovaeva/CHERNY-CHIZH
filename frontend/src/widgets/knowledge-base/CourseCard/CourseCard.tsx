@@ -56,7 +56,11 @@ export function CourseCard({
   const canAccessCourse = isAdmin || localAccessible;
 
   const handleGoToCourse = useCallback(() => {
-    router.navigate({ to: '/courses/$slug', params: { slug: course.slug } });
+    router.navigate({
+      to: '/courses/$slug',
+      params: { slug: course.slug },
+      search: { from: router.state.location.pathname },
+    });
   }, [router, course.slug]);
 
   const handleEnroll = useCallback(async () => {

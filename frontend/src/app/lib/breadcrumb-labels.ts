@@ -52,12 +52,16 @@ export function useSegmentLabel(): (
 
   const isCabinetCoursesRoute =
     segments[0] === 'cabinet' && segments[1] === 'courses';
-  const courseSlug =
+  const courseSlugCabinet =
     isCabinetCoursesRoute && segments[2] && segments[2] !== 'new'
       ? segments[2]
       : undefined;
 
-  const shouldLoadCourses = Boolean(courseSlug);
+  const isPublicCoursesRoute = segments[0] === 'courses';
+  const courseSlugPublic =
+    isPublicCoursesRoute && segments[1] ? segments[1] : undefined;
+
+  const shouldLoadCourses = Boolean(courseSlugCabinet) || Boolean(courseSlugPublic);
 
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
@@ -109,6 +113,17 @@ export function useSegmentLabel(): (
           pathSegments[2] === segment &&
           courses;
         if (isCabinetCoursesSlugSegment) {
+          const course = courses.find((c) => c.slug === segment);
+          if (course) {
+            return course.title;
+          }
+        }
+
+        const isPublicCoursesSlugSegment =
+          pathSegments[0] === 'courses' &&
+          pathSegments[1] === segment &&
+          courses;
+        if (isPublicCoursesSlugSegment) {
           const course = courses.find((c) => c.slug === segment);
           if (course) {
             return course.title;

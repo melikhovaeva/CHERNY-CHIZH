@@ -42,9 +42,13 @@
 }
 
 .modeTab_active {
-  background-color: $accent-primary-color;
+  background-color: $c-b-crm-500;
   color: $c-neutral-0;
   font-weight: 500;
+
+  &:hover {
+    background-color: $c-b-crm-600;
+  }
 }
 
 // ── URL-режим ─────────────────────────────────────────────────────────────────

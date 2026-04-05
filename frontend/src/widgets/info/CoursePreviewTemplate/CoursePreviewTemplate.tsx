@@ -11,6 +11,7 @@ import {
   mergeCourseWorkspaceState,
   resolveTreeSelection,
 } from '@/features/course-workspace-persistence';
+import { LessonTaskViewer } from '@/features/lesson-task-viewer';
 import { cn } from '@/shared/lib/utils';
 import { CourseConstructorLeftBar } from '@/widgets/info/CourseConstructorLeftBar';
 import { CourseWorkspaceSkeleton } from '../CourseWorkspaceSkeleton';
@@ -61,6 +62,8 @@ export interface CoursePreviewTemplateProps {
   embeddedSteps?: CourseStepRead[];
   /** Режим прохождения: дружелюбные тексты и публичные статьи. */
   learnerMode?: boolean;
+  /** Показывать ли кнопку сброса прогресса задания (только для администраторов). */
+  isAdmin?: boolean;
 }
 
 export const CoursePreviewTemplate = ({
@@ -68,6 +71,7 @@ export const CoursePreviewTemplate = ({
   persistenceCourseSlug = null,
   embeddedSteps,
   learnerMode = false,
+  isAdmin = false,
 }: CoursePreviewTemplateProps) => {
   const useEmbeddedSteps = embeddedSteps !== undefined;
 
@@ -235,15 +239,22 @@ export const CoursePreviewTemplate = ({
       <div
         className={cn([
           styles.content,
-          activeLesson ? styles.content_flush : '',
+          activeLesson || activeTask ? styles.content_flush : '',
         ])}
       >
-        {activeLesson ? (
+        {activeTask && activeTask.serverId && activeTask.questions ? (
+          <LessonTaskViewer
+            key={activeTask.id}
+            taskTitle={activeTask.title}
+            taskServerId={activeTask.serverId}
+            questions={activeTask.questions}
+            isAdmin={isAdmin}
+          />
+        ) : activeLesson ? (
           <div className={styles.articlePreview}>
             <CourseConstructorLessonArticle
               lessonTitle={activeLesson.title}
               articleSlug={activeLesson.articleSlug}
-              previewTaskTitle={activeTask?.title}
               emptyArticleHint={
                 learnerMode ? EMPTY_LESSON_ARTICLE_HINT_LEARNER : undefined
               }

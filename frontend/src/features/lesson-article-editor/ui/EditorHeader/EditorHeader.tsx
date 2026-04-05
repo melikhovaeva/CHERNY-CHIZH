@@ -2,6 +2,7 @@ import { cn } from '@/shared/lib/utils';
 import { DropdownMenu } from '@/shared/ui/components/DropdownMenu';
 import ArrowLeftSvg from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import { useRef, useState } from 'react';
+import SaveSvg from '../../assets/save.svg?react';
 import styles from './EditorHeader.module.scss';
 
 export interface EditorHeaderProps {
@@ -141,18 +142,6 @@ export function EditorHeader({
             anchorRef={gearBtnRef}
             className={styles.dropdown}
           >
-            <button
-              type='button'
-              className={styles.dropdownItem}
-              onClick={() => {
-                setGearOpen(false);
-                void onSave();
-              }}
-              disabled={isSaving || !isDirty}
-            >
-              Сохранить
-            </button>
-
             <button type='button' className={styles.dropdownItem} disabled>
               Дублировать
             </button>
@@ -170,6 +159,16 @@ export function EditorHeader({
             )}
           </DropdownMenu>
         </div>
+        <button
+          type='button'
+          className={styles.saveIconBtn}
+          onClick={() => void onSave()}
+          disabled={isSaving || !isDirty}
+          aria-label='Сохранить'
+          title='Сохранить'
+        >
+          <SaveSvg className={styles.saveIcon} aria-hidden />
+        </button>
         <button
           type='button'
           className={styles.publishBtn}

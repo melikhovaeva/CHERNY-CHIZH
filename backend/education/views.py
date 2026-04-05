@@ -1,5 +1,5 @@
 from django.db.models import Count, Prefetch, Q
-from rest_framework import mixins, permissions, status, viewsets
+from rest_framework import mixins, permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -15,18 +15,24 @@ from education.models import (
     Course,
     CourseLesson,
     CourseStep,
+    CourseTask,
+    CourseTaskQuestion,
     InfoStatus,
     InfoTag,
+    UserTaskAttempt,
 )
 from education.permissions import CanReadEducationArticle
 from education.schema import (
     article_view_schema,
     course_view_schema,
     education_article_view_schema,
+    education_course_lesson_task_view_schema,
     education_course_lesson_view_schema,
     education_course_step_view_schema,
     education_course_view_schema,
     education_tag_view_schema,
+    education_task_attempt_view_schema,
+    extend_schema,
     extend_schema_view,
 )
 from education.serializers import (
@@ -42,7 +48,11 @@ from education.serializers import (
     CourseSerializer,
     CourseStepCreateUpdateSerializer,
     CourseStepSerializer,
+    CourseTaskCreateUpdateSerializer,
+    CourseTaskSerializer,
     InfoTagSerializer,
+    UserTaskAttemptCreateSerializer,
+    UserTaskAttemptReadSerializer,
 )
 from user_management.permissions import IsAdmin
 
@@ -489,3 +499,143 @@ class EducationCourseLessonViewSet(viewsets.ModelViewSet):
             )
             lesson.article = article
             lesson.save(update_fields=["article"])
+
+
+@extend_schema_view(**education_course_lesson_task_view_schema)
+class EducationCourseLessonTaskViewSet(viewsets.ModelViewSet):
+    """
+    CRUD заданий урока курса (только для администраторов).
+    Вложен в урок: /education/courses/{course_pk}/steps/{step_pk}/lessons/{lesson_pk}/tasks/
+    При create/update принимает вложенные questions с answers и атомарно пересобирает дерево.
+    """
+
+    permission_classes = [IsAdmin]
+
+    def get_queryset(self):
+        return (
+            CourseTask.objects.filter(
+                lesson_id=self.kwargs["lesson_pk"],
+                lesson__step_id=self.kwargs["step_pk"],
+                lesson__step__course_id=self.kwargs["course_pk"],
+            )
+            .prefetch_related("questions__answers")
+            .order_by("order", "id")
+        )
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return CourseTaskCreateUpdateSerializer
+        return CourseTaskSerializer
+
+    def perform_create(self, serializer):
+        lesson = CourseLesson.objects.get(
+            pk=self.kwargs["lesson_pk"],
+            step_id=self.kwargs["step_pk"],
+            step__course_id=self.kwargs["course_pk"],
+        )
+        serializer.save(lesson=lesson)
+
+    def create(self, request, *args, **kwargs):
+        from common.serializers import keys_to_snake_case as _snake
+        data = _snake(dict(request.data))
+        if "questions" in data and isinstance(data["questions"], list):
+            data["questions"] = [_snake(q) if isinstance(q, dict) else q for q in data["questions"]]
+            for q in data["questions"]:
+                if isinstance(q.get("answers"), list):
+                    q["answers"] = [_snake(a) if isinstance(a, dict) else a for a in q["answers"]]
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        read_serializer = CourseTaskSerializer(
+            serializer.instance,
+            context=self.get_serializer_context(),
+        )
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        from common.serializers import keys_to_snake_case as _snake
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        data = _snake(dict(request.data))
+        if "questions" in data and isinstance(data["questions"], list):
+            data["questions"] = [_snake(q) if isinstance(q, dict) else q for q in data["questions"]]
+            for q in data["questions"]:
+                if isinstance(q.get("answers"), list):
+                    q["answers"] = [_snake(a) if isinstance(a, dict) else a for a in q["answers"]]
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        read_serializer = CourseTaskSerializer(
+            serializer.instance,
+            context=self.get_serializer_context(),
+        )
+        return Response(read_serializer.data)
+
+
+@extend_schema_view(**education_task_attempt_view_schema)
+class UserTaskAttemptViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    API попыток ответов пользователя на вопросы заданий.
+
+    GET  /education/task-attempts/?task={task_id}  — мои ответы по заданию
+    POST /education/task-attempts/                 — отправить ответ
+    DELETE /education/task-attempts/reset/         — сбросить прогресс по заданию (только для администратора)
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.request.query_params.get("task")
+        qs = UserTaskAttempt.objects.filter(user=self.request.user).select_related(
+            "selected_answer"
+        )
+        if task_id:
+            qs = qs.filter(question__task_id=task_id)
+        return qs
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return UserTaskAttemptCreateSerializer
+        return UserTaskAttemptReadSerializer
+
+    def perform_create(self, serializer):
+        question = serializer.validated_data["question"]
+        if UserTaskAttempt.objects.filter(
+            user=self.request.user,
+            question=question,
+        ).exists():
+            raise serializers.ValidationError(
+                {"question_id": "Вы уже отвечали на этот вопрос."}
+            )
+        serializer.save(user=self.request.user)
+
+    @extend_schema(responses={201: UserTaskAttemptReadSerializer})
+    def create(self, request, *args, **kwargs):
+        data = keys_to_snake_case(dict(request.data))
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        read_serializer = UserTaskAttemptReadSerializer(
+            serializer.instance,
+            context=self.get_serializer_context(),
+        )
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=["delete"], permission_classes=[IsAdmin])
+    def reset(self, request):
+        """Сбросить прогресс прохождения задания (только администратор)."""
+        task_id = request.query_params.get("task")
+        if not task_id:
+            return Response(
+                {"detail": "Параметр task обязателен."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        deleted_count, _ = UserTaskAttempt.objects.filter(
+            user=request.user,
+            question__task_id=task_id,
+        ).delete()
+        return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)

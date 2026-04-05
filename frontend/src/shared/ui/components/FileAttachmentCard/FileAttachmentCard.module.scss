@@ -1,0 +1,88 @@
+@use '@/shared/ui/styles/abstracts/variables' as *;
+@use '@/shared/ui/styles/abstracts/mixins' as *;
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding-block: 14px;
+  padding-inline: 14px;
+  border: 1px solid $c-b-crm-500;
+  border-radius: 8px;
+  background-color: $c-neutral-0;
+
+  /* Выше специфичность, чем у .articleBody p — цвет текста всегда CRM */
+  .fileName {
+    @include typography-text-m;
+    font-weight: $font-weight-text-m-semibold;
+    margin: 0;
+    color: $c-b-crm-500;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    &:hover {
+      color: $c-b-crm-600;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $c-b-crm-400;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  .size {
+    margin: 0;
+    @include typography-text-s;
+    color: $c-b-crm-600;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 40px;
+  flex: 1;
+}
+
+.downloadBtn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: $c-neutral-100;
+  color: $c-neutral-800;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: $c-neutral-150;
+    color: $c-neutral-900;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $c-b-crm-400;
+    outline-offset: 2px;
+  }
+}
+
+.downloadIcon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}

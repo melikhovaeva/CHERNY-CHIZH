@@ -10,6 +10,7 @@ export interface BreadcrumbItem {
 
 export interface BreadcrumbProps {
   getSegmentLabel?: (segment: string, pathname?: string) => string
+  linkPathOverrides?: Record<string, string>
 }
 
 function buildBreadcrumbItems(
@@ -33,7 +34,7 @@ function buildBreadcrumbItems(
   return [{ path: '/', label: 'Главная', isLast: false }, ...items]
 }
 
-export const Breadcrumb = ({ getSegmentLabel }: BreadcrumbProps) => {
+export const Breadcrumb = ({ getSegmentLabel, linkPathOverrides }: BreadcrumbProps) => {
   const { pathname } = useLocation()
   const segments = pathname.split('/').filter(Boolean)
   if (segments.length === 0) return null
@@ -45,20 +46,23 @@ export const Breadcrumb = ({ getSegmentLabel }: BreadcrumbProps) => {
   return (
     <nav className={styles.breadcrumb} aria-label="Хлебные крошки">
       <ol className={styles.list}>
-        {items.map((item, index) => (
-          <li key={item.path} className={styles.item}>
-            {index > 0 && <span className={styles.separator}> &gt; </span>}
-            {item.isLast ? (
-              <span className={styles.current} aria-current="page">
-                {item.label}
-              </span>
-            ) : (
-              <Link to={item.path} className={styles.link}>
-                {item.label}
-              </Link>
-            )}
-          </li>
-        ))}
+        {items.map((item, index) => {
+          const linkPath = linkPathOverrides?.[item.path] ?? item.path
+          return (
+            <li key={item.path} className={styles.item}>
+              {index > 0 && <span className={styles.separator}> &gt; </span>}
+              {item.isLast ? (
+                <span className={styles.current} aria-current="page">
+                  {item.label}
+                </span>
+              ) : (
+                <Link to={linkPath} className={styles.link}>
+                  {item.label}
+                </Link>
+              )}
+            </li>
+          )
+        })}
       </ol>
     </nav>
   )

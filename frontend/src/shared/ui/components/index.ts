@@ -22,6 +22,10 @@ export {
   type DifficultyLevel,
 } from './DifficultyBadge';
 export { DropdownMenu } from './DropdownMenu';
+export {
+  FileAttachmentCard,
+  type FileAttachmentCardProps,
+} from './FileAttachmentCard';
 export { EditableInput } from './EditableInput';
 export { EditSaveButton } from './EditSaveButton';
 export { Form } from './Form';

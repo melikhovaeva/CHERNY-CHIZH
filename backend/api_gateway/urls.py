@@ -16,9 +16,11 @@ from education.views import (
     CourseViewSet,
     EducationArticleViewSet,
     EducationCourseViewSet,
+    EducationCourseLessonTaskViewSet,
     EducationCourseLessonViewSet,
     EducationCourseStepViewSet,
     EducationTagViewSet,
+    UserTaskAttemptViewSet,
 )
 from user_management.views import ProfileView
 
@@ -59,6 +61,16 @@ router.register(
     r"education/courses/(?P<course_pk>[^/.]+)/steps/(?P<step_pk>[^/.]+)/lessons",
     EducationCourseLessonViewSet,
     basename="education-course-lesson",
+)
+router.register(
+    r"education/courses/(?P<course_pk>[^/.]+)/steps/(?P<step_pk>[^/.]+)/lessons/(?P<lesson_pk>[^/.]+)/tasks",
+    EducationCourseLessonTaskViewSet,
+    basename="education-course-lesson-task",
+)
+router.register(
+    r"education/task-attempts",
+    UserTaskAttemptViewSet,
+    basename="education-task-attempt",
 )
 
 router.APIRootView.permission_classes = [permissions.AllowAny]

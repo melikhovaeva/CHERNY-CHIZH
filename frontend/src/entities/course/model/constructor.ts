@@ -1,8 +1,14 @@
-import type { CourseStepRead } from "@/shared/api/generated/courses.generated";
+import type {
+  CourseStepRead,
+  CourseTaskQuestionRead,
+} from "@/shared/api/generated/courses.generated";
 
 export interface ConstructorTask {
   id: string;
+  serverId?: number;
   title: string;
+  /** Вопросы задания, загруженные с сервера или сохранённые локально после save. */
+  questions?: CourseTaskQuestionRead[];
 }
 
 export interface ConstructorLesson {
@@ -89,7 +95,9 @@ export function mapApiCourseStepsToConstructorStages(
           articleSlug: lesson.article?.slug ?? null,
           tasks: lesson.tasks.map((task) => ({
             id: String(task.id),
+            serverId: task.id,
             title: task.title,
+            questions: task.questions,
           })),
         };
       }),

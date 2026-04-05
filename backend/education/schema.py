@@ -3,7 +3,7 @@ OpenAPI (drf-spectacular) схема для приложения education.
 Описания эндпоинтов и типы для сериализаторов.
 """
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, extend_schema_view, extend_schema_field
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, extend_schema_view, extend_schema_field
 
 __all__ = [
     "extend_schema",
@@ -15,7 +15,9 @@ __all__ = [
     "education_course_view_schema",
     "education_course_step_view_schema",
     "education_course_lesson_view_schema",
+    "education_course_lesson_task_view_schema",
     "education_tag_view_schema",
+    "education_task_attempt_view_schema",
 ]
 
 # --- ArticleViewSet ---
@@ -194,6 +196,84 @@ education_course_lesson_view_schema = {
     "destroy": extend_schema(
         summary="Удалить урок (только администратор)",
         description="Безвозвратное удаление урока.",
+        tags=["Education"],
+    ),
+}
+
+education_course_lesson_task_view_schema = {
+    "list": extend_schema(
+        summary="Список заданий урока",
+        description="Возвращает список заданий с вопросами и ответами для указанного урока.",
+        tags=["Education"],
+    ),
+    "retrieve": extend_schema(
+        summary="Детали задания",
+        description="Возвращает задание с вложенными вопросами и ответами.",
+        tags=["Education"],
+    ),
+    "create": extend_schema(
+        summary="Создать задание (только администратор)",
+        description="Создаёт новое задание в указанном уроке курса с вложенными вопросами и ответами.",
+        tags=["Education"],
+    ),
+    "update": extend_schema(
+        summary="Обновить задание (только администратор)",
+        description="Полное обновление задания. При передаче questions — дерево вопросов/ответов атомарно пересобирается.",
+        tags=["Education"],
+    ),
+    "partial_update": extend_schema(
+        summary="Частично обновить задание (только администратор)",
+        description="Частичное обновление задания. При передаче questions — дерево вопросов/ответов атомарно пересобирается.",
+        tags=["Education"],
+    ),
+    "destroy": extend_schema(
+        summary="Удалить задание (только администратор)",
+        description="Безвозвратное удаление задания вместе с вопросами и ответами.",
+        tags=["Education"],
+    ),
+}
+
+_TASK_ID_PARAM = OpenApiParameter(
+    name="task",
+    type=OpenApiTypes.INT,
+    location=OpenApiParameter.QUERY,
+    description="ID задания для фильтрации ответов.",
+    required=False,
+)
+
+education_task_attempt_view_schema = {
+    "list": extend_schema(
+        summary="Мои ответы на задание",
+        description=(
+            "Возвращает список ответов текущего пользователя. "
+            "Фильтрация по заданию: ?task={task_id}."
+        ),
+        parameters=[_TASK_ID_PARAM],
+        tags=["Education"],
+    ),
+    "create": extend_schema(
+        summary="Отправить ответ на вопрос задания",
+        description=(
+            "Сохраняет выбранный вариант ответа для текущего пользователя. "
+            "Повторный ответ на один и тот же вопрос не допускается."
+        ),
+        tags=["Education"],
+    ),
+    "reset": extend_schema(
+        summary="Сбросить прогресс задания (только администратор)",
+        description=(
+            "Удаляет все ответы администратора на вопросы задания. "
+            "Обязательный параметр: ?task={task_id}."
+        ),
+        parameters=[
+            OpenApiParameter(
+                name="task",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="ID задания для сброса прогресса.",
+                required=True,
+            )
+        ],
         tags=["Education"],
     ),
 }

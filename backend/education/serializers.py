@@ -15,6 +15,7 @@ from education.models import (
   CourseTaskQuestion,
   InfoStatus,
   InfoTag,
+  UserTaskAttempt,
 )
 
 
@@ -325,6 +326,115 @@ class CourseLessonCreateUpdateSerializer(
         model = CourseLesson
         fields = ("id", "step", "title", "order", "article_id", "created_at", "updated_at")
         read_only_fields = ("id", "step", "created_at", "updated_at")
+
+
+class CourseTaskAnswerWriteSerializer(CamelCaseSerializerMixin, serializers.Serializer):
+    """Write-сериализатор для варианта ответа при создании/обновлении задания."""
+
+    text = serializers.CharField(max_length=255)
+    is_correct = serializers.BooleanField(default=False)
+    order = serializers.IntegerField(default=0)
+
+
+class CourseTaskQuestionWriteSerializer(CamelCaseSerializerMixin, serializers.Serializer):
+    """Write-сериализатор для вопроса при создании/обновлении задания."""
+
+    text = serializers.CharField()
+    order = serializers.IntegerField(default=0)
+    answers = CourseTaskAnswerWriteSerializer(many=True)
+
+    def validate_answers(self, value):
+        if not value:
+            raise serializers.ValidationError("Вопрос должен содержать хотя бы один вариант ответа.")
+        correct_count = sum(1 for a in value if a.get("is_correct"))
+        if correct_count != 1:
+            raise serializers.ValidationError(
+                "Каждый вопрос должен иметь ровно один правильный ответ."
+            )
+        return value
+
+
+class CourseTaskCreateUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Write-сериализатор для создания и обновления задания с вложенными вопросами и ответами."""
+
+    questions = CourseTaskQuestionWriteSerializer(many=True, required=False, default=list)
+
+    class Meta:
+        model = CourseTask
+        fields = ("id", "title", "description", "order", "questions")
+        read_only_fields = ("id",)
+        extra_kwargs = {
+            "title": {"required": True},
+            "description": {"required": False, "allow_blank": True, "allow_null": True},
+            "order": {"required": False, "default": 0},
+        }
+
+    def _rebuild_questions(self, task, questions_data):
+        """Атомарно пересобирает дерево вопросов и ответов задания."""
+        from django.db import transaction
+        with transaction.atomic():
+            task.questions.all().delete()
+            for q_data in questions_data:
+                answers_data = q_data.pop("answers", [])
+                question = CourseTaskQuestion.objects.create(task=task, **q_data)
+                for a_data in answers_data:
+                    CourseTaskAnswer.objects.create(question=question, **a_data)
+
+    def create(self, validated_data):
+        questions_data = validated_data.pop("questions", [])
+        task = CourseTask.objects.create(**validated_data)
+        if questions_data:
+            self._rebuild_questions(task, questions_data)
+        return task
+
+    def update(self, instance, validated_data):
+        questions_data = validated_data.pop("questions", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if questions_data is not None:
+            self._rebuild_questions(instance, questions_data)
+        return instance
+
+
+class UserTaskAttemptReadSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор для чтения попытки ответа пользователя."""
+
+    is_correct = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserTaskAttempt
+        fields = ("id", "question_id", "selected_answer_id", "is_correct", "created_at")
+        read_only_fields = fields
+
+    def get_is_correct(self, obj: UserTaskAttempt) -> bool:
+        return bool(obj.selected_answer.is_correct)
+
+
+class UserTaskAttemptCreateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор для отправки ответа на вопрос задания."""
+
+    question_id = serializers.PrimaryKeyRelatedField(
+        source="question",
+        queryset=CourseTaskQuestion.objects.all(),
+    )
+    answer_id = serializers.PrimaryKeyRelatedField(
+        source="selected_answer",
+        queryset=CourseTaskAnswer.objects.all(),
+    )
+
+    class Meta:
+        model = UserTaskAttempt
+        fields = ("question_id", "answer_id")
+
+    def validate(self, data):
+        question = data["question"]
+        answer = data["selected_answer"]
+        if answer.question_id != question.id:
+            raise serializers.ValidationError(
+                {"answer_id": "Вариант ответа не принадлежит указанному вопросу."}
+            )
+        return data
 
 
 class CourseEnrollmentSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
