@@ -1,0 +1,1 @@
+export { ArticleWorkspacePage } from './ArticleWorkspacePage';

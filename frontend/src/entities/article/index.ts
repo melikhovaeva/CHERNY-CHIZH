@@ -16,12 +16,18 @@ export type { GetArticlesListQueryArgs } from './api/article.api';
 
 export {
   articleAdminApi,
+  useListAdminArticlesQuery,
+  useCreateAdminArticleMutation,
   useGetArticleAdminQuery,
   useUpdateArticleMutation,
+  useDeleteAdminArticleMutation,
+  useUploadArticleImageMutation,
   useUploadArticleMediaMutation,
 } from './api/articleAdmin.api';
 export type {
   ArticleAdminRead,
+  ArticleAdminListItem,
+  ArticleAdminCreatePayload,
   ArticleAdminWritePayload,
   ArticleStatusLabel,
   ContentBlock,
@@ -33,6 +39,8 @@ export type {
 } from './api/articleAdmin.api';
 export { ArticleContentPreview } from './ui/ArticleContentPreview/ArticleContentPreview';
 export type { ArticleContentPreviewProps } from './ui/ArticleContentPreview/ArticleContentPreview';
+export { ArticleCreateEditForm } from './ui/ArticleCreateEditForm/ArticleCreateEditForm';
+export type { ArticleFormData } from './ui/ArticleCreateEditForm/ArticleCreateEditForm';
 export type {
   Article,
   ArticleAuthor,

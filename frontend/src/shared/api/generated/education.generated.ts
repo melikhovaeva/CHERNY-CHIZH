@@ -6,6 +6,24 @@ const injectedRtkApi = api
   })
   .injectEndpoints({
     endpoints: (build) => ({
+      v1EducationArticlesList: build.query<
+        V1EducationArticlesListApiResponse,
+        V1EducationArticlesListApiArg
+      >({
+        query: () => ({ url: `/api/v1/education/articles/` }),
+        providesTags: ["Education"],
+      }),
+      v1EducationArticlesCreate: build.mutation<
+        V1EducationArticlesCreateApiResponse,
+        V1EducationArticlesCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/`,
+          method: "POST",
+          body: queryArg.articleAdminCreate,
+        }),
+        invalidatesTags: ["v1"],
+      }),
       v1EducationArticlesRetrieve: build.query<
         V1EducationArticlesRetrieveApiResponse,
         V1EducationArticlesRetrieveApiArg
@@ -34,6 +52,27 @@ const injectedRtkApi = api
           url: `/api/v1/education/articles/${queryArg.slug}/`,
           method: "PATCH",
           body: queryArg.patchedArticleAdminWrite,
+        }),
+        invalidatesTags: ["v1"],
+      }),
+      v1EducationArticlesDestroy: build.mutation<
+        V1EducationArticlesDestroyApiResponse,
+        V1EducationArticlesDestroyApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/${queryArg.slug}/`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["v1"],
+      }),
+      v1EducationArticlesUploadImageCreate: build.mutation<
+        V1EducationArticlesUploadImageCreateApiResponse,
+        V1EducationArticlesUploadImageCreateApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/education/articles/${queryArg.slug}/upload-image/`,
+          method: "POST",
+          body: queryArg.articleAdminRead,
         }),
         invalidatesTags: ["v1"],
       }),
@@ -359,6 +398,14 @@ const injectedRtkApi = api
     overrideExisting: false,
   });
 export { injectedRtkApi as enhancedApi };
+export type V1EducationArticlesListApiResponse =
+  /** status 200  */ ArticleAdminListRead[];
+export type V1EducationArticlesListApiArg = void;
+export type V1EducationArticlesCreateApiResponse =
+  /** status 201  */ ArticleAdminCreate;
+export type V1EducationArticlesCreateApiArg = {
+  articleAdminCreate: ArticleAdminCreate;
+};
 export type V1EducationArticlesRetrieveApiResponse =
   /** status 200  */ ArticleAdminReadRead;
 export type V1EducationArticlesRetrieveApiArg = {
@@ -375,6 +422,16 @@ export type V1EducationArticlesPartialUpdateApiResponse =
 export type V1EducationArticlesPartialUpdateApiArg = {
   slug: string;
   patchedArticleAdminWrite: PatchedArticleAdminWrite;
+};
+export type V1EducationArticlesDestroyApiResponse = unknown;
+export type V1EducationArticlesDestroyApiArg = {
+  slug: string;
+};
+export type V1EducationArticlesUploadImageCreateApiResponse =
+  /** status 200  */ ArticleAdminReadRead;
+export type V1EducationArticlesUploadImageCreateApiArg = {
+  slug: string;
+  articleAdminRead: ArticleAdminRead;
 };
 export type V1EducationArticlesUploadMediaCreateApiResponse =
   /** status 200  */ ArticleAdminReadRead;
@@ -574,7 +631,7 @@ export type V1EducationTaskAttemptsResetDestroyApiArg = {
   /** ID задания для сброса прогресса. */
   task: number;
 };
-export type ArticleAdminRead = {
+export type ArticleAdminList = {
   title: string;
   slug: string;
   description: string;
@@ -595,6 +652,27 @@ export type InfoTagRead = {
   label: string;
   order?: number;
 };
+export type ArticleAdminListRead = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  imagePreview?: string | null;
+  status: CodeLabel;
+  tags: InfoTagRead[];
+  createdAt: string;
+};
+export type ArticleAdminCreate = {
+  title: string;
+  description?: string;
+  tags?: number[];
+};
+export type ArticleAdminRead = {
+  title: string;
+  slug: string;
+  description: string;
+  imagePreview?: string | null;
+};
 export type ArticleAdminReadRead = {
   id: number;
   title: string;
@@ -607,18 +685,20 @@ export type ArticleAdminReadRead = {
   createdAt: string;
   updatedAt: string;
 };
-export type Status783Enum = "published" | "unpublished";
+export type InfoStatusEnum = "published" | "unpublished";
 export type ArticleAdminWrite = {
   title?: string;
   description?: string;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   contentBlocks?: any;
+  tags?: number[];
 };
 export type PatchedArticleAdminWrite = {
   title?: string;
   description?: string;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   contentBlocks?: any;
+  tags?: number[];
 };
 export type DifficultyEnum = "beginner" | "intermediate" | "advanced";
 export type Course = {
@@ -648,7 +728,7 @@ export type CourseCreateUpdate = {
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
 };
 export type CourseCreateUpdateRead = {
@@ -659,7 +739,7 @@ export type CourseCreateUpdateRead = {
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
   createdAt: string;
   updatedAt: string;
@@ -685,6 +765,7 @@ export type CourseTask = {
   order?: number;
   title: string;
   description?: string | null;
+  isPublished?: boolean;
 };
 export type CourseTaskQuestion = {
   order?: number;
@@ -712,7 +793,7 @@ export type CourseTaskRead = {
   order?: number;
   title: string;
   description?: string | null;
-  isPublished: boolean;
+  isPublished?: boolean;
   questions: CourseTaskQuestionRead[];
 };
 export type CourseLessonRead = {
@@ -848,7 +929,7 @@ export type PatchedCourseCreateUpdate = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
 };
 export type PatchedCourseCreateUpdateRead = {
@@ -859,7 +940,7 @@ export type PatchedCourseCreateUpdateRead = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
   createdAt?: string;
   updatedAt?: string;
@@ -877,9 +958,13 @@ export type UserTaskAttemptCreate = {
   answerId: number;
 };
 export const {
+  useV1EducationArticlesListQuery,
+  useV1EducationArticlesCreateMutation,
   useV1EducationArticlesRetrieveQuery,
   useV1EducationArticlesUpdateMutation,
   useV1EducationArticlesPartialUpdateMutation,
+  useV1EducationArticlesDestroyMutation,
+  useV1EducationArticlesUploadImageCreateMutation,
   useV1EducationArticlesUploadMediaCreateMutation,
   useV1EducationCoursesListQuery,
   useV1EducationCoursesCreateMutation,
