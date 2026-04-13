@@ -42,7 +42,7 @@ function ArticleContentBlockView({
 }): JSX.Element | null {
   switch (block.type) {
     case CONTENT_BLOCK_TYPE.TEXT:
-      return <SafeHtmlContent html={block.html} />;
+      return <SafeHtmlContent html={block.html} className={previewStyles.richText} />;
     case CONTENT_BLOCK_TYPE.IMAGE: {
       if (!block.url) return null;
       const src = resolveApiAssetUrl(block.url);

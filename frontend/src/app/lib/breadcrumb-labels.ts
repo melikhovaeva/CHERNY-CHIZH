@@ -1,4 +1,4 @@
-import { useGetArticleBySlugQuery } from '@/entities/article';
+import { useGetArticleBySlugQuery, useGetArticleAdminQuery } from '@/entities/article';
 import { useGetCoursesQuery } from '@/entities/course';
 import { useGetBreedsQuery } from '@/entities/breed';
 import { useGetPuppyQuery } from '@/entities/puppy';
@@ -57,11 +57,19 @@ export function useSegmentLabel(): (
       ? segments[2]
       : undefined;
 
+  const isCabinetArticlesRoute =
+    segments[0] === 'cabinet' && segments[1] === 'articles';
+  const articleSlugCabinet =
+    isCabinetArticlesRoute && segments[2] && segments[2] !== 'new'
+      ? segments[2]
+      : undefined;
+
   const isPublicCoursesRoute = segments[0] === 'courses';
   const courseSlugPublic =
     isPublicCoursesRoute && segments[1] ? segments[1] : undefined;
 
   const shouldLoadCourses = Boolean(courseSlugCabinet) || Boolean(courseSlugPublic);
+  const shouldLoadCabinetArticle = Boolean(articleSlugCabinet);
 
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
@@ -78,6 +86,11 @@ export function useSegmentLabel(): (
   const { data: courses } = useGetCoursesQuery(undefined, {
     skip: !shouldLoadCourses,
   });
+
+  const { data: cabinetArticle } = useGetArticleAdminQuery(
+    articleSlugCabinet ?? '',
+    { skip: !shouldLoadCabinetArticle },
+  );
 
   return useCallback(
     (segment: string, pathname?: string) => {
@@ -119,6 +132,15 @@ export function useSegmentLabel(): (
           }
         }
 
+        const isCabinetArticlesSlugSegment =
+          pathSegments[0] === 'cabinet' &&
+          pathSegments[1] === 'articles' &&
+          pathSegments[2] === segment &&
+          cabinetArticle;
+        if (isCabinetArticlesSlugSegment) {
+          return cabinetArticle.title;
+        }
+
         const isPublicCoursesSlugSegment =
           pathSegments[0] === 'courses' &&
           pathSegments[1] === segment &&
@@ -137,6 +159,6 @@ export function useSegmentLabel(): (
 
       return segment;
     },
-    [breeds, puppy, article, courses],
+    [breeds, puppy, article, courses, cabinetArticle],
   );
 }
