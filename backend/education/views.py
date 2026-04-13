@@ -36,6 +36,8 @@ from education.schema import (
     extend_schema_view,
 )
 from education.serializers import (
+    ArticleAdminCreateSerializer,
+    ArticleAdminListSerializer,
     ArticleAdminReadSerializer,
     ArticleAdminWriteSerializer,
     ArticleListSerializer,
@@ -163,15 +165,22 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
 
 @extend_schema_view(**education_article_view_schema)
 class EducationArticleViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """
-    Admin API для редактирования статей под префиксом /education.
-    retrieve — возвращает статью с contentBlocks (для редактора и предпросмотра).
-    partial_update — принимает title/description/status/content_blocks.
-    upload-media — загружает медиафайл в хранилище и возвращает URL.
+    Admin API для статей под префиксом /education.
+    list   — все отдельные статьи (не привязанные к уроку/породе) для администратора.
+    create — создание отдельной статьи.
+    retrieve — возвращает статью с contentBlocks (для редактора).
+    partial_update — принимает title/description/status/content_blocks/tags.
+    destroy — удаление статьи.
+    upload-image — загружает обложку статьи.
+    upload-media — загружает медиафайл в контент статьи.
     """
 
     lookup_field = "slug"
@@ -183,26 +192,90 @@ class EducationArticleViewSet(
         return [IsAdmin()]
 
     def get_queryset(self):
+        if self.action == "list":
+            return (
+                Article.objects.filter(breed__isnull=True, lesson__isnull=True)
+                .select_related("author")
+                .prefetch_related("tags")
+                .order_by("-created_at")
+            )
         return Article.objects.select_related("author").prefetch_related("tags")
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return ArticleAdminListSerializer
+        if self.action == "create":
+            return ArticleAdminCreateSerializer
         if self.action in ("update", "partial_update"):
             return ArticleAdminWriteSerializer
         return ArticleAdminReadSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = keys_to_snake_case(dict(request.data))
+        if hasattr(request.data, "getlist"):
+            tags_raw = request.data.getlist("tags")
+            if tags_raw:
+                data["tags"] = [int(t) for t in tags_raw if str(t).isdigit()]
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        return Response(
+            ArticleAdminReadSerializer(
+                instance, context=self.get_serializer_context()
+            ).data,
+            status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         data = keys_to_snake_case(dict(request.data))
-        # content_blocks arrives as camelCase key from JS; re-check
         if "contentBlocks" in request.data and "content_blocks" not in data:
             data["content_blocks"] = request.data["contentBlocks"]
+        if hasattr(request.data, "getlist"):
+            tags_raw = request.data.getlist("tags")
+            if tags_raw:
+                data["tags"] = [int(t) for t in tags_raw if str(t).isdigit()]
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         return Response(
             ArticleAdminReadSerializer(
                 instance, context=self.get_serializer_context()
+            ).data
+        )
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="upload-image",
+    )
+    def upload_image(self, request, slug=None):
+        article = self.get_object()
+        image_file = request.FILES.get("image")
+        if not image_file:
+            return Response(
+                {"detail": "Файл изображения не передан."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+        content_type = getattr(image_file, "content_type", "") or ""
+        if content_type not in ALLOWED_TYPES:
+            return Response(
+                {"detail": "Недопустимый тип файла. Разрешены: jpeg, png, webp, gif."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        MAX_SIZE = 10 * 1024 * 1024  # 10 MB
+        if image_file.size > MAX_SIZE:
+            return Response(
+                {"detail": "Файл превышает 10 МБ."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        article.image_preview = image_file
+        article.save(update_fields=["image_preview"])
+        return Response(
+            ArticleAdminReadSerializer(
+                article, context=self.get_serializer_context()
             ).data
         )
 

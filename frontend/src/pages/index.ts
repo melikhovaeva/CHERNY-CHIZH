@@ -1,4 +1,5 @@
 export { AboutPage } from './AboutPage/AboutPage';
+export { ArticleWorkspacePage } from './ArticleWorkspacePage';
 export { ArticlePage } from './ArticlePage/ArticlePage';
 export { ContactsPage } from './ContactsPage/ContactsPage';
 export { CourseCreateEditPage } from './CourseCreationPage/CourseCreateEditPage';

@@ -128,6 +128,9 @@ SPECTACULAR_SETTINGS = {
         'config.schema.camelize_schema',
         'drf_spectacular.hooks.postprocess_schema_enums',
     ],
+    'ENUM_NAME_OVERRIDES': {
+        'InfoStatusEnum': 'education.models.InfoStatus',
+    },
     'SERVERS': [
         {
             'url': 'http://localhost:8000',

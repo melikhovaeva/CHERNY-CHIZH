@@ -23,6 +23,7 @@ import { Route as CoursesSlugRouteImport } from './app/routes/courses/$slug'
 import { Route as CabinetSettingsRouteImport } from './app/routes/cabinet/settings'
 import { Route as CabinetMyCoursesRouteImport } from './app/routes/cabinet/my-courses'
 import { Route as CabinetCoursesRouteImport } from './app/routes/cabinet/courses'
+import { Route as CabinetArticlesRouteImport } from './app/routes/cabinet/articles'
 import { Route as ArticlesSlugRouteImport } from './app/routes/articles/$slug'
 import { Route as PuppiesBreedIdIndexRouteImport } from './app/routes/puppies/$breedId/index'
 import { Route as DogsBreedIdIndexRouteImport } from './app/routes/dogs/$breedId/index'
@@ -30,6 +31,8 @@ import { Route as PuppiesBreedIdPuppyIdRouteImport } from './app/routes/puppies/
 import { Route as DogsBreedIdDogIdRouteImport } from './app/routes/dogs/$breedId/$dogId'
 import { Route as CabinetCoursesNewRouteImport } from './app/routes/cabinet/courses.new'
 import { Route as CabinetCoursesCourseSlugRouteImport } from './app/routes/cabinet/courses.$courseSlug'
+import { Route as CabinetArticlesNewRouteImport } from './app/routes/cabinet/articles.new'
+import { Route as CabinetArticlesArticleSlugRouteImport } from './app/routes/cabinet/articles.$articleSlug'
 
 const KnowledgeBaseRoute = KnowledgeBaseRouteImport.update({
   id: '/knowledge-base',
@@ -101,6 +104,11 @@ const CabinetCoursesRoute = CabinetCoursesRouteImport.update({
   path: '/courses',
   getParentRoute: () => CabinetRouteRoute,
 } as any)
+const CabinetArticlesRoute = CabinetArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => CabinetRouteRoute,
+} as any)
 const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
   id: '/articles/$slug',
   path: '/articles/$slug',
@@ -137,6 +145,17 @@ const CabinetCoursesCourseSlugRoute =
     path: '/$courseSlug',
     getParentRoute: () => CabinetCoursesRoute,
   } as any)
+const CabinetArticlesNewRoute = CabinetArticlesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => CabinetArticlesRoute,
+} as any)
+const CabinetArticlesArticleSlugRoute =
+  CabinetArticlesArticleSlugRouteImport.update({
+    id: '/$articleSlug',
+    path: '/$articleSlug',
+    getParentRoute: () => CabinetArticlesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -147,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/contacts': typeof ContactsRoute
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/cabinet/articles': typeof CabinetArticlesRouteWithChildren
   '/cabinet/courses': typeof CabinetCoursesRouteWithChildren
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
@@ -154,6 +174,8 @@ export interface FileRoutesByFullPath {
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
+  '/cabinet/articles/$articleSlug': typeof CabinetArticlesArticleSlugRoute
+  '/cabinet/articles/new': typeof CabinetArticlesNewRoute
   '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -169,11 +191,14 @@ export interface FileRoutesByTo {
   '/contacts': typeof ContactsRoute
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/cabinet/articles': typeof CabinetArticlesRouteWithChildren
   '/cabinet/courses': typeof CabinetCoursesRouteWithChildren
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/cabinet': typeof CabinetIndexRoute
+  '/cabinet/articles/$articleSlug': typeof CabinetArticlesArticleSlugRoute
+  '/cabinet/articles/new': typeof CabinetArticlesNewRoute
   '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -191,6 +216,7 @@ export interface FileRoutesById {
   '/contacts': typeof ContactsRoute
   '/knowledge-base': typeof KnowledgeBaseRoute
   '/articles/$slug': typeof ArticlesSlugRoute
+  '/cabinet/articles': typeof CabinetArticlesRouteWithChildren
   '/cabinet/courses': typeof CabinetCoursesRouteWithChildren
   '/cabinet/my-courses': typeof CabinetMyCoursesRoute
   '/cabinet/settings': typeof CabinetSettingsRoute
@@ -198,6 +224,8 @@ export interface FileRoutesById {
   '/dogs/$breedId': typeof DogsBreedIdRouteWithChildren
   '/puppies/$breedId': typeof PuppiesBreedIdRouteWithChildren
   '/cabinet/': typeof CabinetIndexRoute
+  '/cabinet/articles/$articleSlug': typeof CabinetArticlesArticleSlugRoute
+  '/cabinet/articles/new': typeof CabinetArticlesNewRoute
   '/cabinet/courses/$courseSlug': typeof CabinetCoursesCourseSlugRoute
   '/cabinet/courses/new': typeof CabinetCoursesNewRoute
   '/dogs/$breedId/$dogId': typeof DogsBreedIdDogIdRoute
@@ -216,6 +244,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/knowledge-base'
     | '/articles/$slug'
+    | '/cabinet/articles'
     | '/cabinet/courses'
     | '/cabinet/my-courses'
     | '/cabinet/settings'
@@ -223,6 +252,8 @@ export interface FileRouteTypes {
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/cabinet/'
+    | '/cabinet/articles/$articleSlug'
+    | '/cabinet/articles/new'
     | '/cabinet/courses/$courseSlug'
     | '/cabinet/courses/new'
     | '/dogs/$breedId/$dogId'
@@ -238,11 +269,14 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/knowledge-base'
     | '/articles/$slug'
+    | '/cabinet/articles'
     | '/cabinet/courses'
     | '/cabinet/my-courses'
     | '/cabinet/settings'
     | '/courses/$slug'
     | '/cabinet'
+    | '/cabinet/articles/$articleSlug'
+    | '/cabinet/articles/new'
     | '/cabinet/courses/$courseSlug'
     | '/cabinet/courses/new'
     | '/dogs/$breedId/$dogId'
@@ -259,6 +293,7 @@ export interface FileRouteTypes {
     | '/contacts'
     | '/knowledge-base'
     | '/articles/$slug'
+    | '/cabinet/articles'
     | '/cabinet/courses'
     | '/cabinet/my-courses'
     | '/cabinet/settings'
@@ -266,6 +301,8 @@ export interface FileRouteTypes {
     | '/dogs/$breedId'
     | '/puppies/$breedId'
     | '/cabinet/'
+    | '/cabinet/articles/$articleSlug'
+    | '/cabinet/articles/new'
     | '/cabinet/courses/$courseSlug'
     | '/cabinet/courses/new'
     | '/dogs/$breedId/$dogId'
@@ -386,6 +423,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CabinetCoursesRouteImport
       parentRoute: typeof CabinetRouteRoute
     }
+    '/cabinet/articles': {
+      id: '/cabinet/articles'
+      path: '/articles'
+      fullPath: '/cabinet/articles'
+      preLoaderRoute: typeof CabinetArticlesRouteImport
+      parentRoute: typeof CabinetRouteRoute
+    }
     '/articles/$slug': {
       id: '/articles/$slug'
       path: '/articles/$slug'
@@ -435,8 +479,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CabinetCoursesCourseSlugRouteImport
       parentRoute: typeof CabinetCoursesRoute
     }
+    '/cabinet/articles/new': {
+      id: '/cabinet/articles/new'
+      path: '/new'
+      fullPath: '/cabinet/articles/new'
+      preLoaderRoute: typeof CabinetArticlesNewRouteImport
+      parentRoute: typeof CabinetArticlesRoute
+    }
+    '/cabinet/articles/$articleSlug': {
+      id: '/cabinet/articles/$articleSlug'
+      path: '/$articleSlug'
+      fullPath: '/cabinet/articles/$articleSlug'
+      preLoaderRoute: typeof CabinetArticlesArticleSlugRouteImport
+      parentRoute: typeof CabinetArticlesRoute
+    }
   }
 }
+
+interface CabinetArticlesRouteChildren {
+  CabinetArticlesArticleSlugRoute: typeof CabinetArticlesArticleSlugRoute
+  CabinetArticlesNewRoute: typeof CabinetArticlesNewRoute
+}
+
+const CabinetArticlesRouteChildren: CabinetArticlesRouteChildren = {
+  CabinetArticlesArticleSlugRoute: CabinetArticlesArticleSlugRoute,
+  CabinetArticlesNewRoute: CabinetArticlesNewRoute,
+}
+
+const CabinetArticlesRouteWithChildren = CabinetArticlesRoute._addFileChildren(
+  CabinetArticlesRouteChildren,
+)
 
 interface CabinetCoursesRouteChildren {
   CabinetCoursesCourseSlugRoute: typeof CabinetCoursesCourseSlugRoute
@@ -453,6 +525,7 @@ const CabinetCoursesRouteWithChildren = CabinetCoursesRoute._addFileChildren(
 )
 
 interface CabinetRouteRouteChildren {
+  CabinetArticlesRoute: typeof CabinetArticlesRouteWithChildren
   CabinetCoursesRoute: typeof CabinetCoursesRouteWithChildren
   CabinetMyCoursesRoute: typeof CabinetMyCoursesRoute
   CabinetSettingsRoute: typeof CabinetSettingsRoute
@@ -460,6 +533,7 @@ interface CabinetRouteRouteChildren {
 }
 
 const CabinetRouteRouteChildren: CabinetRouteRouteChildren = {
+  CabinetArticlesRoute: CabinetArticlesRouteWithChildren,
   CabinetCoursesRoute: CabinetCoursesRouteWithChildren,
   CabinetMyCoursesRoute: CabinetMyCoursesRoute,
   CabinetSettingsRoute: CabinetSettingsRoute,

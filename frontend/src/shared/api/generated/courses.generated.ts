@@ -519,6 +519,7 @@ export type CourseTask = {
   order?: number;
   title: string;
   description?: string | null;
+  isPublished?: boolean;
 };
 export type CourseTaskQuestion = {
   order?: number;
@@ -546,7 +547,7 @@ export type CourseTaskRead = {
   order?: number;
   title: string;
   description?: string | null;
-  isPublished: boolean;
+  isPublished?: boolean;
   questions: CourseTaskQuestionRead[];
 };
 export type CourseLessonRead = {
@@ -576,14 +577,14 @@ export type CourseDetailRead = {
   updatedAt: string;
   steps: CourseStepRead[];
 };
-export type Status783Enum = "published" | "unpublished";
+export type InfoStatusEnum = "published" | "unpublished";
 export type CourseCreateUpdate = {
   title: string;
   description: string;
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
 };
 export type CourseCreateUpdateRead = {
@@ -594,7 +595,7 @@ export type CourseCreateUpdateRead = {
   actionText: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
   createdAt: string;
   updatedAt: string;
@@ -697,7 +698,7 @@ export type PatchedCourseCreateUpdate = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
 };
 export type PatchedCourseCreateUpdateRead = {
@@ -708,7 +709,7 @@ export type PatchedCourseCreateUpdateRead = {
   actionText?: string;
   imagePreview?: string | null;
   difficulty?: DifficultyEnum;
-  status?: Status783Enum;
+  status?: InfoStatusEnum;
   tags?: number[];
   createdAt?: string;
   updatedAt?: string;

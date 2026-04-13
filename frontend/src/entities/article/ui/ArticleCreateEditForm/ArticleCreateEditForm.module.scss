@@ -1,0 +1,11 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.infoTitle {
+  margin: 0 0 16px;
+  @include typography-text-l-semibold;
+  color: $c-mp-text-headers;
+}

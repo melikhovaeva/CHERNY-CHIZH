@@ -141,13 +141,19 @@ class ArticleAdminReadSerializer(CamelCaseSerializerMixin, serializers.ModelSeri
 
 
 class ArticleAdminWriteSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
-    """Сериализатор записи статьи для редактора (title, description, status, content_blocks)."""
+    """Сериализатор записи статьи для редактора (title, description, status, content_blocks, tags)."""
 
     content_blocks = serializers.JSONField(required=False, default=list)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=InfoTag.objects.all(),
+        many=True,
+        required=False,
+        allow_empty=True,
+    )
 
     class Meta:
         model = Article
-        fields = ("title", "description", "status", "content_blocks")
+        fields = ("title", "description", "status", "content_blocks", "tags")
         extra_kwargs = {
             "title": {"required": False},
             "description": {"required": False},
@@ -167,6 +173,69 @@ class ArticleAdminWriteSerializer(CamelCaseSerializerMixin, serializers.ModelSer
                     f"Допустимые: {', '.join(sorted(valid_types))}."
                 )
         return value
+
+    def update(self, instance, validated_data):
+        tags = validated_data.pop("tags", None)
+        instance = super().update(instance, validated_data)
+        if tags is not None:
+            instance.tags.set(tags)
+        return instance
+
+
+class ArticleAdminListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Список статей для администратора (включает статус)."""
+
+    status = serializers.SerializerMethodField()
+    tags = InfoTagSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Article
+        fields = (
+            "id",
+            "title",
+            "slug",
+            "description",
+            "image_preview",
+            "status",
+            "tags",
+            "created_at",
+        )
+
+    @extend_schema_field(CodeLabelSerializer)
+    def get_status(self, obj: Article):
+        if not obj.status:
+            return None
+        try:
+            status_enum = InfoStatus(obj.status)
+            return {"code": status_enum.value, "label": status_enum.label}
+        except ValueError:
+            return {"code": obj.status, "label": obj.status}
+
+
+class ArticleAdminCreateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Создание отдельной статьи (без урока и породы)."""
+
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=InfoTag.objects.all(),
+        many=True,
+        required=False,
+        allow_empty=True,
+    )
+
+    class Meta:
+        model = Article
+        fields = ("title", "description", "tags")
+        extra_kwargs = {
+            "title": {"required": True},
+            "description": {"required": False, "default": "", "allow_blank": True},
+        }
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", [])
+        article = Article.objects.create(**validated_data)
+        if tags:
+            article.tags.set(tags)
+        return article
 
 
 class ArticleMinimalSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -215,6 +284,7 @@ class CourseLessonSerializer(CamelCaseSerializerMixin, serializers.ModelSerializ
         model = CourseLesson
         fields = ("id", "order", "title", "article", "tasks")
 
+    @extend_schema_field(CourseTaskSerializer(many=True))
     def get_tasks(self, obj):
         request = self.context.get("request")
         is_admin = (
