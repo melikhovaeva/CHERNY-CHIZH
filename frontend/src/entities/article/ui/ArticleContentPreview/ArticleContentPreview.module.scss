@@ -1,5 +1,64 @@
-@use '@/shared/ui/styles/abstracts/variables' as *;
-@use '@/shared/ui/styles/abstracts/mixins' as *;
+.richText {
+  box-sizing: border-box;
+  width: 100%;
+  @include typography-text-m;
+  color: $c-mp-text-body;
+
+  :where(h2) {
+    margin: 0 0 0.5em;
+    @include typography-text-l-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(h3) {
+    margin: 0 0 0.45em;
+    @include typography-text-m-semibold;
+    color: $c-neutral-900;
+  }
+
+  :where(p) {
+    margin: 0 0 0.5em;
+  }
+
+  :where(ul, ol) {
+    margin: 0.5em 0;
+    padding-left: 1.75em;
+    list-style-position: outside;
+  }
+
+  :where(ul) {
+    list-style-type: disc;
+  }
+
+  :where(ol) {
+    list-style-type: decimal;
+  }
+
+  :where(ul li) {
+    list-style-type: disc;
+    list-style-position: outside;
+  }
+
+  :where(ol li) {
+    list-style-type: decimal;
+    list-style-position: outside;
+  }
+
+  :where(li) {
+    display: list-item;
+    margin: 0.2em 0;
+    padding-left: 0.25em;
+  }
+
+  :where(ul ul, ol ol, ul ol, ol ul) {
+    margin: 0.35em 0;
+  }
+
+  :where(a) {
+    color: $c-mp-text-urls;
+    text-decoration: underline;
+  }
+}
 
 .imageFigure {
   display: flex;
