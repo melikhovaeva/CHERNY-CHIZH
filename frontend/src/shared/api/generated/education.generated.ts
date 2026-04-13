@@ -712,6 +712,7 @@ export type CourseTaskRead = {
   order?: number;
   title: string;
   description?: string | null;
+  isPublished: boolean;
   questions: CourseTaskQuestionRead[];
 };
 export type CourseLessonRead = {
@@ -779,6 +780,7 @@ export type CourseTaskCreateUpdate = {
   title: string;
   description?: string | null;
   order?: number;
+  isPublished?: boolean;
   questions?: CourseTaskQuestionWrite[];
 };
 export type CourseTaskCreateUpdateRead = {
@@ -786,12 +788,14 @@ export type CourseTaskCreateUpdateRead = {
   title: string;
   description?: string | null;
   order?: number;
+  isPublished?: boolean;
   questions?: CourseTaskQuestionWrite[];
 };
 export type PatchedCourseTaskCreateUpdate = {
   title?: string;
   description?: string | null;
   order?: number;
+  isPublished?: boolean;
   questions?: CourseTaskQuestionWrite[];
 };
 export type PatchedCourseTaskCreateUpdateRead = {
@@ -799,6 +803,7 @@ export type PatchedCourseTaskCreateUpdateRead = {
   title?: string;
   description?: string | null;
   order?: number;
+  isPublished?: boolean;
   questions?: CourseTaskQuestionWrite[];
 };
 export type PatchedCourseLessonCreateUpdate = {

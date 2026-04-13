@@ -196,6 +196,7 @@ class CourseTask(OrderedItemModel):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
+    is_published = models.BooleanField(default=False)
 
     class Meta(OrderedItemModel.Meta):
         db_table = "common_coursetask"
