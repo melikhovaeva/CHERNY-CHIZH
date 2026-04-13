@@ -147,6 +147,7 @@ export const CourseConstructorTemplate = ({
               id: String(task.id),
               serverId: task.id,
               title: task.title,
+              isPublished: task.isPublished,
               questions: task.questions,
             })),
           };
@@ -469,6 +470,67 @@ export const CourseConstructorTemplate = ({
         }).unwrap();
       } catch {
         showError('Не удалось переименовать задание');
+      }
+    },
+    [courseId, updateTaskApi, showError],
+  );
+
+  const handlePublishToggleTask = useCallback(
+    async (stageId: string, lessonId: string, taskId: string, publish: boolean) => {
+      const stage = stagesRef.current.find((s) => s.id === stageId);
+      const lesson = stage?.lessons.find((l) => l.id === lessonId);
+      const task = lesson?.tasks.find((t) => t.id === taskId);
+
+      const taskServerId = task?.serverId;
+      const lessonServerId = lesson?.serverId ?? localToServerIdMap.current[lessonId];
+      const stepServerId = stage?.serverId ?? localToServerIdMap.current[stageId];
+      if (!taskServerId || !lessonServerId || !stepServerId) return;
+
+      setStages((prev) =>
+        prev.map((s) => {
+          if (s.id !== stageId) return s;
+          return {
+            ...s,
+            lessons: s.lessons.map((l) => {
+              if (l.id !== lessonId) return l;
+              return {
+                ...l,
+                tasks: l.tasks.map((t) =>
+                  t.id === taskId ? { ...t, isPublished: publish } : t,
+                ),
+              };
+            }),
+          };
+        }),
+      );
+
+      try {
+        await updateTaskApi({
+          coursePk: String(courseId),
+          stepPk: String(stepServerId),
+          lessonPk: String(lessonServerId),
+          id: String(taskServerId),
+          patchedCourseTaskCreateUpdate: { isPublished: publish },
+        }).unwrap();
+      } catch {
+        showError(publish ? 'Не удалось опубликовать задание' : 'Не удалось снять с публикации');
+        setStages((prev) =>
+          prev.map((s) => {
+            if (s.id !== stageId) return s;
+            return {
+              ...s,
+              lessons: s.lessons.map((l) => {
+                if (l.id !== lessonId) return l;
+                return {
+                  ...l,
+                  tasks: l.tasks.map((t) =>
+                    t.id === taskId ? { ...t, isPublished: !publish } : t,
+                  ),
+                };
+              }),
+            };
+          }),
+        );
       }
     },
     [courseId, updateTaskApi, showError],
@@ -803,6 +865,7 @@ export const CourseConstructorTemplate = ({
             key={activeTask.id}
             taskTitle={activeTask.title}
             isSynced={!unsyncedTaskIds.has(activeTask.id)}
+            isPublished={activeTask.isPublished ?? false}
             initialState={
               activeTask.questions?.length
                 ? {
@@ -825,6 +888,9 @@ export const CourseConstructorTemplate = ({
             }}
             onSave={(payload: TaskEditorSavePayload) =>
               ensureTaskSaved(activeStageId, activeLessonId, activeTaskId, payload)
+            }
+            onPublishToggle={(publish) =>
+              handlePublishToggleTask(activeStageId, activeLessonId, activeTaskId, publish)
             }
             onDeleteTask={() => {
               void handleDeleteTask(activeStageId, activeLessonId, activeTaskId);

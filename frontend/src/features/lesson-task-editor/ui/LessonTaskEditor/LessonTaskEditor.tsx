@@ -14,6 +14,7 @@ const LABELS = {
   addAnswer: '+ Добавить вариант ответа',
   addQuestion: '+ Добавить вопрос',
   publish: 'Опубликовать',
+  unpublish: 'Снять с публикации',
   deleteTask: 'Удалить задание',
   duplicate: 'Дублировать',
   unsavedHint: 'Есть несохранённые изменения',
@@ -68,8 +69,10 @@ export interface LessonTaskEditorProps {
   taskTitle: string;
   initialState?: TaskEditorState;
   isSynced?: boolean;
+  isPublished?: boolean;
   onSave: (payload: TaskEditorSavePayload) => Promise<number>;
   onTitleChange: (title: string) => void;
+  onPublishToggle?: (publish: boolean) => Promise<void>;
   onDeleteTask?: () => void;
 }
 
@@ -77,8 +80,10 @@ export function LessonTaskEditor({
   taskTitle,
   initialState,
   isSynced = false,
+  isPublished = false,
   onSave,
   onTitleChange,
+  onPublishToggle,
   onDeleteTask,
 }: LessonTaskEditorProps) {
   const [gearOpen, setGearOpen] = useState(false);
@@ -176,14 +181,16 @@ export function LessonTaskEditor({
           >
             <SaveSvg className={styles.saveIcon} aria-hidden />
           </button>
-          <button
-            type='button'
-            className={styles.publishBtn}
-            onClick={() => void handleSave()}
-            disabled={isSaving}
-          >
-            {LABELS.publish}
-          </button>
+          {onPublishToggle && (
+            <button
+              type='button'
+              className={styles.publishBtn}
+              onClick={() => void onPublishToggle(!isPublished)}
+              disabled={isSaving}
+            >
+              {isPublished ? LABELS.unpublish : LABELS.publish}
+            </button>
+          )}
         </div>
       </header>
 

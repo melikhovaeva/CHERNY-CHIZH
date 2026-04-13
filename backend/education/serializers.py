@@ -204,16 +204,33 @@ class CourseTaskSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer
 
     class Meta:
         model = CourseTask
-        fields = ("id", "order", "title", "description", "questions")
+        fields = ("id", "order", "title", "description", "is_published", "questions")
 
 
 class CourseLessonSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     article = ArticleBriefSerializer(read_only=True)
-    tasks = CourseTaskSerializer(many=True, read_only=True)
+    tasks = serializers.SerializerMethodField()
 
     class Meta:
         model = CourseLesson
         fields = ("id", "order", "title", "article", "tasks")
+
+    def get_tasks(self, obj):
+        request = self.context.get("request")
+        is_admin = (
+            request is not None
+            and request.user is not None
+            and request.user.is_authenticated
+            and getattr(request.user, "is_superuser", False)
+        )
+        qs = obj.tasks.prefetch_related("questions__answers")
+        if not is_admin:
+            qs = qs.filter(is_published=True)
+        return CourseTaskSerializer(
+            qs.order_by("order", "id"),
+            many=True,
+            context=self.context,
+        ).data
 
 
 class CourseStepSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -361,12 +378,13 @@ class CourseTaskCreateUpdateSerializer(CamelCaseSerializerMixin, serializers.Mod
 
     class Meta:
         model = CourseTask
-        fields = ("id", "title", "description", "order", "questions")
+        fields = ("id", "title", "description", "order", "is_published", "questions")
         read_only_fields = ("id",)
         extra_kwargs = {
             "title": {"required": True},
             "description": {"required": False, "allow_blank": True, "allow_null": True},
             "order": {"required": False, "default": 0},
+            "is_published": {"required": False},
         }
 
     def _rebuild_questions(self, task, questions_data):

@@ -7,6 +7,7 @@ export interface ConstructorTask {
   id: string;
   serverId?: number;
   title: string;
+  isPublished?: boolean;
   /** Вопросы задания, загруженные с сервера или сохранённые локально после save. */
   questions?: CourseTaskQuestionRead[];
 }
@@ -97,6 +98,7 @@ export function mapApiCourseStepsToConstructorStages(
             id: String(task.id),
             serverId: task.id,
             title: task.title,
+            isPublished: task.isPublished,
             questions: task.questions,
           })),
         };
