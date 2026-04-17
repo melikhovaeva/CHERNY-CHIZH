@@ -3,5 +3,5 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/cabinet/articles')({
   component: CabinetArticles,
-  staticData: { navLabel: 'Статьи', navOrder: 3 },
+  staticData: { navLabel: 'Статьи', navOrder: 2 },
 });

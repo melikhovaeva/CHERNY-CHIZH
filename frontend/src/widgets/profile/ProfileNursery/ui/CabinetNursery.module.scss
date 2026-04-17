@@ -1,0 +1,77 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+  justify-content: center;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.addButton {
+  flex: 1;
+  margin-left: auto;
+  max-width: 200px;
+  white-space: nowrap;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  color: $c-neutral-500;
+  @include typography-text-m;
+}
+
+@media (max-width: 965px) {
+  .filters {
+    width: 100%;
+    .breedSelect {
+      flex: 1;
+    }
+    .ageSelect {
+      flex: 1;
+    }
+  }
+  .addButton {
+    margin-left: 0;
+    max-width: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    .breedSelect {
+      width: 100%;
+    }
+    .ageSelect {
+      width: 100%;
+    }
+  }
+}

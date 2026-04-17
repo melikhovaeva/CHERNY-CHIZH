@@ -178,6 +178,7 @@ class Dog(BaseAnimal):
         choices=AGE_GROUP_CHOICES,
         default=AGE_GROUP_ADULT,
     )
+    is_published = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Собака"
@@ -210,15 +211,24 @@ class DogPhoto(models.Model):
     )
     photo = models.ImageField(upload_to="dogs/")
     order = models.PositiveSmallIntegerField(default=0)
+    is_main = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ["order", "id"]
+        ordering = ["-is_main", "order", "id"]
         verbose_name = "Фото собаки"
         verbose_name_plural = "Фото собак"
 
 
 class DogDocument(models.Model):
     """Документ собаки (включая щенков)."""
+
+    DOC_TYPE_PUPPY_CARD = "puppy_card"
+    DOC_TYPE_VET_PASSPORT = "vet_passport"
+
+    DOC_TYPE_CHOICES = [
+        (DOC_TYPE_PUPPY_CARD, "Щенячья карточка"),
+        (DOC_TYPE_VET_PASSPORT, "Ветеринарный паспорт"),
+    ]
 
     dog = models.ForeignKey(
         Dog,
@@ -227,6 +237,11 @@ class DogDocument(models.Model):
     )
     file = models.FileField(upload_to="dogs/documents/", null=True, blank=True)
     name = models.CharField(max_length=255)
+    document_type = models.CharField(
+        max_length=32,
+        choices=DOC_TYPE_CHOICES,
+        default=DOC_TYPE_PUPPY_CARD,
+    )
 
     class Meta:
         verbose_name = "Документ собаки"

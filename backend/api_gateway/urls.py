@@ -4,6 +4,7 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
 from common.views import (
+    AdminDogViewSet,
     BreedViewSet,
     DictionaryViewSet,
     DogByBreedSlugViewSet,
@@ -33,6 +34,7 @@ router.register(
     basename="dog-by-breed",
 )
 router.register(r"dictionaries", DictionaryViewSet, basename="dictionary")
+router.register(r"nursery/dogs", AdminDogViewSet, basename="nursery-dog")
 router.register(r"faq", FAQItemViewSet, basename="faq-item")
 router.register(r"requests", RequestViewSet, basename="request")
 router.register(r"articles", ArticleViewSet, basename="article")

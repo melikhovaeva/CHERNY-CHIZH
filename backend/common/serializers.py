@@ -99,7 +99,7 @@ class BreedBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer
 
     class Meta:
         model = Breed
-        fields = ("slug", "name", "full_name", "photo")
+        fields = ("id", "slug", "name", "full_name", "photo")
 
     @extend_schema_field(OpenApiTypes.URI)
     def get_photo(self, obj):
@@ -111,13 +111,20 @@ class DogPhotosSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer)
 
     class Meta:
         model = DogPhoto
-        fields = ("id", "url")
+        fields = ("id", "url", "is_main")
 
 
 class DogDocumentsSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
     class Meta:
         model = DogDocument
-        fields = ("id", "name")
+        fields = ("id", "name", "document_type", "url")
+
+    def get_url(self, obj):
+        if obj.file:
+            return obj.file.url
+        return None
 
 
 class DogBriefSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
@@ -150,9 +157,13 @@ class DogListSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "status",
             "sex",
             "potential",
+            "age_group",
+            "is_published",
             "photos",
             "documents",
             "parents",
+            "created_at",
+            "updated_at",
         )
 
     def _build_enum_payload(self, value: str, enum_cls):
@@ -375,6 +386,85 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
         else:
             data["user"] = None
         return data
+
+
+class DogAdminWriteSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания / обновления собаки администратором."""
+
+    breed = serializers.PrimaryKeyRelatedField(queryset=Breed.objects.all())
+    mother = serializers.PrimaryKeyRelatedField(
+        queryset=Dog.objects.filter(age_group=Dog.AGE_GROUP_ADULT),
+        required=False,
+        allow_null=True,
+    )
+    father = serializers.PrimaryKeyRelatedField(
+        queryset=Dog.objects.filter(age_group=Dog.AGE_GROUP_ADULT),
+        required=False,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = Dog
+        fields = (
+            "name",
+            "international_name",
+            "breed",
+            "sex",
+            "birth_date",
+            "color",
+            "potential",
+            "age_group",
+            "description",
+            "status",
+            "is_published",
+            "mother",
+            "father",
+        )
+        extra_kwargs = {
+            "description": {"required": False, "allow_blank": True},
+            "international_name": {"required": False, "allow_blank": True},
+        }
+
+    international_name = serializers.CharField(required=False, allow_blank=True)
+
+    def to_internal_value(self, data):
+        data = keys_to_snake_case(data)
+        return super().to_internal_value(data)
+
+    def create(self, validated_data):
+        mother = validated_data.pop("mother", None)
+        father = validated_data.pop("father", None)
+        validated_data.pop("international_name", None)
+        dog = Dog.objects.create(**validated_data)
+        self._set_parents(dog, mother, father)
+        return dog
+
+    def update(self, instance, validated_data):
+        mother = validated_data.pop("mother", None)
+        father = validated_data.pop("father", None)
+        validated_data.pop("international_name", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        self._set_parents(instance, mother, father)
+        return instance
+
+    def _set_parents(self, dog, mother, father):
+        DogParent.objects.filter(child=dog).delete()
+        if mother:
+            DogParent(
+                child=dog,
+                parent=mother,
+                breed=dog.breed,
+                role=DogParent.ROLE_MOTHER,
+            ).save()
+        if father:
+            DogParent(
+                child=dog,
+                parent=father,
+                breed=dog.breed,
+                role=DogParent.ROLE_FATHER,
+            ).save()
 
 
 class DictionaryGroupListSerializer(serializers.Serializer):

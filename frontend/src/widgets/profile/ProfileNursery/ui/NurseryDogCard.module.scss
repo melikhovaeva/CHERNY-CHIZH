@@ -1,0 +1,93 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  height: 100%;
+}
+
+.imageSection {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.publishedBadge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: $c-neutral-d-0-80;
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 2px 8px;
+  @include typography-text-s;
+  color: $c-neutral-600;
+}
+
+.content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: $background-tertiary-color;
+  border-radius: 16px;
+  flex: 1;
+}
+
+.name {
+  @include typography-text-l-semibold;
+  margin: 0;
+}
+
+.internationalName {
+  @include typography-text-m;
+  margin: 0;
+}
+
+.characteristics {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  flex: 1;
+}
+
+.charItem {
+  display: flex;
+  gap: 6px;
+  @include typography-text-s;
+}
+
+.charLabel {
+  color: $c-neutral-600;
+  white-space: nowrap;
+}
+
+.charValue {
+  margin-left: auto;
+  color: $text-color;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  @include typography-text-s;
+  color: $c-neutral-500;
+}
+
+.published {
+  color: $c-status-green;
+}
+
+.unpublished {
+  color: $c-neutral-400;
+}

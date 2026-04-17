@@ -8,10 +8,14 @@ import { API_CONFIG } from '../config/api';
 
 const UPLOAD_IMAGE_ENDPOINT = 'v1EducationCoursesUploadImageCreate';
 const UPLOAD_ARTICLE_MEDIA_ENDPOINT = 'uploadArticleMedia';
+const UPLOAD_DOG_PHOTO_ENDPOINT = 'nurseryUploadPhoto';
+const UPLOAD_DOG_DOCUMENT_ENDPOINT = 'nurseryUploadDocument';
 
 const ENDPOINTS_WITHOUT_JSON_BODY = new Set<string>([
   UPLOAD_IMAGE_ENDPOINT,
   UPLOAD_ARTICLE_MEDIA_ENDPOINT,
+  UPLOAD_DOG_PHOTO_ENDPOINT,
+  UPLOAD_DOG_DOCUMENT_ENDPOINT,
 ]);
 
 const rawBaseQuery = fetchBaseQuery({

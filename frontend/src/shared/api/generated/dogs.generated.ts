@@ -94,12 +94,14 @@ export type DogByBreedList = {
   color: string;
   description?: string | null;
   ageGroup?: AgeGroupEnum;
+  isPublished?: boolean;
 };
 export type BreedBrief = {
   name: string;
   fullName: string;
 };
 export type BreedBriefRead = {
+  id: number;
   slug: string;
   name: string;
   fullName: string;
@@ -111,17 +113,23 @@ export type CodeLabel = {
 };
 export type DogPhotos = {
   url: string;
+  isMain?: boolean;
 };
 export type DogPhotosRead = {
   id: number;
   url: string;
+  isMain?: boolean;
 };
+export type DocumentTypeEnum = "puppy_card" | "vet_passport";
 export type DogDocuments = {
   name: string;
+  documentType?: DocumentTypeEnum;
 };
 export type DogDocumentsRead = {
   id: number;
   name: string;
+  documentType?: DocumentTypeEnum;
+  url: string;
 };
 export type DogByBreedListRead = {
   id: number;
@@ -138,6 +146,7 @@ export type DogByBreedListRead = {
   color: string;
   description?: string | null;
   ageGroup?: AgeGroupEnum;
+  isPublished?: boolean;
 };
 export type PaginatedDogByBreedListList = {
   count: number;
@@ -156,6 +165,8 @@ export type DogList = {
   birthDate: string;
   color: string;
   description?: string | null;
+  ageGroup?: AgeGroupEnum;
+  isPublished?: boolean;
 };
 export type DogListRead = {
   id: number;
@@ -168,6 +179,8 @@ export type DogListRead = {
   status: CodeLabel;
   sex: CodeLabel;
   potential: CodeLabel;
+  ageGroup?: AgeGroupEnum;
+  isPublished?: boolean;
   photos: DogPhotosRead[];
   documents: DogDocumentsRead[];
   parents: {
@@ -180,6 +193,8 @@ export type DogListRead = {
       name?: string;
     };
   };
+  createdAt: string;
+  updatedAt: string;
 };
 export type PaginatedDogListList = {
   count: number;
