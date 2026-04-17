@@ -30,6 +30,7 @@ export type { KnowledgeBaseCategory } from './knowledge-base';
 export { CabinetArticles } from './profile/ProfileArticles';
 export { CabinetCourses } from './profile/ProfileCourses';
 export { CabinetMyCourses } from './profile/ProfileMyCourses';
+export { CabinetNursery } from './profile/ProfileNursery';
 export { CabinetSettings } from './profile/ProfileSettings';
 export { PuppiesEmptyState } from './PuppiesEmptyState';
 export { PuppiesFilters } from './PuppiesFilters';

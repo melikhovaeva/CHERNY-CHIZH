@@ -1,10 +1,14 @@
+from django.core.files.storage import default_storage
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
 from common.dictionaries import DICTIONARY_GROUPS
+from common.models import Breed, Dog, DogDocument, DogPhoto, Request as RequestModel
+from common.pagination import DogPagination
 from common.schema import (
     breed_view_schema,
     dictionary_view_schema,
@@ -13,16 +17,16 @@ from common.schema import (
     extend_schema_view,
     request_view_schema,
 )
-from common.models import Breed, Dog, Request as RequestModel
-from common.pagination import DogPagination
 from common.serializers import (
     BreedListSerializer,
     DictionaryGroupListSerializer,
+    DogAdminWriteSerializer,
     DogByBreedListSerializer,
     DogListSerializer,
     RequestSerializer,
     _keys_to_camel_case,
 )
+from user_management.permissions import IsAdmin
 
 
 def _find_group_by_identifier(identifier: str):
@@ -72,7 +76,8 @@ class DogViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            Dog.objects.select_related("breed")
+            Dog.objects.filter(is_published=True)
+            .select_related("breed")
             .prefetch_related("photos", "documents")
             .order_by("-id")
         )
@@ -100,7 +105,7 @@ class DogByBreedSlugViewSet(viewsets.ReadOnlyModelViewSet):
             return Dog.objects.none()
 
         queryset = (
-            Dog.objects.filter(breed=matching_breed)
+            Dog.objects.filter(breed=matching_breed, is_published=True)
             .select_related("breed")
             .prefetch_related("photos", "documents")
             .order_by("-id")
@@ -265,3 +270,131 @@ class RequestViewSet(viewsets.ModelViewSet):
             _keys_to_camel_case(out_serializer.data),
             status=status.HTTP_201_CREATED,
         )
+
+
+class AdminDogViewSet(viewsets.ModelViewSet):
+    """Админский CRUD для собак питомника."""
+
+    permission_classes = [IsAdmin]
+    pagination_class = DogPagination
+
+    def get_queryset(self):
+        queryset = (
+            Dog.objects.select_related("breed")
+            .prefetch_related("photos", "documents", "parent_links__parent")
+            .order_by("-id")
+        )
+        age_group = self.request.query_params.get("age_group")
+        if age_group in {Dog.AGE_GROUP_PUPPY, Dog.AGE_GROUP_ADULT}:
+            queryset = queryset.filter(age_group=age_group)
+        breed_id = self.request.query_params.get("breed")
+        if breed_id:
+            queryset = queryset.filter(breed_id=breed_id)
+        search = self.request.query_params.get("search")
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action in ("create", "update", "partial_update"):
+            return DogAdminWriteSerializer
+        return DogListSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        out = DogListSerializer(instance, context=self.get_serializer_context())
+        return Response(out.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        out = DogListSerializer(instance, context=self.get_serializer_context())
+        return Response(out.data)
+
+    @action(detail=True, methods=["post"], url_path="publish")
+    def publish(self, request, pk=None):
+        dog = self.get_object()
+        dog.is_published = True
+        dog.save(update_fields=["is_published"])
+        out = DogListSerializer(dog, context=self.get_serializer_context())
+        return Response(out.data)
+
+    @action(detail=True, methods=["post"], url_path="unpublish")
+    def unpublish(self, request, pk=None):
+        dog = self.get_object()
+        dog.is_published = False
+        dog.save(update_fields=["is_published"])
+        out = DogListSerializer(dog, context=self.get_serializer_context())
+        return Response(out.data)
+
+    @action(detail=True, methods=["post"], url_path="upload-photo", parser_classes=[MultiPartParser])
+    def upload_photo(self, request, pk=None):
+        dog = self.get_object()
+        photo_file = request.FILES.get("photo")
+        if not photo_file:
+            return Response({"detail": "Файл не передан."}, status=status.HTTP_400_BAD_REQUEST)
+        is_main = request.data.get("is_main", "false").lower() == "true"
+        if is_main:
+            dog.photos.update(is_main=False)
+        photo = DogPhoto.objects.create(dog=dog, photo=photo_file, is_main=is_main)
+        return Response(
+            {"id": photo.id, "url": photo.photo.url, "isMain": photo.is_main},
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=True, methods=["delete"], url_path=r"photos/(?P<photo_id>\d+)")
+    def delete_photo(self, request, pk=None, photo_id=None):
+        dog = self.get_object()
+        try:
+            photo = dog.photos.get(id=photo_id)
+        except DogPhoto.DoesNotExist:
+            return Response({"detail": "Фото не найдено."}, status=status.HTTP_404_NOT_FOUND)
+        photo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["post"], url_path=r"photos/(?P<photo_id>\d+)/set-main")
+    def set_main_photo(self, request, pk=None, photo_id=None):
+        dog = self.get_object()
+        try:
+            photo = dog.photos.get(id=photo_id)
+        except DogPhoto.DoesNotExist:
+            return Response({"detail": "Фото не найдено."}, status=status.HTTP_404_NOT_FOUND)
+        dog.photos.update(is_main=False)
+        photo.is_main = True
+        photo.save(update_fields=["is_main"])
+        return Response({"id": photo.id, "url": photo.photo.url, "isMain": True})
+
+    @action(detail=True, methods=["post"], url_path="upload-document", parser_classes=[MultiPartParser])
+    def upload_document(self, request, pk=None):
+        dog = self.get_object()
+        doc_file = request.FILES.get("file")
+        if not doc_file:
+            return Response({"detail": "Файл не передан."}, status=status.HTTP_400_BAD_REQUEST)
+        doc_type = request.data.get("document_type", DogDocument.DOC_TYPE_PUPPY_CARD)
+        if doc_type not in dict(DogDocument.DOC_TYPE_CHOICES):
+            return Response({"detail": "Недопустимый тип документа."}, status=status.HTTP_400_BAD_REQUEST)
+        doc = DogDocument.objects.create(
+            dog=dog,
+            file=doc_file,
+            name=doc_file.name,
+            document_type=doc_type,
+        )
+        return Response(
+            {"id": doc.id, "name": doc.name, "documentType": doc.document_type, "url": doc.file.url},
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=True, methods=["delete"], url_path=r"documents/(?P<doc_id>\d+)")
+    def delete_document(self, request, pk=None, doc_id=None):
+        dog = self.get_object()
+        try:
+            doc = dog.documents.get(id=doc_id)
+        except DogDocument.DoesNotExist:
+            return Response({"detail": "Документ не найден."}, status=status.HTTP_404_NOT_FOUND)
+        doc.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

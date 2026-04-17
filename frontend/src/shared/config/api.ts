@@ -38,5 +38,6 @@ export const API_CONFIG = {
     SESSION: 'Session',
     COURSES: 'Courses',
     ARTICLES: 'Articles',
+    NURSERY_DOGS: 'NurseryDogs',
   } as const,
 } as const;

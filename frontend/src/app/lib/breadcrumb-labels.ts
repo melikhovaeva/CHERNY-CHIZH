@@ -1,6 +1,9 @@
-import { useGetArticleBySlugQuery, useGetArticleAdminQuery } from '@/entities/article';
-import { useGetCoursesQuery } from '@/entities/course';
+import {
+  useGetArticleAdminQuery,
+  useGetArticleBySlugQuery,
+} from '@/entities/article';
 import { useGetBreedsQuery } from '@/entities/breed';
+import { useGetCoursesQuery } from '@/entities/course';
 import { useGetPuppyQuery } from '@/entities/puppy';
 import { useLocation } from '@tanstack/react-router';
 import { useCallback } from 'react';
@@ -20,6 +23,7 @@ const SEGMENT_LABELS: Record<string, string> = {
   constructor: 'Конструктор',
   preview: 'Предпросмотр',
   new: 'Создание курса',
+  nursery: 'Питомник',
 };
 
 export function getSegmentLabelStatic(segment: string): string {
@@ -68,7 +72,8 @@ export function useSegmentLabel(): (
   const courseSlugPublic =
     isPublicCoursesRoute && segments[1] ? segments[1] : undefined;
 
-  const shouldLoadCourses = Boolean(courseSlugCabinet) || Boolean(courseSlugPublic);
+  const shouldLoadCourses =
+    Boolean(courseSlugCabinet) || Boolean(courseSlugPublic);
   const shouldLoadCabinetArticle = Boolean(articleSlugCabinet);
 
   const { data: breeds } = useGetBreedsQuery(undefined, {

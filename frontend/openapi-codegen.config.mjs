@@ -37,5 +37,8 @@ export default {
     './src/shared/api/generated/education.generated.ts': {
       filterEndpoints: [/^v1Education/],
     },
+    './src/shared/api/generated/nursery.generated.ts': {
+      filterEndpoints: [/^v1Nursery/],
+    },
   },
 };
