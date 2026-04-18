@@ -38,7 +38,7 @@ class DogPagination(LimitOffsetPagination):
             except (TypeError, ValueError):
                 page_size = self.default_limit
         else:
-            page_size = self.default_limit
+            return super().get_limit(request)
 
         if page_size <= 0:
             page_size = self.default_limit
