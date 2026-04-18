@@ -1,4 +1,7 @@
+export { useInfiniteNurseryDogs } from './hooks/useInfiniteNurseryDogs';
+
 export {
+  useNurseryDogsFilteredListQuery,
   useV1NurseryDogsListQuery,
   useV1NurseryDogsRetrieveQuery,
   useV1NurseryDogsCreateMutation,

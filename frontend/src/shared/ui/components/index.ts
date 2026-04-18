@@ -10,6 +10,7 @@ export { Backdrop } from './Backdrop';
 export { Breadcrumb, type BreadcrumbItem } from './Breadcrumb';
 export { Button } from './Button';
 export { Card } from './Card';
+export { DatePicker, type DatePickerProps } from './DatePicker';
 export { Checkbox } from './Checkbox';
 export {
   ChoiceDialog,

@@ -1,5 +1,22 @@
 import { baseApi } from '@/shared/api/base-api';
-import type { DogListRead } from '@/shared/api/generated/nursery.generated';
+import {
+  enhancedApi as nurseryGeneratedApi,
+  type DogListRead,
+  type PaginatedDogListListRead,
+} from '@/shared/api/generated/nursery.generated';
+
+nurseryGeneratedApi.enhanceEndpoints({
+  endpoints: {
+    v1NurseryDogsList: { providesTags: ['NurseryDogs'] },
+    v1NurseryDogsRetrieve: { providesTags: ['NurseryDogs'] },
+    v1NurseryDogsCreate: { invalidatesTags: ['NurseryDogs'] },
+    v1NurseryDogsUpdate: { invalidatesTags: ['NurseryDogs'] },
+    v1NurseryDogsPartialUpdate: { invalidatesTags: ['NurseryDogs'] },
+    v1NurseryDogsDestroy: { invalidatesTags: ['NurseryDogs'] },
+    v1NurseryDogsDocumentsDestroy: { invalidatesTags: ['NurseryDogs'] },
+    v1NurseryDogsPhotosDestroy: { invalidatesTags: ['NurseryDogs'] },
+  },
+});
 
 export {
   useV1NurseryDogsListQuery,
@@ -11,6 +28,38 @@ export {
   useV1NurseryDogsDocumentsDestroyMutation,
   useV1NurseryDogsPhotosDestroyMutation,
 } from '@/shared/api/generated/nursery.generated';
+
+export interface NurseryDogsListParams {
+  limit?: number;
+  offset?: number;
+  ageGroup?: string;
+  breedId?: string;
+  search?: string;
+}
+
+const nurseryFilteredApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    nurseryDogsFilteredList: build.query<
+      PaginatedDogListListRead,
+      NurseryDogsListParams
+    >({
+      query: ({ limit = 20, offset = 0, ageGroup, breedId, search }) => ({
+        url: '/api/v1/nursery/dogs/',
+        params: {
+          limit,
+          offset,
+          ...(ageGroup ? { age_group: ageGroup } : {}),
+          ...(breedId ? { breed: breedId } : {}),
+          ...(search ? { search } : {}),
+        },
+      }),
+      providesTags: ['NurseryDogs'],
+    }),
+  }),
+  overrideExisting: false,
+});
+
+export const { useNurseryDogsFilteredListQuery } = nurseryFilteredApi;
 
 const nurseryApi = baseApi.injectEndpoints({
   endpoints: (build) => ({

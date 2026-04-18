@@ -19,7 +19,13 @@ import type {
   DogPhotosRead,
 } from '@/shared/api/generated/nursery.generated';
 import Delete from '@/shared/ui/assets/trash.svg?react';
-import { Button, Input, Select, TextArea } from '@/shared/ui/components';
+import {
+  Button,
+  DatePicker,
+  Input,
+  Select,
+  TextArea,
+} from '@/shared/ui/components';
 import ArrowLeftIcon from '@/shared/ui/components/Modal/assets/arrow-left.svg?react';
 import { useError, useSuccess } from '@/shared/ui/components/Toast';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
@@ -415,13 +421,11 @@ export function DogCreateEditPage() {
             variant="input"
           />
 
-          <Input
+          <DatePicker
             label="Дата рождения"
             required
-            type="text"
             value={form.birthDate}
-            placeholder="ГГГГ-ММ-ДД"
-            onChange={(e) => updateField('birthDate', e.target.value)}
+            onChange={(v) => updateField('birthDate', v)}
           />
 
           <Input

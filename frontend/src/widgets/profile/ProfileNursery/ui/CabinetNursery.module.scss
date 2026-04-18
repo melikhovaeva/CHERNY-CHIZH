@@ -47,6 +47,18 @@
   @include typography-text-m;
 }
 
+.sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.loadingMore {
+  text-align: center;
+  padding: 16px 0;
+  @include typography-text-m;
+  color: $c-neutral-400;
+}
+
 @media (max-width: 965px) {
   .filters {
     width: 100%;
