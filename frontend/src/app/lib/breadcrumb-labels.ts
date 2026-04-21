@@ -4,6 +4,7 @@ import {
 } from '@/entities/article';
 import { useGetBreedsQuery } from '@/entities/breed';
 import { useGetCoursesQuery } from '@/entities/course';
+import { useV1NurseryDogsRetrieveQuery } from '@/entities/nursery-dog';
 import { useGetPuppyQuery } from '@/entities/puppy';
 import { useLocation } from '@tanstack/react-router';
 import { useCallback } from 'react';
@@ -76,6 +77,16 @@ export function useSegmentLabel(): (
     Boolean(courseSlugCabinet) || Boolean(courseSlugPublic);
   const shouldLoadCabinetArticle = Boolean(articleSlugCabinet);
 
+  const isCabinetNurseryRoute =
+    segments[0] === 'cabinet' && segments[1] === 'nursery';
+  const nurseryDogId =
+    isCabinetNurseryRoute && segments[2] && segments[2] !== 'new'
+      ? Number(segments[2])
+      : undefined;
+
+  const shouldLoadNurseryDog =
+    Boolean(nurseryDogId) && !Number.isNaN(nurseryDogId);
+
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
   });
@@ -95,6 +106,11 @@ export function useSegmentLabel(): (
   const { data: cabinetArticle } = useGetArticleAdminQuery(
     articleSlugCabinet ?? '',
     { skip: !shouldLoadCabinetArticle },
+  );
+
+  const { data: nurseryDog } = useV1NurseryDogsRetrieveQuery(
+    { id: nurseryDogId as number },
+    { skip: !shouldLoadNurseryDog },
   );
 
   return useCallback(
@@ -156,6 +172,16 @@ export function useSegmentLabel(): (
             return course.title;
           }
         }
+
+        const isNurseryDogSegment =
+          pathSegments[0] === 'cabinet' &&
+          pathSegments[1] === 'nursery' &&
+          pathSegments[2] &&
+          segment === pathSegments[2] &&
+          nurseryDog;
+        if (isNurseryDogSegment) {
+          return nurseryDog.name;
+        }
       }
 
       if (pathname) {
@@ -164,6 +190,6 @@ export function useSegmentLabel(): (
 
       return segment;
     },
-    [breeds, puppy, article, courses, cabinetArticle],
+    [breeds, puppy, article, courses, cabinetArticle, nurseryDog],
   );
 }
