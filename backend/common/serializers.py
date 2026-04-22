@@ -348,8 +348,20 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
             "messenger",
             "message",
             "dog",
+            "status",
+            "request_type",
+            "prepayment_status",
+            "prepayment_amount",
+            "planned_date",
+            "city",
+            "street",
+            "house",
+            "apartment",
+            "breed",
+            "comment",
+            "created_at",
         )
-        read_only_fields = ("id", "user")
+        read_only_fields = ("id", "user", "created_at")
 
     last_name = serializers.CharField(
         required=False,
@@ -360,6 +372,23 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     email = serializers.EmailField(
         required=False,
         allow_blank=True,
+        allow_null=True,
+    )
+    prepayment_amount = serializers.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        required=False,
+        allow_null=True,
+    )
+    planned_date = serializers.DateField(required=False, allow_null=True)
+    city = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=255)
+    street = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=255)
+    house = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=64)
+    apartment = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=64)
+    comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    breed = serializers.PrimaryKeyRelatedField(
+        queryset=Breed.objects.all(),
+        required=False,
         allow_null=True,
     )
 
@@ -378,14 +407,69 @@ class RequestSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if instance.dog_id is not None:
-            data["dog"] = instance.dog.name
+            data["dog"] = {"id": instance.dog_id, "name": instance.dog.name}
         else:
             data["dog"] = None
         if instance.user_id is not None:
             data["user"] = instance.user.email
         else:
             data["user"] = None
+        if instance.breed_id is not None:
+            data["breed"] = {"id": instance.breed_id, "name": instance.breed.name}
+        else:
+            data["breed"] = None
         return data
+
+
+class AdminRequestUpdateSerializer(CamelCaseSerializerMixin, serializers.ModelSerializer):
+    """Сериализатор для обновления заявки администратором."""
+
+    class Meta:
+        model = Request
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "messenger",
+            "message",
+            "dog",
+            "status",
+            "request_type",
+            "prepayment_status",
+            "prepayment_amount",
+            "planned_date",
+            "city",
+            "street",
+            "house",
+            "apartment",
+            "breed",
+            "comment",
+        )
+
+    last_name = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=255)
+    email = serializers.EmailField(required=False, allow_blank=True, allow_null=True)
+    prepayment_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, allow_null=True)
+    planned_date = serializers.DateField(required=False, allow_null=True)
+    city = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=255)
+    street = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=255)
+    house = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=64)
+    apartment = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=64)
+    comment = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    dog = serializers.PrimaryKeyRelatedField(
+        queryset=Dog.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    breed = serializers.PrimaryKeyRelatedField(
+        queryset=Breed.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    def to_internal_value(self, data):
+        data = keys_to_snake_case(data)
+        return super().to_internal_value(data)
 
 
 class DogAdminWriteSerializer(serializers.ModelSerializer):

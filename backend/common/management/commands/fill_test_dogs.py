@@ -159,6 +159,7 @@ class Command(BaseCommand):
                     color=random.choice(COLORS),
                     potential=random.choice(potentials),
                     description=desc_template.format(name=name),
+                    is_published=True,
                 )
                 created += 1
 
@@ -175,6 +176,7 @@ class Command(BaseCommand):
                     color=random.choice(COLORS),
                     potential=random.choice(potentials),
                     description=desc_template.format(name=name),
+                    is_published=True,
                 )
                 created += 1
 

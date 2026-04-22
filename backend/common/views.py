@@ -18,6 +18,7 @@ from common.schema import (
     request_view_schema,
 )
 from common.serializers import (
+    AdminRequestUpdateSerializer,
     BreedListSerializer,
     DictionaryGroupListSerializer,
     DogAdminWriteSerializer,
@@ -238,18 +239,36 @@ class DictionaryViewSet(viewsets.ViewSet):
 @extend_schema_view(**request_view_schema)
 class RequestViewSet(viewsets.ModelViewSet):
     serializer_class = RequestSerializer
-    http_method_names = ["get", "post", "head", "options"]
+    http_method_names = ["get", "post", "patch", "put", "delete", "head", "options"]
 
     def get_permissions(self):
         if self.action == "create":
             return [AllowAny()]
+        if self.action in ("update", "partial_update", "destroy"):
+            return [IsAdmin()]
         return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
-            return RequestModel.objects.all()
-        return RequestModel.objects.filter(user=user)
+            qs = RequestModel.objects.select_related("dog", "breed", "user").all()
+        else:
+            qs = RequestModel.objects.select_related("dog", "breed").filter(user=user)
+
+        status_filter = self.request.query_params.get("status")
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+
+        type_filter = self.request.query_params.get("request_type")
+        if type_filter:
+            qs = qs.filter(request_type=type_filter)
+
+        return qs
+
+    def get_serializer_class(self):
+        if self.action in ("update", "partial_update"):
+            return AdminRequestUpdateSerializer
+        return RequestSerializer
 
     def create(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
@@ -270,6 +289,15 @@ class RequestViewSet(viewsets.ModelViewSet):
             _keys_to_camel_case(out_serializer.data),
             status=status.HTTP_201_CREATED,
         )
+
+    def update(self, request: Request, *args, **kwargs) -> Response:
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+        out_serializer = RequestSerializer(instance, context={"request": request})
+        return Response(_keys_to_camel_case(out_serializer.data))
 
 
 class AdminDogViewSet(viewsets.ModelViewSet):

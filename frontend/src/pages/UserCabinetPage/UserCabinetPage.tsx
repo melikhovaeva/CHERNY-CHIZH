@@ -36,6 +36,12 @@ export function UserCabinetPage() {
     (pathSegments[2] === 'new' ||
       (Boolean(pathSegments[2]) && pathSegments.length >= 3));
 
+  const isFullPageRequestRoute =
+    pathSegments[0] === 'cabinet' &&
+    pathSegments[1] === 'requests' &&
+    (pathSegments[2] === 'new' ||
+      (Boolean(pathSegments[2]) && pathSegments.length >= 3));
+
   const tabs: Tab[] = useMemo(() => {
     const cabinetRoute = router.routesById['/cabinet'];
     return collectNavLinksFromTree(cabinetRoute).map((link) => ({
@@ -53,7 +59,7 @@ export function UserCabinetPage() {
     [location.pathname, tabs],
   );
 
-  if (isFullPageCourseRoute || isFullPageArticleRoute) {
+  if (isFullPageCourseRoute || isFullPageArticleRoute || isFullPageRequestRoute) {
     return (
       <ProtectedRoute>
         <section className={styles.container}>

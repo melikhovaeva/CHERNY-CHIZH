@@ -1,0 +1,111 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: $background-tertiary-color;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.id {
+  @include typography-text-m-semibold;
+  margin-right: auto;
+}
+
+.badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  @include typography-text-s;
+  font-weight: 500;
+}
+
+.badge_new {
+  background: $c-status-green-d-12;
+  color: $c-status-green;
+}
+
+.badge_inWork {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge_closed {
+  background: $c-neutral-100;
+  color: $c-neutral-600;
+}
+
+.badge_rejected {
+  background: $c-status-red-d-12;
+  color: $c-status-red;
+}
+
+.badge_consultation {
+  background: #e8f4fd;
+  color: #0c63e4;
+}
+
+.badge_booking {
+  background: $c-b-crm-500;
+  color: $c-neutral-0;
+}
+
+.badge_waitingList {
+  background: $c-neutral-100;
+  color: $c-neutral-700;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  @include typography-text-m;
+}
+
+.label {
+  color: $c-neutral-500;
+}
+
+.value {
+  color: $c-mp-text-headers;
+}
+
+.message {
+  @include typography-text-m;
+  color: $c-neutral-600;
+}
+
+.footer {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.meta {
+  @include typography-text-s;
+  color: $c-neutral-400;
+}
+
+.empty {
+  @include typography-text-m;
+  color: $c-neutral-500;
+  padding: 24px 0;
+}
