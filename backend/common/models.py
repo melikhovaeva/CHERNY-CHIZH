@@ -368,6 +368,33 @@ class RequestManager(models.Manager):
 class Request(models.Model):
     """Заявка на щенка или вопрос общего характера."""
 
+    STATUS_NEW = "new"
+    STATUS_IN_WORK = "in_work"
+    STATUS_CLOSED = "closed"
+    STATUS_REJECTED = "rejected"
+    STATUS_CHOICES = [
+        (STATUS_NEW, "Новая"),
+        (STATUS_IN_WORK, "В работе"),
+        (STATUS_CLOSED, "Закрыта"),
+        (STATUS_REJECTED, "Отклонена"),
+    ]
+
+    TYPE_CONSULTATION = "consultation"
+    TYPE_BOOKING = "booking"
+    TYPE_WAITING_LIST = "waiting_list"
+    TYPE_CHOICES = [
+        (TYPE_CONSULTATION, "Консультация"),
+        (TYPE_BOOKING, "Бронирование"),
+        (TYPE_WAITING_LIST, "Лист ожидания"),
+    ]
+
+    PREPAYMENT_NOT_PAID = "not_paid"
+    PREPAYMENT_PAID = "paid"
+    PREPAYMENT_CHOICES = [
+        (PREPAYMENT_NOT_PAID, "Не внесена"),
+        (PREPAYMENT_PAID, "Внесена"),
+    ]
+
     objects = RequestManager()
 
     user = models.ForeignKey(
@@ -390,10 +417,49 @@ class Request(models.Model):
         null=True,
         blank=True,
     )
+    status = models.CharField(
+        max_length=32,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
+    )
+    request_type = models.CharField(
+        max_length=32,
+        choices=TYPE_CHOICES,
+        default=TYPE_CONSULTATION,
+    )
+    # Booking-specific
+    prepayment_status = models.CharField(
+        max_length=32,
+        choices=PREPAYMENT_CHOICES,
+        default=PREPAYMENT_NOT_PAID,
+        blank=True,
+    )
+    prepayment_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    planned_date = models.DateField(null=True, blank=True)
+    city = models.CharField(max_length=255, blank=True, null=True)
+    street = models.CharField(max_length=255, blank=True, null=True)
+    house = models.CharField(max_length=64, blank=True, null=True)
+    apartment = models.CharField(max_length=64, blank=True, null=True)
+    # Waiting list / general
+    breed = models.ForeignKey(
+        Breed,
+        on_delete=models.SET_NULL,
+        related_name="requests",
+        null=True,
+        blank=True,
+    )
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
+        ordering = ["-created_at"]
 
     def __str__(self):
         if self.user:

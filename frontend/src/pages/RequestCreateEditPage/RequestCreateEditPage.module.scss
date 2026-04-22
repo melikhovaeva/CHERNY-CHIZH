@@ -1,0 +1,158 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  margin-bottom: 24px;
+}
+
+.container {
+  background-color: $background-tertiary-color;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.backNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: $c-mp-text-headers;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background-color: $c-neutral-d-600-8;
+    color: $c-neutral-900;
+  }
+}
+
+.backNavIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.backNavLabel {
+  @include typography-text-m;
+  margin: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.title {
+  @include typography-text-l-semibold;
+  margin: 0;
+}
+
+.titleActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: $c-status-red;
+  color: $c-mp-text-body-inverted;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $c-status-red-d-80;
+  }
+}
+
+.saveTopBtn {
+  white-space: nowrap;
+  height: 32px;
+  padding: 7px 16px;
+  @include typography-text-s;
+  border-radius: 8px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  @include typography-text-m-semibold;
+  margin: 8px 0 0;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    flex-direction: column;
+  }
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.toggleGroup {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toggleBtn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid $c-neutral-200;
+  background: $background-tertiary-color;
+  color: $c-mp-text-headers;
+  cursor: pointer;
+  @include typography-text-m;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: $c-neutral-100;
+  }
+
+  &_active {
+    background: $c-mp-text-headers;
+    color: $c-neutral-0;
+    border-color: $c-mp-text-headers;
+
+    &:hover {
+      background: $c-neutral-800;
+    }
+  }
+}
+
+.submitBtn {
+  margin-top: 8px;
+  width: 100%;
+}

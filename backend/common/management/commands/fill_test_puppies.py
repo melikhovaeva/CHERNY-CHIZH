@@ -184,6 +184,7 @@ class Command(BaseCommand):
                     color=random.choice(COLORS),
                     potential=random.choice(potentials),
                     description=desc_template.format(name=name),
+                    is_published=True,
                 )
                 puppies_by_breed[breed_name].append(puppy)
                 created += 1
