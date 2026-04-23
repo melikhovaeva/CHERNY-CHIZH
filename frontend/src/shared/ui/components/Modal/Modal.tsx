@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { LogoIcon } from '../../assets';
 import { Backdrop } from '../Backdrop';
-import ArrowLeftIcon from './assets/arrow-left.svg?react';
+import Close from './assets/close.svg?react';
 import largeModalImage from './assets/large-modal-image.png';
 import styles from './Modal.module.scss';
 import type { ModalTitleContextValue } from './model';
@@ -110,7 +110,7 @@ export function Modal({
                   onClick={onClose}
                   aria-label="Закрыть"
                 >
-                  <ArrowLeftIcon width={24} height={24} aria-hidden />
+                  <Close width={24} height={24} aria-hidden />
                 </button>
               </div>
               <div className={styles.body}>{children}</div>
@@ -132,7 +132,7 @@ export function Modal({
                   onClick={onClose}
                   aria-label="Закрыть"
                 >
-                  <ArrowLeftIcon width={24} height={24} aria-hidden />
+                  <Close width={24} height={24} aria-hidden />
                 </button>
                 {currentTitle && currentTitle.toString()}
                 <div className={styles.body}>{children}</div>
