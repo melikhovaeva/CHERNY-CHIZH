@@ -6,6 +6,7 @@ import { useGetBreedsQuery } from '@/entities/breed';
 import { useGetCoursesQuery } from '@/entities/course';
 import { useV1NurseryDogsRetrieveQuery } from '@/entities/nursery-dog';
 import { useGetPuppyQuery } from '@/entities/puppy';
+import { useV1RequestsRetrieveQuery } from '@/shared/api/generated/requests.generated';
 import { useLocation } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
@@ -20,6 +21,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   cabinet: 'Личный кабинет',
   courses: 'Курсы',
   'my-courses': 'Мои курсы',
+  'my-requests': 'Мои заявки',
+  requests: 'Заявки',
   settings: 'Настройки',
   constructor: 'Конструктор',
   preview: 'Предпросмотр',
@@ -87,6 +90,15 @@ export function useSegmentLabel(): (
   const shouldLoadNurseryDog =
     Boolean(nurseryDogId) && !Number.isNaN(nurseryDogId);
 
+  const isCabinetRequestsRoute =
+    segments[0] === 'cabinet' && segments[1] === 'requests';
+  const requestId =
+    isCabinetRequestsRoute && segments[2] && segments[2] !== 'new'
+      ? Number(segments[2])
+      : undefined;
+
+  const shouldLoadRequest = Boolean(requestId) && !Number.isNaN(requestId);
+
   const { data: breeds } = useGetBreedsQuery(undefined, {
     skip: !shouldLoadBreed,
   });
@@ -111,6 +123,11 @@ export function useSegmentLabel(): (
   const { data: nurseryDog } = useV1NurseryDogsRetrieveQuery(
     { id: nurseryDogId as number },
     { skip: !shouldLoadNurseryDog },
+  );
+
+  const { data: request } = useV1RequestsRetrieveQuery(
+    { id: requestId as number },
+    { skip: !shouldLoadRequest },
   );
 
   return useCallback(
@@ -182,6 +199,15 @@ export function useSegmentLabel(): (
         if (isNurseryDogSegment) {
           return nurseryDog.name;
         }
+
+        const isRequestSegment =
+          pathSegments[0] === 'cabinet' &&
+          pathSegments[1] === 'requests' &&
+          pathSegments[2] &&
+          segment === pathSegments[2];
+        if (isRequestSegment) {
+          return request ? `Заявка №${request.id}` : `Заявка №${segment}`;
+        }
       }
 
       if (pathname) {
@@ -190,6 +216,6 @@ export function useSegmentLabel(): (
 
       return segment;
     },
-    [breeds, puppy, article, courses, cabinetArticle, nurseryDog],
+    [breeds, puppy, article, courses, cabinetArticle, nurseryDog, request],
   );
 }
