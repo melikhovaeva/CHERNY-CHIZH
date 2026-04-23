@@ -8,6 +8,7 @@ export interface NavLink {
 
 export interface BuildNavLinksOptions {
   excludeRoot?: boolean;
+  isAdmin?: boolean;
 }
 
 interface RouteNodeLike {
@@ -17,6 +18,7 @@ interface RouteNodeLike {
     staticData?: {
       navLabel?: string;
       navOrder?: number;
+      adminOnly?: boolean;
     };
   };
 }
@@ -39,7 +41,10 @@ export function collectNavLinksFromTree(
   const navLinks = children
     .filter((route) => {
       const routeId = String(route?.id ?? route?.fullPath ?? '');
-      return Boolean(route?.options?.staticData?.navLabel) && !routeId.includes('$');
+      if (!Boolean(route?.options?.staticData?.navLabel)) return false;
+      if (routeId.includes('$')) return false;
+      if (route?.options?.staticData?.adminOnly && !options.isAdmin) return false;
+      return true;
     })
     .map((route) => ({
       to: (route.id ?? route.fullPath ?? '/') as string,

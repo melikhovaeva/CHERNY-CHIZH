@@ -58,7 +58,7 @@ export function CabinetRequests() {
             variant="input"
             value={typeFilter}
             onChange={setTypeFilter}
-            className={styles.filterSelect}
+            className={styles.typeSelect}
           />
           <Select
             label="Статус заявки"
@@ -66,7 +66,7 @@ export function CabinetRequests() {
             variant="input"
             value={statusFilter}
             onChange={setStatusFilter}
-            className={styles.filterSelect}
+            className={styles.statusSelect}
           />
         </div>
         <Button
@@ -79,9 +79,9 @@ export function CabinetRequests() {
       </div>
 
       {isLoading ? (
-        <div className={styles.empty}>Загрузка...</div>
+        <div className={styles.emptyState}>Загрузка...</div>
       ) : !requests?.length ? (
-        <div className={styles.empty}>Заявки не найдены</div>
+        <div className={styles.emptyState}>Заявки не найдены</div>
       ) : (
         <div className={styles.grid}>
           {requests.map((req: RequestRead) => (

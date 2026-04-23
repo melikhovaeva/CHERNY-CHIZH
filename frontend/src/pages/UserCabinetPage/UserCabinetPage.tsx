@@ -1,4 +1,6 @@
 import { collectNavLinksFromTree } from '@/app/lib/nav-links';
+import { useAppSelector } from '@/app/store';
+import { selectIsAdmin } from '@/entities/session';
 import { ProtectedRoute } from '@/features/session';
 import { Tabs, type Tab } from '@/features/tabs-filter';
 import {
@@ -42,14 +44,16 @@ export function UserCabinetPage() {
     (pathSegments[2] === 'new' ||
       (Boolean(pathSegments[2]) && pathSegments.length >= 3));
 
+  const isAdmin = useAppSelector(selectIsAdmin);
+
   const tabs: Tab[] = useMemo(() => {
     const cabinetRoute = router.routesById['/cabinet'];
-    return collectNavLinksFromTree(cabinetRoute).map((link) => ({
+    return collectNavLinksFromTree(cabinetRoute, { isAdmin }).map((link) => ({
       id: link.to,
       label: link.label,
       value: link.to,
     }));
-  }, [router.routesById]);
+  }, [router.routesById, isAdmin]);
 
   const activeTab = useMemo(
     () =>

@@ -9,5 +9,5 @@ export const Route = createFileRoute('/cabinet/requests')({
       <CabinetRequests />
     </RoleGuard>
   ),
-  staticData: { navLabel: 'Заявки', navOrder: 3 },
+  staticData: { navLabel: 'Заявки', navOrder: 3, adminOnly: true },
 });

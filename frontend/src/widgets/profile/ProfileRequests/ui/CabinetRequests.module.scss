@@ -8,8 +8,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: end;
+  justify-content: center;
 }
 
 .filters {
@@ -18,22 +18,67 @@
   flex-wrap: wrap;
 }
 
-.filterSelect {
-  min-width: 160px;
+.typeSelect {
+  flex: 1;
+}
+
+.statusSelect {
+  flex: 1;
 }
 
 .createBtn {
+  flex: 1;
+  margin-left: auto;
+  max-width: 200px;
   white-space: nowrap;
+  margin-bottom: 20px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  gap: 20px;
 }
 
-.empty {
-  @include typography-text-m;
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
   color: $c-neutral-500;
-  padding: 24px 0;
+  @include typography-text-m;
+}
+
+@media (max-width: 965px) {
+  .filters {
+    width: 100%;
+
+    .typeSelect {
+      flex: 1;
+    }
+
+    .statusSelect {
+      flex: 1;
+    }
+  }
+
+  .createBtn {
+    margin-left: 0;
+    max-width: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+
+    .typeSelect {
+      width: 100%;
+    }
+
+    .statusSelect {
+      width: 100%;
+    }
+  }
 }

@@ -3,6 +3,6 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/cabinet/settings')({
   component: CabinetSettings,
-  staticData: { navLabel: 'Настройки', navOrder: 2 },
+  staticData: { navLabel: 'Настройки', navOrder: 6 },
 });
 
