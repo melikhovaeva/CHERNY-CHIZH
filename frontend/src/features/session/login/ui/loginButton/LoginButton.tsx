@@ -1,7 +1,8 @@
-import { openAuthModal } from '@/features/auth-modal';
 import { useAppDispatch } from '@/app/store';
+import { openAuthModal } from '@/features/auth-modal';
 import styles from './LoginButton.module.scss';
-import ArrowLeftIcon from './assets/arrow-left.svg?react';
+
+import Login from './assets/login.svg?react';
 
 export function LoginButton() {
   const dispatch = useAppDispatch();
@@ -12,7 +13,7 @@ export function LoginButton() {
 
   return (
     <button type="button" className={styles.button} onClick={handleClick}>
-      <ArrowLeftIcon />
+      <Login />
       <span>Войти</span>
     </button>
   );

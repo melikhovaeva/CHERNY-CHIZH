@@ -128,6 +128,7 @@ export const BookingForm = ({ onSubmit, prefilledData }: BookingFormProps) => {
           <TextArea
             placeholder="Введите ваш вопрос"
             error={errors.message?.message}
+            className={styles.textareaGrow}
             {...register(BookingFormFieldsEnum.MESSAGE, {
               required: true,
             })}
