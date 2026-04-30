@@ -8,7 +8,8 @@ services:
     volumes:
       - static_files:/app/static:ro
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
 
   backend:
@@ -19,6 +20,11 @@ services:
       - .env.prod
     volumes:
       - static_files:/backend-app/staticfiles
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8000" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
@@ -45,7 +51,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     container_name: postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
