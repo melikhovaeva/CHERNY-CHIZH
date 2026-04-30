@@ -97,7 +97,7 @@ export function CabinetArticles() {
           {isAdmin
             ? filteredAdmin.map((item) => (
                 <div key={item.id} className={styles.cardWrapper}>
-                  <ArticleCard article={adminToListItem(item)} />
+                  <ArticleCard article={adminToListItem(item)} status={item.status} />
                   <Button
                     type="button"
                     variant="crm"

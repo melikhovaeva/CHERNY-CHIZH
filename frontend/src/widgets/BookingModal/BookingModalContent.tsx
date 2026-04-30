@@ -2,11 +2,9 @@ import {
   BookingForm,
   type BookingFormFields,
 } from '@/features/booking-form/ui';
-import {
-  type SubmitBookingRequest,
-  useSubmitBookingMutation,
-} from '@/entities/booking';
+import { useAuth } from '@/entities/session';
 import { getFirstApiErrorMessage } from '@/shared';
+import { useV1RequestsCreateMutation } from '@/shared/api/generated/requests.generated';
 import { useError, useSuccess } from '@/shared/ui/components';
 import { type SubmitHandler } from 'react-hook-form';
 
@@ -19,21 +17,32 @@ export function BookingModalContent({
   dogId,
   onSuccess,
 }: BookingModalContentProps) {
-  const [submitBooking] = useSubmitBookingMutation();
+  const [createRequest] = useV1RequestsCreateMutation();
   const addError = useError();
   const addSuccess = useSuccess();
+  const { user, isAuthenticated } = useAuth();
+
+  const prefilledData =
+    isAuthenticated && user
+      ? {
+          firstName: user.firstName,
+          phone: user.phone ?? undefined,
+          messenger: user.messenger ?? undefined,
+        }
+      : undefined;
 
   const onSubmit: SubmitHandler<BookingFormFields> = async (data) => {
     try {
-      const payload: SubmitBookingRequest = {
-        firstName: (data.firstName ?? '').trim(),
-        phone: (data.phone ?? '').trim(),
-        messenger: (data.messenger ?? '').trim(),
-        message: data.message.trim(),
-        dog: dogId ?? undefined,
-      };
-
-      await submitBooking(payload).unwrap();
+      await createRequest({
+        request: {
+          firstName: (prefilledData?.firstName ?? data.firstName ?? '').trim(),
+          phone: (prefilledData?.phone ?? data.phone ?? '').trim(),
+          messenger: (prefilledData?.messenger ?? data.messenger ?? '').trim(),
+          message: data.message.trim(),
+          dog: dogId ?? null,
+          requestType: 'booking',
+        },
+      }).unwrap();
       addSuccess('Заявка отправлена');
       onSuccess();
     } catch (err) {
@@ -44,5 +53,5 @@ export function BookingModalContent({
     }
   };
 
-  return <BookingForm onSubmit={onSubmit} />;
+  return <BookingForm onSubmit={onSubmit} prefilledData={prefilledData} />;
 }

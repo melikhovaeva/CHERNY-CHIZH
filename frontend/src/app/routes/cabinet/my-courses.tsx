@@ -12,6 +12,6 @@ function CabinetMyCoursesRoute() {
 
 export const Route = createFileRoute('/cabinet/my-courses')({
   component: CabinetMyCoursesRoute,
-  staticData: { navLabel: 'Мои курсы', navOrder: 1 },
+  staticData: { navLabel: 'Мои курсы', navOrder: 1, userOnly: true },
 });
 
