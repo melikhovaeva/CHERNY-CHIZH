@@ -21,11 +21,11 @@ services:
     volumes:
       - static_files:/backend-app/staticfiles
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8000/api/v1/ || exit 1"]
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost', 8000), timeout=3)"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 60s
     command: ["/bin/sh", "/backend-app/entrypoint.prod.sh"]
     depends_on:
       postgres:
