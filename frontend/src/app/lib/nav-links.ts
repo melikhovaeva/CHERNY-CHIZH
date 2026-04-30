@@ -19,6 +19,7 @@ interface RouteNodeLike {
       navLabel?: string;
       navOrder?: number;
       adminOnly?: boolean;
+      userOnly?: boolean;
     };
   };
 }
@@ -44,6 +45,7 @@ export function collectNavLinksFromTree(
       if (!Boolean(route?.options?.staticData?.navLabel)) return false;
       if (routeId.includes('$')) return false;
       if (route?.options?.staticData?.adminOnly && !options.isAdmin) return false;
+      if (route?.options?.staticData?.userOnly && options.isAdmin) return false;
       return true;
     })
     .map((route) => ({

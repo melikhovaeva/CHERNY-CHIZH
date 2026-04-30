@@ -62,6 +62,10 @@ class InfoModel(TimeStampModel):
 class Article(InfoModel):
     """Статья."""
 
+    is_lesson_article = models.BooleanField(
+        default=False,
+        help_text="True если статья создана автоматически для урока курса.",
+    )
     breed = models.OneToOneField(
         "common.Breed",
         on_delete=models.SET_NULL,

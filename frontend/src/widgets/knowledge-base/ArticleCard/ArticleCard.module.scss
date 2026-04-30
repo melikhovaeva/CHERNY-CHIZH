@@ -2,28 +2,27 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  border-radius: 16px;
+  border-radius: 24px;
   overflow: hidden;
-  background-color: $filled-section-primary-bg-color;
-  color: $filled-section-text-color;
   text-decoration: none;
+  color: inherit;
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
 
   &:hover {
-    opacity: 0.95;
+    opacity: 0.98;
   }
 
   &:active {
-    transform: scale(0.99);
+    transform: scale(0.995);
   }
 }
 
 .imageWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -37,29 +36,39 @@
 .placeholder {
   width: 100%;
   height: 100%;
-  border-radius: 0;
+  background-color: $background-secondary-color;
 }
 
-.content {
+.panel {
   display: flex;
   flex-direction: column;
   flex: 1;
   padding: 20px;
-  min-height: 0;
+  color: $text-color;
+  background-color: $card-light-bg-color;
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .title {
   margin: 0 0 8px;
-  color: $text-inverted-color;
 }
 
 .description {
   margin: 0 0 12px;
-  color: $text-inverted-color;
+}
+
+.descriptionClamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  flex: 1;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 
 .footer {
@@ -71,24 +80,16 @@
 
 .date {
   @include typography-text-s;
-  color: $text-inverted-color;
 }
 
-.author {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.authorAvatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.authorName {
+.status {
   @include typography-text-s;
-  color: $text-inverted-color;
+}
+
+.statusPublished {
+  color: $c-status-green;
+}
+
+.statusUnpublished {
+  color: $c-status-red;
 }

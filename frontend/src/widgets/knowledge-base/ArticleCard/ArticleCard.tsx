@@ -1,30 +1,26 @@
 import type { ArticleListItem } from '@/entities/article';
-import { formatDate } from '@/shared';
-import { API_CONFIG } from '@/shared/config/api';
+import { formatDate, getImageUrl } from '@/shared';
 import { Placeholder } from '@/shared/ui/components';
+import { Tag } from '@/shared/ui/components/Tag/Tag';
 import { Link } from '@tanstack/react-router';
 import styles from './ArticleCard.module.scss';
 
-function getImageUrl(path: string | null | undefined): string | undefined {
-  if (!path) return undefined;
-  if (path.startsWith('http')) return path;
-  const base = API_CONFIG.BASE_URL?.replace(/\/$/, '') ?? '';
-  return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
-}
-
-function formatDescription(description: string): string {
-  return description.length > 150
-    ? description.slice(0, 150) + '...'
-    : description;
-}
+const ARTICLE_STATUS_PUBLISHED = 'published';
 
 interface ArticleCardProps {
   article: ArticleListItem;
+  status?: { code: string; label: string } | null;
   className?: string;
 }
 
-export function ArticleCard({ article, className }: ArticleCardProps) {
+export function ArticleCard({ article, status, className }: ArticleCardProps) {
   const imageUrl = getImageUrl(article.imagePreview ?? null);
+  const dateStr = formatDate(article.createdAt);
+
+  const statusClassName =
+    status?.code === ARTICLE_STATUS_PUBLISHED
+      ? `${styles.status} ${styles.statusPublished}`
+      : `${styles.status} ${styles.statusUnpublished}`;
 
   return (
     <Link
@@ -36,32 +32,30 @@ export function ArticleCard({ article, className }: ArticleCardProps) {
         {imageUrl ? (
           <img src={imageUrl} alt="" className={styles.image} />
         ) : (
-          <Placeholder className={styles.placeholder} />
+          <div className={styles.placeholder}>
+            <Placeholder className={styles.image} />
+          </div>
         )}
       </div>
-      <div className={styles.content}>
+      <div className={styles.panel}>
+        {article.tags.length > 0 && (
+          <div className={styles.tagsRow}>
+            {article.tags.map((tag) => (
+              <Tag key={tag.id} tag={tag} />
+            ))}
+          </div>
+        )}
         <h4 className={styles.title}>{article.title}</h4>
         {article.description && (
-          <p className={styles.description}>
-            {formatDescription(article.description)}
+          <p className={[styles.description, styles.descriptionClamp].join(' ')}>
+            {article.description}
           </p>
         )}
         <div className={styles.footer}>
-          <span className={styles.date}>{formatDate(article.createdAt)}</span>
-          {article.author?.displayName && (
-            <span className={styles.author}>
-              {article.author.avatar && (
-                <img
-                  src={getImageUrl(article.author.avatar) ?? ''}
-                  alt=""
-                  className={styles.authorAvatar}
-                />
-              )}
-              <span className={styles.authorName}>
-                {article.author.displayName}
-              </span>
-            </span>
+          {status && (
+            <span className={statusClassName}>{status.label}</span>
           )}
+          <span className={styles.date}>{dateStr}</span>
         </div>
       </div>
     </Link>

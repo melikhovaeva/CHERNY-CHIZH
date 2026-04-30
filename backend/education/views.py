@@ -194,7 +194,11 @@ class EducationArticleViewSet(
     def get_queryset(self):
         if self.action == "list":
             return (
-                Article.objects.filter(breed__isnull=True, lesson__isnull=True)
+                Article.objects.filter(
+                    breed__isnull=True,
+                    lesson__isnull=True,
+                    is_lesson_article=False,
+                )
                 .select_related("author")
                 .prefetch_related("tags")
                 .order_by("-created_at")
@@ -569,6 +573,7 @@ class EducationCourseLessonViewSet(viewsets.ModelViewSet):
                 description="",
                 content="",
                 content_blocks=[],
+                is_lesson_article=True,
             )
             lesson.article = article
             lesson.save(update_fields=["article"])
