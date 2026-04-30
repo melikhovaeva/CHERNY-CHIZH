@@ -1,5 +1,16 @@
-import { useV1RequestsCreateMutation } from '@/shared/api/generated/requests.generated';
+import {
+  enhancedApi as requestsGeneratedApi,
+  useV1RequestsCreateMutation,
+} from '@/shared/api/generated/requests.generated';
 import type { Request } from '@/shared/api/generated/requests.generated';
+
+requestsGeneratedApi.enhanceEndpoints({
+  endpoints: {
+    v1RequestsCreate: { invalidatesTags: ['Requests', 'NurseryDogs'] },
+    v1RequestsPartialUpdate: { invalidatesTags: ['Requests', 'NurseryDogs'] },
+    v1RequestsDestroy: { invalidatesTags: ['Requests', 'NurseryDogs'] },
+  },
+});
 
 export interface SubmitBookingRequest {
   firstName: string;
