@@ -1,33 +1,40 @@
-import { getFirstPhotoUrl, type Puppy } from '@/entities/puppy';
-import { useGetPuppiesQuery } from '@/entities/puppy/api/puppy.api';
+import { getFirstPhotoUrl } from '@/entities/puppy';
+import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';
 import { Skeleton } from '@/shared/ui/components';
+import { useMemo } from 'react';
 import styles from './HeroSection.module.scss';
 
-const HERO_PUPPIES_PAGE_SIZE = 4;
+const HERO_BREEDS = [
+  { slug: 'shpits', name: 'Шпиц' },
+  { slug: 'korgi', name: 'Корги' },
+  { slug: 'siba-inu', name: 'Сиба-ину' },
+  { slug: 'sharpej', name: 'Шарпей' },
+] as const;
+
+const HERO_FETCH_SIZE = 20;
 
 export function HeroSection() {
-  const { data, isLoading } = useGetPuppiesQuery({
-    page: 1,
-    pageSize: HERO_PUPPIES_PAGE_SIZE,
-  });
+  const spitz = useGetPuppiesByBreedQuery({ breedSlug: 'shpits', pageSize: HERO_FETCH_SIZE });
+  const corgi = useGetPuppiesByBreedQuery({ breedSlug: 'korgi', pageSize: HERO_FETCH_SIZE });
+  const shiba = useGetPuppiesByBreedQuery({ breedSlug: 'siba-inu', pageSize: HERO_FETCH_SIZE });
+  const sharpei = useGetPuppiesByBreedQuery({ breedSlug: 'sharpej', pageSize: HERO_FETCH_SIZE });
 
-  const puppiesWithPhotos = (data?.results ?? []).filter(
-    (puppy: Puppy) => puppy.photos && puppy.photos.length > 0,
-  );
+  const isLoading = spitz.isLoading || corgi.isLoading || shiba.isLoading || sharpei.isLoading;
 
-  const getRandomPuppies = (): Puppy[] => {
-    if (!puppiesWithPhotos.length) {
-      return [];
-    }
+  const selectedPuppies = useMemo(() => {
+    const queries = [spitz, corgi, shiba, sharpei];
+    return queries.map((q) => {
+      const withPhotos = (q.data?.results ?? []).filter(
+        (p) => p.photos && p.photos.length > 0,
+      );
+      if (!withPhotos.length) return null;
+      return withPhotos[Math.floor(Math.random() * withPhotos.length)];
+    });
+    // Re-pick random when data changes (initial load); stable during re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spitz.data, corgi.data, shiba.data, sharpei.data]);
 
-    const shuffled = [...puppiesWithPhotos].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 4);
-  };
-
-  const randomPuppies: Puppy[] = !isLoading ? getRandomPuppies() : [];
-  const items: (Puppy | null)[] = randomPuppies.length
-    ? randomPuppies
-    : Array.from({ length: 4 }, () => null);
+  const items = isLoading ? Array.from({ length: 4 }, () => null) : selectedPuppies;
 
   return (
     <section className={styles.root}>
@@ -45,9 +52,8 @@ export function HeroSection() {
               {puppy ? (
                 <img
                   className={styles.photo}
-                  key={puppy?.id}
                   src={getFirstPhotoUrl(puppy) ?? ''}
-                  alt={puppy.name}
+                  alt={HERO_BREEDS[index]?.name ?? ''}
                 />
               ) : (
                 <Skeleton width="100%" height="100%" />
