@@ -62,6 +62,10 @@ export function useArticleEditor(
 
   const initializedRef = useRef(false);
 
+  // Ref so addBlock can trigger cascade creation without depending on onBeforeSave
+  const onBeforeSaveRef = useRef(onBeforeSave);
+  onBeforeSaveRef.current = onBeforeSave;
+
   /**
    * The slug that will actually be sent to the API.
    * - Starts from the prop value (may be empty for new lessons).
@@ -88,7 +92,10 @@ export function useArticleEditor(
     } else if (!prev && next) {
       // The slug just became available after cascade creation.
       // Keep the blocks the user has already typed — only update the ref.
+      // Mark as initialized so the freshly-created (empty) article loaded
+      // from the server does not overwrite the user's local blocks.
       effectiveSlugRef.current = next;
+      initializedRef.current = true;
     } else {
       // Any other transition (slug cleared, etc.) → reset
       effectiveSlugRef.current = next;
@@ -129,6 +136,20 @@ export function useArticleEditor(
       });
       setIsDirty(true);
       setEditingBlockId(block.id);
+
+      // Eagerly start cascade creation (step → lesson → article) when the user
+      // adds the first block to a new lesson. By the time they upload media the
+      // slug will already be resolved, eliminating the race condition between
+      // cascade creation and media upload.
+      if (!effectiveSlugRef.current && onBeforeSaveRef.current) {
+        // Mark as initialized before cascade so the empty server article that
+        // loads after creation does not overwrite the user's local blocks —
+        // regardless of whether .then() runs before or after React commits.
+        initializedRef.current = true;
+        void onBeforeSaveRef.current().then((slug) => {
+          if (!effectiveSlugRef.current) effectiveSlugRef.current = slug;
+        });
+      }
     },
     [],
   );

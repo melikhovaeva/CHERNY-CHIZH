@@ -131,7 +131,9 @@ export function LessonArticleEditor({
   ]);
 
   // Guards only apply when a slug is known — a new lesson has no article yet.
-  if (articleSlug && isLoading && !article) {
+  // Skip loading state if the editor already has blocks (e.g. cascade creation
+  // just completed and the empty server article should not replace local content).
+  if (articleSlug && isLoading && !article && blocks.length === 0) {
     return (
       <div className={rootClass}>
         <p className={styles.loading}>Загрузка статьи…</p>
