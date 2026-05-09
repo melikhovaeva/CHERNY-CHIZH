@@ -1,6 +1,6 @@
 import { getFirstPhotoUrl } from '@/entities/puppy';
 import { useGetPuppiesByBreedQuery } from '@/entities/puppy/api/puppy.api';
-import type { DogByBreedList } from '@/shared/api/generated/dogs.generated';
+import type { DogByBreedListRead } from '@/shared/api/generated/dogs.generated';
 import { Skeleton } from '@/shared/ui/components';
 import { useMemo } from 'react';
 import styles from './HeroSection.module.scss';
@@ -26,7 +26,7 @@ export function HeroSection() {
     const queries = [spitz, corgi, shiba, sharpei];
     return queries.map((q) => {
       const withPhotos = (q.data?.results ?? []).filter(
-        (p: DogByBreedList) => p.photos && p.photos.length > 0,
+        (p: DogByBreedListRead) => p.photos && p.photos.length > 0,
       );
       if (!withPhotos.length) return null;
       return withPhotos[Math.floor(Math.random() * withPhotos.length)];
