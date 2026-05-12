@@ -1,8 +1,8 @@
-import { setSelectedBreed } from '@/features/selected-breed';
 import { useAppDispatch } from '@/app/store';
 import { useGetBreedsQuery } from '@/entities/breed';
 import type { PuppyFilters } from '@/features';
 import { PUPPY_FILTERS_DEFAULTS } from '@/features/puppy-filters/config/filter-defaults';
+import { setSelectedBreed } from '@/features/selected-breed';
 import type { Tab } from '@/features/tabs-filter';
 import { Tabs } from '@/features/tabs-filter';
 import { DeliverySection, PuppiesFilters, PuppiesList } from '@/widgets';
@@ -57,14 +57,12 @@ export const PuppiesPage = () => {
           </p>
         </div>
         <div className={styles.catalogContainer}>
-          <div>
-            <Tabs
-              tabs={breedTabs}
-              activeTab={breedId}
-              onTabChange={handleBreedTabChange}
-              className={styles.breedTabs}
-            />
-          </div>
+          <Tabs
+            tabs={breedTabs}
+            activeTab={breedId}
+            onTabChange={handleBreedTabChange}
+            className={styles.breedTabs}
+          />
           <PuppiesFilters
             className={styles.filters}
             value={filters}
