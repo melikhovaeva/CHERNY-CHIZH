@@ -202,6 +202,28 @@
   color: $c-neutral-400;
 }
 
+.documentDownloadBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: $c-neutral-200;
+  color: $c-mp-text-body;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $c-neutral-300;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 .documentDeleteBtn {
   width: 32px;
   height: 32px;

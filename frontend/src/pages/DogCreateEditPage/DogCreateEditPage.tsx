@@ -546,6 +546,23 @@ export function DogCreateEditPage() {
                     <div className={styles.documentName}>
                       <span>{doc.name}</span>
                     </div>
+                    <a
+                      href={doc.url}
+                      download={doc.name}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.documentDownloadBtn}
+                      aria-label="Скачать документ"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M12 3v13M7 11l5 5 5-5M3 21h18" />
+                      </svg>
+                    </a>
                     <button
                       type="button"
                       className={styles.documentDeleteBtn}
@@ -587,6 +604,23 @@ export function DogCreateEditPage() {
                     <div className={styles.documentName}>
                       <span>{doc.name}</span>
                     </div>
+                    <a
+                      href={doc.url}
+                      download={doc.name}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.documentDownloadBtn}
+                      aria-label="Скачать документ"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M12 3v13M7 11l5 5 5-5M3 21h18" />
+                      </svg>
+                    </a>
                     <button
                       type="button"
                       className={styles.documentDeleteBtn}
