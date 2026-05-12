@@ -79,5 +79,6 @@ router.APIRootView.permission_classes = [permissions.AllowAny]
 
 urlpatterns = [
     path("users/", include("user_management.urls")),
+    path("", include("consumer.urls")),
     path("", include(router.urls)),
 ]
