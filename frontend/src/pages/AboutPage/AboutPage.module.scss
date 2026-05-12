@@ -1,0 +1,379 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+// ─── Hero ───
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-color: $c-b-green-600;
+  border-radius: $filled-section-border-radius;
+  padding: 80px 48px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: $filled-section-max-width;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 60px 32px 80px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 48px 20px 64px;
+    border-radius: 24px;
+  }
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+}
+
+.heroTitle {
+  @include typography-h1;
+  color: $c-neutral-0;
+  margin-bottom: 20px;
+}
+
+.heroSubtitle {
+  @include typography-text-l;
+  color: $c-neutral-d-0-80;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.heroDecor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.heroDecoCircle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid $c-neutral-d-0-20;
+
+  &:nth-child(1) {
+    width: 400px;
+    height: 400px;
+    top: -120px;
+    right: -80px;
+
+    @media (max-width: $breakpoint-mobile-sm) {
+      width: 220px;
+      height: 220px;
+      top: -60px;
+      right: -40px;
+    }
+  }
+
+  &:nth-child(2) {
+    width: 280px;
+    height: 280px;
+    bottom: -60px;
+    left: -40px;
+
+    @media (max-width: $breakpoint-mobile-sm) {
+      width: 160px;
+      height: 160px;
+      bottom: -30px;
+      left: -20px;
+    }
+  }
+
+  &:nth-child(3) {
+    width: 160px;
+    height: 160px;
+    top: 30%;
+    left: 15%;
+    opacity: 0.5;
+
+    @media (max-width: $breakpoint-mobile-sm) {
+      display: none;
+    }
+  }
+}
+
+// ─── Mission ───
+.mission {
+  padding: 100px 48px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 72px 32px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 56px 20px;
+  }
+}
+
+.missionInner {
+  max-width: 800px;
+  text-align: center;
+}
+
+.sectionTitle {
+  @include typography-h2;
+  color: $c-mp-text-headers;
+  margin-bottom: 32px;
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    margin-bottom: 24px;
+  }
+}
+
+.missionText {
+  @include typography-text-l;
+  color: $c-mp-text-body;
+  line-height: 180%;
+}
+
+// ─── Values ───
+.values {
+  padding: 0 48px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 0 32px 72px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 0 20px 56px;
+  }
+
+  .sectionTitle {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.valueCard {
+  background-color: $c-neutral-0;
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.valueIndex {
+  @include typography-h3;
+  color: $c-b-green-200;
+  font-family: $font-family-header;
+}
+
+.valueTitle {
+  @include typography-h4;
+  color: $c-mp-text-headers;
+}
+
+.valueDescription {
+  @include typography-text-m;
+  color: $c-neutral-500;
+  line-height: 160%;
+}
+
+// ─── Timeline ───
+.timeline {
+  padding: 80px 48px 100px;
+  background-color: $c-neutral-0;
+  border-radius: $filled-section-border-radius;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 60px 32px 72px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 48px 20px 56px;
+    border-radius: 24px;
+  }
+
+  .sectionTitle {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+}
+
+.timelineTrack {
+  display: flex;
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    padding-left: 32px;
+  }
+}
+
+// Horizontal line spanning between first and last dot centers
+.timelineLine {
+  position: absolute;
+  // 5 equal items → each 20% wide → center of first at 10%, center of last at 90%
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: $c-b-green-100;
+  // vertically align with dot center: year line-height (28px) + margin (12px) + half-dot (7px)
+  top: 47px;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    // Vertical line on mobile
+    left: 0;
+    right: auto;
+    width: 2px;
+    height: calc(100% - 24px); // exclude last item's gap
+    top: 12px;
+    bottom: 12px;
+  }
+}
+
+.timelineItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    flex-direction: row;
+    gap: 16px;
+    text-align: left;
+  }
+}
+
+.timelineYear {
+  @include typography-text-l-semibold;
+  color: $c-b-green-600;
+  margin-bottom: 12px;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    margin-bottom: 0;
+    min-width: 48px;
+    order: 2;
+  }
+}
+
+.timelineDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: $c-b-green-600;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    margin-bottom: 0;
+    order: 1;
+    position: absolute;
+    left: -32px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.timelineText {
+  @include typography-text-m;
+  color: $c-neutral-600;
+  max-width: 140px;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    max-width: none;
+    order: 3;
+  }
+}
+
+// ─── CTA ───
+.cta {
+  padding: 100px 48px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 72px 32px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 56px 20px;
+  }
+}
+
+.ctaInner {
+  text-align: center;
+  max-width: 600px;
+}
+
+.ctaTitle {
+  @include typography-h3;
+  color: $c-mp-text-headers;
+  margin-bottom: 16px;
+}
+
+.ctaText {
+  @include typography-text-l;
+  color: $c-neutral-500;
+  margin-bottom: 32px;
+}
+
+.ctaSocials {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.ctaSocialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: $c-b-green-600;
+  color: $c-neutral-0;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: $c-neutral-0;
+  }
+
+  &:hover {
+    background-color: $c-b-green-500;
+    transform: scale(1.08);
+  }
+
+  &:active {
+    background-color: $c-b-green-700;
+  }
+}

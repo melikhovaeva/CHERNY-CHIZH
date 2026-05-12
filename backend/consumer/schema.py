@@ -1,6 +1,6 @@
 """
 OpenAPI (drf-spectacular) схема для приложения consumer.
-Описания эндпоинтов FAQ.
+Описания эндпоинтов FAQ и страниц «О нас» / «Контакты».
 """
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -10,9 +10,16 @@ from drf_spectacular.utils import (
     extend_schema_view,
 )
 
+from consumer.serializers import (
+    AboutPageSerializer,
+    ContactsPageSerializer,
+)
+
 __all__ = [
     "extend_schema_view",
     "faq_item_view_schema",
+    "about_page_schema",
+    "contacts_page_schema",
 ]
 
 # --- FAQItemViewSet ---
@@ -60,3 +67,20 @@ faq_item_view_schema = {
         tags=["FAQ"],
     ),
 }
+
+
+# --- AboutPageView ---
+about_page_schema = extend_schema(
+    summary="Страница «О нас»",
+    description="Возвращает контент страницы «О нас» с принципами и вехами.",
+    tags=["Страницы"],
+    responses=AboutPageSerializer,
+)
+
+# --- ContactsPageView ---
+contacts_page_schema = extend_schema(
+    summary="Страница «Контакты»",
+    description="Возвращает контент страницы «Контакты» с контактами, соцсетями и расписанием.",
+    tags=["Страницы"],
+    responses=ContactsPageSerializer,
+)

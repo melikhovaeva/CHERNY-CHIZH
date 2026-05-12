@@ -1,0 +1,296 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+// ─── Hero ───
+.hero {
+  text-align: center;
+  padding: 64px 48px 80px;
+  max-width: 700px;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 48px 32px 60px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 36px 20px 48px;
+  }
+}
+
+.heroTitle {
+  @include typography-h1;
+  color: $c-mp-text-headers;
+  margin-bottom: 16px;
+}
+
+.heroSubtitle {
+  @include typography-text-l;
+  color: $c-neutral-500;
+}
+
+// ─── Content grid ───
+.content {
+  padding: 0 48px 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 0 32px 72px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 0 20px 56px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contactCard {
+  background-color: $c-neutral-0;
+  border-radius: 20px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 28px 24px;
+  }
+}
+
+.cardTitle {
+  @include typography-h4;
+  color: $c-mp-text-headers;
+}
+
+// ─── Direct contacts ───
+.contactItems {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contactItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background-color: $c-b-beige-50;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $c-b-green-50;
+  }
+}
+
+.contactLabel {
+  @include typography-text-s;
+  color: $c-neutral-400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contactValue {
+  @include typography-text-l-semibold;
+  color: $c-mp-text-headers;
+}
+
+// ─── Socials ───
+.socialItems {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.socialItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $c-b-beige-50;
+  }
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: $c-b-green-600;
+  flex-shrink: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: $c-neutral-0;
+  }
+}
+
+.socialInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.socialName {
+  @include typography-text-m-semibold;
+  color: $c-mp-text-headers;
+}
+
+.socialValue {
+  @include typography-text-s;
+  color: $c-neutral-400;
+}
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.warning {
+  @include typography-text-xs;
+  color: $c-neutral-300;
+}
+
+// ─── Address ───
+.addressBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.addressText {
+  @include typography-text-l-semibold;
+  color: $c-mp-text-headers;
+}
+
+.addressNote {
+  @include typography-text-m;
+  color: $c-neutral-500;
+  padding: 12px 16px;
+  background-color: $c-b-green-50;
+  border-radius: 12px;
+  border-left: 3px solid $c-b-green-600;
+}
+
+// ─── Schedule ───
+.scheduleItems {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.scheduleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background-color: $c-b-beige-50;
+}
+
+.scheduleDay {
+  @include typography-text-m-semibold;
+  color: $c-mp-text-headers;
+}
+
+.scheduleTime {
+  @include typography-text-m;
+  color: $c-b-green-600;
+  font-weight: 600;
+}
+
+// ─── Banner ───
+.banner {
+  padding: 0 48px 100px;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: $breakpoint-mobile-lg) {
+    padding: 0 32px 72px;
+  }
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 0 20px 56px;
+  }
+}
+
+.bannerInner {
+  width: 100%;
+  max-width: 1200px;
+  background-color: $c-b-beige-700;
+  border-radius: $filled-section-border-radius;
+  padding: 64px 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: $breakpoint-mobile-sm) {
+    padding: 48px 24px;
+    border-radius: 24px;
+  }
+}
+
+.bannerTitle {
+  @include typography-h3;
+  color: $c-neutral-0;
+  margin-bottom: 16px;
+}
+
+.bannerText {
+  @include typography-text-l;
+  color: $c-neutral-d-0-80;
+  max-width: 520px;
+  margin-bottom: 32px;
+}
+
+.bannerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 36px;
+  border-radius: 100px;
+  background-color: $c-neutral-0;
+  color: $c-b-beige-700;
+  @include typography-text-m-semibold;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

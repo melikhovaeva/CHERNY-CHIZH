@@ -3373,6 +3373,62 @@
                 }
             }
         },
+        "/api/v1/pages/about/": {
+            "get": {
+                "operationId": "v1_pages_about_retrieve",
+                "description": "Возвращает контент страницы «О нас» с принципами и вехами.",
+                "summary": "Страница «О нас»",
+                "tags": [
+                    "Страницы"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AboutPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/pages/contacts/": {
+            "get": {
+                "operationId": "v1_pages_contacts_retrieve",
+                "description": "Возвращает контент страницы «Контакты» с контактами, соцсетями и расписанием.",
+                "summary": "Страница «Контакты»",
+                "tags": [
+                    "Страницы"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    },
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactsPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/requests/": {
             "get": {
                 "operationId": "v1_requests_list",
@@ -3491,6 +3547,137 @@
                             }
                         },
                         "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_requests_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminRequestUpdate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminRequestUpdate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminRequestUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminRequestUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_requests_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedAdminRequestUpdate"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedAdminRequestUpdate"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedAdminRequestUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminRequestUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1_requests_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "CookieJWT": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -4169,6 +4356,211 @@
     },
     "components": {
         "schemas": {
+            "AboutMilestone": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "year": {
+                        "type": "string",
+                        "title": "Год",
+                        "maxLength": 10
+                    },
+                    "text": {
+                        "type": "string",
+                        "title": "Описание",
+                        "maxLength": 255
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Порядок"
+                    }
+                },
+                "required": [
+                    "id",
+                    "text",
+                    "year"
+                ]
+            },
+            "AboutPage": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Заголовок",
+                        "maxLength": 255
+                    },
+                    "subtitle": {
+                        "type": "string",
+                        "title": "Подзаголовок"
+                    },
+                    "missionTitle": {
+                        "type": "string",
+                        "title": "Заголовок миссии",
+                        "maxLength": 255
+                    },
+                    "missionText": {
+                        "type": "string",
+                        "title": "Текст миссии"
+                    },
+                    "ctaTitle": {
+                        "type": "string",
+                        "title": "Заголовок CTA",
+                        "maxLength": 255
+                    },
+                    "ctaText": {
+                        "type": "string",
+                        "title": "Текст CTA"
+                    },
+                    "values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AboutValue"
+                        },
+                        "readOnly": true
+                    },
+                    "milestones": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AboutMilestone"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "milestones",
+                    "values"
+                ]
+            },
+            "AboutValue": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Заголовок",
+                        "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string",
+                        "title": "Описание"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Порядок"
+                    }
+                },
+                "required": [
+                    "description",
+                    "id",
+                    "title"
+                ]
+            },
+            "AdminRequestUpdate": {
+                "type": "object",
+                "description": "Сериализатор для обновления заявки администратором.",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "messenger": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "dog": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status4daEnum"
+                    },
+                    "requestType": {
+                        "$ref": "#/components/schemas/RequestTypeEnum"
+                    },
+                    "prepaymentStatus": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PrepaymentStatusEnum"
+                            },
+                            {
+                                "$ref": "#/components/schemas/BlankEnum"
+                            }
+                        ]
+                    },
+                    "prepaymentAmount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "plannedDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "street": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "house": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "apartment": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "breed": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "message",
+                    "messenger",
+                    "phone"
+                ]
+            },
             "AgeGroupEnum": {
                 "enum": [
                     "puppy",
@@ -4492,6 +4884,11 @@
                     "title"
                 ]
             },
+            "BlankEnum": {
+                "enum": [
+                    ""
+                ]
+            },
             "BreedBrief": {
                 "type": "object",
                 "description": "Краткое представление породы для списка щенков",
@@ -4646,6 +5043,124 @@
                 "required": [
                     "code",
                     "label"
+                ]
+            },
+            "ContactInfo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "contactType": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ContactTypeEnum"
+                            }
+                        ],
+                        "title": "Тип"
+                    },
+                    "label": {
+                        "type": "string",
+                        "title": "Подпись",
+                        "maxLength": 100
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Значение",
+                        "maxLength": 255
+                    },
+                    "href": {
+                        "type": "string",
+                        "title": "Ссылка",
+                        "maxLength": 255
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Порядок"
+                    }
+                },
+                "required": [
+                    "contactType",
+                    "href",
+                    "id",
+                    "label",
+                    "value"
+                ]
+            },
+            "ContactTypeEnum": {
+                "enum": [
+                    "phone",
+                    "email"
+                ],
+                "type": "string",
+                "description": "* `phone` - Телефон\n* `email` - Электронная почта"
+            },
+            "ContactsPage": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Заголовок",
+                        "maxLength": 255
+                    },
+                    "subtitle": {
+                        "type": "string",
+                        "title": "Подзаголовок"
+                    },
+                    "address": {
+                        "type": "string",
+                        "title": "Адрес",
+                        "maxLength": 255
+                    },
+                    "addressNote": {
+                        "type": "string",
+                        "title": "Примечание к адресу",
+                        "maxLength": 255
+                    },
+                    "bannerTitle": {
+                        "type": "string",
+                        "title": "Заголовок баннера",
+                        "maxLength": 255
+                    },
+                    "bannerText": {
+                        "type": "string",
+                        "title": "Текст баннера"
+                    },
+                    "bannerEmail": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email баннера",
+                        "maxLength": 254
+                    },
+                    "contacts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ContactInfo"
+                        },
+                        "readOnly": true
+                    },
+                    "socials": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SocialLink"
+                        },
+                        "readOnly": true
+                    },
+                    "schedule": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Schedule"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "contacts",
+                    "schedule",
+                    "socials"
                 ]
             },
             "Course": {
@@ -5833,6 +6348,96 @@
                     }
                 }
             },
+            "PatchedAdminRequestUpdate": {
+                "type": "object",
+                "description": "Сериализатор для обновления заявки администратором.",
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "messenger": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "dog": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status4daEnum"
+                    },
+                    "requestType": {
+                        "$ref": "#/components/schemas/RequestTypeEnum"
+                    },
+                    "prepaymentStatus": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PrepaymentStatusEnum"
+                            },
+                            {
+                                "$ref": "#/components/schemas/BlankEnum"
+                            }
+                        ]
+                    },
+                    "prepaymentAmount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "plannedDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "street": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "house": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "apartment": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "breed": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
             "PatchedArticleAdminWrite": {
                 "type": "object",
                 "description": "Сериализатор записи статьи для редактора (title, description, status, content_blocks, tags).",
@@ -6129,6 +6734,14 @@
                 "type": "string",
                 "description": "* `pet` - Домашний питомец\n* `show` - Шоу\n* `breeding` - Разведение"
             },
+            "PrepaymentStatusEnum": {
+                "enum": [
+                    "not_paid",
+                    "paid"
+                ],
+                "type": "string",
+                "description": "* `not_paid` - Не внесена\n* `paid` - Внесена"
+            },
             "RatingBlock": {
                 "type": "object",
                 "description": "Вспомогательный сериализатор для блока rating + text.",
@@ -6247,9 +6860,71 @@
                     "dog": {
                         "type": "integer",
                         "nullable": true
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/Status4daEnum"
+                    },
+                    "requestType": {
+                        "$ref": "#/components/schemas/RequestTypeEnum"
+                    },
+                    "prepaymentStatus": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/PrepaymentStatusEnum"
+                            },
+                            {
+                                "$ref": "#/components/schemas/BlankEnum"
+                            }
+                        ]
+                    },
+                    "prepaymentAmount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "plannedDate": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "street": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "house": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "apartment": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "breed": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
                     }
                 },
                 "required": [
+                    "createdAt",
                     "firstName",
                     "id",
                     "message",
@@ -6257,6 +6932,15 @@
                     "phone",
                     "user"
                 ]
+            },
+            "RequestTypeEnum": {
+                "enum": [
+                    "consultation",
+                    "booking",
+                    "waiting_list"
+                ],
+                "type": "string",
+                "description": "* `consultation` - Консультация\n* `booking` - Бронирование\n* `waiting_list` - Лист ожидания"
             },
             "Role": {
                 "type": "object",
@@ -6278,6 +6962,36 @@
                     "label"
                 ]
             },
+            "Schedule": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "days": {
+                        "type": "string",
+                        "title": "Дни",
+                        "maxLength": 100
+                    },
+                    "hours": {
+                        "type": "string",
+                        "title": "Часы",
+                        "maxLength": 100
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Порядок"
+                    }
+                },
+                "required": [
+                    "days",
+                    "hours",
+                    "id"
+                ]
+            },
             "SexEnum": {
                 "enum": [
                     "male",
@@ -6285,6 +6999,60 @@
                 ],
                 "type": "string",
                 "description": "* `male` - Мальчик\n* `female` - Девочка"
+            },
+            "SocialLink": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Ключ иконки",
+                        "description": "vk, messenger, instagram, whatsapp",
+                        "maxLength": 50
+                    },
+                    "label": {
+                        "type": "string",
+                        "title": "Отображаемое название",
+                        "maxLength": 100
+                    },
+                    "value": {
+                        "type": "string",
+                        "title": "Отображаемое значение",
+                        "maxLength": 255
+                    },
+                    "href": {
+                        "type": "string",
+                        "format": "uri",
+                        "title": "Ссылка",
+                        "maxLength": 500
+                    },
+                    "order": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "title": "Порядок"
+                    }
+                },
+                "required": [
+                    "href",
+                    "id",
+                    "label",
+                    "name",
+                    "value"
+                ]
+            },
+            "Status4daEnum": {
+                "enum": [
+                    "new",
+                    "in_work",
+                    "closed",
+                    "rejected"
+                ],
+                "type": "string",
+                "description": "* `new` - Новая\n* `in_work` - В работе\n* `closed` - Закрыта\n* `rejected` - Отклонена"
             },
             "TokenObtainPair": {
                 "type": "object",

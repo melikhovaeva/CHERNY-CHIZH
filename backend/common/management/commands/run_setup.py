@@ -50,6 +50,9 @@ class Command(BaseCommand):
         ensure_default_roles()
         self.stdout.write(self.style.SUCCESS("Дефолтные роли проверены / созданы."))
 
+        # Страницы «О нас» и «Контакты» — всегда, идемпотентно
+        call_command("fill_static_pages")
+
         from common.models import Dog
 
         if not Dog.objects.exists():

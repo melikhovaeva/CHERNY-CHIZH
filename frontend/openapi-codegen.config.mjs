@@ -40,5 +40,8 @@ export default {
     './src/shared/api/generated/nursery.generated.ts': {
       filterEndpoints: [/^v1Nursery/],
     },
+    './src/shared/api/generated/pages.generated.ts': {
+      filterEndpoints: [/^v1Pages/],
+    },
   },
 };

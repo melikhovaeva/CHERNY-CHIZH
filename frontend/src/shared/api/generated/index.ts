@@ -9,5 +9,6 @@ import './courses.generated';
 import './dictionaries.generated';
 import './dogs.generated';
 import './faq.generated';
+import './pages.generated';
 import './requests.generated';
 import './users.generated';
