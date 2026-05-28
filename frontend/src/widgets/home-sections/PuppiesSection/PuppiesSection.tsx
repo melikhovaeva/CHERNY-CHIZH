@@ -9,7 +9,7 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { Button, Card } from '@/shared/ui/components';
 import { FilterableGallery } from '@/widgets/FilterableGallery';
-import { useRouter } from '@tanstack/react-router';
+import { Link, useRouter } from '@tanstack/react-router';
 import { useEffect, useMemo } from 'react';
 import styles from './PuppiesSection.module.scss';
 
@@ -83,7 +83,12 @@ export function PuppiesSection() {
           getItemKey={(puppy) => puppy.id}
           getFilterValue={(puppy) => puppy.breed.slug}
           renderItem={(puppy) => (
-            <Card imgUrl={getFirstPhotoUrl(puppy)} subtitle={puppy.name} />
+            <Link
+              to='/puppies/$breedId/$puppyId'
+              params={{ breedId: puppy.breed.slug, puppyId: String(puppy.id) }}
+            >
+              <Card imgUrl={getFirstPhotoUrl(puppy)} subtitle={puppy.name} />
+            </Link>
           )}
           className={styles.gallery}
         />
